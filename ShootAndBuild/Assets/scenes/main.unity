@@ -148,7 +148,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1537781486404804, guid: 61ff60330c690134499b3bba374cddda, type: 2}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 61ff60330c690134499b3bba374cddda, type: 2}
@@ -921,7 +921,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1537781486404804, guid: 61ff60330c690134499b3bba374cddda, type: 2}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 61ff60330c690134499b3bba374cddda, type: 2}
@@ -1223,7 +1223,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e7b9cb0b4e2d7fb43bbce82735adeb30, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HealthBarPrefab: {fileID: 114497382061760316, guid: c25666976c1e40d45a536ea63de71ec6,
+  healthBarPrefab: {fileID: 114497382061760316, guid: c25666976c1e40d45a536ea63de71ec6,
     type: 2}
 --- !u!1001 &1903168311
 Prefab:
@@ -1562,6 +1562,11 @@ Prefab:
     - target: {fileID: 1430369904291582, guid: f6383526f2d250f469efc2ccf8646d7e, type: 2}
       propertyPath: m_Layer
       value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 114401709228175904, guid: f6383526f2d250f469efc2ccf8646d7e,
+        type: 2}
+      propertyPath: playerID
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: f6383526f2d250f469efc2ccf8646d7e, type: 2}

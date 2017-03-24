@@ -1,73 +1,70 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Shootable : MonoBehaviour
 {
-	public AudioClip[] ShootSounds;
-    public GameObject ProjectilePrefab;
-    public float ShootCooldown = 0.5f;
+    public AudioClip[] shootSounds;
+    public GameObject projectilePrefab;
+    public float shootCooldown = 0.5f;
 
-    public float FlashDuration      = 0.5f;
-    public float FlashMaxIntensity  = 0.5f;
+    public float flashDuration = 0.5f;
+    public float flashMaxIntensity = 0.5f;
 
-    private float m_CurrentCooldown         = 0.0f;
-    private float m_DefaultLightIntensity   = 0.0f;
-    private float m_LastShootTime           = -1000.0f;
+    private float currentCooldown = 0.0f;
+    private float defaultLightIntensity = 0.0f;
+    private float lastShootTime = -1000.0f;
 
-    Light playerLight;
+    private Light playerLight;
 
-    // Use this for initialization
-    void Start ()
+
+    void Start()
     {
         playerLight = GetComponentInChildren<Light>();
-        m_DefaultLightIntensity = playerLight.intensity;
-	}
-	
-	// Update is called once per frame
-	void Update ()
+        defaultLightIntensity = playerLight.intensity;
+    }
+
+    void Update()
     {
-        if (m_CurrentCooldown > 0.0f)
+        if (currentCooldown > 0.0f)
         {
-            m_CurrentCooldown = Mathf.Max(m_CurrentCooldown - Time.deltaTime, 0.0f);
+            currentCooldown = Mathf.Max(currentCooldown - Time.deltaTime, 0.0f);
         }
 
-        float timeSinceLastShot = Time.time - m_LastShootTime;
+        float timeSinceLastShot = Time.time - lastShootTime;
 
-        float flashIntensity = 1.0f - (timeSinceLastShot / FlashDuration);
-        flashIntensity *= FlashMaxIntensity;
+        float flashIntensity = 1.0f - (timeSinceLastShot / flashDuration);
+        flashIntensity *= flashMaxIntensity;
 
         flashIntensity = Mathf.Max(flashIntensity, 0.0f);
 
         flashIntensity = flashIntensity * flashIntensity;
 
-        playerLight.intensity = m_DefaultLightIntensity + flashIntensity;
+        playerLight.intensity = defaultLightIntensity + flashIntensity;
     }
 
     public void Shoot()
     {
-        if (m_CurrentCooldown > 0.0f)
+        if (currentCooldown > 0.0f)
         {
             return;
         }
 
         GameObject projectileContainer = GameObject.Find("Projectiles");
 
-        GameObject instance = Instantiate(ProjectilePrefab, projectileContainer.transform);
+        GameObject instance = Instantiate(projectilePrefab, projectileContainer.transform);
         instance.transform.position = transform.position;
 
         Projectile projectile = instance.GetComponent<Projectile>();
-        projectile.Direction = transform.forward;
-        projectile.Owner = this;
+        projectile.direction = transform.forward;
+        projectile.owner = this;
 
-        m_CurrentCooldown   = ShootCooldown;
-        m_LastShootTime     = Time.time;
+        currentCooldown = shootCooldown;
+        lastShootTime = Time.time;
 
-		if (ShootSounds.Length > 0)
-		{
-			int rndSoundIndex = Random.Range(0, ShootSounds.Length -1);
-			AudioClip rndSound = ShootSounds[rndSoundIndex];
-			AudioSource.PlayClipAtPoint(rndSound, transform.position, 0.5f);
-		}
+        if (shootSounds.Length > 0)
+        {
+            int rndSoundIndex = Random.Range(0, shootSounds.Length - 1);
+            AudioClip rndSound = shootSounds[rndSoundIndex];
+            AudioSource.PlayClipAtPoint(rndSound, transform.position, 0.5f);
+        }
     }
 }

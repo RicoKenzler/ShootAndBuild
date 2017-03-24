@@ -2,56 +2,57 @@
 
 public class Attackable : MonoBehaviour
 {
-    public int MaxHealth = 10;
+    public int maxHealth = 10;
     public bool respawnAfterDeath = true;
 
-	public GameObject itemDropPrefab;
-	public float itemDropPercentage = 0.5f;
+    public GameObject itemDropPrefab;
+    public float itemDropPercentage = 0.5f;
 
-    private int m_CurrentHealth = 0;
+    public AudioClip[] dieSounds;
 
-	public AudioClip[] DieSounds;
+    private int currentHealth = 0;
 
-	void Start()
+
+    void Start()
     {
-        m_CurrentHealth = MaxHealth;
+        currentHealth = maxHealth;
 
-        HealthBarManager.Instance.AddHealthBar(this);
-	}
+        HealthBarManager.instance.AddHealthBar(this);
+    }
 
     void OnDestroy()
     {
-        HealthBarManager.Instance.RemoveHealthBar(this);
+        HealthBarManager.instance.RemoveHealthBar(this);
     }
-	
+
     public void DealDamage(int damage)
     {
-        m_CurrentHealth -= damage;
+        currentHealth -= damage;
 
-        if (m_CurrentHealth <= 0)
+        if (currentHealth <= 0)
         {
-			if (DieSounds.Length > 0)
-			{
-				int rndSoundIndex = Random.Range(0, DieSounds.Length -1);
-				AudioClip rndSound = DieSounds[rndSoundIndex];
-				AudioSource.PlayClipAtPoint(rndSound, transform.position);
-			}
+            if (dieSounds.Length > 0)
+            {
+                int rndSoundIndex = Random.Range(0, dieSounds.Length - 1);
+                AudioClip rndSound = dieSounds[rndSoundIndex];
+                AudioSource.PlayClipAtPoint(rndSound, transform.position);
+            }
 
             Debug.Log("Attackable died!");
 
-			if (itemDropPrefab && (Random.Range(0.0f, 1.0f) <= itemDropPercentage))
-			{
-				GameObject itemInstance = Instantiate(itemDropPrefab);
+            if (itemDropPrefab && (Random.Range(0.0f, 1.0f) <= itemDropPercentage))
+            {
+                GameObject itemInstance = Instantiate(itemDropPrefab);
 
-				float dropHeight = 2.0f;
+                float dropHeight = 2.0f;
 
-				itemInstance.transform.position = transform.position + new Vector3(0.0f, dropHeight, 0.0f);
-				itemInstance.GetComponent<Collectable>().SetTargetHeight(transform.position.y);
-			}
+                itemInstance.transform.position = transform.position + new Vector3(0.0f, dropHeight, 0.0f);
+                itemInstance.GetComponent<Collectable>().targetHeight = transform.position.y;
+            }
 
             if (respawnAfterDeath)
             {
-                m_CurrentHealth = MaxHealth;
+                currentHealth = maxHealth;
 
                 float respawnRadius = 10.0f;
                 transform.position = new Vector3(Random.Range(-1.0f, 1.0f), 0.0f, Random.Range(-1.0f, 1.0f)) * respawnRadius;
@@ -64,8 +65,8 @@ public class Attackable : MonoBehaviour
         }
     }
 
-    public int Health
+    public int health
     {
-        get { return m_CurrentHealth; }
+        get { return currentHealth; }
     }
 }

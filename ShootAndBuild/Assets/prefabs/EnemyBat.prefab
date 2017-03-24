@@ -1429,13 +1429,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 6
-  attackDistance: 1.5
+  attackDistance: 2
   attackCooldown: 1
   damage: 1
-  HitSounds:
-  - {fileID: 8300000, guid: ff53888c823d7a548851b1f4ee29e0bb, type: 3}
-  - {fileID: 8300000, guid: ab2bf0f1cd8fef84ab8497ef6dc745cd, type: 3}
-  - {fileID: 8300000, guid: 6568933817f4f8440b7edb4aedb0070c, type: 3}
+  hitSounds: []
 --- !u!114 &114863981049587038
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1447,18 +1444,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f41b0c5fe276e8942874978a2d478cfe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MaxHealth: 3
+  maxHealth: 2
   respawnAfterDeath: 0
   itemDropPrefab: {fileID: 1797189723984674, guid: ebaf5d1e5ef1660458836d848ca0b292,
     type: 2}
   itemDropPercentage: 0.5
-  DieSounds:
-  - {fileID: 8300000, guid: 259773637c15b0946b2f0aeaf4897e0f, type: 3}
-  - {fileID: 8300000, guid: 1fd53c9c360fe3c40be781e731d1421c, type: 3}
-  - {fileID: 8300000, guid: fe831f5807281af428508a16fd6f04e3, type: 3}
-  - {fileID: 8300000, guid: e901ce4faad20b64f9926e81e16fe11c, type: 3}
-  - {fileID: 8300000, guid: b130203dc13e5a94fb8ca1c225a53c01, type: 3}
-  - {fileID: 8300000, guid: 6a6808c1e151bb74cbcec3bef307fab1, type: 3}
+  dieSounds: []
 --- !u!137 &137751449705913236
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 1

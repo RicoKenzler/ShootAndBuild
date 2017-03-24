@@ -1,46 +1,43 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class InputController : MonoBehaviour
 {
-    public int PlayerID = 1;
+    public int playerID = 1;
 
-    public float Speed              = 10.0f;
-    public float Deadzone           = 0.2f;
+    public float speed                          = 10.0f;
+    public float deadzone                       = 0.2f;
+    public float movementAnimationMoultiplier   = 0.5f;
 
-    private Animation m_Animation;
-    public float m_MovementAnimationMoultiplier = 0.5f;
+    private Animation animationController;
 
-	// Use this for initialization
-	void Start ()
+
+	void Start()
 	{
-        m_Animation = this.GetComponentInChildren<Animation>();
-        if (m_Animation == null)
+        animationController = this.GetComponentInChildren<Animation>();
+        if (animationController == null)
         {
-            Debug.LogWarning("no animation found on player " + PlayerID);
+            Debug.LogWarning("no animation found on player " + playerID);
         } else
         {
-            m_Animation["girl_idle"].speed = 1;
-            m_Animation.Play();
+            animationController["girl_idle"].speed = 1;
+            animationController.Play();
         }
 	}
 	
     //--------------------------------------------------------------------------------------------------
 
-	// Update is called once per frame
-	void Update ()
+	void Update()
     {
         /////////////////////////////////////////
         // Movement
         /////////////////////////////////////////
-        float leftHorizontal    =  Input.GetAxis("Left Horizontal P"    + PlayerID);
-        float leftVertical      = -Input.GetAxis("Left Vertical P"      + PlayerID);
-        float rightHorizontal   =  Input.GetAxis("Right Horizontal P"   + PlayerID);
-        float rightVertical     = -Input.GetAxis("Right Vertical P"     + PlayerID);
+        float leftHorizontal    =  Input.GetAxis("Left Horizontal P"    + playerID);
+        float leftVertical      = -Input.GetAxis("Left Vertical P"      + playerID);
+        float rightHorizontal   =  Input.GetAxis("Right Horizontal P"   + playerID);
+        float rightVertical     = -Input.GetAxis("Right Vertical P"     + playerID);
 
         // For player 2, also accept Keyboard (for debugging)
-        if (PlayerID == 2)
+        if (playerID == 2)
         {
             float leftHorizontalKey     = Input.GetAxis("Left Horizontal Keyboard");
             float leftVerticalKey       = Input.GetAxis("Left Vertical Keyboard");
@@ -60,15 +57,15 @@ public class InputController : MonoBehaviour
         {
             leftInputVector.Normalize();
         }
-        else if (Mathf.Abs(leftHorizontal) < Deadzone && Mathf.Abs(leftVertical) < Deadzone)
+        else if (Mathf.Abs(leftHorizontal) < deadzone && Mathf.Abs(leftVertical) < deadzone)
         {
             leftInputVector = Vector2.zero;
         }
 
 		Rigidbody rigidbody = GetComponent<Rigidbody>();
         Vector3 velocity    = rigidbody.velocity;
-        velocity.x		    = leftInputVector.x * Speed;
-        velocity.z		    = leftInputVector.y * Speed;
+        velocity.x		    = leftInputVector.x * speed;
+        velocity.z		    = leftInputVector.y * speed;
 
         rigidbody.velocity = velocity;
 
@@ -78,7 +75,7 @@ public class InputController : MonoBehaviour
         Vector3 rightInputVector = new Vector3(rightHorizontal, 0, rightVertical);
         float rightInputVectorLength = rightInputVector.magnitude;
 
-        if (Mathf.Abs(rightHorizontal) < Deadzone && Mathf.Abs(rightVertical) < Deadzone)
+        if (Mathf.Abs(rightHorizontal) < deadzone && Mathf.Abs(rightVertical) < deadzone)
         {
             rightInputVector = Vector3.zero;
             rightInputVectorLength = 0;
@@ -92,7 +89,7 @@ public class InputController : MonoBehaviour
         /////////////////////////////////////////
         // Shoot
         /////////////////////////////////////////
-        bool shootButtonPressed = Input.GetButton("Fire P" + PlayerID);
+        bool shootButtonPressed = Input.GetButton("Fire P" + playerID);
         Shootable shootable = GetComponent<Shootable>();
         if (shootable != null && shootButtonPressed)
         {
@@ -104,27 +101,27 @@ public class InputController : MonoBehaviour
         // Animation
         /////////////////////////////////////////
 
-        if (m_Animation != null)
+        if (animationController != null)
         {
             float movementSpeed = velocity.magnitude;
 
-            if (!m_Animation.IsPlaying("girl_attack"))
+            if (!animationController.IsPlaying("girl_attack"))
             {
                 if (movementSpeed > 0)
                 {
-                    m_Animation["girl_run"].speed = movementSpeed * m_MovementAnimationMoultiplier;
-                    m_Animation.Play("girl_run");
+                    animationController["girl_run"].speed = movementSpeed * movementAnimationMoultiplier;
+                    animationController.Play("girl_run");
                 }
                 else
                 {
-                    m_Animation.Play("girl_idle");
+                    animationController.Play("girl_idle");
                 }
             }
 
             if (shootButtonPressed)
             {
-                m_Animation["girl_attack"].speed = 2;
-                m_Animation.Play("girl_attack");
+                animationController["girl_attack"].speed = 2;
+                animationController.Play("girl_attack");
             }
 
         }

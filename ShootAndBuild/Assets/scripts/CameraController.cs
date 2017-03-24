@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
@@ -22,13 +20,13 @@ public class CameraController : MonoBehaviour
 	[Range(0,1)]
 	public float rotZ				=  0.1f;
 
-    private Vector3 LastPlayerSphereCenter	= new Vector3(0.0f, 0.0f, 0.0f);
-    private float LastPlayerSphereRadius	= 1.0f;
+    private Vector3 lastPlayerSphereCenter	= new Vector3(0.0f, 0.0f, 0.0f);
+    private float lastPlayerSphereRadius	= 1.0f;
 
-	// Use this for initialization
-	void Start ()
+
+	void Start()
 	{
-        GetPlayerBoundingSphere(out LastPlayerSphereCenter, out LastPlayerSphereRadius);
+        GetPlayerBoundingSphere(out lastPlayerSphereCenter, out lastPlayerSphereRadius);
 	}
     
     void GetPlayerBoundingSphere(out Vector3 center, out float radius)
@@ -37,8 +35,8 @@ public class CameraController : MonoBehaviour
 
         if (allPlayers.Length == 0)
         {
-			center = LastPlayerSphereCenter;
-			radius = LastPlayerSphereRadius;
+			center = lastPlayerSphereCenter;
+			radius = lastPlayerSphereRadius;
 
             Debug.Assert(false, "No player found!");
             return;
@@ -57,18 +55,17 @@ public class CameraController : MonoBehaviour
         radius = Mathf.Max(minimumRadius, radius);
     }
 
-	// Update is called once per frame
-	void Update ()
+	void Update()
     {
         Vector3 playerSphereCenter;
         float   playerSphereRadius;
         GetPlayerBoundingSphere(out playerSphereCenter, out playerSphereRadius);
 
-        playerSphereCenter = Vector3.Lerp(playerSphereCenter, LastPlayerSphereCenter, inertiaMovement);
-        playerSphereRadius = Mathf.Lerp(  playerSphereRadius, LastPlayerSphereRadius, inertiaZoom);
+        playerSphereCenter = Vector3.Lerp(playerSphereCenter, lastPlayerSphereCenter, inertiaMovement);
+        playerSphereRadius = Mathf.Lerp(  playerSphereRadius, lastPlayerSphereRadius, inertiaZoom);
 
-        LastPlayerSphereRadius  = playerSphereRadius;
-        LastPlayerSphereCenter  = playerSphereCenter;
+        lastPlayerSphereRadius  = playerSphereRadius;
+        lastPlayerSphereCenter  = playerSphereCenter;
 
         Vector3 heighOffsetDirection	= new Vector3(0.0f, 1.0f, -rotZ);
         float heightOffsetAmount		= (minimumHeight + (playerSphereRadius * heightSlope));

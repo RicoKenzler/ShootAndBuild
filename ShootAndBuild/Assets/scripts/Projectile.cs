@@ -1,28 +1,25 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Projectile : MonoBehaviour
 {
     [Tooltip("Speed in units per second")]
-    public float Speed = 5;
+    public float speed = 5;
 
-	// Use this for initialization
-	void Start()
+
+    void Start()
     {
-	}
-	
-	// Update is called once per frame
-	void Update ()
+    }
+
+    void Update()
     {
-        float delta = Time.deltaTime * Speed;
-        transform.Translate(delta * Direction);
-	}
+        float delta = Time.deltaTime * speed;
+        transform.Translate(delta * direction);
+    }
 
     void OnTriggerEnter(Collider other)
     {
         // we are immune to our own projectiles
-        if (Owner.gameObject != other.gameObject)
+        if (owner.gameObject != other.gameObject)
         {
             Destroy(gameObject);
 
@@ -34,12 +31,12 @@ public class Projectile : MonoBehaviour
         }
     }
 
-    public Vector3 Direction
+    public Vector3 direction
     {
         get; set;
     }
 
-    public Shootable Owner
+    public Shootable owner
     {
         get; set;
     }

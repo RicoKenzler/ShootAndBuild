@@ -1,22 +1,22 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class HealthBarManager : MonoBehaviour
 {
-    public HealthBar HealthBarPrefab;
+    public HealthBar healthBarPrefab;
 
     private List<HealthBar> healthBars = new List<HealthBar>();
 
+
     void Awake()
     {
-        Instance = this;
+        instance = this;
     }
-    
+
     public void AddHealthBar(Attackable attackable)
     {
-        HealthBar instance = Instantiate(HealthBarPrefab, transform);
-        instance.Target = attackable;
+        HealthBar instance = Instantiate(healthBarPrefab, transform);
+        instance.target = attackable;
         instance.name = "HealthBar - " + attackable.name;
         healthBars.Add(instance.GetComponent<HealthBar>());
     }
@@ -27,7 +27,7 @@ public class HealthBarManager : MonoBehaviour
         {
             HealthBar bar = healthBars[i];
 
-            if (bar.Target == attackable)
+            if (bar.target == attackable)
             {
                 healthBars.RemoveAt(i);
 
@@ -43,7 +43,7 @@ public class HealthBarManager : MonoBehaviour
         }
     }
 
-    public static HealthBarManager Instance
+    public static HealthBarManager instance
     {
         get; private set;
     }
