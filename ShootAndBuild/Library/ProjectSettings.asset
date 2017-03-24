@@ -463,7 +463,7 @@ PlayerSettings:
   vrEditorSettings: {}
   cloudServicesEnabled:
     Build: 1
-    Collab: 1
+    Collab: 0
     UNet: 1
   cloudProjectId: f92e0099-7aaf-48cf-992b-4eb66d90d7fd
   projectName: ShootAndBuild
