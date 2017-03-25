@@ -18,7 +18,7 @@ public enum ButtonType
 
 public class PlayerManager : MonoBehaviour
 {
-	public GameObject playerPrefab;
+/*	public GameObject playerPrefab;
 
     enum InputMethod
     {
@@ -159,4 +159,6 @@ public class PlayerManager : MonoBehaviour
 
 		return IsButtonDown(inputMethod, buttonType);
 	}
+
+	*/
 }
