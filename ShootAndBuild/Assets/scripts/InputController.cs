@@ -32,9 +32,9 @@ public class InputController : MonoBehaviour
         // Movement
         /////////////////////////////////////////
         float leftHorizontal    =  Input.GetAxis("Left Horizontal P"    + playerID);
-        float leftVertical      = -Input.GetAxis("Left Vertical P"      + playerID);
+        float leftVertical      =  Input.GetAxis("Left Vertical P"      + playerID);
         float rightHorizontal   =  Input.GetAxis("Right Horizontal P"   + playerID);
-        float rightVertical     = -Input.GetAxis("Right Vertical P"     + playerID);
+        float rightVertical     =  Input.GetAxis("Right Vertical P"     + playerID);
 
         // For player 2, also accept Keyboard (for debugging)
         if (playerID == 2)
