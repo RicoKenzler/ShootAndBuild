@@ -91,8 +91,8 @@ public class EnemyBehaviour : MonoBehaviour
 
             if (!animationController.IsPlaying("attack"))
             {
-                animationController["move"].speed = movementSpeed;
-                animationController.Play("move");
+                animationController["walk"].speed = movementSpeed;
+                animationController.Play("walk");
 
             }
         }

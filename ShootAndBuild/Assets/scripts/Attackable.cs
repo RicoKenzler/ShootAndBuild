@@ -38,8 +38,6 @@ public class Attackable : MonoBehaviour
                 AudioSource.PlayClipAtPoint(rndSound, transform.position);
             }
 
-            Debug.Log("Attackable died!");
-
             if (itemDropPrefab && (Random.Range(0.0f, 1.0f) <= itemDropPercentage))
             {
                 GameObject itemInstance = Instantiate(itemDropPrefab);

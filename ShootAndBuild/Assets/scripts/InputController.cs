@@ -19,7 +19,7 @@ public class InputController : MonoBehaviour
             Debug.LogWarning("no animation found on player " + playerID);
         } else
         {
-            animationController["girl_idle"].speed = 1;
+            animationController["idle"].speed = 1;
             animationController.Play();
         }
 	}
@@ -105,23 +105,23 @@ public class InputController : MonoBehaviour
         {
             float movementSpeed = velocity.magnitude;
 
-            if (!animationController.IsPlaying("girl_attack"))
+            if (!animationController.IsPlaying("attack"))
             {
                 if (movementSpeed > 0)
                 {
-                    animationController["girl_run"].speed = movementSpeed * movementAnimationMoultiplier;
-                    animationController.Play("girl_run");
+                    animationController["walk"].speed = movementSpeed * movementAnimationMoultiplier;
+                    animationController.Play("walk");
                 }
                 else
                 {
-                    animationController.Play("girl_idle");
+                    animationController.Play("idle");
                 }
             }
 
             if (shootButtonPressed)
             {
-                animationController["girl_attack"].speed = 2;
-                animationController.Play("girl_attack");
+                animationController["attack"].speed = 2;
+                animationController.Play("attack");
             }
 
         }

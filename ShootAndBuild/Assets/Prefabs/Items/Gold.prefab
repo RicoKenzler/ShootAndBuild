@@ -136,6 +136,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   collectRadius: 1
-  CollectSounds:
+  collectSounds:
   - {fileID: 8300000, guid: 0312428a914c3c340a461b0ab1850a5e, type: 3}
   - {fileID: 8300000, guid: f98a49957555519428385ab84909441d, type: 3}
