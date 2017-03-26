@@ -4,6 +4,17 @@ public class Collectable : MonoBehaviour
 {
 	public float collectRadius = 0.5f;
 	public AudioClip[] collectSounds;
+	public AudioClip[] dropSounds;
+
+	void Start()
+	{
+		if (dropSounds.Length > 0)
+		{
+			int rndSoundIndex = Random.Range(0, dropSounds.Length);
+			AudioClip rndSound = dropSounds[rndSoundIndex];
+			AudioSource.PlayClipAtPoint(rndSound, transform.position);
+		}
+	}
 
 	void Update()
 	{

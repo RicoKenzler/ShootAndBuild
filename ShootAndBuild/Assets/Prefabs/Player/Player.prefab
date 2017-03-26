@@ -2170,7 +2170,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 10
-  respawnAfterDeath: 1
   itemDropPrefab: {fileID: 0}
   itemDropPercentage: 0.5
   dieSounds:
@@ -2179,6 +2178,10 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 5bd5a335982178d40901e5f08cf0357e, type: 3}
   - {fileID: 8300000, guid: f8ee29f2994da0f489230207ef10f0c8, type: 3}
   - {fileID: 8300000, guid: 4ba65ecc863f9a94695b1c2946237186, type: 3}
+  spawnSounds:
+  - {fileID: 8300000, guid: 8d493d4af69485c428a7329d16642013, type: 3}
+  - {fileID: 8300000, guid: a52ade4cdfac41c4093a8ea2cafa5119, type: 3}
+  - {fileID: 8300000, guid: c87caee09abed8447ac959387760f577, type: 3}
 --- !u!114 &114401709228175904
 MonoBehaviour:
   m_ObjectHideFlags: 1

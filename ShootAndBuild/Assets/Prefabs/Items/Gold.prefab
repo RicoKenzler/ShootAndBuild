@@ -135,7 +135,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14bc921a45a8f494b9ad472d986734b2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  collectRadius: 1
+  collectRadius: 1.1
   collectSounds:
   - {fileID: 8300000, guid: 0312428a914c3c340a461b0ab1850a5e, type: 3}
   - {fileID: 8300000, guid: f98a49957555519428385ab84909441d, type: 3}
+  dropSounds:
+  - {fileID: 8300000, guid: c41d9bcd0173d624d968c9d012de91dd, type: 3}
+  - {fileID: 8300000, guid: 805cd795eca8f0342813411d4e328d1c, type: 3}
+  - {fileID: 8300000, guid: 30c94437a9aa57349b00eea217bc61f0, type: 3}

@@ -8,6 +8,7 @@ public class Attackable : MonoBehaviour
     public float itemDropPercentage = 0.5f;
 
     public AudioClip[] dieSounds;
+	public AudioClip[] spawnSounds;
 
     public event PlayerHandler PlayerDies;
 
@@ -18,6 +19,8 @@ public class Attackable : MonoBehaviour
         currentHealth = maxHealth;
 
         RegisterHealthBar();
+
+		PlaySpawnSound();
     }
 
 	public void RegisterHealthBar(bool unregister = false)
@@ -37,43 +40,48 @@ public class Attackable : MonoBehaviour
 		RegisterHealthBar(true);
     }
 
+	private void Die()
+	{
+		if (dieSounds.Length > 0)
+        {
+            int rndSoundIndex = Random.Range(0, dieSounds.Length);
+            AudioClip rndSound = dieSounds[rndSoundIndex];
+            AudioSource.PlayClipAtPoint(rndSound, transform.position);
+        }
+
+        if (itemDropPrefab && (Random.Range(0.0f, 1.0f) <= itemDropPercentage))
+        {
+            GameObject itemInstance = Instantiate(itemDropPrefab, ItemManager.instance.transform);
+			itemInstance.name = "Dropped " + itemDropPrefab.name;
+
+            float dropHeight = 2.0f;
+
+            itemInstance.transform.position = transform.position + new Vector3(0.0f, dropHeight, 0.0f);
+            itemInstance.GetComponent<Collectable>().targetHeight = transform.position.y;
+        }
+
+		InputController inputController = GetComponent<InputController>();
+
+        if (inputController)
+        {
+            PlayerDies(inputController.playerID);
+			RegisterHealthBar(true);
+			return;
+        }
+        else
+        {
+            Destroy(gameObject);
+			return;
+        }
+	}
+
     public void DealDamage(int damage)
     {
         currentHealth -= damage;
 
         if (currentHealth <= 0)
         {
-            if (dieSounds.Length > 0)
-            {
-                int rndSoundIndex = Random.Range(0, dieSounds.Length);
-                AudioClip rndSound = dieSounds[rndSoundIndex];
-                AudioSource.PlayClipAtPoint(rndSound, transform.position);
-            }
-
-            if (itemDropPrefab && (Random.Range(0.0f, 1.0f) <= itemDropPercentage))
-            {
-                GameObject itemInstance = Instantiate(itemDropPrefab, ItemManager.instance.transform);
-				itemInstance.name = "Dropped " + itemDropPrefab.name;
-
-                float dropHeight = 2.0f;
-
-                itemInstance.transform.position = transform.position + new Vector3(0.0f, dropHeight, 0.0f);
-                itemInstance.GetComponent<Collectable>().targetHeight = transform.position.y;
-            }
-
-			InputController inputController = GetComponent<InputController>();
-
-            if (inputController)
-            {
-                PlayerDies(inputController.playerID);
-				RegisterHealthBar(true);
-				return;
-            }
-            else
-            {
-                Destroy(gameObject);
-				return;
-            }
+           Die();
         }
     }
 
@@ -87,6 +95,18 @@ public class Attackable : MonoBehaviour
         transform.rotation = Quaternion.Euler(0.0f, Random.Range(0.0f, 360.0f), 0.0f);
 
 		RegisterHealthBar();
+
+		PlaySpawnSound();
+	}
+
+	private void PlaySpawnSound()
+	{
+		if (spawnSounds.Length > 0)
+        {
+            int rndSoundIndex = Random.Range(0, spawnSounds.Length);
+            AudioClip rndSound = spawnSounds[rndSoundIndex];
+            AudioManager.instance.PlayOneShot(rndSound, transform.position, 0.5f, true, 0.5f);
+        }
 	}
 
     public int health
