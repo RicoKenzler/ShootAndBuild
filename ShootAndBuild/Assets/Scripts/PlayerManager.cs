@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public enum AxisType
@@ -18,15 +17,17 @@ public enum ButtonType
 
 public enum PlayerID
 {
-	Player1,
-	Player2,
-	Player3,
-	Player4
+    Player1,
+    Player2,
+    Player3,
+    Player4
 }
+
+public delegate void PlayerHandler(PlayerID id);
 
 public class PlayerManager : MonoBehaviour
 {
-	public GameObject playerPrefab;
+    public GameObject playerPrefab;
 
     enum InputMethod
     {
@@ -40,141 +41,136 @@ public class PlayerManager : MonoBehaviour
 
     class Player
     {
-        public GameObject    playerObject;
-        public InputMethod   inputMethod;
-		public bool			 isAlive;
+        public GameObject playerObject;
+        public InputMethod inputMethod;
+        public bool isAlive;
     }
 
-    Dictionary<PlayerID,	Player>		activePlayersById		= new Dictionary<PlayerID, Player>();
-	Dictionary<InputMethod, PlayerID>	inputMethodToPlayerID	= new Dictionary<InputMethod, PlayerID>();
+    private Dictionary<PlayerID, Player> activePlayersById = new Dictionary<PlayerID, Player>();
+    private Dictionary<InputMethod, PlayerID> inputMethodToPlayerID = new Dictionary<InputMethod, PlayerID>();
 
-	void Awake()
+    void Awake()
     {
         instance = this;
+        allPlayers = new List<GameObject>();
     }
 
-	// Use this for initialization
-	void Start ()
+    void Update()
     {
-	
-	}
+        // always listen to spawn-button-presses
+        TrySpawnNewPlayers();
 
-	// Update is called once per frame
-	void Update ()
+        TryRespawnDeadPlayers();
+    }
+
+    private void TrySpawnNewPlayers()
     {
-		// always listen to spawn-button-presses
-		TrySpawnNewPlayers();
+        foreach (InputMethod inputMethod in System.Enum.GetValues(typeof(InputMethod)))
+        {
+            if (inputMethodToPlayerID.ContainsKey(inputMethod))
+            {
+                // this controller already controls a player
+                continue;
+            }
 
-		TryRespawnDeadPlayers();
-	}
+            if (IsButtonDown(inputMethod, ButtonType.Shoot))
+            {
+                // 1) Try spawn NEW players
+                foreach (PlayerID playerID in System.Enum.GetValues(typeof(PlayerID)))
+                {
+                    if (activePlayersById.ContainsKey(playerID))
+                    {
+                        // Player already exists
+                        continue;
+                    }
 
-	void TrySpawnNewPlayers()
-	{
-		foreach (InputMethod inputMethod in System.Enum.GetValues(typeof(InputMethod)))
-		{
-			if (inputMethodToPlayerID.ContainsKey(inputMethod))
-			{
-				// this controller already controls a player
-				continue;
-			}
+                    inputMethodToPlayerID[inputMethod] = playerID;
+                    SpawnNewPlayer(playerID, inputMethod);
 
-			if (IsButtonDown(inputMethod, ButtonType.Shoot))
-			{
-				// 1) Try spawn NEW players
-				foreach (PlayerID playerID in System.Enum.GetValues(typeof(PlayerID)))
-				{
-					if (activePlayersById.ContainsKey(playerID))
-					{
-						// Player already exists
-						continue;
-					}
+                    // enought spaning for this input method
+                    break;
+                }
+            }
+        }
+    }
 
-					inputMethodToPlayerID[inputMethod] = playerID;
-					SpawnNewPlayer(playerID, inputMethod);
+    private void TryRespawnDeadPlayers()
+    {
+        foreach (InputMethod inputMethod in System.Enum.GetValues(typeof(InputMethod)))
+        {
+            PlayerID playerID;
 
-					// enought spaning for this input method
-					break;
-				}
-			}
-		}	
-	}
+            if (!inputMethodToPlayerID.TryGetValue(inputMethod, out playerID))
+            {
+                continue;
+            }
 
-	void TryRespawnDeadPlayers()
-	{
-		foreach (InputMethod inputMethod in System.Enum.GetValues(typeof(InputMethod)))
-		{
-			PlayerID playerID;
+            Player player;
+            if (!activePlayersById.TryGetValue(playerID, out player))
+            {
+                Debug.Assert(false, "InputMethod " + inputMethod + " registered to invalid player " + playerID);
+                continue;
+            }
 
-			if (!inputMethodToPlayerID.TryGetValue(inputMethod, out playerID))
-			{
-				continue;
-			}
+            if (player.isAlive)
+            {
+                continue;
+            }
 
-			Player player;
-			if (!activePlayersById.TryGetValue(playerID, out player))
-			{
-				Debug.Assert(false, "InputMethod " + inputMethod + " registered to invalid player " + playerID);
-				continue;
-			}
+            if (IsButtonDown(inputMethod, ButtonType.Shoot))
+            {
+                RespawnDeadPlayer(player);
+            }
+        }
+    }
 
-			if (player.isAlive)
-			{
-				continue;
-			}
+    private void RespawnDeadPlayer(Player player)
+    {
+        player.isAlive = true;
+        player.playerObject.SetActive(true);
+        player.playerObject.GetComponent<Attackable>().OnRespawn();
+    }
 
-			if (IsButtonDown(inputMethod, ButtonType.Shoot))
-			{
-				RespawnDeadPlayer(player);
-			}
-		}	
-	}
+    private void OnPlayerDies(PlayerID playerID)
+    {
+        Player player;
+        if (!activePlayersById.TryGetValue(playerID, out player))
+        {
+            Debug.Assert(false, "Deleting player " + playerID + "that was not registered.");
+            return;
+        }
 
-	void RespawnDeadPlayer(Player player)
-	{
-		player.isAlive = true;
-		player.playerObject.SetActive(true);
+        Debug.Assert(player.isAlive);
 
-		player.playerObject.GetComponent<Attackable>().OnRespawn();
-	}
+        player.isAlive = false;
+        player.playerObject.SetActive(false);
+    }
 
-	public void OnPlayerDies(PlayerID playerID)
-	{
-		Player player;
-		if (!activePlayersById.TryGetValue(playerID, out player))
-		{
-			Debug.Assert(false, "Deleting player " + playerID + "that was not registered.");
-			return;
-		}
+    private void OnPlayerDies(Player player)
+    {
+        player.isAlive = false;
+        player.playerObject.SetActive(false);
+    }
 
-		Debug.Assert(player.isAlive);
-		
-		player.isAlive = false;
-		player.playerObject.SetActive(false);
-	}
+    private void SpawnNewPlayer(PlayerID playerID, InputMethod inputMethod)
+    {
+        GameObject newPlayerObject = Instantiate(playerPrefab, gameObject.transform);
 
-	void OnPlayerDies(Player player)
-	{
-		player.isAlive = false;
-		player.playerObject.SetActive(false);
-	}
+        float randRadius = 5.0f;
+        newPlayerObject.transform.position = new Vector3(Random.Range(-randRadius, randRadius), 0.0f, Random.Range(-randRadius, randRadius));
+        newPlayerObject.GetComponent<InputController>().playerID = playerID;
+        newPlayerObject.GetComponent<Attackable>().Die += OnPlayerDies;
 
-	void SpawnNewPlayer(PlayerID playerID, InputMethod inputMethod)
-	{
-		GameObject newPlayerObject = Instantiate(playerPrefab, gameObject.transform);
+        Player newPlayer = new Player();
+        newPlayer.playerObject = newPlayerObject;
+        newPlayer.inputMethod = inputMethod;
+        newPlayer.isAlive = true;
 
-		float randRadius = 5.0f;
-		newPlayerObject.transform.position = new Vector3(Random.Range(-randRadius, randRadius), 0.0f, Random.Range(-randRadius, randRadius));
-		newPlayerObject.GetComponent<InputController>().playerID = playerID;
+        activePlayersById[playerID] = newPlayer;
+        allPlayers.Add(newPlayerObject);
+    }
 
-		Player newPlayer = new Player();
-		newPlayer.playerObject = newPlayerObject;
-		newPlayer.inputMethod  = inputMethod;
-		newPlayer.isAlive	   = true;
-
-		activePlayersById[playerID] = newPlayer;
-	}
-
-    Player GetPlayer(PlayerID playerID)
+    private Player GetPlayer(PlayerID playerID)
     {
         if (!activePlayersById.ContainsKey(playerID))
         {
@@ -185,12 +181,12 @@ public class PlayerManager : MonoBehaviour
         return activePlayersById[playerID];
     }
 
-    InputMethod GetInputMethod(PlayerID playerID)
+    private InputMethod GetInputMethod(PlayerID playerID)
     {
         return GetPlayer(playerID).inputMethod;
     }
 
-    string InputMethodToPostfix(InputMethod inputMethod)
+    private string InputMethodToPostfix(InputMethod inputMethod)
     {
         switch (inputMethod)
         {
@@ -209,7 +205,7 @@ public class PlayerManager : MonoBehaviour
         return " InvalidInputMethod";
     }
 
-    string AxisToPrefix(AxisType axisType)
+    private string AxisToPrefix(AxisType axisType)
     {
         switch (axisType)
         {
@@ -219,53 +215,58 @@ public class PlayerManager : MonoBehaviour
                 return "Left Vertical";
             case AxisType.RightAxisH:
                 return "Right Horizontal";
-			case AxisType.RightAxisV:
-				return "Right Vertical";
+            case AxisType.RightAxisV:
+                return "Right Vertical";
         }
 
         return "InvalidAxis ";
     }
 
-	string ButtonToPrefix(ButtonType buttonType)
-	{
-		switch (buttonType)
-		{
-			case ButtonType.Shoot:
-				return "Fire";
-		}
+    private string ButtonToPrefix(ButtonType buttonType)
+    {
+        switch (buttonType)
+        {
+            case ButtonType.Shoot:
+                return "Fire";
+        }
 
-		return "InvalidButton ";
-	}
+        return "InvalidButton ";
+    }
 
-	float GetAxisValue(InputMethod inputMethod, AxisType axisType)
-	{
-		string inputName = AxisToPrefix(axisType) + InputMethodToPostfix(inputMethod);
-        
-		return Input.GetAxis(inputName);
-	}
+    private float GetAxisValue(InputMethod inputMethod, AxisType axisType)
+    {
+        string inputName = AxisToPrefix(axisType) + InputMethodToPostfix(inputMethod);
+
+        return Input.GetAxis(inputName);
+    }
 
     public float GetAxisValue(PlayerID playerID, AxisType axisType)
     {
         InputMethod inputMethod = GetInputMethod(playerID);
 
-		return GetAxisValue(inputMethod, axisType);
+        return GetAxisValue(inputMethod, axisType);
     }
 
-	bool IsButtonDown(InputMethod inputMethod, ButtonType buttonType)
-	{
-		string inputName = ButtonToPrefix(buttonType) + InputMethodToPostfix(inputMethod);
-        
-		return Input.GetButton(inputName);
-	}
+    private bool IsButtonDown(InputMethod inputMethod, ButtonType buttonType)
+    {
+        string inputName = ButtonToPrefix(buttonType) + InputMethodToPostfix(inputMethod);
 
-	public bool IsButtonDown(PlayerID playerID, ButtonType buttonType)
-	{
-		InputMethod inputMethod = GetInputMethod(playerID);
+        return Input.GetButton(inputName);
+    }
 
-		return IsButtonDown(inputMethod, buttonType);
-	}
+    public bool IsButtonDown(PlayerID playerID, ButtonType buttonType)
+    {
+        InputMethod inputMethod = GetInputMethod(playerID);
 
-	public static PlayerManager instance
+        return IsButtonDown(inputMethod, buttonType);
+    }
+
+    public List<GameObject> allPlayers
+    {
+        get; private set;
+    }
+
+    public static PlayerManager instance
     {
         get; private set;
     }
