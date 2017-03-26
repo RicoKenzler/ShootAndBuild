@@ -13,12 +13,11 @@ public class Attackable : MonoBehaviour
 
     private int currentHealth = 0;
 
-
     void Start()
     {
         currentHealth = maxHealth;
 
-       RegisterHealthBar();
+        RegisterHealthBar();
     }
 
 	public void RegisterHealthBar(bool unregister = false)
@@ -46,7 +45,7 @@ public class Attackable : MonoBehaviour
         {
             if (dieSounds.Length > 0)
             {
-                int rndSoundIndex = Random.Range(0, dieSounds.Length - 1);
+                int rndSoundIndex = Random.Range(0, dieSounds.Length);
                 AudioClip rndSound = dieSounds[rndSoundIndex];
                 AudioSource.PlayClipAtPoint(rndSound, transform.position);
             }

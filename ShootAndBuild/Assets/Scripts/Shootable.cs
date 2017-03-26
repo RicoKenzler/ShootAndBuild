@@ -62,7 +62,7 @@ public class Shootable : MonoBehaviour
 
         if (shootSounds.Length > 0)
         {
-            int rndSoundIndex = Random.Range(0, shootSounds.Length - 1);
+            int rndSoundIndex = Random.Range(0, shootSounds.Length);
             AudioClip rndSound = shootSounds[rndSoundIndex];
             AudioSource.PlayClipAtPoint(rndSound, transform.position, 0.5f);
         }
