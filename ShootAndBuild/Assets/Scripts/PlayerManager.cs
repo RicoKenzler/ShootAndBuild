@@ -35,7 +35,7 @@ public class PlayerManager : MonoBehaviour
         public GameObject    playerObject;
         public InputMethod   inputMethod;
     }
-
+/*
     Player[] activePlayersById;
 
 
@@ -159,4 +159,5 @@ public class PlayerManager : MonoBehaviour
 
 		return IsButtonDown(inputMethod, buttonType);
 	}
+	*/
 }
