@@ -38,7 +38,6 @@ public class CameraController : MonoBehaviour
 			center = lastPlayerSphereCenter;
 			radius = lastPlayerSphereRadius;
 
-            Debug.Assert(false, "No player found!");
             return;
         }
 

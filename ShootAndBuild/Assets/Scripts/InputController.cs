@@ -2,7 +2,7 @@
 
 public class InputController : MonoBehaviour
 {
-    public int playerID = 1;
+    public PlayerID playerID;
 
     public float speed                          = 10.0f;
     public float deadzone                       = 0.2f;
@@ -31,24 +31,10 @@ public class InputController : MonoBehaviour
         /////////////////////////////////////////
         // Movement
         /////////////////////////////////////////
-        float leftHorizontal    =  Input.GetAxis("Left Horizontal P"    + playerID);
-        float leftVertical      =  Input.GetAxis("Left Vertical P"      + playerID);
-        float rightHorizontal   =  Input.GetAxis("Right Horizontal P"   + playerID);
-        float rightVertical     =  Input.GetAxis("Right Vertical P"     + playerID);
-
-        // For player 2, also accept Keyboard (for debugging)
-        if (playerID == 2)
-        {
-            float leftHorizontalKey     = Input.GetAxis("Left Horizontal Keyboard");
-            float leftVerticalKey       = Input.GetAxis("Left Vertical Keyboard");
-            float rightHorizontalKey    = Input.GetAxis("Right Horizontal Keyboard");
-            float rightVerticalKey      = Input.GetAxis("Right Vertical Keyboard");
-
-            leftHorizontal  = (Mathf.Abs(leftHorizontalKey)     > Mathf.Abs(leftHorizontal))    ? leftHorizontalKey     : leftHorizontal;
-            leftVertical    = (Mathf.Abs(leftVerticalKey)       > Mathf.Abs(leftVertical))      ? leftVerticalKey       : leftVertical;
-            rightHorizontal = (Mathf.Abs(rightHorizontalKey)    > Mathf.Abs(rightHorizontal))   ? rightHorizontalKey    : rightHorizontal;
-            rightVertical   = (Mathf.Abs(rightVerticalKey)      > Mathf.Abs(rightVertical))     ? rightVerticalKey      : rightVertical;
-        }
+        float leftHorizontal    =  PlayerManager.instance.GetAxisValue(playerID, AxisType.LeftAxisH);
+        float leftVertical      =  PlayerManager.instance.GetAxisValue(playerID, AxisType.LeftAxisV);
+        float rightHorizontal   =  PlayerManager.instance.GetAxisValue(playerID, AxisType.RightAxisH);
+        float rightVertical     =  PlayerManager.instance.GetAxisValue(playerID, AxisType.RightAxisV);
 
         Vector2 leftInputVector = new Vector2(leftHorizontal, leftVertical);
         float leftInputVectorLength = leftInputVector.magnitude;
@@ -89,7 +75,7 @@ public class InputController : MonoBehaviour
         /////////////////////////////////////////
         // Shoot
         /////////////////////////////////////////
-        bool shootButtonPressed = Input.GetButton("Fire P" + playerID) || ((playerID == 2) && Input.GetButton("Fire Keyboard"));
+        bool shootButtonPressed = PlayerManager.instance.IsButtonDown(playerID, ButtonType.Shoot);
         Shootable shootable = GetComponent<Shootable>();
         if (shootable != null && shootButtonPressed)
         {
