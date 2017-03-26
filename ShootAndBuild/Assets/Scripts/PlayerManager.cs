@@ -46,7 +46,7 @@ public class PlayerManager : MonoBehaviour
         public bool isAlive;
     }
 
-    private Dictionary<PlayerID, Player> activePlayersById = new Dictionary<PlayerID, Player>();
+    private Dictionary<PlayerID, Player> activePlayersById			= new Dictionary<PlayerID, Player>();
     private Dictionary<InputMethod, PlayerID> inputMethodToPlayerID = new Dictionary<InputMethod, PlayerID>();
 
     void Awake()
@@ -171,12 +171,6 @@ public class PlayerManager : MonoBehaviour
 		return bestPlayer;
 	}
 
-    private void OnPlayerDies(Player player)
-    {
-        player.isAlive = false;
-        player.playerObject.SetActive(false);
-    }
-
     private void SpawnNewPlayer(PlayerID playerID, InputMethod inputMethod)
     {
         GameObject newPlayerObject = Instantiate(playerPrefab, gameObject.transform);
@@ -184,7 +178,7 @@ public class PlayerManager : MonoBehaviour
         float randRadius = 5.0f;
         newPlayerObject.transform.position = new Vector3(Random.Range(-randRadius, randRadius), 0.0f, Random.Range(-randRadius, randRadius));
         newPlayerObject.GetComponent<InputController>().playerID = playerID;
-        newPlayerObject.GetComponent<Attackable>().Die += OnPlayerDies;
+        newPlayerObject.GetComponent<Attackable>().PlayerDies += OnPlayerDies;
 
         Player newPlayer = new Player();
         newPlayer.playerObject = newPlayerObject;
