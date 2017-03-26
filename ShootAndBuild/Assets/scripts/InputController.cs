@@ -89,7 +89,7 @@ public class InputController : MonoBehaviour
         /////////////////////////////////////////
         // Shoot
         /////////////////////////////////////////
-        bool shootButtonPressed = Input.GetButton("Fire P" + playerID);
+        bool shootButtonPressed = Input.GetButton("Fire P" + playerID) || (playerID == 2 && Input.GetButton("Fire Keyboard"));
         Shootable shootable = GetComponent<Shootable>();
         if (shootable != null && shootButtonPressed)
         {
