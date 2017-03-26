@@ -6,7 +6,7 @@ public class EnemySpawner : MonoBehaviour
     public GameObject enemyPrefab;
 
     private float nextSpawnDuration = 0.0f;
-
+	int totalSpawnCount = 0;
 
 	void Start()
     {
@@ -18,9 +18,11 @@ public class EnemySpawner : MonoBehaviour
         nextSpawnDuration -= Time.deltaTime;
         if (nextSpawnDuration <= 0)
         {
+			totalSpawnCount++;
             nextSpawnDuration = spawnInterval;
-            GameObject instance = Instantiate(enemyPrefab);
+            GameObject instance = Instantiate(enemyPrefab, gameObject.transform);
             instance.transform.position = transform.position;
+			instance.name = enemyPrefab.name + " " + totalSpawnCount;
         }
 	}
 }

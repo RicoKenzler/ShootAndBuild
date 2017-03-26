@@ -52,7 +52,8 @@ public class Attackable : MonoBehaviour
 
             if (itemDropPrefab && (Random.Range(0.0f, 1.0f) <= itemDropPercentage))
             {
-                GameObject itemInstance = Instantiate(itemDropPrefab);
+                GameObject itemInstance = Instantiate(itemDropPrefab, ItemManager.instance.transform);
+				itemInstance.name = "Dropped " + itemDropPrefab.name;
 
                 float dropHeight = 2.0f;
 
