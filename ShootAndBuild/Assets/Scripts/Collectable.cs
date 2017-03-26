@@ -42,7 +42,7 @@ public class Collectable : MonoBehaviour
     {
         if (collectSounds.Length > 0)
         {
-            int rndSoundIndex = Random.Range(0, collectSounds.Length - 1);
+            int rndSoundIndex = Random.Range(0, collectSounds.Length);
             AudioClip rndSound = collectSounds[rndSoundIndex];
             AudioSource.PlayClipAtPoint(rndSound, transform.position, 0.5f);
         }
