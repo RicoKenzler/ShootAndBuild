@@ -33,21 +33,7 @@ public class EnemyBehaviour : MonoBehaviour
             currentAttackCooldown = Mathf.Max(currentAttackCooldown - Time.deltaTime, 0);
         }
 
-        // use the input controllers to find players. Obviously we should change this by another criteria. But hey, fuck it! Quick and dirty, man!
-        InputController[] players = FindObjectsOfType<InputController>();
-
-        GameObject nearestPlayer = null;
-        float nearestDist = float.MaxValue;
-
-        foreach (InputController player in players)
-        {
-            float distance = Vector3.Distance(player.transform.position, transform.position);
-            if (distance < nearestDist)
-            {
-                nearestDist = distance;
-                nearestPlayer = player.gameObject;
-            }
-        }
+        GameObject nearestPlayer = PlayerManager.instance.GetNearestPlayer(transform.position);
 
         if (!nearestPlayer)
         {
@@ -56,10 +42,22 @@ public class EnemyBehaviour : MonoBehaviour
             return;
         }
 
-        Vector3 direction = (nearestPlayer.transform.position - transform.position).normalized;
+        Vector3 direction = (nearestPlayer.transform.position - transform.position);
+		float distToPlayer = direction.magnitude;
+
+		if (distToPlayer == 0.0f)
+		{
+			direction    = new Vector3(1.0f, 0.0f, 0.0f);
+			distToPlayer = 1.0f;
+		}
+		else
+		{
+			direction /= distToPlayer;
+		}
+
         transform.LookAt(nearestPlayer.transform);
 
-        if (nearestDist > attackDistance)
+        if (distToPlayer > attackDistance)
         {
             Vector3 velocity = direction * speed;
             GetComponent<Rigidbody>().velocity = velocity;

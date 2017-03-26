@@ -146,16 +146,35 @@ public class PlayerManager : MonoBehaviour
 			return;
 		}
 
-		Debug.Assert(player.isAlive);
+		Debug.Assert(player.isAlive, "Player " + playerID + " is dying though he is already dead");
 		
 		player.isAlive = false;
 		player.playerObject.SetActive(false);
 	}
 
-	void OnPlayerDies(Player player)
+	public GameObject GetNearestPlayer(Vector3 position)
 	{
-		player.isAlive = false;
-		player.playerObject.SetActive(false);
+		GameObject bestPlayer = null;
+		float bestDistanceSq = float.MaxValue;
+
+		foreach(KeyValuePair<PlayerID, Player> player in activePlayersById)
+		{
+			if (!player.Value.isAlive)
+			{
+				continue;
+			}
+
+			GameObject playerObject = player.Value.playerObject;
+			float distanceSq = (playerObject.transform.position - position).sqrMagnitude;
+
+			if (distanceSq < bestDistanceSq)
+			{
+				bestDistanceSq = distanceSq;
+				bestPlayer = playerObject;
+			}
+		}
+
+		return bestPlayer;
 	}
 
 	void SpawnNewPlayer(PlayerID playerID, InputMethod inputMethod)
