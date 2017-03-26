@@ -16,12 +16,24 @@ public class Attackable : MonoBehaviour
     {
         currentHealth = maxHealth;
 
-        HealthBarManager.instance.AddHealthBar(this);
+       RegisterHealthBar();
     }
+
+	public void RegisterHealthBar(bool unregister = false)
+	{
+		if (unregister)
+		{
+			HealthBarManager.instance.RemoveHealthBar(this);
+		}
+		else
+		{
+			HealthBarManager.instance.AddHealthBar(this);
+		}
+	}
 
     void OnDestroy()
     {
-        HealthBarManager.instance.RemoveHealthBar(this);
+		RegisterHealthBar(true);
     }
 
     public void DealDamage(int damage)
@@ -51,14 +63,8 @@ public class Attackable : MonoBehaviour
 
             if (inputController)
             {
-				// Prepare respawn
-                currentHealth = maxHealth;
-
-                float respawnRadius = 10.0f;
-                transform.position = new Vector3(Random.Range(-1.0f, 1.0f), 0.0f, Random.Range(-1.0f, 1.0f)) * respawnRadius;
-                transform.rotation = Quaternion.Euler(0.0f, Random.Range(0.0f, 360.0f), 0.0f);
-
 				PlayerManager.instance.OnPlayerDies(inputController.playerID);
+				RegisterHealthBar(true);
 				return;
             }
             else
@@ -68,6 +74,18 @@ public class Attackable : MonoBehaviour
             }
         }
     }
+
+	public void OnRespawn()
+	{
+		// Prepare respawn
+        currentHealth = maxHealth;
+
+        float respawnRadius = 10.0f;
+        transform.position = new Vector3(Random.Range(-1.0f, 1.0f), 0.0f, Random.Range(-1.0f, 1.0f)) * respawnRadius;
+        transform.rotation = Quaternion.Euler(0.0f, Random.Range(0.0f, 360.0f), 0.0f);
+
+		RegisterHealthBar();
+	}
 
     public int health
     {

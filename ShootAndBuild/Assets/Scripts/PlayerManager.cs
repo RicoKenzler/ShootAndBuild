@@ -133,6 +133,8 @@ public class PlayerManager : MonoBehaviour
 	{
 		player.isAlive = true;
 		player.playerObject.SetActive(true);
+
+		player.playerObject.GetComponent<Attackable>().OnRespawn();
 	}
 
 	public void OnPlayerDies(PlayerID playerID)
