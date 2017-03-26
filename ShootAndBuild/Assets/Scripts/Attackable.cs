@@ -9,6 +9,8 @@ public class Attackable : MonoBehaviour
 
     public AudioClip[] dieSounds;
 
+    public event PlayerHandler Die;
+
     private int currentHealth = 0;
 
     void Start()
@@ -62,7 +64,7 @@ public class Attackable : MonoBehaviour
 
             if (inputController)
             {
-				PlayerManager.instance.OnPlayerDies(inputController.playerID);
+                Die(inputController.playerID);
 				RegisterHealthBar(true);
 				return;
             }
