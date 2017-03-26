@@ -9,10 +9,12 @@ public class HealthBar : MonoBehaviour
 
     private Vector2 originalSize;
 	private bool alwaysShowHealth = false;
+	private Vector2 lastSize;
 
     void Start()
     {
         originalSize		= GetComponent<RectTransform>().sizeDelta;
+		lastSize			= originalSize;
 		alwaysShowHealth	= (target.GetComponent<InputController>() != null);
     }
 
@@ -40,7 +42,14 @@ public class HealthBar : MonoBehaviour
 			return;
 		}
 
-		rect.sizeDelta = new Vector2(originalSize.x * healthFactor, originalSize.y);
+
+		Vector2 desiredSize = new Vector2(originalSize.x * healthFactor, originalSize.y);
+		Vector2 newSize     = Vector2.Lerp(lastSize, desiredSize, 0.2f);
+		
+		rect.sizeDelta = newSize;
+		lastSize = rect.sizeDelta;
+
+
 		uiPos.x -= (originalSize.x - rect.sizeDelta.x) / 2;
 		rect.anchoredPosition = uiPos;
 		
