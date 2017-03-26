@@ -46,7 +46,7 @@ public class Attackable : MonoBehaviour
         {
             int rndSoundIndex = Random.Range(0, dieSounds.Length);
             AudioClip rndSound = dieSounds[rndSoundIndex];
-            AudioSource.PlayClipAtPoint(rndSound, transform.position);
+            AudioManager.instance.PlayOneShot(rndSound, transform.position);
         }
 
         if (itemDropPrefab && (Random.Range(0.0f, 1.0f) <= itemDropPercentage))

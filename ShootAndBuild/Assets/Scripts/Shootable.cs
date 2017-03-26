@@ -64,7 +64,7 @@ public class Shootable : MonoBehaviour
         {
             int rndSoundIndex = Random.Range(0, shootSounds.Length);
             AudioClip rndSound = shootSounds[rndSoundIndex];
-            AudioSource.PlayClipAtPoint(rndSound, transform.position, 0.5f);
+			AudioManager.instance.PlayOneShot(rndSound, transform.position, 0.5f);
         }
     }
 }

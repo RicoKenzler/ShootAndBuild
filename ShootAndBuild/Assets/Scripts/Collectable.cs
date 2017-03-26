@@ -12,7 +12,7 @@ public class Collectable : MonoBehaviour
 		{
 			int rndSoundIndex = Random.Range(0, dropSounds.Length);
 			AudioClip rndSound = dropSounds[rndSoundIndex];
-			AudioSource.PlayClipAtPoint(rndSound, transform.position);
+			AudioManager.instance.PlayOneShot(rndSound, transform.position);
 		}
 	}
 
@@ -55,7 +55,7 @@ public class Collectable : MonoBehaviour
         {
             int rndSoundIndex = Random.Range(0, collectSounds.Length);
             AudioClip rndSound = collectSounds[rndSoundIndex];
-            AudioSource.PlayClipAtPoint(rndSound, transform.position, 0.5f);
+            AudioManager.instance.PlayOneShot(rndSound, transform.position, 0.5f);
         }
 
         Destroy(gameObject);

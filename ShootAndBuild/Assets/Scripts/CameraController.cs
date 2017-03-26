@@ -83,6 +83,7 @@ public class CameraController : MonoBehaviour
 		else
 		{
 			listener.transform.position = playerSphereCenter;
+			listener.transform.rotation = Quaternion.AngleAxis(180.0f, new Vector3(0.0f, 1.0f, 0.0f)) * transform.rotation;
 		}
 
     }
