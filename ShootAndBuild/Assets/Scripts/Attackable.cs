@@ -3,8 +3,7 @@
 public class Attackable : MonoBehaviour
 {
     public int maxHealth = 10;
-    public bool respawnAfterDeath = true;
-
+ 
     public GameObject itemDropPrefab;
     public float itemDropPercentage = 0.5f;
 
@@ -48,17 +47,24 @@ public class Attackable : MonoBehaviour
                 itemInstance.GetComponent<Collectable>().targetHeight = transform.position.y;
             }
 
-            if (respawnAfterDeath)
+			InputController inputController = GetComponent<InputController>();
+
+            if (inputController)
             {
+				// Prepare respawn
                 currentHealth = maxHealth;
 
                 float respawnRadius = 10.0f;
                 transform.position = new Vector3(Random.Range(-1.0f, 1.0f), 0.0f, Random.Range(-1.0f, 1.0f)) * respawnRadius;
                 transform.rotation = Quaternion.Euler(0.0f, Random.Range(0.0f, 360.0f), 0.0f);
+
+				PlayerManager.instance.OnPlayerDies(inputController.playerID);
+				return;
             }
             else
             {
                 Destroy(gameObject);
+				return;
             }
         }
     }

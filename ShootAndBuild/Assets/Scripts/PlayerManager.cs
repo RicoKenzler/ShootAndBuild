@@ -38,10 +38,11 @@ public class PlayerManager : MonoBehaviour
         Gamepad4,
     }
 
-    struct Player
+    class Player
     {
         public GameObject    playerObject;
         public InputMethod   inputMethod;
+		public bool			 isAlive;
     }
 
     Dictionary<PlayerID,	Player>		activePlayersById		= new Dictionary<PlayerID, Player>();
@@ -63,6 +64,8 @@ public class PlayerManager : MonoBehaviour
     {
 		// always listen to spawn-button-presses
 		TrySpawnNewPlayers();
+
+		TryRespawnDeadPlayers();
 	}
 
 	void TrySpawnNewPlayers()
@@ -77,6 +80,7 @@ public class PlayerManager : MonoBehaviour
 
 			if (IsButtonDown(inputMethod, ButtonType.Shoot))
 			{
+				// 1) Try spawn NEW players
 				foreach (PlayerID playerID in System.Enum.GetValues(typeof(PlayerID)))
 				{
 					if (activePlayersById.ContainsKey(playerID))
@@ -91,10 +95,65 @@ public class PlayerManager : MonoBehaviour
 					// enought spaning for this input method
 					break;
 				}
-
-				// all players already occupied.
 			}
 		}	
+	}
+
+	void TryRespawnDeadPlayers()
+	{
+		foreach (InputMethod inputMethod in System.Enum.GetValues(typeof(InputMethod)))
+		{
+			PlayerID playerID;
+
+			if (!inputMethodToPlayerID.TryGetValue(inputMethod, out playerID))
+			{
+				continue;
+			}
+
+			Player player;
+			if (!activePlayersById.TryGetValue(playerID, out player))
+			{
+				Debug.Assert(false, "InputMethod " + inputMethod + " registered to invalid player " + playerID);
+				continue;
+			}
+
+			if (player.isAlive)
+			{
+				continue;
+			}
+
+			if (IsButtonDown(inputMethod, ButtonType.Shoot))
+			{
+				RespawnDeadPlayer(player);
+			}
+		}	
+	}
+
+	void RespawnDeadPlayer(Player player)
+	{
+		player.isAlive = true;
+		player.playerObject.SetActive(true);
+	}
+
+	public void OnPlayerDies(PlayerID playerID)
+	{
+		Player player;
+		if (!activePlayersById.TryGetValue(playerID, out player))
+		{
+			Debug.Assert(false, "Deleting player " + playerID + "that was not registered.");
+			return;
+		}
+
+		Debug.Assert(player.isAlive);
+		
+		player.isAlive = false;
+		player.playerObject.SetActive(false);
+	}
+
+	void OnPlayerDies(Player player)
+	{
+		player.isAlive = false;
+		player.playerObject.SetActive(false);
 	}
 
 	void SpawnNewPlayer(PlayerID playerID, InputMethod inputMethod)
@@ -108,6 +167,7 @@ public class PlayerManager : MonoBehaviour
 		Player newPlayer = new Player();
 		newPlayer.playerObject = newPlayerObject;
 		newPlayer.inputMethod  = inputMethod;
+		newPlayer.isAlive	   = true;
 
 		activePlayersById[playerID] = newPlayer;
 	}
