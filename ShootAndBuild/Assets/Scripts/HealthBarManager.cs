@@ -15,6 +15,12 @@ public class HealthBarManager : MonoBehaviour
 
     public void AddHealthBar(Attackable attackable)
     {
+		HealthBar instanceBG = Instantiate(healthBarPrefab, transform);
+        instanceBG.target = attackable;
+        instanceBG.name = "HealthBarBG - " + attackable.name;
+		instanceBG.isBackgroundDuplicate = true;
+        healthBars.Add(instanceBG.GetComponent<HealthBar>());
+
         HealthBar instance = Instantiate(healthBarPrefab, transform);
         instance.target = attackable;
         instance.name = "HealthBar - " + attackable.name;
@@ -38,7 +44,8 @@ public class HealthBarManager : MonoBehaviour
                 }
 
                 Destroy(bar.gameObject);
-                return;
+
+				// no return: currently we add a hacky background bar in addition
             }
         }
     }
