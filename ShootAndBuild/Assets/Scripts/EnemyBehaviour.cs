@@ -77,7 +77,7 @@ public class EnemyBehaviour : MonoBehaviour
 
             if (hitSounds.Length > 0)
             {
-                int rndSoundIndex = Random.Range(0, hitSounds.Length - 1);
+                int rndSoundIndex = Random.Range(0, hitSounds.Length);
                 AudioClip rndSound = hitSounds[rndSoundIndex];
                 AudioSource.PlayClipAtPoint(rndSound, transform.position, 0.5f);
             }
