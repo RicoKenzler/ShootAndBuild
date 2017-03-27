@@ -11,9 +11,15 @@ public enum AxisType
     RightAxisV,
 }
 
+public enum TriggerType
+{
+	LeftTrigger,
+	RightTrigger
+}
+
 public enum ButtonType
 {
-    Shoot,
+    RightBumper,
 	Taunt,
 }
 
@@ -142,7 +148,7 @@ public class PlayerManager : MonoBehaviour
                 continue;
             }
 
-            if (WasButtonJustPressed(inputMethod, ButtonType.Shoot))
+            if (WasButtonJustPressed(inputMethod, ButtonType.RightBumper))
             {
                 // 1) Try spawn NEW players
                 foreach (PlayerID playerID in System.Enum.GetValues(typeof(PlayerID)))
@@ -186,7 +192,7 @@ public class PlayerManager : MonoBehaviour
                 continue;
             }
 
-            if (WasButtonJustPressed(inputMethod, ButtonType.Shoot))
+            if (WasButtonJustPressed(inputMethod, ButtonType.RightBumper))
             {
                 RespawnDeadPlayer(player);
             }
@@ -313,15 +319,28 @@ public class PlayerManager : MonoBehaviour
                 return "Right Vertical";
         }
 
-        return "InvalidAxis ";
+        return "InvalidAxis";
     }
+
+	private string TriggerToPrefix(TriggerType triggerType)
+	{
+		switch (triggerType)
+		{
+			case TriggerType.LeftTrigger:
+				return "Left Trigger";
+			case TriggerType.RightTrigger:
+				return "Right Trigger";
+		}
+
+		return "Invalid Trigger";
+	}
 
     private string ButtonToPrefix(ButtonType buttonType)
     {
         switch (buttonType)
         {
-            case ButtonType.Shoot:
-                return "Fire";
+            case ButtonType.RightBumper:
+                return "Right Bumper";
 			case ButtonType.Taunt:
 				return "Taunt";
         }
@@ -356,6 +375,27 @@ public class PlayerManager : MonoBehaviour
 
         return Input.GetButtonDown(inputName);
 	}
+
+	private float GetTriggerValue(InputMethod inputMethod, TriggerType triggerType)
+	{
+		string inputName = TriggerToPrefix(triggerType) + InputMethodToPostfix(inputMethod);
+
+        return Input.GetAxis(inputName);
+	}
+
+	public bool IsTriggerPulled(PlayerID playerID, TriggerType triggerType)
+	{
+		InputMethod inputMethod = GetInputMethod(playerID);
+
+        return (GetTriggerValue(inputMethod, triggerType) > 0.25f);
+	}
+
+	public float GetTriggerValue(PlayerID playerID, TriggerType triggerType)
+    {
+        InputMethod inputMethod = GetInputMethod(playerID);
+
+        return GetTriggerValue(inputMethod, triggerType);
+    }
 
     public bool IsButtonDown(PlayerID playerID, ButtonType buttonType)
     {

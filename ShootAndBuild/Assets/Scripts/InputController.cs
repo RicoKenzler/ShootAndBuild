@@ -10,10 +10,11 @@ public class InputController : MonoBehaviour
 
     private Animation		animationController;
 	private TauntController tauntController;
+	private Shootable		shootable;
 
 	void Start()
 	{
-        animationController = this.GetComponentInChildren<Animation>();
+        animationController = GetComponentInChildren<Animation>();
         if (animationController == null)
         {
             Debug.LogWarning("no animation found on player " + playerID);
@@ -23,7 +24,8 @@ public class InputController : MonoBehaviour
             animationController.Play();
         }
 
-		tauntController = this.GetComponent<TauntController>();
+		tauntController	= GetComponent<TauntController>();
+		shootable		= GetComponent<Shootable>();
 	}
 
 	//--------------------------------------------------------------------------------------------------
@@ -77,9 +79,10 @@ public class InputController : MonoBehaviour
         /////////////////////////////////////////
         // Shoot
         /////////////////////////////////////////
-        bool shootButtonPressed = PlayerManager.instance.IsButtonDown(playerID, ButtonType.Shoot);
-        Shootable shootable = GetComponent<Shootable>();
-        if (shootable != null && shootButtonPressed)
+        bool shootButtonPressed  = PlayerManager.instance.IsButtonDown(playerID, ButtonType.RightBumper);
+		bool shootTriggerPressed = PlayerManager.instance.IsTriggerPulled(playerID, TriggerType.RightTrigger);
+
+        if (shootable != null && (shootButtonPressed || shootTriggerPressed))
         {
             shootable.Shoot();
         }
