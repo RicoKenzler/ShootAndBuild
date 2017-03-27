@@ -14,6 +14,7 @@ public enum AxisType
 public enum ButtonType
 {
     Shoot,
+	Taunt,
 }
 
 public enum PlayerID
@@ -321,6 +322,8 @@ public class PlayerManager : MonoBehaviour
         {
             case ButtonType.Shoot:
                 return "Fire";
+			case ButtonType.Taunt:
+				return "Taunt";
         }
 
         return "InvalidButton ";

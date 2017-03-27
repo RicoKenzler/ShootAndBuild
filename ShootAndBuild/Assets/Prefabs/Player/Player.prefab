@@ -295,6 +295,7 @@ GameObject:
   - component: {fileID: 136200064567154072}
   - component: {fileID: 114022025890281874}
   - component: {fileID: 114039302743832264}
+  - component: {fileID: 114827166632522940}
   m_Layer: 8
   m_Name: Player
   m_TagString: Untagged
@@ -2197,6 +2198,24 @@ MonoBehaviour:
   speed: 10
   deadzone: 0.2
   movementAnimationMoultiplier: 0.5
+--- !u!114 &114827166632522940
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1229075479329374}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a1edf2b43cee39940aecf9e8663570fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tauntSounds:
+  - {fileID: 8300000, guid: c54c025104568474780300e0befbb442, type: 3}
+  - {fileID: 8300000, guid: fa0bb1c10432eac4e9b417744e9a6964, type: 3}
+  - {fileID: 8300000, guid: 8b825e7525d3f914281f3b39d27c5992, type: 3}
+  - {fileID: 8300000, guid: 4485dfc0d2d436f47b86c0c704f72138, type: 3}
+  - {fileID: 8300000, guid: 15492fa5bab0c7248b8b21b03bd9ce53, type: 3}
+  singSound: {fileID: 8300000, guid: cbb41e5900b9cef48ba86b681b70c241, type: 3}
 --- !u!136 &136200064567154072
 CapsuleCollider:
   m_ObjectHideFlags: 1

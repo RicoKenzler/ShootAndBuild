@@ -4,12 +4,12 @@ public class InputController : MonoBehaviour
 {
     public PlayerID playerID;
 
-    public float speed                          = 10.0f;
-    public float deadzone                       = 0.2f;
-    public float movementAnimationMoultiplier   = 0.5f;
+    public float		speed                          = 10.0f;
+    public float		deadzone                       = 0.2f;
+    public float		movementAnimationMoultiplier   = 0.5f;
 
-    private Animation animationController;
-
+    private Animation		animationController;
+	private TauntController tauntController;
 
 	void Start()
 	{
@@ -22,6 +22,8 @@ public class InputController : MonoBehaviour
             animationController["idle"].speed = 1;
             animationController.Play();
         }
+
+		tauntController = this.GetComponent<TauntController>();
 	}
 
 	//--------------------------------------------------------------------------------------------------
@@ -82,6 +84,10 @@ public class InputController : MonoBehaviour
             shootable.Shoot();
         }
 
+		if (PlayerManager.instance.WasButtonJustPressed(playerID, ButtonType.Taunt))
+        {
+			tauntController.PlayTaunt();
+		}
 
         /////////////////////////////////////////
         // Animation
