@@ -13,6 +13,7 @@ public class Attackable : MonoBehaviour
     public event PlayerHandler PlayerDies;
 
     private int currentHealth = 0;
+	private InputController inputController;
 
     void Start()
     {
@@ -21,6 +22,8 @@ public class Attackable : MonoBehaviour
         RegisterHealthBar();
 
 		PlaySpawnSound();
+
+		inputController = GetComponent<InputController>();
     }
 
 	public void RegisterHealthBar(bool unregister = false)
@@ -60,12 +63,11 @@ public class Attackable : MonoBehaviour
             itemInstance.GetComponent<Collectable>().targetHeight = transform.position.y;
         }
 
-		InputController inputController = GetComponent<InputController>();
-
         if (inputController)
         {
             PlayerDies(inputController.playerID);
 			RegisterHealthBar(true);
+
 			return;
         }
         else
@@ -75,9 +77,52 @@ public class Attackable : MonoBehaviour
         }
 	}
 
-    public void DealDamage(int damage)
+    public void DealDamage(int damage, GameObject damageDealer)
     {
         currentHealth -= damage;
+		currentHealth = Mathf.Max(currentHealth, 0);
+
+		if (inputController)
+		{
+			// vibrate for taking damage
+			float damagePercentage = (float) damage / (float) maxHealth;
+			float vibrationAmount;
+
+			if (currentHealth == 0)
+			{
+				vibrationAmount = 1.0f;
+			}
+			else
+			{
+				vibrationAmount = Mathf.Lerp(0.1f, 1.0f, damagePercentage);
+			}
+
+			Vector3 towardsDamageDealer3D = (damageDealer.transform.position - transform.position);
+			Vector2 towardsDamageDealer2D = new Vector2(towardsDamageDealer3D.x, towardsDamageDealer3D.z);
+			float leftAmount  = vibrationAmount;
+			float rightAmount = vibrationAmount;
+
+			float distToDamageDealer = towardsDamageDealer2D.magnitude;
+
+			if (distToDamageDealer >= 0.01f)
+			{
+				towardsDamageDealer2D /= distToDamageDealer;
+
+				// rightness in  left[0,1]right
+				float directionalAmount = Mathf.Abs(towardsDamageDealer2D.x);
+
+				float dampOppositeFactor = Mathf.Lerp(1.0f, 0.5f, directionalAmount);
+				float boostFactor		 = Mathf.Lerp(1.0f, 2.0f, directionalAmount);
+
+				leftAmount  *= (towardsDamageDealer2D.x < 0) ? boostFactor : dampOppositeFactor;
+				rightAmount *= (towardsDamageDealer2D.x > 0) ? boostFactor : dampOppositeFactor;
+
+				leftAmount  = Mathf.Clamp(leftAmount, 0.0f, 1.0f);
+				rightAmount = Mathf.Clamp(rightAmount, 0.0f, 1.0f);
+			}
+	
+			PlayerManager.instance.SetVibration(inputController.playerID, leftAmount, rightAmount, 0.3f);
+		}
 
         if (currentHealth <= 0)
         {

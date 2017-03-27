@@ -65,7 +65,7 @@ public class EnemyBehaviour : MonoBehaviour
         else if (currentAttackCooldown == 0)
         {
             currentAttackCooldown = attackCooldown;
-            nearestPlayer.GetComponent<Attackable>().DealDamage(damage);
+            nearestPlayer.GetComponent<Attackable>().DealDamage(damage, gameObject);
 
             if (animationController)
             {

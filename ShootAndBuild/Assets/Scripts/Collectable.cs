@@ -58,6 +58,8 @@ public class Collectable : MonoBehaviour
             AudioManager.instance.PlayOneShot(rndSound, transform.position, 0.5f);
         }
 
+		PlayerManager.instance.SetVibration(player.playerID, 1.0f, 1.0f, 0.10f);
+
         Destroy(gameObject);
     }
 }

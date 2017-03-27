@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using XInputDotNetPure;
 
 public enum AxisType
 {
@@ -44,6 +45,64 @@ public class PlayerManager : MonoBehaviour
         public GameObject playerObject;
         public InputMethod inputMethod;
         public bool isAlive;
+
+		private float vibrationAmountL	= 0.0f;
+		private float vibrationAmountR	= 0.0f;
+		private float vibrateUntil		= 0.0f;
+		private bool sleep				= true;
+
+		public void StartVibration(float amountL, float amountR, float duration)
+		{
+			if (amountL <= vibrationAmountL && amountR <= vibrationAmountR)
+			{
+				// dont overwrite hard vibration with soft vibration
+				return;
+			}
+
+			vibrationAmountL	= amountL;
+			vibrationAmountR	= amountR;
+			vibrateUntil		= Time.unscaledTime + duration;
+			sleep				= false;
+		}
+
+		private int GetXInputPlayerIndex()
+		{
+			switch (inputMethod)
+			{
+				case InputMethod.Gamepad1: return 0;
+				case InputMethod.Gamepad2: return 1;
+				case InputMethod.Gamepad3: return 2;
+				case InputMethod.Gamepad4: return 3;
+			}
+
+			return -1;
+		}
+
+		public void UpdateVibration()
+		{
+			if (sleep)
+			{
+				return;
+			} 
+
+			if (Time.unscaledTime > vibrateUntil)
+			{
+				// We vibrated long enough
+				vibrationAmountL	= 0.0f;
+				vibrationAmountR	= 0.0f;
+				sleep = true;
+			}
+
+			int xInputIndex = GetXInputPlayerIndex();
+
+			if (xInputIndex == -1)
+			{
+				// Player has no vibrating device
+				return;
+			}
+
+			GamePad.SetVibration((PlayerIndex)xInputIndex, vibrationAmountL, vibrationAmountR);
+		}
     }
 
     private Dictionary<PlayerID, Player> activePlayersById			= new Dictionary<PlayerID, Player>();
@@ -59,9 +118,18 @@ public class PlayerManager : MonoBehaviour
     {
         // always listen to spawn-button-presses
         TrySpawnNewPlayers();
-
         TryRespawnDeadPlayers();
+
+		UpdateVibrations();
     }
+
+	private void UpdateVibrations()
+	{
+		foreach(KeyValuePair<PlayerID, Player> player in activePlayersById)
+		{
+			player.Value.UpdateVibration();
+		} 
+	}
 
     private void TrySpawnNewPlayers()
     {
@@ -129,6 +197,8 @@ public class PlayerManager : MonoBehaviour
         player.isAlive = true;
         player.playerObject.SetActive(true);
         player.playerObject.GetComponent<Attackable>().OnRespawn();
+
+		player.StartVibration(0.5f, 0.5f, 0.2f);
     }
 
     private void OnPlayerDies(PlayerID playerID)
@@ -144,6 +214,8 @@ public class PlayerManager : MonoBehaviour
 
         player.isAlive = false;
         player.playerObject.SetActive(false);
+
+		player.StartVibration(1.0f, 1.0f, 0.8f);
     }
 
 	public GameObject GetNearestPlayer(Vector3 position)
@@ -187,6 +259,8 @@ public class PlayerManager : MonoBehaviour
 
         activePlayersById[playerID] = newPlayer;
         allPlayers.Add(newPlayerObject);
+
+		newPlayer.StartVibration(0.5f, 0.5f, 0.2f);
     }
 
     private Player GetPlayer(PlayerID playerID)
@@ -292,6 +366,11 @@ public class PlayerManager : MonoBehaviour
 		InputMethod inputMethod = GetInputMethod(playerID);
 
         return WasButtonJustPressed(inputMethod, buttonType);
+	}
+
+	public void SetVibration(PlayerID playerID, float amountLeft, float amountRight, float duration)
+	{
+		GetPlayer(playerID).StartVibration(amountLeft, amountRight, duration);
 	}
 
     public List<GameObject> allPlayers
