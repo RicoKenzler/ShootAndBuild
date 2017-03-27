@@ -73,7 +73,7 @@ public class PlayerManager : MonoBehaviour
                 continue;
             }
 
-            if (IsButtonDown(inputMethod, ButtonType.Shoot))
+            if (WasButtonJustPressed(inputMethod, ButtonType.Shoot))
             {
                 // 1) Try spawn NEW players
                 foreach (PlayerID playerID in System.Enum.GetValues(typeof(PlayerID)))
@@ -117,7 +117,7 @@ public class PlayerManager : MonoBehaviour
                 continue;
             }
 
-            if (IsButtonDown(inputMethod, ButtonType.Shoot))
+            if (WasButtonJustPressed(inputMethod, ButtonType.Shoot))
             {
                 RespawnDeadPlayer(player);
             }
@@ -273,12 +273,26 @@ public class PlayerManager : MonoBehaviour
         return Input.GetButton(inputName);
     }
 
+	private bool WasButtonJustPressed(InputMethod inputMethod, ButtonType buttonType)
+	{
+		string inputName = ButtonToPrefix(buttonType) + InputMethodToPostfix(inputMethod);
+
+        return Input.GetButtonDown(inputName);
+	}
+
     public bool IsButtonDown(PlayerID playerID, ButtonType buttonType)
     {
         InputMethod inputMethod = GetInputMethod(playerID);
 
         return IsButtonDown(inputMethod, buttonType);
     }
+
+	public bool WasButtonJustPressed(PlayerID playerID, ButtonType buttonType)
+	{
+		InputMethod inputMethod = GetInputMethod(playerID);
+
+        return WasButtonJustPressed(inputMethod, buttonType);
+	}
 
     public List<GameObject> allPlayers
     {
