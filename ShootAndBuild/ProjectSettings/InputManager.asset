@@ -44,7 +44,7 @@ InputManager:
     negativeButton: 
     positiveButton: 
     altNegativeButton: 
-    altPositiveButton:
+    altPositiveButton: 
     gravity: 1
     dead: 0
     sensitivity: 1
@@ -52,7 +52,7 @@ InputManager:
     invert: 0
     type: 2
     axis: 0
-    joyNum: 3	
+    joyNum: 3
   - serializedVersion: 3
     m_Name: Left Horizontal P4
     descriptiveName: 
@@ -68,7 +68,7 @@ InputManager:
     invert: 0
     type: 2
     axis: 0
-    joyNum: 4	
+    joyNum: 4
   - serializedVersion: 3
     m_Name: Left Horizontal Keyboard
     descriptiveName: 
@@ -148,7 +148,7 @@ InputManager:
     invert: 0
     type: 2
     axis: 3
-    joyNum: 4	
+    joyNum: 4
   - serializedVersion: 3
     m_Name: Right Horizontal Keyboard
     descriptiveName: 
@@ -185,10 +185,10 @@ InputManager:
     m_Name: Left Vertical P2
     descriptiveName: 
     descriptiveNegativeName: 
-    negativeButton:
+    negativeButton: 
     positiveButton: 
-    altNegativeButton:
-    altPositiveButton:
+    altNegativeButton: 
+    altPositiveButton: 
     gravity: 1
     dead: 0
     sensitivity: 1
@@ -196,7 +196,7 @@ InputManager:
     invert: 1
     type: 2
     axis: 1
-    joyNum: 2	
+    joyNum: 2
   - serializedVersion: 3
     m_Name: Left Vertical P3
     descriptiveName: 
@@ -217,10 +217,10 @@ InputManager:
     m_Name: Left Vertical P4
     descriptiveName: 
     descriptiveNegativeName: 
-    negativeButton:
+    negativeButton: 
     positiveButton: 
-    altNegativeButton:
-    altPositiveButton:
+    altNegativeButton: 
+    altPositiveButton: 
     gravity: 1
     dead: 0
     sensitivity: 1
@@ -228,7 +228,7 @@ InputManager:
     invert: 1
     type: 2
     axis: 1
-    joyNum: 4		
+    joyNum: 4
   - serializedVersion: 3
     m_Name: Left Vertical Keyboard
     descriptiveName: 
@@ -251,7 +251,7 @@ InputManager:
     descriptiveNegativeName: 
     negativeButton: 
     positiveButton: 
-    altNegativeButton:
+    altNegativeButton: 
     altPositiveButton: 
     gravity: 1
     dead: 0
@@ -260,14 +260,14 @@ InputManager:
     invert: 1
     type: 2
     axis: 4
-    joyNum: 1	
+    joyNum: 1
   - serializedVersion: 3
     m_Name: Right Vertical P2
     descriptiveName: 
     descriptiveNegativeName: 
     negativeButton: 
     positiveButton: 
-    altNegativeButton:
+    altNegativeButton: 
     altPositiveButton: 
     gravity: 1
     dead: 0
@@ -283,7 +283,7 @@ InputManager:
     descriptiveNegativeName: 
     negativeButton: 
     positiveButton: 
-    altNegativeButton:
+    altNegativeButton: 
     altPositiveButton: 
     gravity: 1
     dead: 0
@@ -299,7 +299,7 @@ InputManager:
     descriptiveNegativeName: 
     negativeButton: 
     positiveButton: 
-    altNegativeButton:
+    altNegativeButton: 
     altPositiveButton: 
     gravity: 1
     dead: 0
