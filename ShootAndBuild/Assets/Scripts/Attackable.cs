@@ -107,6 +107,7 @@ public class Attackable : MonoBehaviour
 		float dropHeight = 2.0f;
 
 		itemInstance.transform.position = transform.position + new Vector3(0.0f, dropHeight, 0.0f);
+		itemInstance.transform.rotation = Quaternion.AngleAxis(Random.Range(0.0f, 360.0f), new Vector3(0.0f, 1.0f, 0.0f));
 
 		Collectable newCollectable = itemInstance.GetComponent<Collectable>();
 
