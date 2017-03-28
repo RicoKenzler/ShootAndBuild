@@ -1448,10 +1448,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 2
-  respawnAfterDeath: 0
-  itemDropPrefab: {fileID: 1797189723984674, guid: ebaf5d1e5ef1660458836d848ca0b292,
-    type: 2}
-  itemDropPercentage: 0.5
+  itemDrops:
+  - itemPrefab: {fileID: 1797189723984674, guid: ebaf5d1e5ef1660458836d848ca0b292,
+      type: 2}
+    dropProbability: 0.5
+    minDropAmount: 2
+    maxDropAmount: 10
   dieSounds:
   - {fileID: 8300000, guid: 259773637c15b0946b2f0aeaf4897e0f, type: 3}
   - {fileID: 8300000, guid: 1fd53c9c360fe3c40be781e731d1421c, type: 3}
@@ -1459,6 +1461,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: e901ce4faad20b64f9926e81e16fe11c, type: 3}
   - {fileID: 8300000, guid: b130203dc13e5a94fb8ca1c225a53c01, type: 3}
   - {fileID: 8300000, guid: 6a6808c1e151bb74cbcec3bef307fab1, type: 3}
+  spawnSounds: []
 --- !u!137 &137751449705913236
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 1

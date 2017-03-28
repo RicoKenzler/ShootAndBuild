@@ -296,6 +296,7 @@ GameObject:
   - component: {fileID: 114022025890281874}
   - component: {fileID: 114039302743832264}
   - component: {fileID: 114827166632522940}
+  - component: {fileID: 114038263645953718}
   m_Layer: 8
   m_Name: Player
   m_TagString: Untagged
@@ -2159,6 +2160,17 @@ MonoBehaviour:
   shootCooldown: 0.25
   flashDuration: 0.5
   flashMaxIntensity: 0.5
+--- !u!114 &114038263645953718
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1229075479329374}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c9156fcae1fadac40b8e5284012b6e71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114039302743832264
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2171,8 +2183,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 10
-  itemDropPrefab: {fileID: 0}
-  itemDropPercentage: 0.5
+  itemDrops: []
   dieSounds:
   - {fileID: 8300000, guid: e720ed4e579da834c9c1f43b639895b3, type: 3}
   - {fileID: 8300000, guid: 743ea515589636f4aac6d0dbf7d12b6f, type: 3}

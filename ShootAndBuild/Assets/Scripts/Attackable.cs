@@ -4,8 +4,7 @@ public class Attackable : MonoBehaviour
 {
     public int maxHealth = 10;
  
-    public GameObject itemDropPrefab;
-    public float itemDropPercentage = 0.5f;
+    public ItemDrop[]  itemDrops;
 
     public AudioClip[] dieSounds;
 	public AudioClip[] spawnSounds;
@@ -52,16 +51,7 @@ public class Attackable : MonoBehaviour
             AudioManager.instance.PlayOneShot(rndSound, transform.position);
         }
 
-        if (itemDropPrefab && (Random.Range(0.0f, 1.0f) <= itemDropPercentage))
-        {
-            GameObject itemInstance = Instantiate(itemDropPrefab, ItemManager.instance.transform);
-			itemInstance.name = "Dropped " + itemDropPrefab.name;
-
-            float dropHeight = 2.0f;
-
-            itemInstance.transform.position = transform.position + new Vector3(0.0f, dropHeight, 0.0f);
-            itemInstance.GetComponent<Collectable>().targetHeight = transform.position.y;
-        }
+		DropItems();
 
         if (inputController)
         {
@@ -75,6 +65,53 @@ public class Attackable : MonoBehaviour
             Destroy(gameObject);
 			return;
         }
+	}
+
+	private void DropItems()
+	{
+		int itemToDrop = -1;
+		float lowestProbability = 1.0f;
+
+		for (int i = 0; i < itemDrops.Length; ++i)
+		{
+			if (itemDrops[i].dropProbability > lowestProbability)
+			{
+				// give lower probabilities higher prio, such that shitty items do not suppres rare items
+				continue;
+			}
+
+			if ((Random.Range(0.0f, 1.0f) <= itemDrops[i].dropProbability))
+			{
+				itemToDrop = i;
+			}
+		}
+
+		if (itemToDrop == -1)
+		{
+			return;
+		}
+
+		ItemDrop bestItemDrop = itemDrops[itemToDrop];
+
+		int itemAmount = Random.Range(bestItemDrop.minDropAmount, bestItemDrop.maxDropAmount);
+
+		if (itemAmount <= 0)
+		{
+			Debug.LogWarning("Unit drops 0 items");  
+			return;
+		}
+
+		GameObject itemInstance = Instantiate(bestItemDrop.itemPrefab, ItemManager.instance.transform);
+		itemInstance.name = "Dropped " + bestItemDrop.itemPrefab.name;
+
+		float dropHeight = 2.0f;
+
+		itemInstance.transform.position = transform.position + new Vector3(0.0f, dropHeight, 0.0f);
+
+		Collectable newCollectable = itemInstance.GetComponent<Collectable>();
+
+		newCollectable.targetHeight = transform.position.y;
+		newCollectable.amount = itemAmount;
 	}
 
     public void DealDamage(int damage, GameObject damageDealer)

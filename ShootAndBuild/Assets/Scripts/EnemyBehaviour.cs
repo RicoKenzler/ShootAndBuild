@@ -2,15 +2,14 @@
 
 public class EnemyBehaviour : MonoBehaviour
 {
-    public float speed = 10;
-    public float attackDistance = 1;
-    public float attackCooldown = 1;
-    public int damage = 1;
-    public AudioClip[] hitSounds;
+    public float		speed = 10;
+    public float		attackDistance = 1;
+    public float		attackCooldown = 1;
+    public int			damage = 1;
+    public AudioClip[]	hitSounds;
 
-    private float currentAttackCooldown = 0;
-    private Animation animationController;
-
+    private float		currentAttackCooldown = 0;
+    private Animation	animationController;
 
     void Start()
     {
