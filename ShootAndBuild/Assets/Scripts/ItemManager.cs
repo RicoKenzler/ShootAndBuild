@@ -2,10 +2,29 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ItemManager : MonoBehaviour {
+public enum ItemType
+{
+	None		= 0,
+
+	Gold		= 1,
+	Granades	= 2,
+}
+
+[System.Serializable]
+public struct ItemDrop
+{
+	public GameObject	itemPrefab;
+	public float		dropProbability;
+	public int			minDropAmount;
+	public int			maxDropAmount;
+}
+
+public class ItemManager : MonoBehaviour
+{
 
 	// Use this for initialization
-	void Start () {
+	void Start ()
+	{
 		
 	}
 	

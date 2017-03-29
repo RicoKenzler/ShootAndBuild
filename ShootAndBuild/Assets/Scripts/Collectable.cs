@@ -6,6 +6,9 @@ public class Collectable : MonoBehaviour
 	public AudioClip[] collectSounds;
 	public AudioClip[] dropSounds;
 
+	public ItemType itemType	= ItemType.Gold;
+	public int		amount		= 1;
+
 	void Start()
 	{
 		if (dropSounds.Length > 0)
@@ -59,6 +62,10 @@ public class Collectable : MonoBehaviour
         }
 
 		PlayerManager.instance.SetVibration(player.playerID, 1.0f, 1.0f, 0.10f);
+
+		Inventory inventory = player.gameObject.GetComponent<Inventory>();
+
+		inventory.AddItem(itemType, amount); 
 
         Destroy(gameObject);
     }

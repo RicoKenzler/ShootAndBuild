@@ -1460,9 +1460,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 2
+<<<<<<< HEAD
   itemDropPrefab: {fileID: 1797189723984674, guid: ebaf5d1e5ef1660458836d848ca0b292,
     type: 2}
   itemDropPercentage: 0.5
+=======
+  itemDrops:
+  - itemPrefab: {fileID: 1797189723984674, guid: ebaf5d1e5ef1660458836d848ca0b292,
+      type: 2}
+    dropProbability: 0.5
+    minDropAmount: 2
+    maxDropAmount: 10
+>>>>>>> 650f57e272c9acf549fcb7049b1c98f1b223fbe1
   dieSounds:
   - {fileID: 8300000, guid: 259773637c15b0946b2f0aeaf4897e0f, type: 3}
   - {fileID: 8300000, guid: 1fd53c9c360fe3c40be781e731d1421c, type: 3}
