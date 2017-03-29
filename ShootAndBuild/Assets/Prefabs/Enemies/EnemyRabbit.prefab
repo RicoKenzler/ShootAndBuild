@@ -69,6 +69,7 @@ GameObject:
   - component: {fileID: 114065223908063668}
   - component: {fileID: 114628343382613120}
   - component: {fileID: 54899370465234872}
+  - component: {fileID: 114454388468075342}
   m_Layer: 9
   m_Name: EnemyRabbit
   m_TagString: Untagged
@@ -855,6 +856,17 @@ MonoBehaviour:
   hitSounds:
   - {fileID: 8300000, guid: f700f7eb92b98e540ac999c3f603fcea, type: 3}
   - {fileID: 8300000, guid: a9026b7e963a6014a805d57396c2f5d4, type: 3}
+--- !u!114 &114454388468075342
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1201289100612482}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5837e4f2222ade7459725f97f8fbbf66, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114628343382613120
 MonoBehaviour:
   m_ObjectHideFlags: 1

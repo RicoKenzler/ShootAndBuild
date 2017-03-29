@@ -17,7 +17,7 @@ public class Attackable : MonoBehaviour
 
     void Start()
     {
-        currentHealth = maxHealth;
+		currentHealth = maxHealth;
 
         RegisterHealthBar();
 

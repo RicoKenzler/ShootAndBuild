@@ -21,6 +21,7 @@ public enum ButtonType
 {
     RightBumper,
 	Taunt,
+	Build
 }
 
 public enum PlayerID
@@ -343,6 +344,8 @@ public class PlayerManager : MonoBehaviour
                 return "Right Bumper";
 			case ButtonType.Taunt:
 				return "Taunt";
+			case ButtonType.Build:
+				return "Unused";
         }
 
         return "InvalidButton ";

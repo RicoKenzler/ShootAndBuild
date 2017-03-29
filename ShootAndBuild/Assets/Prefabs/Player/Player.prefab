@@ -296,6 +296,8 @@ GameObject:
   - component: {fileID: 114022025890281874}
   - component: {fileID: 114039302743832264}
   - component: {fileID: 114827166632522940}
+  - component: {fileID: 114673583163577024}
+  - component: {fileID: 114190577841373536}
   m_Layer: 8
   m_Name: Player
   m_TagString: Untagged
@@ -2183,6 +2185,20 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 8d493d4af69485c428a7329d16642013, type: 3}
   - {fileID: 8300000, guid: a52ade4cdfac41c4093a8ea2cafa5119, type: 3}
   - {fileID: 8300000, guid: c87caee09abed8447ac959387760f577, type: 3}
+--- !u!114 &114190577841373536
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1229075479329374}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 80f07b8c88f8d5a40a88f37ebbe69bd1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  towerPrefab: {fileID: 1782023702801134, guid: 15c07ba05a515e844b8bd7d7077e9ec1,
+    type: 2}
+  distance: 1.5
 --- !u!114 &114401709228175904
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2198,6 +2214,17 @@ MonoBehaviour:
   speed: 10
   deadzone: 0.2
   movementAnimationMoultiplier: 0.5
+--- !u!114 &114673583163577024
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1229075479329374}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5837e4f2222ade7459725f97f8fbbf66, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114827166632522940
 MonoBehaviour:
   m_ObjectHideFlags: 1

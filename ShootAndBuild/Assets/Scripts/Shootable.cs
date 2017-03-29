@@ -9,7 +9,6 @@ public class Shootable : MonoBehaviour
     public float flashDuration = 0.5f;
     public float flashMaxIntensity = 0.5f;
 
-    private float currentCooldown = 0.0f;
     private float defaultLightIntensity = 0.0f;
     private float lastShootTime = -1000.0f;
 
@@ -18,8 +17,12 @@ public class Shootable : MonoBehaviour
 
     void Start()
     {
+		currentCooldown = 0.0f;
         playerLight = GetComponentInChildren<Light>();
-        defaultLightIntensity = playerLight.intensity;
+		if (playerLight)
+		{
+			defaultLightIntensity = playerLight.intensity;
+		}
     }
 
     void Update()
@@ -38,7 +41,10 @@ public class Shootable : MonoBehaviour
 
         flashIntensity = flashIntensity * flashIntensity;
 
-        playerLight.intensity = defaultLightIntensity + flashIntensity;
+		if (playerLight)
+		{
+			playerLight.intensity = defaultLightIntensity + flashIntensity;
+		}
     }
 
     public void Shoot()
@@ -67,4 +73,9 @@ public class Shootable : MonoBehaviour
 			AudioManager.instance.PlayOneShot(rndSound, transform.position, 0.5f);
         }
     }
+
+	public float currentCooldown
+	{
+		get; private set;
+	}
 }

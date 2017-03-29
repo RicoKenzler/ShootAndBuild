@@ -2,13 +2,18 @@
 
 public class Builder : MonoBehaviour
 {
-    void Start()
-    {
+	public GameObject towerPrefab;
+	public float distance = 2;
 
-    }
 
-    void Update()
-    {
+	public void Build()
+	{
+		Vector3 pos = transform.position + transform.rotation * (distance * Vector3.forward);
 
-    }
+		if (Grid.instance.IsFree(towerPrefab, pos))
+		{
+			GameObject instance = Instantiate(towerPrefab);
+			instance.transform.position = pos;
+		}
+	}
 }

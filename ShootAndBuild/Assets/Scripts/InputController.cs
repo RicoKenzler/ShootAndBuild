@@ -11,6 +11,7 @@ public class InputController : MonoBehaviour
     private Animation		animationController;
 	private TauntController tauntController;
 	private Shootable		shootable;
+	private Builder			builder;
 
 	void Start()
 	{
@@ -26,6 +27,7 @@ public class InputController : MonoBehaviour
 
 		tauntController	= GetComponent<TauntController>();
 		shootable		= GetComponent<Shootable>();
+		builder			= GetComponent<Builder>();
 	}
 
 	//--------------------------------------------------------------------------------------------------
@@ -77,7 +79,7 @@ public class InputController : MonoBehaviour
         }
 
         /////////////////////////////////////////
-        // Shoot
+        // Buttons
         /////////////////////////////////////////
         bool shootButtonPressed  = PlayerManager.instance.IsButtonDown(playerID, ButtonType.RightBumper);
 		bool shootTriggerPressed = PlayerManager.instance.IsTriggerPulled(playerID, TriggerType.RightTrigger);
@@ -92,11 +94,16 @@ public class InputController : MonoBehaviour
 			tauntController.PlayTaunt();
 		}
 
-        /////////////////////////////////////////
-        // Animation
-        /////////////////////////////////////////
+		if (PlayerManager.instance.WasButtonJustPressed(playerID, ButtonType.Build))
+		{
+			builder.Build();
+		}
 
-        if (animationController != null)
+		/////////////////////////////////////////
+		// Animation
+		/////////////////////////////////////////
+
+		if (animationController != null)
         {
             float movementSpeed = velocity.magnitude;
 
@@ -118,7 +125,7 @@ public class InputController : MonoBehaviour
                 animationController["attack"].speed = 2;
                 animationController.Play("attack");
             }
-
         }
+
     }
 }
