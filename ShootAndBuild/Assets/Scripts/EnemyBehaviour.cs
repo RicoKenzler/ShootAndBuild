@@ -36,7 +36,11 @@ public class EnemyBehaviour : MonoBehaviour
 
         if (!nearestPlayer)
         {
-			animationController.Play("idle");
+			if (!animationController.IsPlaying("attack"))
+			{
+				animationController.Play("idle");
+			}
+
 			GetComponent<Rigidbody>().velocity = new Vector3(0.0f, 0.0f, 0.0f);
             return;
         }

@@ -650,8 +650,8 @@ MonoBehaviour:
   attackCooldown: 1
   damage: 100
   hitSounds:
-  - {fileID: 8300000, guid: f700f7eb92b98e540ac999c3f603fcea, type: 3}
-  - {fileID: 8300000, guid: a9026b7e963a6014a805d57396c2f5d4, type: 3}
+  - {fileID: 8300000, guid: ebfa2070a23ad5844bb59ca4f12abc65, type: 3}
+  - {fileID: 8300000, guid: f9f58772d3ed65a47a0ca89cee65c3d5, type: 3}
 --- !u!114 &114454388468075342
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -687,9 +687,8 @@ MonoBehaviour:
     minDropAmount: 1
     maxDropAmount: 1
   dieSounds:
-  - {fileID: 8300000, guid: 0876e0aa780af4845aa5b3aea23a7283, type: 3}
-  - {fileID: 8300000, guid: fa635055cbfaf214e9b55a426113e689, type: 3}
-  - {fileID: 8300000, guid: 08e4264e6e96edf49a92f3bd5aa75a5b, type: 3}
+  - {fileID: 8300000, guid: 581c8b71f1c892041bf046945fb1f871, type: 3}
+  - {fileID: 8300000, guid: d56f8174ce5b0e34298b2ef9dc7fdbb9, type: 3}
   spawnSounds: []
 --- !u!137 &137046507630507646
 SkinnedMeshRenderer:
