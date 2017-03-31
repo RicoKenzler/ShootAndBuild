@@ -296,12 +296,9 @@ GameObject:
   - component: {fileID: 114022025890281874}
   - component: {fileID: 114039302743832264}
   - component: {fileID: 114827166632522940}
-<<<<<<< HEAD
   - component: {fileID: 114673583163577024}
   - component: {fileID: 114190577841373536}
-=======
   - component: {fileID: 114038263645953718}
->>>>>>> 650f57e272c9acf549fcb7049b1c98f1b223fbe1
   m_Layer: 8
   m_Name: Player
   m_TagString: Untagged
