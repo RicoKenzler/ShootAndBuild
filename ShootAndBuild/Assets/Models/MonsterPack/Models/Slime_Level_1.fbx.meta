@@ -40,11 +40,12 @@ ModelImporter:
     400030: SlimeRightJoint
     400032: SlimeRootJoint
     4300000: SlimeLevel1
-    7400000: slime_idle
-    7400002: slime_move
-    7400004: slime_attack
-    7400006: slime_die
+    7400000: idle
+    7400002: walk
+    7400004: attack
+    7400006: die
     9500000: //RootNode
+    11100000: //RootNode
     13700000: SlimeLevel1 1
   materials:
     importMaterials: 1
@@ -60,7 +61,7 @@ ModelImporter:
     animationImportWarnings: 
     animationRetargetingWarnings: 
     animationDoRetargetingWarnings: 0
-    animationCompression: 3
+    animationCompression: 1
     animationRotationError: 0.5
     animationPositionError: 0.5
     animationScaleError: 0.5
@@ -68,7 +69,7 @@ ModelImporter:
     extraExposedTransformPaths: []
     clipAnimations:
     - serializedVersion: 16
-      name: slime_idle
+      name: idle
       takeName: Take 001
       firstFrame: 1
       lastFrame: 24
@@ -130,7 +131,7 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 0
     - serializedVersion: 16
-      name: slime_move
+      name: walk
       takeName: Take 001
       firstFrame: 30
       lastFrame: 54
@@ -192,7 +193,7 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 0
     - serializedVersion: 16
-      name: slime_attack
+      name: attack
       takeName: Take 001
       firstFrame: 60
       lastFrame: 80
@@ -254,7 +255,7 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 0
     - serializedVersion: 16
-      name: slime_die
+      name: die
       takeName: Take 001
       firstFrame: 90
       lastFrame: 112
@@ -356,7 +357,7 @@ ModelImporter:
     hasExtraRoot: 0
     skeletonHasParents: 0
   lastHumanDescriptionAvatarSource: {instanceID: 0}
-  animationType: 2
+  animationType: 1
   humanoidOversampling: 1
   additionalBone: 0
   userData: 
