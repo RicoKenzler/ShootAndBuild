@@ -57,10 +57,11 @@ public class Shootable : MonoBehaviour
         GameObject projectileContainer = GameObject.Find("Projectiles");
 
         GameObject instance = Instantiate(projectilePrefab, projectileContainer.transform);
-        instance.transform.position = transform.position;
+        instance.transform.position = transform.position + new Vector3(0.0f, 0.5f, 0.0f);
+		instance.transform.rotation = transform.rotation;
 
         Projectile projectile = instance.GetComponent<Projectile>();
-        projectile.direction = transform.forward;
+        projectile.direction = new Vector3(0.0f, 0.0f, 1.5f);
         projectile.owner = this;
 
         currentCooldown = shootCooldown;
