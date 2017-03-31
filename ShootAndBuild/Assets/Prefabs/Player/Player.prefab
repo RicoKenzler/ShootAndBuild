@@ -2211,6 +2211,13 @@ MonoBehaviour:
   towerPrefab: {fileID: 1782023702801134, guid: 15c07ba05a515e844b8bd7d7077e9ec1,
     type: 2}
   distance: 1.5
+  buildSounds:
+  - {fileID: 8300000, guid: 65856b54a91c8f94c8b659081a71efad, type: 3}
+  - {fileID: 8300000, guid: d12dab6651d90c2449b6eff63c7ef81d, type: 3}
+  - {fileID: 8300000, guid: 09f981782ccfd4546a2cb01d84fd13cd, type: 3}
+  - {fileID: 8300000, guid: 2efec74fda064b54c9337a894c2cefc4, type: 3}
+  - {fileID: 8300000, guid: 9c027bdd0aaa7a348aaad70e5cf54f06, type: 3}
+  - {fileID: 8300000, guid: f5918587ce25ee84ead07ebb5ae252fc, type: 3}
 --- !u!114 &114401709228175904
 MonoBehaviour:
   m_ObjectHideFlags: 1
