@@ -9,6 +9,8 @@ public class Shootable : MonoBehaviour
     public float flashDuration = 0.5f;
     public float flashMaxIntensity = 0.5f;
 
+	public int damage = 1;
+
     private float defaultLightIntensity = 0.0f;
     private float lastShootTime = -1000.0f;
 
@@ -47,7 +49,7 @@ public class Shootable : MonoBehaviour
 		}
     }
 
-    public void Shoot()
+    public void Shoot(Quaternion? projectileDirection = null)
     {
         if (currentCooldown > 0.0f)
         {
@@ -58,11 +60,12 @@ public class Shootable : MonoBehaviour
 
         GameObject instance = Instantiate(projectilePrefab, projectileContainer.transform);
         instance.transform.position = transform.position + new Vector3(0.0f, 0.5f, 0.0f);
-		instance.transform.rotation = transform.rotation;
+		instance.transform.rotation = (projectileDirection.HasValue) ? projectileDirection.Value : transform.rotation;
 
         Projectile projectile = instance.GetComponent<Projectile>();
-        projectile.direction = new Vector3(0.0f, 0.0f, 1.5f);
+        projectile.direction = new Vector3(0.0f, 0.0f, 1.0f);
         projectile.owner = this;
+		projectile.damage = damage;
 
         currentCooldown = shootCooldown;
         lastShootTime = Time.time;

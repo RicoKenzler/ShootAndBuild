@@ -1432,7 +1432,7 @@ MonoBehaviour:
   speed: 6
   attackDistance: 2
   attackCooldown: 1
-  damage: 1
+  damage: 10
   hitSounds:
   - {fileID: 8300000, guid: ff53888c823d7a548851b1f4ee29e0bb, type: 3}
   - {fileID: 8300000, guid: ab2bf0f1cd8fef84ab8497ef6dc745cd, type: 3}
@@ -1459,7 +1459,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f41b0c5fe276e8942874978a2d478cfe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 2
+  maxHealth: 20
   itemDrops:
   - itemPrefab: {fileID: 1797189723984674, guid: ebaf5d1e5ef1660458836d848ca0b292,
       type: 2}

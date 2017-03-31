@@ -32,12 +32,17 @@ public class Projectile : MonoBehaviour
             Attackable attackable = other.GetComponent<Attackable>();
             if (attackable != null)
             {
-                attackable.DealDamage(1, gameObject);
+                attackable.DealDamage(damage, gameObject);
             }
         }
     }
 
     public Vector3 direction
+    {
+        get; set;
+    }
+
+	public int damage
     {
         get; set;
     }

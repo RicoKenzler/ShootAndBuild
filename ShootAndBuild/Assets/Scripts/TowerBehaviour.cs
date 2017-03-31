@@ -3,6 +3,7 @@
 public class TowerBehaviour : MonoBehaviour
 {
 	private Shootable shootable;
+	public bool turnTowardsEnemy = false;
 
 	void Awake()
 	{
@@ -17,10 +18,16 @@ public class TowerBehaviour : MonoBehaviour
 			return;
 		}
 
-		transform.LookAt(nearestEnemy.transform);
+		if (turnTowardsEnemy)
+		{
+			transform.LookAt(nearestEnemy.transform);
+		}
+		
 		if (shootable.currentCooldown == 0)
 		{
-			shootable.Shoot();
+			Quaternion rotationToEnemy = Quaternion.LookRotation(nearestEnemy.transform.position - transform.position);
+
+			shootable.Shoot(rotationToEnemy);
 		}
 	}
 
