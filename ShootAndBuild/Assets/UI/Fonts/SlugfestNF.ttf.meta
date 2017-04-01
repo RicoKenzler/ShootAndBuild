@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: 33698f895387b80419039fc63f892484
+timeCreated: 1491046139
+licenseType: Free
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Slugfest NF
+  fontNames:
+  - Slugfest NF
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
