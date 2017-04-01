@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Collections.Generic;
 
 public class CameraController : MonoBehaviour
 {
@@ -31,9 +32,9 @@ public class CameraController : MonoBehaviour
     
     void GetPlayerBoundingSphere(out Vector3 center, out float radius)
     {
-        InputController[] allPlayers = FindObjectsOfType<InputController>();
+        List<GameObject> allPlayers = PlayerManager.instance.allPlayers;
 
-        if (allPlayers.Length == 0)
+        if (allPlayers.Count == 0)
         {
 			center = lastPlayerSphereCenter;
 			radius = lastPlayerSphereRadius;
@@ -43,7 +44,7 @@ public class CameraController : MonoBehaviour
 
         Bounds playerBB = new Bounds(allPlayers[0].transform.position, Vector3.zero);
 
-        foreach (InputController player in allPlayers)
+        foreach (GameObject player in allPlayers)
         {
             playerBB.Encapsulate(player.transform.position);
         }
