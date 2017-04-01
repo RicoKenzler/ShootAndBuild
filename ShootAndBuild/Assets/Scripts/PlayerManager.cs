@@ -270,7 +270,7 @@ public class PlayerManager : MonoBehaviour
 
 		newPlayer.StartVibration(0.5f, 0.5f, 0.2f);
 
-		PlayerPanelGroup.instance.AddPlayerPanel(playerID);
+		PlayerPanelGroup.instance.AddPlayerPanel(playerID, newPlayerObject);
     }
 
     private Player GetPlayer(PlayerID playerID)

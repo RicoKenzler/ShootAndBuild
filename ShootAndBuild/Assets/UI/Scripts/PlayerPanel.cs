@@ -15,35 +15,89 @@ public class PlayerPanel : MonoBehaviour
 	[SerializeField]
 	Image activeWeaponImage;
 
-    void Awake()
-    {
-        instance = this;
-    }
+	private int		displayedHealthText			= 0;
+	private float	displayedHealthRelative		= 0.0f;
+	bool			displayedPlayerAlive		= false;
+
+	private GameObject activeItem;
+	private GameObject activeWeapon;
+
+	private Attackable assignedAttackable;
 
 	// Update is called once per frame
 	void Update ()
 	{
-		healthBarFillImage.color = new Color(1.0f, 1.0f, (Time.time * 0.5f) % 2.0f);
-		healthBarFillImage.fillAmount = (Time.time * 0.5f) % 2.0f;
+		UpdateUI();
 	}
 
-	public int health
-    {
-        get; set;
-    }
+	void UpdateUI()
+	{
+		UpdateHealthBar();
+		UpdateIsPlayerAlive();
+	}
 
-	public GameObject activeItem
-    {
-        get; set;
-    }
+	void UpdateIsPlayerAlive()
+	{
+		bool isPlayerAlive = assignedAttackable.health > 0;
 
-	public GameObject activeWeapon
-    {
-        get; set;
-    }
+		if (isPlayerAlive != displayedPlayerAlive)
+		{
+			// Do not interpolate
+			UpdateHealthBar(true);
 
-	public static PlayerPanel instance
-    {
-        get; set;
-    }
+			Color indicatorColor = isPlayerAlive ? new Color(1.0f, 1.0f, 1.0f) : new Color(0.5f, 0.5f, 0.5f, 0.5f);
+			activeItemImage.color	= indicatorColor;
+			activeWeaponImage.color = indicatorColor;
+		}
+	}
+
+	private void UpdateHealthBar(bool forceImmediateUpdate = false)
+	{
+		int   newHealth			= assignedAttackable.health;
+		float newHealthRelative = (float) assignedAttackable.health / (float) assignedAttackable.maxHealth;
+
+		if (!forceImmediateUpdate && displayedHealthText == newHealth && newHealthRelative == displayedHealthRelative)
+		{
+			return;
+		}
+
+		float healthDifference = newHealthRelative - displayedHealthRelative;
+
+		const float HEALTH_DELTA = 0.01f;
+		float healthDelta = healthDifference > 0 ? HEALTH_DELTA : -HEALTH_DELTA;
+
+		float smothRelativeHealth = displayedHealthRelative + healthDelta;
+
+		if (forceImmediateUpdate || Mathf.Abs(healthDifference) <= healthDelta)
+		{
+			smothRelativeHealth = newHealthRelative;
+		}
+
+		Color colorFullHealth =     new Color(0.0f, 1.0f, 0.0f, 1.0f);
+        Color colorMediumHealth =   new Color(1.0f, 1.0f, 0.0f, 1.0f);
+        Color colorNoHealth =       new Color(1.0f, 0.0f, 0.0f, 1.0f);
+
+        Color desiredColor;
+        if (smothRelativeHealth < 0.5f)
+        {
+            desiredColor = Color.Lerp(colorNoHealth, colorMediumHealth, smothRelativeHealth * 2.0f);
+        }
+        else
+        {
+            desiredColor = Color.Lerp(colorMediumHealth, colorFullHealth, (smothRelativeHealth - 0.5f) * 2.0f);
+        }
+		
+		healthBarFillImage.color		= desiredColor;
+		healthBarFillImage.fillAmount	= smothRelativeHealth;
+
+		displayedHealthRelative = smothRelativeHealth;
+		displayedHealthText		= newHealth;
+	}
+
+	public void AssignPlayer(GameObject player)
+	{
+		assignedAttackable = player.GetComponent<Attackable>();
+
+		UpdateUI();
+	}
 }
