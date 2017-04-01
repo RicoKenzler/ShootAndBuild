@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Collections.Generic;
 
 public class Collectable : MonoBehaviour
 {
@@ -21,20 +22,20 @@ public class Collectable : MonoBehaviour
 
 	void Update()
 	{
-		InputController[] players = FindObjectsOfType<InputController>();
+		List<GameObject> allPlayers = PlayerManager.instance.allPlayers;
 
 		Vector3 selfPosition = transform.position;
 
-		for (int i = 0; i < players.Length; ++i)
+		for (int i = 0; i < allPlayers.Count; ++i)
 		{
-			InputController player = players[i];
+			GameObject player = allPlayers[i];
 
 			Vector3 differenceVector = (player.transform.position - selfPosition);
 			differenceVector.y = 0.0f;
 
 			if (differenceVector.sqrMagnitude <= (collectRadius * collectRadius))
 			{
-				OnCollect(player);
+				OnCollect(player.GetComponent<InputController>());
 				return;
 			}
 		}
