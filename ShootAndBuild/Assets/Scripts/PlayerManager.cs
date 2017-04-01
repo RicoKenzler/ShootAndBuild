@@ -163,7 +163,7 @@ public class PlayerManager : MonoBehaviour
                     inputMethodToPlayerID[inputMethod] = playerID;
                     SpawnNewPlayer(playerID, inputMethod);
 
-                    // enought spaning for this input method
+                    // enought spawning for this input method
                     break;
                 }
             }
@@ -269,6 +269,8 @@ public class PlayerManager : MonoBehaviour
         allPlayers.Add(newPlayerObject);
 
 		newPlayer.StartVibration(0.5f, 0.5f, 0.2f);
+
+		PlayerPanelGroup.instance.AddPlayerPanel(playerID);
     }
 
     private Player GetPlayer(PlayerID playerID)
