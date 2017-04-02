@@ -31,8 +31,6 @@ public class Inventory : MonoBehaviour
 		{
 			itemCounts.Add(itemType, count);
 		}
-		
-		Debug.Log("Item " + itemType + ": " + itemCounts[itemType]);
 	}
 
 	public int GetItemAmount(ItemType itemType)
