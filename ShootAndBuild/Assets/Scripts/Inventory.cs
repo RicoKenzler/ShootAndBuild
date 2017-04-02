@@ -35,6 +35,18 @@ public class Inventory : MonoBehaviour
 		Debug.Log("Item " + itemType + ": " + itemCounts[itemType]);
 	}
 
+	public int GetItemAmount(ItemType itemType)
+	{
+		int itemAmount = 0;
+
+		if (!itemCounts.TryGetValue(itemType, out itemAmount))
+		{
+			return 0;
+		}
+
+		return itemAmount;
+	}
+
 	public static Inventory sharedInventoryInstance
     {
         get; private set;
