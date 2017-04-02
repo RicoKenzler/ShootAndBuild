@@ -36,6 +36,8 @@ public class PlayerPanelGroup : MonoBehaviour
 		}
 
 		GameObject newPlayerPanelObject = Instantiate(playerPanelPrefab.gameObject, gameObject.transform);
+		newPlayerPanelObject.name = "Player Panel " + playerID;
+
 		RectTransform newPanelRect = newPlayerPanelObject.GetComponent<RectTransform>();
 		
 		newPanelRect.localScale = new Vector3(1.0f, 1.0f, 1.0f);

@@ -19,6 +19,8 @@ public class PlayerPanel : MonoBehaviour
 	private float	displayedHealthRelative		= 0.0f;
 	bool			displayedPlayerAlive		= false;
 
+	public float	healthBarSmoothness			= 0.8f;
+
 	private Attackable assignedAttackable;
 
 	// Update is called once per frame
@@ -61,15 +63,13 @@ public class PlayerPanel : MonoBehaviour
 		}
 
 		float healthDifference = newHealthRelative - displayedHealthRelative;
+	
+		// Method 2: start fast
+		float smoothRelativeHealth = Mathf.Lerp(newHealthRelative, displayedHealthRelative, healthBarSmoothness);
 
-		const float HEALTH_DELTA = 0.01f;
-		float healthDelta = healthDifference > 0 ? HEALTH_DELTA : -HEALTH_DELTA;
-
-		float smothRelativeHealth = displayedHealthRelative + healthDelta;
-
-		if (forceImmediateUpdate || Mathf.Abs(healthDifference) <= healthDelta)
+		if (forceImmediateUpdate || Mathf.Abs(healthDifference) <= 0.001f)
 		{
-			smothRelativeHealth = newHealthRelative;
+			smoothRelativeHealth = newHealthRelative;
 		}
 
 		Color colorFullHealth =     new Color(0.0f, 1.0f, 0.0f, 1.0f);
@@ -77,19 +77,19 @@ public class PlayerPanel : MonoBehaviour
         Color colorNoHealth =       new Color(1.0f, 0.0f, 0.0f, 1.0f);
 
         Color desiredColor;
-        if (smothRelativeHealth < 0.5f)
+        if (smoothRelativeHealth < 0.5f)
         {
-            desiredColor = Color.Lerp(colorNoHealth, colorMediumHealth, smothRelativeHealth * 2.0f);
+            desiredColor = Color.Lerp(colorNoHealth, colorMediumHealth, smoothRelativeHealth * 2.0f);
         }
         else
         {
-            desiredColor = Color.Lerp(colorMediumHealth, colorFullHealth, (smothRelativeHealth - 0.5f) * 2.0f);
+            desiredColor = Color.Lerp(colorMediumHealth, colorFullHealth, (smoothRelativeHealth - 0.5f) * 2.0f);
         }
 		
 		healthBarFillImage.color		= desiredColor;
-		healthBarFillImage.fillAmount	= smothRelativeHealth;
+		healthBarFillImage.fillAmount	= smoothRelativeHealth;
 
-		displayedHealthRelative = smothRelativeHealth;
+		displayedHealthRelative = smoothRelativeHealth;
 		displayedHealthText		= newHealth;
 	}
 

@@ -240,6 +240,7 @@ MonoBehaviour:
   healthBarFillImage: {fileID: 114604971702907400}
   activeItemImage: {fileID: 114830827929897052}
   activeWeaponImage: {fileID: 114756472964393910}
+  healthBarSmoothness: 0.8
 --- !u!114 &114456058045040402
 MonoBehaviour:
   m_ObjectHideFlags: 1
