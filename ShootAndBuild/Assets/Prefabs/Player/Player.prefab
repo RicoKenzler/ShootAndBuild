@@ -2186,6 +2186,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 100
+  showHealthBar: 0
   itemDrops: []
   dieSounds:
   - {fileID: 8300000, guid: e720ed4e579da834c9c1f43b639895b3, type: 3}

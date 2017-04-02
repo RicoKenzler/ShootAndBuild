@@ -3,6 +3,7 @@
 public class Attackable : MonoBehaviour
 {
     public int maxHealth = 10;
+	public bool showHealthBar = true;
  
     public ItemDrop[]  itemDrops;
 
@@ -27,6 +28,11 @@ public class Attackable : MonoBehaviour
 
 	public void RegisterHealthBar(bool unregister = false)
 	{
+		if (!showHealthBar)
+		{
+			return;
+		}
+
 		if (unregister)
 		{
 			HealthBarManager.instance.RemoveHealthBar(this);
