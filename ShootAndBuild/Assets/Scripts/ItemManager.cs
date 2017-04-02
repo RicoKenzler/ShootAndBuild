@@ -21,11 +21,12 @@ public struct ItemDrop
 
 public class ItemManager : MonoBehaviour
 {
+	List<ItemType> usesSharedInventory = new List<ItemType>();
 
 	// Use this for initialization
 	void Start ()
 	{
-		
+		usesSharedInventory.Add(ItemType.Gold);
 	}
 	
 	// Update is called once per frame
@@ -37,6 +38,11 @@ public class ItemManager : MonoBehaviour
     {
         instance = this;
     }
+
+	public bool UsesSharedInventory(ItemType itemType)
+	{
+		return usesSharedInventory.Contains(itemType);
+	}
 
 	public static ItemManager instance
     {

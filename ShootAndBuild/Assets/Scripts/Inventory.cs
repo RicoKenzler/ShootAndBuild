@@ -9,7 +9,10 @@ public class Inventory : MonoBehaviour
 	// Use this for initialization
 	void Start ()
 	{
-		
+		if (!GetComponent<InputController>())
+		{
+			sharedInventoryInstance = this;
+		}
 	}
 	
 	// Update is called once per frame
@@ -31,4 +34,9 @@ public class Inventory : MonoBehaviour
 		
 		Debug.Log("Item " + itemType + ": " + itemCounts[itemType]);
 	}
+
+	public static Inventory sharedInventoryInstance
+    {
+        get; private set;
+    }
 }

@@ -64,8 +64,9 @@ public class Collectable : MonoBehaviour
 
 		PlayerManager.instance.SetVibration(player.playerID, 1.0f, 1.0f, 0.10f);
 
-		Inventory inventory = player.gameObject.GetComponent<Inventory>();
+		bool usesSharedInventory = ItemManager.instance.UsesSharedInventory(itemType);
 
+		Inventory inventory = usesSharedInventory ? Inventory.sharedInventoryInstance : player.gameObject.GetComponent<Inventory>();
 		inventory.AddItem(itemType, amount); 
 
         Destroy(gameObject);

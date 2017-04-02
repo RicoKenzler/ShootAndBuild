@@ -19,9 +19,6 @@ public class PlayerPanel : MonoBehaviour
 	private float	displayedHealthRelative		= 0.0f;
 	bool			displayedPlayerAlive		= false;
 
-	private GameObject activeItem;
-	private GameObject activeWeapon;
-
 	private Attackable assignedAttackable;
 
 	// Update is called once per frame
@@ -48,6 +45,8 @@ public class PlayerPanel : MonoBehaviour
 			Color indicatorColor = isPlayerAlive ? new Color(1.0f, 1.0f, 1.0f) : new Color(0.5f, 0.5f, 0.5f, 0.5f);
 			activeItemImage.color	= indicatorColor;
 			activeWeaponImage.color = indicatorColor;
+
+			displayedPlayerAlive = isPlayerAlive;
 		}
 	}
 

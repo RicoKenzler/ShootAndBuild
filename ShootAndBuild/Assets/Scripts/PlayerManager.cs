@@ -48,6 +48,9 @@ public class PlayerManager : MonoBehaviour
         Gamepad4,
     }
 
+	[SerializeField]
+	InputMethod debugKeyboardEmulates;
+
     class Player
     {
         public GameObject playerObject;
@@ -291,6 +294,16 @@ public class PlayerManager : MonoBehaviour
 
     private string InputMethodToPostfix(InputMethod inputMethod)
     {
+		// for debugging other players: switch keyboard with keyboard emulation
+		if (inputMethod == debugKeyboardEmulates)
+		{
+			inputMethod = InputMethod.Keyboard;
+		}
+		else if (inputMethod == InputMethod.Keyboard)
+		{
+			inputMethod = debugKeyboardEmulates;
+		}
+
         switch (inputMethod)
         {
             case InputMethod.Keyboard:
