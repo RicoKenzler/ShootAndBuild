@@ -39,6 +39,7 @@ GameObject:
   - component: {fileID: 222171989007735782}
   - component: {fileID: 114952620082157758}
   - component: {fileID: 114392451014451856}
+  - component: {fileID: 114299103108242652}
   m_Layer: 5
   m_Name: PlayerPanel
   m_TagString: Untagged
@@ -226,6 +227,24 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
+--- !u!114 &114299103108242652
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1055621509293682}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4c3bfa11be837f4aa2734bbc8d3ca4e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IgnoreLayout: 0
+  m_MinWidth: 278.8823
+  m_MinHeight: -1
+  m_PreferredWidth: 278.8823
+  m_PreferredHeight: -1
+  m_FlexibleWidth: -1
+  m_FlexibleHeight: -1
 --- !u!114 &114392451014451856
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -341,7 +360,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: 94ce652fe601a6342af9ec762ce37151, type: 3}
+  m_Sprite: {fileID: 21300000, guid: f40ced22b98665c47b1a308056cb7a57, type: 3}
   m_Type: 3
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -631,7 +650,7 @@ RectTransform:
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0.15, y: 1}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}

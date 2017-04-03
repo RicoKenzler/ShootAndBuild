@@ -31,6 +31,12 @@ public class PlayerPanel : MonoBehaviour
 
 	void UpdateUI()
 	{
+		if (!assignedAttackable)
+		{
+			// for testing standalone version
+			return;
+		}
+
 		UpdateHealthBar();
 		UpdateIsPlayerAlive();
 	}
