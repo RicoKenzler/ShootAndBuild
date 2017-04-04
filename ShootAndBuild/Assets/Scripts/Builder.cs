@@ -33,7 +33,7 @@ public class Builder : MonoBehaviour
 		GameObject instance = Instantiate(towerPrefab.gameObject);
 		instance.transform.position = pos;
 
-		AudioManager.instance.PlayRandomOneShot(buildSounds, new OneShotParams(transform.position, 0.5f));
+		AudioManager.instance.PlayRandomOneShot(buildSounds, new OneShotParams(transform.position));
 		
 		towerPrefab.Pay();
 	}

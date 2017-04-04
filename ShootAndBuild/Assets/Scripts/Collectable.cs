@@ -50,7 +50,7 @@ public class Collectable : MonoBehaviour
 
     private void OnCollect(InputController player)
     {
-		AudioManager.instance.PlayRandomOneShot(collectSounds, new OneShotParams(transform.position, 0.5f));
+		AudioManager.instance.PlayRandomOneShot(collectSounds, new OneShotParams(transform.position));
 
 		PlayerManager.instance.SetVibration(player.playerID, 1.0f, 1.0f, 0.10f);
 

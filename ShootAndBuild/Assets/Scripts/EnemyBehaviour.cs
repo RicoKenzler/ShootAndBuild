@@ -76,7 +76,7 @@ public class EnemyBehaviour : MonoBehaviour
                 animationController.Play("attack");
             }
 
-            AudioManager.instance.PlayRandomOneShot(hitSounds, new OneShotParams(transform.position, 0.5f));
+            AudioManager.instance.PlayRandomOneShot(hitSounds, new OneShotParams(transform.position));
         }
 
 

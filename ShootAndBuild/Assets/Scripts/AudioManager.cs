@@ -41,6 +41,8 @@ public class AudioManager : MonoBehaviour
         instance = this;
     }
 
+	
+
 	public AudioSource PlayRandomOneShot(AudioClip[] audioClips, OneShotParams oneShotParams)
 	{
 		if (audioClips.Length <= 0)
