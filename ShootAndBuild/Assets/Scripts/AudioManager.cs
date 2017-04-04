@@ -41,7 +41,30 @@ public class AudioManager : MonoBehaviour
         instance = this;
     }
 
-	
+	public float HalftoneToPitch(int halfTone)
+	{
+		float pitch = Mathf.Pow(2.0f, ((float) halfTone / (float) 12.0f));
+		return pitch;
+	}
+
+	public float RandomPitchFromHalftones(int[] halftones)
+	{
+		if (halftones.Length == 0)
+		{
+			return 1.0f;
+		}
+
+		int rndSoundIndex = Random.Range(0, halftones.Length);
+		int halftone = halftones[rndSoundIndex];
+
+		return HalftoneToPitch(halftone);
+	}
+
+	public float GetRandomMusicalPitch()
+	{
+		int[] niceHalftones = { 0, 2, 4, 5, 7, 9, 11, 12,  0, 4, 7, 12, 0, 7,   5};
+		return RandomPitchFromHalftones(niceHalftones);
+	}
 
 	public AudioSource PlayRandomOneShot(AudioClip[] audioClips, OneShotParams oneShotParams)
 	{

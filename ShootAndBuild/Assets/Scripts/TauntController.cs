@@ -58,7 +58,7 @@ public class TauntController : MonoBehaviour
 		int index = tauntStep % steps.Length;
 		int pitchHalftoneDelta = steps[index];
 
-		float pitch = Mathf.Pow(2.0f, ((float) pitchHalftoneDelta / (float) 12.0f));
+		float pitch = AudioManager.instance.HalftoneToPitch(pitchHalftoneDelta);
 
 		AudioManager.instance.PlayOneShot(singSound, new OneShotParams(transform.position, 0.5f, true, 0.5f, pitch));
 
