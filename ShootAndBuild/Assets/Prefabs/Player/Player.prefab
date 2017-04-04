@@ -2219,9 +2219,9 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 2efec74fda064b54c9337a894c2cefc4, type: 3}
   - {fileID: 8300000, guid: 9c027bdd0aaa7a348aaad70e5cf54f06, type: 3}
   - {fileID: 8300000, guid: f5918587ce25ee84ead07ebb5ae252fc, type: 3}
-  noMoneySound:
+  noMoneySounds:
   - {fileID: 8300000, guid: a9203cc4266ac9a4abe52df16f793a76, type: 3}
-  noSpaceSound:
+  noSpaceSounds:
   - {fileID: 8300000, guid: 3cdb3f300ca090440b2143366436b2e5, type: 3}
 --- !u!114 &114401709228175904
 MonoBehaviour:

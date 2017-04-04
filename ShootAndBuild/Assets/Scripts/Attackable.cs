@@ -50,12 +50,7 @@ public class Attackable : MonoBehaviour
 
 	private void Die()
 	{
-		if (dieSounds.Length > 0)
-        {
-            int rndSoundIndex = Random.Range(0, dieSounds.Length);
-            AudioClip rndSound = dieSounds[rndSoundIndex];
-            AudioManager.instance.PlayOneShot(rndSound, transform.position);
-        }
+		AudioManager.instance.PlayRandomOneShot(dieSounds, new OneShotParams(transform.position));
 
 		DropItems();
 
@@ -190,12 +185,7 @@ public class Attackable : MonoBehaviour
 
 	private void PlaySpawnSound()
 	{
-		if (spawnSounds.Length > 0)
-        {
-            int rndSoundIndex = Random.Range(0, spawnSounds.Length);
-            AudioClip rndSound = spawnSounds[rndSoundIndex];
-            AudioManager.instance.PlayOneShot(rndSound, transform.position, 0.5f, true, 0.5f);
-        }
+		AudioManager.instance.PlayRandomOneShot(spawnSounds, new OneShotParams(transform.position, 0.5f, true, 0.5f));
 	}
 
     public int health

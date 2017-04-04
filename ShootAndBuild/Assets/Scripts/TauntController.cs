@@ -31,12 +31,9 @@ public class TauntController : MonoBehaviour
 		if (playerID == PlayerID.Player1)
 		{
 			// Player1: Fart
-			int rndSoundIndex = Random.Range(0, tauntSounds.Length);
-			AudioClip rndSound = tauntSounds[rndSoundIndex];
-
 			float rndPitch = Random.Range(0.5f, 2.0f);
 
-			AudioManager.instance.PlayOneShot(rndSound, transform.position, 0.5f, true, 0.5f, rndPitch);
+			AudioManager.instance.PlayRandomOneShot(tauntSounds, new OneShotParams(transform.position, 0.5f, true, 0.5f, rndPitch));
 			return;
 		}
 
@@ -63,7 +60,7 @@ public class TauntController : MonoBehaviour
 
 		float pitch = Mathf.Pow(2.0f, ((float) pitchHalftoneDelta / (float) 12.0f));
 
-		AudioManager.instance.PlayOneShot(singSound, transform.position, 0.5f, true, 0.5f, pitch);
+		AudioManager.instance.PlayOneShot(singSound, new OneShotParams(transform.position, 0.5f, true, 0.5f, pitch));
 
 		tauntStep++;
 	}

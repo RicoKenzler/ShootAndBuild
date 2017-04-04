@@ -76,12 +76,7 @@ public class EnemyBehaviour : MonoBehaviour
                 animationController.Play("attack");
             }
 
-            if (hitSounds.Length > 0)
-            {
-                int rndSoundIndex = Random.Range(0, hitSounds.Length);
-                AudioClip rndSound = hitSounds[rndSoundIndex];
-                AudioManager.instance.PlayOneShot(rndSound, transform.position, 0.5f);
-            }
+            AudioManager.instance.PlayRandomOneShot(hitSounds, new OneShotParams(transform.position, 0.5f));
         }
 
 

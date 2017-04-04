@@ -70,12 +70,7 @@ public class Shootable : MonoBehaviour
         currentCooldown = shootCooldown;
         lastShootTime = Time.time;
 
-        if (shootSounds.Length > 0)
-        {
-            int rndSoundIndex = Random.Range(0, shootSounds.Length);
-            AudioClip rndSound = shootSounds[rndSoundIndex];
-			AudioManager.instance.PlayOneShot(rndSound, transform.position, 0.5f);
-        }
+        AudioManager.instance.PlayRandomOneShot(shootSounds, new OneShotParams(transform.position, 0.5f));
     }
 
 	public float currentCooldown

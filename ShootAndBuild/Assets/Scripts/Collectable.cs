@@ -12,12 +12,7 @@ public class Collectable : MonoBehaviour
 
 	void Start()
 	{
-		if (dropSounds.Length > 0)
-		{
-			int rndSoundIndex = Random.Range(0, dropSounds.Length);
-			AudioClip rndSound = dropSounds[rndSoundIndex];
-			AudioManager.instance.PlayOneShot(rndSound, transform.position);
-		}
+		AudioManager.instance.PlayRandomOneShot(dropSounds, new OneShotParams(transform.position));
 	}
 
 	void Update()
@@ -55,12 +50,7 @@ public class Collectable : MonoBehaviour
 
     private void OnCollect(InputController player)
     {
-        if (collectSounds.Length > 0)
-        {
-            int rndSoundIndex = Random.Range(0, collectSounds.Length);
-            AudioClip rndSound = collectSounds[rndSoundIndex];
-            AudioManager.instance.PlayOneShot(rndSound, transform.position, 0.5f);
-        }
+		AudioManager.instance.PlayRandomOneShot(collectSounds, new OneShotParams(transform.position, 0.5f));
 
 		PlayerManager.instance.SetVibration(player.playerID, 1.0f, 1.0f, 0.10f);
 

@@ -879,12 +879,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 100
+  showHealthBar: 1
   itemDrops:
   - itemPrefab: {fileID: 1797189723984674, guid: ebaf5d1e5ef1660458836d848ca0b292,
       type: 2}
     dropProbability: 1
     minDropAmount: 10
-    maxDropAmount: 50
+    maxDropAmount: 30
   - itemPrefab: {fileID: 1797189723984674, guid: 55072d8c0e673154bb0f132188031dd9,
       type: 2}
     dropProbability: 0.5
