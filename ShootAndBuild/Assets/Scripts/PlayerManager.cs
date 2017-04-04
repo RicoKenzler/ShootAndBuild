@@ -257,6 +257,7 @@ public class PlayerManager : MonoBehaviour
     private void SpawnNewPlayer(PlayerID playerID, InputMethod inputMethod)
     {
         GameObject newPlayerObject = Instantiate(playerPrefab, gameObject.transform);
+		newPlayerObject.name = "Player " + playerID;
 
         float randRadius = 5.0f;
         newPlayerObject.transform.position = new Vector3(Random.Range(-randRadius, randRadius), 0.0f, Random.Range(-randRadius, randRadius));

@@ -426,8 +426,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 776641bbfe60e674e9ad07be0dff68dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerPanelPrefab: {fileID: 114392451014451856, guid: f478f6c183e6b1d4a9839fc1f8ef4111,
+  playerPanelPrefab: {fileID: 114392451014451856, guid: 4f9172566fad5d348ae77d99378559ca,
     type: 2}
+  playerPanelAspectRatio: 1.52
+  debugUpdateAspectRatios: 0
 --- !u!114 &266868330
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -593,7 +595,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: -68.88614, y: 8.405296}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &835660372
 MonoBehaviour:
@@ -616,7 +618,7 @@ MonoBehaviour:
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
     m_Font: {fileID: 12800000, guid: 8b112378372918f4aac8593b9610cf3b, type: 3}
-    m_FontSize: 42
+    m_FontSize: 32
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 0
@@ -624,7 +626,7 @@ MonoBehaviour:
     m_Alignment: 4
     m_AlignByGeometry: 0
     m_RichText: 1
-    m_HorizontalOverflow: 0
+    m_HorizontalOverflow: 1
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: Gold

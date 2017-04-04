@@ -5,25 +5,21 @@ using UnityEngine.UI;
 
 public class PlayerPanelResizer : LayoutElement
 {	
-	RectTransform rectTransform;
-
-	public void InitWidths()
-	{
-		minWidth		= minWidth;
-		preferredWidth	= preferredWidth;
-	}
+	RectTransform parentRectTransform;
+	public float aspectRatio = 1.0f;
 
 	private float GetDesiredWidth()
 	{
-		if (!rectTransform)
+		if (!parentRectTransform)
 		{
-			rectTransform = GetComponent<RectTransform>();
+			parentRectTransform = transform.parent.GetComponent<RectTransform>();
 		}
 
 		// TODO: no idea how i can make this field visible in inspector :(
-		const float aspectRatio = 1.35f;
+		//const float aspectRatio = 1.35f;
 
-		float height	= rectTransform.offsetMax.y - rectTransform.offsetMin.y; 
+		float height = parentRectTransform.rect.height;
+
 		return height * aspectRatio;
 	}
 

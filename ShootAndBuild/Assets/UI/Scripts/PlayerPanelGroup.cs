@@ -8,6 +8,9 @@ public class PlayerPanelGroup : MonoBehaviour
 	[SerializeField]
 	private PlayerPanel playerPanelPrefab;
 
+	public  float playerPanelAspectRatio		= 1.35f;
+	private float lastPlayerPanelAspectRatio	= 1.35f;
+
 	private Dictionary<PlayerID, PlayerPanel> playerPanels = new Dictionary<PlayerID, PlayerPanel>();
 
 	void Awake()
@@ -24,7 +27,16 @@ public class PlayerPanelGroup : MonoBehaviour
 	// Update is called once per frame
 	void Update()
 	{
+		if (lastPlayerPanelAspectRatio != playerPanelAspectRatio)
+		{
+			foreach (PlayerPanel panel in playerPanels.Values)
+			{
+				panel.GetComponent<PlayerPanelResizer>().aspectRatio = playerPanelAspectRatio;
+			}
 
+			LayoutRebuilder.MarkLayoutForRebuild(transform as RectTransform);
+			lastPlayerPanelAspectRatio = playerPanelAspectRatio;
+		}
 	}
 
 	public void AddPlayerPanel(PlayerID playerID, GameObject player)
@@ -47,7 +59,10 @@ public class PlayerPanelGroup : MonoBehaviour
 
 		playerPanels.Add(playerID, newPlayerPanel);
 
-		// newPlayerPanel.GetComponent<PlayerPanelResizer>().InitWidths();
+		LayoutRebuilder.MarkLayoutForRebuild(transform as RectTransform);
+		LayoutRebuilder.MarkLayoutForRebuild(newPlayerPanel.transform as RectTransform);
+
+		newPlayerPanel.GetComponent<PlayerPanelResizer>().aspectRatio = playerPanelAspectRatio;
 	}
 
 	public PlayerPanel GetPlayerPanel(PlayerID playerID)
