@@ -429,7 +429,6 @@ MonoBehaviour:
   playerPanelPrefab: {fileID: 114392451014451856, guid: 4f9172566fad5d348ae77d99378559ca,
     type: 2}
   playerPanelAspectRatio: 1.52
-  debugUpdateAspectRatios: 0
 --- !u!114 &266868330
 MonoBehaviour:
   m_ObjectHideFlags: 0

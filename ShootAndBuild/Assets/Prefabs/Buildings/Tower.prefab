@@ -44,6 +44,7 @@ GameObject:
   - component: {fileID: 114744327356608916}
   - component: {fileID: 114050341518328910}
   - component: {fileID: 54448834612512582}
+  - component: {fileID: 114834398469913796}
   m_Layer: 0
   m_Name: Tower
   m_TagString: Untagged
@@ -254,3 +255,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   turnTowardsEnemy: 0
+--- !u!114 &114834398469913796
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1782023702801134}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: badfecc2726fe2249b0fb7500f7a6f4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  costs: 10

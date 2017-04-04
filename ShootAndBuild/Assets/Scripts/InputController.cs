@@ -96,7 +96,7 @@ public class InputController : MonoBehaviour
 
 		if (PlayerManager.instance.WasButtonJustPressed(playerID, ButtonType.Build))
 		{
-			builder.Build();
+			builder.TryBuild();
 		}
 
 		/////////////////////////////////////////

@@ -2209,7 +2209,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 80f07b8c88f8d5a40a88f37ebbe69bd1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  towerPrefab: {fileID: 1782023702801134, guid: 15c07ba05a515e844b8bd7d7077e9ec1,
+  towerPrefab: {fileID: 114834398469913796, guid: 15c07ba05a515e844b8bd7d7077e9ec1,
     type: 2}
   distance: 1.5
   buildSounds:

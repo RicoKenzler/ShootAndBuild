@@ -12,6 +12,7 @@ public class Inventory : MonoBehaviour
 		if (!GetComponent<InputController>())
 		{
 			sharedInventoryInstance = this;
+			AddItem(ItemType.Gold, 10);
 		}
 	}
 	
