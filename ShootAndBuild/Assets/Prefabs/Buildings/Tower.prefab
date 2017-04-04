@@ -207,7 +207,8 @@ MonoBehaviour:
   maxHealth: 40
   showHealthBar: 1
   itemDrops: []
-  dieSounds: []
+  dieSounds:
+  - {fileID: 8300000, guid: 187eed3e16988ea4f92b7aa3c292c436, type: 3}
   spawnSounds: []
 --- !u!114 &114194631205614250
 MonoBehaviour:

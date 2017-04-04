@@ -6,6 +6,8 @@ public class Builder : MonoBehaviour
 	public float distance = 2;
 
 	public AudioClip[] buildSounds;
+	public AudioClip[] noMoneySound;
+	public AudioClip[] noSpaceSound;
 
 	public void TryBuild()
 	{
@@ -13,11 +15,25 @@ public class Builder : MonoBehaviour
 
 		if (!towerPrefab.IsPayable())
 		{
+			if (noMoneySound.Length > 0)
+			{
+				int rndSoundIndex = Random.Range(0, noMoneySound.Length);
+				AudioClip rndSound = noMoneySound[rndSoundIndex];
+				AudioManager.instance.PlayOneShot(rndSound, transform.position, 0.5f);
+			}
+
 			return;
 		}
 
 		if (!Grid.instance.IsFree(towerPrefab.gameObject, pos))
 		{
+			if (noSpaceSound.Length > 0)
+			{
+				int rndSoundIndex = Random.Range(0, noSpaceSound.Length);
+				AudioClip rndSound = noSpaceSound[rndSoundIndex];
+				AudioManager.instance.PlayOneShot(rndSound, transform.position, 0.5f);
+			}
+
 			return;
 		}
 
