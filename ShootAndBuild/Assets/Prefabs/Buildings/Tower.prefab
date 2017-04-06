@@ -210,6 +210,10 @@ MonoBehaviour:
   dieSounds:
   - {fileID: 8300000, guid: 187eed3e16988ea4f92b7aa3c292c436, type: 3}
   spawnSounds: []
+  dieParticles: {fileID: 198000012942003240, guid: ecdd96beb7f93494880c052dfccf9dc1,
+    type: 2}
+  damageParticles: {fileID: 198000012529019072, guid: 4edabb1c0dde62743b137378c7d22980,
+    type: 2}
 --- !u!114 &114194631205614250
 MonoBehaviour:
   m_ObjectHideFlags: 1

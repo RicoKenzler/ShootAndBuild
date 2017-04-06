@@ -62,7 +62,7 @@ public class Attackable : MonoBehaviour
 			Vector3 towardsBottom = new Vector3(0.0f, 1.0f, 0.0f);
 			Quaternion rotation = Quaternion.FromToRotation(new Vector3(0.0f, 0.0f, 1.0f), towardsBottom);
 
-			ParticleManager.instance.SpawnParticle(dieParticles, gameObject, transform.position, rotation, false);
+			ParticleManager.instance.SpawnParticle(dieParticles, gameObject, transform.position, rotation, false, 10.0f, true, false);
 		}
 
         if (inputController)
@@ -177,14 +177,12 @@ public class Attackable : MonoBehaviour
 		if (damageParticles)
 		{
 			Vector3 towardsEnemy = (damageDealer.transform.position - transform.position);
-			towardsEnemy.Normalize();
-			towardsEnemy += new Vector3(0.0f, 1.0f, 0.0f);
 
 			Quaternion rotationTowardsEnemy = Quaternion.FromToRotation(new Vector3(0.0f, 0.0f, 1.0f), towardsEnemy);
 
 			Vector3 posOffset = new Vector3(0.0f, 1.0f, 0.0f);
 
-			ParticleManager.instance.SpawnParticle(damageParticles, gameObject, transform.position + posOffset, rotationTowardsEnemy, true, 3.0f);
+			ParticleManager.instance.SpawnParticle(damageParticles, gameObject, transform.position + posOffset, rotationTowardsEnemy, false, 3.0f, true, true);
 		}
 
         if (currentHealth <= 0)
