@@ -686,6 +686,10 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 581c8b71f1c892041bf046945fb1f871, type: 3}
   - {fileID: 8300000, guid: d56f8174ce5b0e34298b2ef9dc7fdbb9, type: 3}
   spawnSounds: []
+  dieParticles: {fileID: 198000014159833656, guid: a3768c8a9d1b90d4bb0eb0e4bdbe730c,
+    type: 2}
+  damageParticles: {fileID: 198000011254678926, guid: abb9f519b142e304d9c45b56afa768bc,
+    type: 2}
 --- !u!137 &137046507630507646
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 1

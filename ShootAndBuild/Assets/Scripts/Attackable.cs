@@ -10,6 +10,9 @@ public class Attackable : MonoBehaviour
     public AudioClip[] dieSounds;
 	public AudioClip[] spawnSounds;
 
+	public ParticleSystem dieParticles;
+	public ParticleSystem damageParticles;
+
     public event PlayerHandler PlayerDies;
 
     private int currentHealth = 0;
@@ -48,11 +51,21 @@ public class Attackable : MonoBehaviour
 		RegisterHealthBar(true);
     }
 
-	private void Die()
+	private void Die(GameObject lastDamageDealer)
 	{
 		AudioManager.instance.PlayRandomOneShot(dieSounds, new OneShotParams(transform.position));
 
 		DropItems();
+
+		if (dieParticles)
+		{
+			GameObject newObject = Instantiate(dieParticles.gameObject);
+			newObject.transform.position = transform.position;
+			newObject.name = "Die Particles (" + name + ")";
+
+			Vector3 towardsBottom = new Vector3(0.0f, 1.0f, 0.0f);
+			newObject.transform.rotation = Quaternion.FromToRotation(new Vector3(0.0f, 0.0f, 1.0f), towardsBottom);
+		}
 
         if (inputController)
         {
@@ -163,9 +176,19 @@ public class Attackable : MonoBehaviour
 			PlayerManager.instance.SetVibration(inputController.playerID, leftAmount, rightAmount, 0.3f);
 		}
 
+		if (damageParticles)
+		{
+			GameObject newObject = Instantiate(damageParticles.gameObject, transform);
+			newObject.transform.position = transform.position;
+			newObject.name = "Damage Particles (" + name + ")";
+
+			Vector3 towardsEnemy = (damageDealer.transform.position - transform.position);
+			newObject.transform.rotation = Quaternion.FromToRotation(new Vector3(0.0f, 0.0f, 1.0f), towardsEnemy);
+		}
+
         if (currentHealth <= 0)
         {
-           Die();
+           Die(damageDealer);
         }
     }
 

@@ -1149,7 +1149,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1229075479329374}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1, y: 0, z: 0}
+  m_LocalPosition: {x: 4.7650127, y: 0, z: 4.7748504}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4005888402769870}
@@ -2198,6 +2198,10 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 8d493d4af69485c428a7329d16642013, type: 3}
   - {fileID: 8300000, guid: a52ade4cdfac41c4093a8ea2cafa5119, type: 3}
   - {fileID: 8300000, guid: c87caee09abed8447ac959387760f577, type: 3}
+  dieParticles: {fileID: 198000014159833656, guid: a3768c8a9d1b90d4bb0eb0e4bdbe730c,
+    type: 2}
+  damageParticles: {fileID: 198000011254678926, guid: abb9f519b142e304d9c45b56afa768bc,
+    type: 2}
 --- !u!114 &114190577841373536
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2277,9 +2281,9 @@ CapsuleCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   m_Radius: 0.43
-  m_Height: 1.54
+  m_Height: 1.55
   m_Direction: 1
-  m_Center: {x: 0, y: 0.25, z: 0}
+  m_Center: {x: 0, y: 0.8, z: 0}
 --- !u!137 &137018950783213328
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 1

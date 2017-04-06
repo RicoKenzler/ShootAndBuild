@@ -1460,6 +1460,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 20
+  showHealthBar: 1
   itemDrops:
   - itemPrefab: {fileID: 1797189723984674, guid: ebaf5d1e5ef1660458836d848ca0b292,
       type: 2}
@@ -1474,6 +1475,10 @@ MonoBehaviour:
   - {fileID: 8300000, guid: b130203dc13e5a94fb8ca1c225a53c01, type: 3}
   - {fileID: 8300000, guid: 6a6808c1e151bb74cbcec3bef307fab1, type: 3}
   spawnSounds: []
+  dieParticles: {fileID: 198000014159833656, guid: a3768c8a9d1b90d4bb0eb0e4bdbe730c,
+    type: 2}
+  damageParticles: {fileID: 198000011254678926, guid: abb9f519b142e304d9c45b56afa768bc,
+    type: 2}
 --- !u!137 &137751449705913236
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 1

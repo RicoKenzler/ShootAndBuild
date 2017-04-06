@@ -571,7 +571,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1201289100612482}
   m_LocalRotation: {x: 0, y: 0.99976397, z: -0, w: -0.021727562}
-  m_LocalPosition: {x: 1.3975048, y: 0.6315341, z: 3.3537917}
+  m_LocalPosition: {x: -0.120819494, y: 0.34, z: 7.4217997}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4011076462699942}
@@ -896,6 +896,10 @@ MonoBehaviour:
   - {fileID: 8300000, guid: fa635055cbfaf214e9b55a426113e689, type: 3}
   - {fileID: 8300000, guid: 08e4264e6e96edf49a92f3bd5aa75a5b, type: 3}
   spawnSounds: []
+  dieParticles: {fileID: 198000014159833656, guid: a3768c8a9d1b90d4bb0eb0e4bdbe730c,
+    type: 2}
+  damageParticles: {fileID: 198000011254678926, guid: abb9f519b142e304d9c45b56afa768bc,
+    type: 2}
 --- !u!137 &137798146180754670
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 1
