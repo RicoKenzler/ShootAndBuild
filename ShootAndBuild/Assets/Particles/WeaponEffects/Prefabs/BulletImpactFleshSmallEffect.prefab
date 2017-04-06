@@ -101,7 +101,7 @@ Transform:
   m_GameObject: {fileID: 1000010191825552}
   m_LocalRotation: {x: -0, y: 1, z: -0, w: -0.0000001872535}
   m_LocalPosition: {x: 10.645, y: 1.304, z: -0.331}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 4, y: 4, z: 4}
   m_Children:
   - {fileID: 4000010924759790}
   - {fileID: 4000012860679626}
@@ -193,7 +193,7 @@ ParticleSystem:
   m_GameObject: {fileID: 1000012373635516}
   serializedVersion: 5
   lengthInSec: 1
-  speed: 2
+  simulationSpeed: 2
   looping: 0
   prewarm: 0
   playOnAwake: 1
@@ -609,7 +609,7 @@ ParticleSystem:
         m_RotationOrder: 4
       minMaxState: 0
   ShapeModule:
-    serializedVersion: 2
+    serializedVersion: 3
     enabled: 1
     type: 4
     radius: 0.01
@@ -625,10 +625,12 @@ ParticleSystem:
     m_SkinnedMeshRenderer: {fileID: 0}
     m_MeshMaterialIndex: 0
     m_MeshNormalOffset: 0
+    m_MeshScale: 1
     m_UseMeshMaterialIndex: 0
     m_UseMeshColors: 1
     alignToDirection: 0
-    randomDirection: 0
+    randomDirectionAmount: 0
+    sphericalDirectionAmount: 0
   EmissionModule:
     enabled: 1
     serializedVersion: 3
@@ -710,7 +712,6 @@ ParticleSystem:
         m_PostInfinity: 2
         m_RotationOrder: 4
       minMaxState: 0
-    m_CombineMode: 0
     cnt0: 5
     cnt1: 30
     cnt2: 30
@@ -2655,7 +2656,7 @@ ParticleSystem:
   m_GameObject: {fileID: 1000013179401890}
   serializedVersion: 5
   lengthInSec: 1
-  speed: 2
+  simulationSpeed: 2
   looping: 0
   prewarm: 0
   playOnAwake: 1
@@ -3131,7 +3132,7 @@ ParticleSystem:
         m_RotationOrder: 4
       minMaxState: 0
   ShapeModule:
-    serializedVersion: 2
+    serializedVersion: 3
     enabled: 1
     type: 4
     radius: 0.01
@@ -3147,10 +3148,12 @@ ParticleSystem:
     m_SkinnedMeshRenderer: {fileID: 0}
     m_MeshMaterialIndex: 0
     m_MeshNormalOffset: 0
+    m_MeshScale: 1
     m_UseMeshMaterialIndex: 0
     m_UseMeshColors: 1
     alignToDirection: 0
-    randomDirection: 0
+    randomDirectionAmount: 0
+    sphericalDirectionAmount: 0
   EmissionModule:
     enabled: 1
     serializedVersion: 3
@@ -3232,7 +3235,6 @@ ParticleSystem:
         m_PostInfinity: 2
         m_RotationOrder: 4
       minMaxState: 0
-    m_CombineMode: 0
     cnt0: 10
     cnt1: 30
     cnt2: 30
@@ -5255,7 +5257,7 @@ ParticleSystem:
   m_GameObject: {fileID: 1000010191825552}
   serializedVersion: 5
   lengthInSec: 1
-  speed: 1
+  simulationSpeed: 1
   looping: 0
   prewarm: 0
   playOnAwake: 1
@@ -5301,7 +5303,7 @@ ParticleSystem:
     minMaxState: 0
   moveWithTransform: 1
   moveWithCustomTransform: {fileID: 0}
-  scalingMode: 2
+  scalingMode: 0
   randomSeed: -982328193
   InitialModule:
     serializedVersion: 3
@@ -5671,7 +5673,7 @@ ParticleSystem:
         m_RotationOrder: 4
       minMaxState: 0
   ShapeModule:
-    serializedVersion: 2
+    serializedVersion: 3
     enabled: 0
     type: 4
     radius: 0.05200851
@@ -5687,10 +5689,12 @@ ParticleSystem:
     m_SkinnedMeshRenderer: {fileID: 0}
     m_MeshMaterialIndex: 0
     m_MeshNormalOffset: 0
+    m_MeshScale: 1
     m_UseMeshMaterialIndex: 0
     m_UseMeshColors: 1
     alignToDirection: 0
-    randomDirection: 0
+    randomDirectionAmount: 0
+    sphericalDirectionAmount: 0
   EmissionModule:
     enabled: 1
     serializedVersion: 3
@@ -5772,7 +5776,6 @@ ParticleSystem:
         m_PostInfinity: 2
         m_RotationOrder: 4
       minMaxState: 0
-    m_CombineMode: 0
     cnt0: 5
     cnt1: 30
     cnt2: 30
@@ -7729,6 +7732,7 @@ ParticleSystem:
       minMaxState: 0
 --- !u!199 &199000010386466720
 ParticleSystemRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
@@ -7770,6 +7774,7 @@ ParticleSystemRenderer:
   m_NormalDirection: 1
   m_RenderAlignment: 0
   m_Pivot: {x: 0, y: 0, z: 0}
+  m_UseCustomVertexStreams: 1
   m_VertexStreamMask: 31
   m_Mesh: {fileID: 0}
   m_Mesh1: {fileID: 0}
@@ -7777,6 +7782,7 @@ ParticleSystemRenderer:
   m_Mesh3: {fileID: 0}
 --- !u!199 &199000011342179834
 ParticleSystemRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
@@ -7818,6 +7824,7 @@ ParticleSystemRenderer:
   m_NormalDirection: 1
   m_RenderAlignment: 0
   m_Pivot: {x: 0, y: 0, z: 0}
+  m_UseCustomVertexStreams: 0
   m_VertexStreamMask: 27
   m_Mesh: {fileID: 0}
   m_Mesh1: {fileID: 0}
@@ -7825,6 +7832,7 @@ ParticleSystemRenderer:
   m_Mesh3: {fileID: 0}
 --- !u!199 &199000011587409394
 ParticleSystemRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
@@ -7866,6 +7874,7 @@ ParticleSystemRenderer:
   m_NormalDirection: 1
   m_RenderAlignment: 0
   m_Pivot: {x: 0, y: 0, z: 0}
+  m_UseCustomVertexStreams: 0
   m_VertexStreamMask: 27
   m_Mesh: {fileID: 0}
   m_Mesh1: {fileID: 0}

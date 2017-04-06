@@ -898,7 +898,7 @@ MonoBehaviour:
   spawnSounds: []
   dieParticles: {fileID: 198000014159833656, guid: a3768c8a9d1b90d4bb0eb0e4bdbe730c,
     type: 2}
-  damageParticles: {fileID: 198000011254678926, guid: abb9f519b142e304d9c45b56afa768bc,
+  damageParticles: {fileID: 198000011143922816, guid: e5a3d6da48298a0458c1990f58c27069,
     type: 2}
 --- !u!137 &137798146180754670
 SkinnedMeshRenderer:

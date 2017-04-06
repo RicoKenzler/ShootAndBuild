@@ -3,6 +3,8 @@
 public class Shootable : MonoBehaviour
 {
     public AudioClip[] shootSounds;
+	public ParticleSystem shootEffect;
+
     public GameObject projectilePrefab;
     public float shootCooldown = 0.5f;
 
@@ -11,20 +13,11 @@ public class Shootable : MonoBehaviour
 
 	public int damage = 1;
 
-    private float defaultLightIntensity = 0.0f;
     private float lastShootTime = -1000.0f;
-
-    private Light playerLight;
-
-
+	
     void Start()
     {
 		currentCooldown = 0.0f;
-        playerLight = GetComponentInChildren<Light>();
-		if (playerLight)
-		{
-			defaultLightIntensity = playerLight.intensity;
-		}
     }
 
     void Update()
@@ -33,20 +26,6 @@ public class Shootable : MonoBehaviour
         {
             currentCooldown = Mathf.Max(currentCooldown - Time.deltaTime, 0.0f);
         }
-
-        float timeSinceLastShot = Time.time - lastShootTime;
-
-        float flashIntensity = 1.0f - (timeSinceLastShot / flashDuration);
-        flashIntensity *= flashMaxIntensity;
-
-        flashIntensity = Mathf.Max(flashIntensity, 0.0f);
-
-        flashIntensity = flashIntensity * flashIntensity;
-
-		if (playerLight)
-		{
-			playerLight.intensity = defaultLightIntensity + flashIntensity;
-		}
     }
 
     public void Shoot(Quaternion? projectileDirection = null)
@@ -58,8 +37,10 @@ public class Shootable : MonoBehaviour
 
         GameObject projectileContainer = GameObject.Find("Projectiles");
 
+		Vector3 shootHeightOffset = new Vector3(0.0f, 0.5f, 0.0f);
+
         GameObject instance = Instantiate(projectilePrefab, projectileContainer.transform);
-        instance.transform.position = transform.position + new Vector3(0.0f, 0.5f, 0.0f);
+        instance.transform.position = transform.position + shootHeightOffset;
 		instance.transform.rotation = (projectileDirection.HasValue) ? projectileDirection.Value : transform.rotation;
 
         Projectile projectile = instance.GetComponent<Projectile>();
@@ -71,6 +52,17 @@ public class Shootable : MonoBehaviour
         lastShootTime = Time.time;
 
         AudioManager.instance.PlayRandomOneShot(shootSounds, new OneShotParams(transform.position, 0.5f));
+
+		if (shootEffect)
+		{
+			Vector3 towardsEnemy = instance.transform.forward;
+
+			Quaternion rotationTowardsEnemy = Quaternion.FromToRotation(new Vector3(0.0f, 0.0f, 1.0f), towardsEnemy);
+
+					
+
+			ParticleManager.instance.SpawnParticle(shootEffect, gameObject, transform.position + shootHeightOffset, rotationTowardsEnemy, true, 4.0f, true, true);
+		}
     }
 
 	public float currentCooldown
