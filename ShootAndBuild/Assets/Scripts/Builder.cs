@@ -6,6 +6,8 @@ public class Builder : MonoBehaviour
 	public float distance = 2;
 
 	public AudioClip[] buildSounds;
+	public ParticleSystem buildEffect;
+
 	public AudioClip[] noMoneySounds;
 	public AudioClip[] noSpaceSounds;
 
@@ -32,11 +34,16 @@ public class Builder : MonoBehaviour
 
 	private void Build(Vector3 pos)
 	{
-		GameObject instance = Instantiate(towerPrefab.gameObject);
-		instance.transform.position = pos;
+		GameObject newTower = Instantiate(towerPrefab.gameObject);
+		newTower.transform.position = pos;
 
 		AudioManager.instance.PlayRandomOneShot(buildSounds, new OneShotParams(transform.position));
 		
 		towerPrefab.Pay();
+
+		if (buildEffect)
+		{
+			ParticleManager.instance.SpawnParticle(buildEffect, newTower, newTower.transform.position, Quaternion.identity, false, 6.0f, true, false);
+		}
 	}
 }
