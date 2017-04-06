@@ -6,7 +6,7 @@ Material:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: BloodStreamParticle
+  m_Name: BloodStreamParticle Slime
   m_Shader: {fileID: 45, guid: 0000000000000000f000000000000000, type: 0}
   m_ShaderKeywords: _ALPHABLEND_ON _EMISSION _NORMALMAP
   m_LightmapFlags: 1
@@ -94,7 +94,7 @@ Material:
       second: 1
     - first:
         name: _Glossiness
-      second: 0.445
+      second: 0.64
     - first:
         name: _GlossyReflections
       second: 1
@@ -131,10 +131,10 @@ Material:
     m_Colors:
     - first:
         name: _Color
-      second: {r: 0.35294116, g: 0, b: 0, a: 1}
+      second: {r: 0.048172586, g: 0.34641978, b: 0.5955882, a: 0.434}
     - first:
         name: _EmissionColor
-      second: {r: 0.1, g: 0, b: 0, a: 1}
+      second: {r: 0, g: 0, b: 0.04, a: 1}
     - first:
         name: _SpecColor
       second: {r: 0.058823526, g: 0.058823526, b: 0.058823526, a: 1}
