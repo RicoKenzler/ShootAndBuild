@@ -7,6 +7,7 @@ public class HealthBar : MonoBehaviour
     public int yOffset = -20;
 	public bool isBackgroundDuplicate = false;
 	public float healthSmoothAmount = 0.9f;
+	public bool hasDynamicColor = false;
 
     private Vector2 originalSize;
 	private bool alwaysShowHealth = false;
@@ -54,22 +55,27 @@ public class HealthBar : MonoBehaviour
 		uiPos.x -= (originalSize.x - rect.sizeDelta.x) / 2;
 		rect.anchoredPosition = uiPos;
 		
+		
 
-        Color colorFullHealth =     new Color(0.0f, 1.0f, 0.0f, 1.0f);
-        Color colorMediumHealth =   new Color(1.0f, 1.0f, 0.0f, 1.0f);
-        Color colorNoHealth =       new Color(1.0f, 0.0f, 0.0f, 1.0f);
+		if (hasDynamicColor)
+		{
+			Color desiredColor;
+			Color colorFullHealth =     new Color(0.0f, 1.0f, 0.0f, 1.0f);
+			Color colorMediumHealth =   new Color(1.0f, 1.0f, 0.0f, 1.0f);
+			Color colorNoHealth =       new Color(1.0f, 0.0f, 0.0f, 1.0f);
 
-        Color desiredColor;
-        if (smoothedHealthFactor < 0.5f)
-        {
-            desiredColor = Color.Lerp(colorNoHealth, colorMediumHealth, smoothedHealthFactor * 2.0f);
-        }
-        else
-        {
-            desiredColor = Color.Lerp(colorMediumHealth, colorFullHealth, (smoothedHealthFactor - 0.5f) * 2.0f);
-        }
+        
+			if (smoothedHealthFactor < 0.5f)
+			{
+				desiredColor = Color.Lerp(colorNoHealth, colorMediumHealth, smoothedHealthFactor * 2.0f);
+			}
+			else
+			{
+				desiredColor = Color.Lerp(colorMediumHealth, colorFullHealth, (smoothedHealthFactor - 0.5f) * 2.0f);
+			}
 
-        GetComponent<Image>().color = desiredColor;
+			GetComponent<Image>().color = desiredColor;
+		}
     }
 
 }
