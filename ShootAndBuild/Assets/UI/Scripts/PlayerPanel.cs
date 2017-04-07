@@ -19,6 +19,7 @@ public class PlayerPanel : MonoBehaviour
 	private float	displayedHealthRelative		= 0.0f;
 	bool			displayedPlayerAlive		= false;
 
+	public bool     useDynamicHealthColor		= false;
 	public float	healthBarSmoothness			= 0.8f;
 
 	private Attackable assignedAttackable;
@@ -78,19 +79,24 @@ public class PlayerPanel : MonoBehaviour
 			smoothRelativeHealth = newHealthRelative;
 		}
 
-		Color colorFullHealth =     new Color(0.0f, 1.0f, 0.0f, 1.0f);
-        Color colorMediumHealth =   new Color(1.0f, 1.0f, 0.0f, 1.0f);
-        Color colorNoHealth =       new Color(1.0f, 0.0f, 0.0f, 1.0f);
+		Color desiredColor = new Color(1.0f, 0.0f, 0.0f);
 
-        Color desiredColor;
-        if (smoothRelativeHealth < 0.5f)
-        {
-            desiredColor = Color.Lerp(colorNoHealth, colorMediumHealth, smoothRelativeHealth * 2.0f);
-        }
-        else
-        {
-            desiredColor = Color.Lerp(colorMediumHealth, colorFullHealth, (smoothRelativeHealth - 0.5f) * 2.0f);
-        }
+		if (useDynamicHealthColor)
+		{
+			Color colorFullHealth =     new Color(0.0f, 1.0f, 0.0f, 1.0f);
+			Color colorMediumHealth =   new Color(1.0f, 1.0f, 0.0f, 1.0f);
+			Color colorNoHealth =       new Color(1.0f, 0.0f, 0.0f, 1.0f);
+
+			if (smoothRelativeHealth < 0.5f)
+			{
+				desiredColor = Color.Lerp(colorNoHealth, colorMediumHealth, smoothRelativeHealth * 2.0f);
+			}
+			else
+			{
+				desiredColor = Color.Lerp(colorMediumHealth, colorFullHealth, (smoothRelativeHealth - 0.5f) * 2.0f);
+		   }
+		}
+		
 		
 		healthBarFillImage.color		= desiredColor;
 		healthBarFillImage.fillAmount	= smoothRelativeHealth;
