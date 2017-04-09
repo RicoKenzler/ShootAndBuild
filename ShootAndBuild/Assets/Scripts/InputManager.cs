@@ -16,12 +16,12 @@ public enum AxisType
 
 public enum ButtonType
 {
-    RightBumper,
+    Unused,
 	Taunt,
 	Build,
 
-	LeftTrigger,
-	RightTrigger,
+	UseItem,
+	Shoot,
 }
 
 public enum InputMethod
@@ -41,6 +41,8 @@ public class InputManager : MonoBehaviour
 
 	private Dictionary<PlayerID, InputPlayer> activePlayersById		= new Dictionary<PlayerID, InputPlayer>();
     private Dictionary<InputMethod, PlayerID> inputMethodToPlayerID = new Dictionary<InputMethod, PlayerID>();
+
+	private const float TRIGGER_DOWN_THRESHOLD = 0.3f;
 
 	bool UsesDebugEmulation()
 	{
@@ -143,10 +145,10 @@ public class InputManager : MonoBehaviour
 				}
 				else
 				{
-					axisValue = Input.GetAxisRaw(infos.buttonIdentifier);
+					axisValue = Input.GetAxisRaw(infos.buttonIdentifier); 
 				}
 
-				bool isButtonDown	= (axisValue > 0.3f);
+				bool isButtonDown	= (axisValue > TRIGGER_DOWN_THRESHOLD);
 
 				infos.wasJustPressedState	= (!infos.isDownState && isButtonDown);
 				infos.isDownState			= isButtonDown;
@@ -212,15 +214,6 @@ public class InputManager : MonoBehaviour
 	{
 		
 	}
-	
-	private void UpdateVibrations()
-	{
-		foreach(KeyValuePair<PlayerID, InputPlayer> player in activePlayersById)
-		{
-			player.Value.UpdateVibration();
-			player.Value.UpdateButtonStates();
-		} 
-	}
 
 	public InputMethod? IsButtonDownForUnusedInputMethod(ButtonType buttonType)
 	{
@@ -257,9 +250,13 @@ public class InputManager : MonoBehaviour
     }
 
 	// Update is called once per frame
-	void Update ()
+	void Update()
 	{
-		UpdateVibrations();
+		foreach(KeyValuePair<PlayerID, InputPlayer> player in activePlayersById)
+		{
+			player.Value.UpdateVibration();
+			player.Value.UpdateButtonStates();
+		} 
 	}
 
 	private InputPlayer GetInputPlayer(PlayerID playerID)
@@ -318,17 +315,17 @@ public class InputManager : MonoBehaviour
     {
         switch (buttonType)
         {
-            case ButtonType.RightBumper:
-                return "Right Bumper";
+            case ButtonType.Unused:
+                return "Unused";
 			case ButtonType.Taunt:
 				return "Taunt";
 			case ButtonType.Build:
-				return "Unused";
+				return "Build";
 
-			case ButtonType.LeftTrigger:
-				return "Left Trigger";
-			case ButtonType.RightTrigger:
-				return "Right Trigger";
+			case ButtonType.UseItem:
+				return "UseItem";
+			case ButtonType.Shoot:
+				return "Shoot";
         }
 
         return "InvalidButton ";
@@ -369,7 +366,9 @@ public class InputManager : MonoBehaviour
 			buttonIdentifier = ApplyDebugEmulationOnString(buttonIdentifier);
 		}
 
-		return Input.GetButton(buttonIdentifier);
+		float axisValue = Input.GetAxisRaw(buttonIdentifier);
+
+		return (axisValue > TRIGGER_DOWN_THRESHOLD);
     }
 
 	public bool WasButtonJustPressed(PlayerID playerID, ButtonType buttonType)

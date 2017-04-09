@@ -15,6 +15,8 @@ public class PlayerManager : MonoBehaviour
 {
     public GameObject playerPrefab;
 	
+	private ButtonType spawnButton = ButtonType.Taunt;
+
     class Player
     {
         public GameObject playerObject;
@@ -38,7 +40,7 @@ public class PlayerManager : MonoBehaviour
 
     private void TrySpawnNewPlayers()
     {
-		InputMethod? buttonPresser = InputManager.instance.IsButtonDownForUnusedInputMethod(ButtonType.RightBumper);
+		InputMethod? buttonPresser = InputManager.instance.IsButtonDownForUnusedInputMethod(spawnButton);
 		
 		if (!buttonPresser.HasValue)
 		{
@@ -72,7 +74,7 @@ public class PlayerManager : MonoBehaviour
 				return;
 			}
 
-			if (InputManager.instance.WasButtonJustPressed(playerPair.Key, ButtonType.RightBumper))
+			if (InputManager.instance.WasButtonJustPressed(playerPair.Key, spawnButton))
 			{
 				RespawnDeadPlayer(playerPair.Key);
 			}
