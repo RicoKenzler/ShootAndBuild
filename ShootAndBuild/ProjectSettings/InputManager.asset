@@ -470,7 +470,7 @@ InputManager:
     axis: 10
     joyNum: 9
   - serializedVersion: 3
-    m_Name: Right Trigger Keyboard
+    m_Name: Left Trigger Keyboard
     descriptiveName: 
     descriptiveNegativeName: 
     negativeButton: 

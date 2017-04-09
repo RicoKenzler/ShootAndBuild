@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System;
 using UnityEngine;
 
 using XInputDotNetPure;
@@ -13,17 +14,14 @@ public enum AxisType
     RightAxisV,
 }
 
-public enum TriggerType
-{
-	LeftTrigger,
-	RightTrigger
-}
-
 public enum ButtonType
 {
     RightBumper,
 	Taunt,
-	Build
+	Build,
+
+	LeftTrigger,
+	RightTrigger,
 }
 
 public enum InputMethod
@@ -44,13 +42,116 @@ public class InputManager : MonoBehaviour
 	private Dictionary<PlayerID, InputPlayer> activePlayersById		= new Dictionary<PlayerID, InputPlayer>();
     private Dictionary<InputMethod, PlayerID> inputMethodToPlayerID = new Dictionary<InputMethod, PlayerID>();
 
+	bool UsesDebugEmulation()
+	{
+		return (debugKeyboardEmulates != InputMethod.Keyboard);
+	}
+
+	string ApplyDebugEmulationOnString(string inputIdentifier)
+	{
+		Debug.Assert(debugKeyboardEmulates != InputMethod.Keyboard);
+
+		// For debugging: switch keyboard with emulated inputMethod
+		string strEmulated = InputMethodToPostfix(debugKeyboardEmulates);
+		string strKeyboard = InputMethodToPostfix(InputMethod.Keyboard);
+
+		if (inputIdentifier.Contains(strEmulated))
+		{
+			return inputIdentifier.Replace(strEmulated, strKeyboard);
+		}
+		else
+		{
+			return inputIdentifier.Replace(strKeyboard, strEmulated);
+		}
+	}
+	
 	class InputPlayer
 	{
+		// Why do we track button states on our own?
+		// 1) we want to treat triggers (=axes) and buttons (=buttons) the same way, but UnityInputManager has no concept of
+		//    WasTriggerJustPressed
+		// 2) so we do not need to concatenate strings on the fly
+		class PlayerButtonInfos
+		{
+			public string	buttonIdentifier;
+			public bool		wasJustPressedState;
+			public bool		isDownState;
+
+			public PlayerButtonInfos(string identifier)
+			{
+				buttonIdentifier		= identifier;
+				wasJustPressedState		= false;
+				isDownState				= false;
+			}
+		}
+
+		private Dictionary<ButtonType, PlayerButtonInfos> buttonInfos = new Dictionary<ButtonType, PlayerButtonInfos>();
+
 		public InputMethod inputMethod	= InputMethod.Keyboard;
 		private float vibrationAmountR	= 0.0f;
 		private float vibrationAmountL	= 0.0f;
 		private float vibrateUntil		= 0.0f;
 		private bool vibrationSleep		= true;
+
+		public void InitButtonStates()
+		{
+			buttonInfos.Clear();
+
+			foreach (ButtonType buttonType in System.Enum.GetValues(typeof(ButtonType)))
+			{
+				string inputIdentifier = InputManager.instance.ButtonToPrefix(buttonType) + InputManager.instance.InputMethodToPostfix(inputMethod);
+				buttonInfos[buttonType] = new PlayerButtonInfos(inputIdentifier);
+			}
+
+			UpdateButtonStates();
+		}
+
+		PlayerButtonInfos GetButtonInfos(ButtonType buttonType)
+		{
+			PlayerButtonInfos outState = null;
+			if (!buttonInfos.TryGetValue(buttonType, out outState))
+			{
+				Debug.Log("Trying to access unknown button " + buttonType);
+			}
+
+			return outState;
+		}
+
+		public bool IsButtonDown(ButtonType buttonType)
+		{
+			PlayerButtonInfos buttonInfos = GetButtonInfos(buttonType);
+			return buttonInfos.isDownState;
+		}
+
+		public bool WasButtonJustPressed(ButtonType buttonType)
+		{
+			PlayerButtonInfos buttonInfos = GetButtonInfos(buttonType);
+			return buttonInfos.wasJustPressedState;
+		}
+
+		public void UpdateButtonStates()
+		{
+			foreach (KeyValuePair<ButtonType, PlayerButtonInfos> buttonInfoPair in buttonInfos)
+			{
+				PlayerButtonInfos infos = buttonInfoPair.Value;
+
+				float axisValue;
+
+				if (InputManager.instance.UsesDebugEmulation())
+				{
+					axisValue = Input.GetAxisRaw(InputManager.instance.ApplyDebugEmulationOnString(infos.buttonIdentifier));
+				}
+				else
+				{
+					axisValue = Input.GetAxisRaw(infos.buttonIdentifier);
+				}
+
+				bool isButtonDown	= (axisValue > 0.3f);
+
+				infos.wasJustPressedState	= (!infos.isDownState && isButtonDown);
+				infos.isDownState			= isButtonDown;
+			}
+		}
 
 		public void StartVibration(float amountL, float amountR, float duration)
 		{
@@ -117,6 +218,7 @@ public class InputManager : MonoBehaviour
 		foreach(KeyValuePair<PlayerID, InputPlayer> player in activePlayersById)
 		{
 			player.Value.UpdateVibration();
+			player.Value.UpdateButtonStates();
 		} 
 	}
 
@@ -130,7 +232,7 @@ public class InputManager : MonoBehaviour
                 continue;
             }
 
-            if (WasButtonJustPressed(inputMethod, buttonType))
+            if (IsButtonDown(inputMethod, buttonType))
             {
                 return inputMethod;
             }
@@ -143,6 +245,7 @@ public class InputManager : MonoBehaviour
 	{
 		InputPlayer newInputPlayer = new InputPlayer();
 		newInputPlayer.inputMethod = inputMethod;
+		newInputPlayer.InitButtonStates();
 
 		inputMethodToPlayerID[inputMethod] = playerID;
 		activePlayersById[playerID] = newInputPlayer;
@@ -175,18 +278,8 @@ public class InputManager : MonoBehaviour
         return GetInputPlayer(playerID).inputMethod;
     }
 
-    private string InputMethodToPostfix(InputMethod inputMethod)
+    public string InputMethodToPostfix(InputMethod inputMethod)
     {
-		// for debugging other players: switch keyboard with keyboard emulation
-		if (inputMethod == debugKeyboardEmulates)
-		{
-			inputMethod = InputMethod.Keyboard;
-		}
-		else if (inputMethod == InputMethod.Keyboard)
-		{
-			inputMethod = debugKeyboardEmulates;
-		}
-
         switch (inputMethod)
         {
             case InputMethod.Keyboard:
@@ -221,20 +314,7 @@ public class InputManager : MonoBehaviour
         return "InvalidAxis";
     }
 
-	private string TriggerToPrefix(TriggerType triggerType)
-	{
-		switch (triggerType)
-		{
-			case TriggerType.LeftTrigger:
-				return "Left Trigger";
-			case TriggerType.RightTrigger:
-				return "Right Trigger";
-		}
-
-		return "Invalid Trigger";
-	}
-
-    private string ButtonToPrefix(ButtonType buttonType)
+    public string ButtonToPrefix(ButtonType buttonType)
     {
         switch (buttonType)
         {
@@ -244,6 +324,11 @@ public class InputManager : MonoBehaviour
 				return "Taunt";
 			case ButtonType.Build:
 				return "Unused";
+
+			case ButtonType.LeftTrigger:
+				return "Left Trigger";
+			case ButtonType.RightTrigger:
+				return "Right Trigger";
         }
 
         return "InvalidButton ";
@@ -253,6 +338,11 @@ public class InputManager : MonoBehaviour
     {
         string inputName = AxisToPrefix(axisType) + InputMethodToPostfix(inputMethod);
 
+		if (UsesDebugEmulation())
+		{
+			inputName = ApplyDebugEmulationOnString(inputName);
+		}
+
         return Input.GetAxis(inputName);
     }
 
@@ -261,55 +351,32 @@ public class InputManager : MonoBehaviour
         InputMethod inputMethod = GetInputMethod(playerID);
 
         return GetAxisValue(inputMethod, axisType);
-    }
-
-    private bool IsButtonDown(InputMethod inputMethod, ButtonType buttonType)
-    {
-        string inputName = ButtonToPrefix(buttonType) + InputMethodToPostfix(inputMethod);
-
-        return Input.GetButton(inputName);
-    }
-
-	private bool WasButtonJustPressed(InputMethod inputMethod, ButtonType buttonType)
-	{
-		string inputName = ButtonToPrefix(buttonType) + InputMethodToPostfix(inputMethod);
-
-        return Input.GetButtonDown(inputName);
 	}
-
-	private float GetTriggerValue(InputMethod inputMethod, TriggerType triggerType)
-	{
-		string inputName = TriggerToPrefix(triggerType) + InputMethodToPostfix(inputMethod);
-
-        return Input.GetAxis(inputName);
-	}
-
-	public bool IsTriggerPulled(PlayerID playerID, TriggerType triggerType)
-	{
-		InputMethod inputMethod = GetInputMethod(playerID);
-
-        return (GetTriggerValue(inputMethod, triggerType) > 0.25f);
-	}
-
-	public float GetTriggerValue(PlayerID playerID, TriggerType triggerType)
-    {
-        InputMethod inputMethod = GetInputMethod(playerID);
-
-        return GetTriggerValue(inputMethod, triggerType);
-    }
 
     public bool IsButtonDown(PlayerID playerID, ButtonType buttonType)
     {
-        InputMethod inputMethod = GetInputMethod(playerID);
+		InputPlayer player = GetInputPlayer(playerID);
 
-        return IsButtonDown(inputMethod, buttonType);
+		return player.IsButtonDown(buttonType);
+    }
+
+    public bool IsButtonDown(InputMethod inputMethod, ButtonType buttonType)
+    {
+		string buttonIdentifier = ButtonToPrefix(buttonType) + InputMethodToPostfix(inputMethod);
+
+		if (UsesDebugEmulation())
+		{
+			buttonIdentifier = ApplyDebugEmulationOnString(buttonIdentifier);
+		}
+
+		return Input.GetButton(buttonIdentifier);
     }
 
 	public bool WasButtonJustPressed(PlayerID playerID, ButtonType buttonType)
 	{
-		InputMethod inputMethod = GetInputMethod(playerID);
+		InputPlayer player = GetInputPlayer(playerID);
 
-        return WasButtonJustPressed(inputMethod, buttonType);
+		return player.WasButtonJustPressed(buttonType);
 	}
 
 	public void SetVibration(PlayerID playerID, float amountLeft, float amountRight, float duration)

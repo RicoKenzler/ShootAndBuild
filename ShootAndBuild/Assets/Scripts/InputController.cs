@@ -82,7 +82,7 @@ public class InputController : MonoBehaviour
         // Buttons
         /////////////////////////////////////////
         bool shootButtonPressed  = InputManager.instance.IsButtonDown(playerID, ButtonType.RightBumper);
-		bool shootTriggerPressed = InputManager.instance.IsTriggerPulled(playerID, TriggerType.RightTrigger);
+		bool shootTriggerPressed = InputManager.instance.IsButtonDown(playerID, ButtonType.RightTrigger);
 
         if (shootable != null && (shootButtonPressed || shootTriggerPressed))
         {
