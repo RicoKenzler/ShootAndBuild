@@ -171,7 +171,7 @@ public class Attackable : MonoBehaviour
 				rightAmount = Mathf.Clamp(rightAmount, 0.0f, 1.0f);
 			}
 	
-			PlayerManager.instance.SetVibration(inputController.playerID, leftAmount, rightAmount, 0.3f);
+			InputManager.instance.SetVibration(inputController.playerID, leftAmount, rightAmount, 0.3f);
 		}
 
 		if (damageParticles)

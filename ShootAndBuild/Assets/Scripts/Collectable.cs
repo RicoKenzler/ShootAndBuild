@@ -52,8 +52,6 @@ public class Collectable : MonoBehaviour
     {
 		AudioManager.instance.PlayRandomOneShot(collectSounds, new OneShotParams(transform.position));
 
-		//PlayerManager.instance.SetVibration(player.playerID, 1.0f, 1.0f, 0.10f);
-
 		bool usesSharedInventory = ItemManager.instance.UsesSharedInventory(itemType);
 
 		Inventory inventory = usesSharedInventory ? Inventory.sharedInventoryInstance : player.gameObject.GetComponent<Inventory>();

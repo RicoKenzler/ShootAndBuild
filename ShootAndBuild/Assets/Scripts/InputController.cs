@@ -37,10 +37,10 @@ public class InputController : MonoBehaviour
         /////////////////////////////////////////
         // Movement
         /////////////////////////////////////////
-        float leftHorizontal    =  PlayerManager.instance.GetAxisValue(playerID, AxisType.LeftAxisH);
-        float leftVertical      =  PlayerManager.instance.GetAxisValue(playerID, AxisType.LeftAxisV);
-        float rightHorizontal   =  PlayerManager.instance.GetAxisValue(playerID, AxisType.RightAxisH);
-        float rightVertical     =  PlayerManager.instance.GetAxisValue(playerID, AxisType.RightAxisV);
+        float leftHorizontal    =  InputManager.instance.GetAxisValue(playerID, AxisType.LeftAxisH);
+        float leftVertical      =  InputManager.instance.GetAxisValue(playerID, AxisType.LeftAxisV);
+        float rightHorizontal   =  InputManager.instance.GetAxisValue(playerID, AxisType.RightAxisH);
+        float rightVertical     =  InputManager.instance.GetAxisValue(playerID, AxisType.RightAxisV);
 
         Vector2 leftInputVector = new Vector2(leftHorizontal, leftVertical);
         float leftInputVectorLength = leftInputVector.magnitude;
@@ -81,20 +81,20 @@ public class InputController : MonoBehaviour
         /////////////////////////////////////////
         // Buttons
         /////////////////////////////////////////
-        bool shootButtonPressed  = PlayerManager.instance.IsButtonDown(playerID, ButtonType.RightBumper);
-		bool shootTriggerPressed = PlayerManager.instance.IsTriggerPulled(playerID, TriggerType.RightTrigger);
+        bool shootButtonPressed  = InputManager.instance.IsButtonDown(playerID, ButtonType.RightBumper);
+		bool shootTriggerPressed = InputManager.instance.IsTriggerPulled(playerID, TriggerType.RightTrigger);
 
         if (shootable != null && (shootButtonPressed || shootTriggerPressed))
         {
             shootable.Shoot();
         }
 
-		if (PlayerManager.instance.WasButtonJustPressed(playerID, ButtonType.Taunt))
+		if (InputManager.instance.WasButtonJustPressed(playerID, ButtonType.Taunt))
         {
 			tauntController.PlayTaunt();
 		}
 
-		if (PlayerManager.instance.WasButtonJustPressed(playerID, ButtonType.Build))
+		if (InputManager.instance.WasButtonJustPressed(playerID, ButtonType.Build))
 		{
 			builder.TryBuild();
 		}

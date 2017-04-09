@@ -35,8 +35,6 @@ public class ParticleManager : MonoBehaviour
 		newObject.transform.rotation = rotation;
 		newObject.name = particleAsset.gameObject.name + "(" + spawner.name + ")";
 
-		ParticleSystem particle = newObject.GetComponent<ParticleSystem>();
-
 		Collider collider = spawner.GetComponent<Collider>();
 
 		Vector3 bboxExtents = collider.bounds.extents;
