@@ -8,11 +8,13 @@ public class Grenade : MonoBehaviour
 	public float radius = 8.0f;
 
 	private float explodeTimer = 0.0f;
+	private float radiusSquared = 0.0f;
 
 
 	void Start()
 	{
 		explodeTimer = timeToExplode;
+		radiusSquared = radius * radius;
 	}
 
 	void Update()
@@ -31,7 +33,19 @@ public class Grenade : MonoBehaviour
 
 		ParticleManager.instance.SpawnParticle(explosionParticles, gameObject, transform.position, Quaternion.identity, false, 10.0f, false, false);
 
+		Vector3 selfPos = transform.position;
 
+		foreach (Attackable attackable in AttackableManager.instance.allAttackables)
+		{
+			float distanceSq = (attackable.transform.position - selfPos).sqrMagnitude;
+
+			if (distanceSq < radiusSquared)
+			{
+				float dist = Mathf.Sqrt(distanceSq);
+				float damage = dist / radius * maxDamage;
+				attackable.DealDamage((int)damage, gameObject);
+			}
+		}
 
 		Destroy(gameObject);
 	}

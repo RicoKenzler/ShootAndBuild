@@ -18,7 +18,8 @@ public class Attackable : MonoBehaviour
     private int currentHealth = 0;
 	private InputController inputController;
 
-    void Start()
+
+	void Start()
     {
 		currentHealth = maxHealth;
 
@@ -27,6 +28,8 @@ public class Attackable : MonoBehaviour
 		PlaySpawnSound();
 
 		inputController = GetComponent<InputController>();
+
+		AttackableManager.instance.RegisterEnemy(this, false);
     }
 
 	public void RegisterHealthBar(bool unregister = false)
@@ -49,7 +52,9 @@ public class Attackable : MonoBehaviour
     void OnDestroy()
     {
 		RegisterHealthBar(true);
-    }
+
+		AttackableManager.instance.RegisterEnemy(this, true);
+	}
 
 	private void Die(GameObject lastDamageDealer)
 	{
