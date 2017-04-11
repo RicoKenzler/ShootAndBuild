@@ -23,7 +23,59 @@ public class EnemyBehaviour : MonoBehaviour
             animationController["idle"].speed = 1;
             animationController.Play();
         }
+
+		EnemyManager.instance.RegisterEnemy(this, false);
+		transform.SetParent(EnemyManager.instance.transform);
     }
+
+	void OnDestroy()
+	{
+		EnemyManager.instance.RegisterEnemy(this, true);
+	}
+
+	GameObject GetNearestPlayer(out float distSq)
+	{
+		Vector3 selfPos = transform.position;
+
+		GameObject bestPlayer = null;
+		float bestDistanceSq = float.MaxValue;
+
+		foreach(GameObject player in PlayerManager.instance.allAlivePlayers)
+		{
+			float distanceSq = (player.transform.position - selfPos).sqrMagnitude;
+
+			if (distanceSq < bestDistanceSq)
+			{
+				bestDistanceSq = distanceSq;
+				bestPlayer = player;
+			}
+		}
+
+		distSq = bestDistanceSq;
+		return bestPlayer;
+	}
+
+	GameObject GetNearestBuilding(out float distSq)
+	{
+		Vector3 selfPos = transform.position;
+
+		GameObject bestBuilding = null;
+		float bestDistanceSq = float.MaxValue;
+
+		foreach(Building building in BuildingManager.instance.allBuildings)
+		{
+			float distanceSq = (building.gameObject.transform.position - selfPos).sqrMagnitude;
+
+			if (distanceSq < bestDistanceSq)
+			{
+				bestDistanceSq = distanceSq;
+				bestBuilding = building.gameObject;
+			}
+		}
+
+		distSq = bestDistanceSq;
+		return bestBuilding;
+	}
 
     void Update()
     {
@@ -32,9 +84,14 @@ public class EnemyBehaviour : MonoBehaviour
             currentAttackCooldown = Mathf.Max(currentAttackCooldown - Time.deltaTime, 0);
         }
 
-        GameObject nearestPlayer = PlayerManager.instance.GetNearestPlayer(transform.position);
+		float playerDistanceSq;
+		float buildingDistanceSq;
+        GameObject nearestPlayer	= GetNearestPlayer(out playerDistanceSq);
+		GameObject nearestBuilding	= GetNearestBuilding(out buildingDistanceSq);
 
-        if (!nearestPlayer)
+		GameObject nearestTarget = playerDistanceSq < buildingDistanceSq ? nearestPlayer : nearestBuilding;
+
+        if (!nearestTarget)
         {
 			if (!animationController.IsPlaying("attack"))
 			{
@@ -45,7 +102,7 @@ public class EnemyBehaviour : MonoBehaviour
             return;
         }
 
-        Vector3 direction = (nearestPlayer.transform.position - transform.position);
+        Vector3 direction = (nearestTarget.transform.position - transform.position);
 		float distToPlayer = direction.magnitude;
 
 		if (distToPlayer == 0.0f)
@@ -58,7 +115,7 @@ public class EnemyBehaviour : MonoBehaviour
 			direction /= distToPlayer;
 		}
 
-        transform.LookAt(nearestPlayer.transform);
+        transform.LookAt(nearestTarget.transform);
 
         if (distToPlayer > attackDistance)
         {
@@ -68,7 +125,7 @@ public class EnemyBehaviour : MonoBehaviour
         else if (currentAttackCooldown == 0)
         {
             currentAttackCooldown = attackCooldown;
-            nearestPlayer.GetComponent<Attackable>().DealDamage(damage, gameObject);
+            nearestTarget.GetComponent<Attackable>().DealDamage(damage, gameObject);
 
             if (animationController)
             {

@@ -21,7 +21,7 @@ public class EnemySpawner : MonoBehaviour
         {
 			totalSpawnCount++;
             nextSpawnDuration = spawnInterval;
-            GameObject instance = Instantiate(enemyPrefab, gameObject.transform);
+            GameObject instance = Instantiate(enemyPrefab);
             instance.transform.position = transform.position;
 			instance.name = enemyPrefab.name + " " + totalSpawnCount;
         }

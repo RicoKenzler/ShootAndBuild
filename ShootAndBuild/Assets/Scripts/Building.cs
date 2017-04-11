@@ -9,13 +9,18 @@ public class Building : MonoBehaviour
 	// Use this for initialization
 	void Start ()
 	{
-		
+		BuildingManager.instance.RegisterBuilding(this, false);
 	}
 	
 	// Update is called once per frame
 	void Update ()
 	{
 		
+	}
+
+	void OnDestroy()
+	{
+		BuildingManager.instance.RegisterBuilding(this, true);
 	}
 
 	public void Pay()

@@ -7,7 +7,6 @@ public class HealthBarManager : MonoBehaviour
 
     private List<HealthBar> healthBars = new List<HealthBar>();
 
-
     void Awake()
     {
         instance = this;

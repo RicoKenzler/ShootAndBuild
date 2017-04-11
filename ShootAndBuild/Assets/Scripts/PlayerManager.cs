@@ -126,33 +126,10 @@ public class PlayerManager : MonoBehaviour
 
 		InputManager.instance.SetVibration(playerID, 1.0f, 1.0f, 0.8f);
 
-		allAlivePlayers.Remove(player.playerObject);
+		bool removed = allAlivePlayers.Remove(player.playerObject);
+
+		Debug.Assert(removed);
     }
-
-	public GameObject GetNearestPlayer(Vector3 position)
-	{
-		GameObject bestPlayer = null;
-		float bestDistanceSq = float.MaxValue;
-
-		foreach(KeyValuePair<PlayerID, Player> player in activePlayersById)
-		{
-			if (!player.Value.isAlive)
-			{
-				continue;
-			}
-
-			GameObject playerObject = player.Value.playerObject;
-			float distanceSq = (playerObject.transform.position - position).sqrMagnitude;
-
-			if (distanceSq < bestDistanceSq)
-			{
-				bestDistanceSq = distanceSq;
-				bestPlayer = playerObject;
-			}
-		}
-
-		return bestPlayer;
-	}
 
     private void SpawnNewPlayer(PlayerID playerID)
     {
