@@ -34,7 +34,7 @@ public class GlobalPanel : MonoBehaviour
 
 		if (newLivesAmount != lastLivesAmount)
 		{
-			lifesAmountText.text = newLivesAmount.ToString();
+			lifesAmountText.text = newLivesAmount.ToString() + "  Lifes";
 			lastLivesAmount = newLivesAmount;
 		}
 	}
