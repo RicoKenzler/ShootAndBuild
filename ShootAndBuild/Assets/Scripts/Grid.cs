@@ -3,8 +3,6 @@ using UnityEngine;
 
 public class Grid : MonoBehaviour
 {
-	private static Vector3 epsilon = new Vector3(0.001f, 0, 0.001f);
-
 	public float resolution = 0.5f;
 	public int size = 10;
 

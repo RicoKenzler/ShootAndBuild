@@ -35,25 +35,31 @@ public class ParticleManager : MonoBehaviour
 		newObject.transform.rotation = rotation;
 		newObject.name = particleAsset.gameObject.name + "(" + spawner.name + ")";
 
-		Collider collider = spawner.GetComponent<Collider>();
-
-		Vector3 bboxExtents = collider.bounds.extents;
-		
-		float scale = bboxExtents.x + bboxExtents.y + bboxExtents.z;
-		scale /= 3.0f;
-
 		if (scaleByParentSize)
 		{
+			float scale = GetScale(spawner);
 			Vector3 assetScale = particleAsset.transform.localScale;
 			newObject.transform.localScale = assetScale * scale;
 		}
 
 		if (offsetToOutside)
 		{
+			float scale = GetScale(spawner);
 			newObject.transform.position = newObject.transform.position + scale * newObject.transform.forward;
 		}
 
 		// unfortunately it's not trivial to get the particles duration :(
 		Destroy(newObject, lifetime);
+	}
+
+	private float GetScale(GameObject spawner)
+	{
+		Collider collider = spawner.GetComponent<Collider>();
+		Vector3 bboxExtents = collider.bounds.extents;
+
+		float scale = bboxExtents.x + bboxExtents.y + bboxExtents.z;
+		scale /= 3.0f;
+
+		return scale;
 	}
 }

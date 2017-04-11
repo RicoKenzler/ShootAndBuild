@@ -56,8 +56,6 @@ public class Shootable : MonoBehaviour
 
 			Quaternion rotationTowardsEnemy = Quaternion.FromToRotation(new Vector3(0.0f, 0.0f, 1.0f), towardsEnemy);
 
-					
-
 			ParticleManager.instance.SpawnParticle(shootEffect, gameObject, transform.position + shootHeightOffset, rotationTowardsEnemy, true, 4.0f, true, true);
 		}
     }

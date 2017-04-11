@@ -12,6 +12,7 @@ public class InputController : MonoBehaviour
 	private TauntController tauntController;
 	private Shootable		shootable;
 	private Builder			builder;
+	private Throwable		throwable;
 
 	void Start()
 	{
@@ -28,6 +29,7 @@ public class InputController : MonoBehaviour
 		tauntController	= GetComponent<TauntController>();
 		shootable		= GetComponent<Shootable>();
 		builder			= GetComponent<Builder>();
+		throwable		= GetComponent<Throwable>();
 	}
 
 	//--------------------------------------------------------------------------------------------------
@@ -81,13 +83,18 @@ public class InputController : MonoBehaviour
         /////////////////////////////////////////
         // Buttons
         /////////////////////////////////////////
-        bool shootButtonPressed  = InputManager.instance.IsButtonDown(playerID, ButtonType.Unused);
+        bool useItemButtonPressed  = InputManager.instance.IsButtonDown(playerID, ButtonType.UseItem);
 		bool shootTriggerPressed = InputManager.instance.IsButtonDown(playerID, ButtonType.Shoot);
 
-        if (shootable != null && (shootButtonPressed || shootTriggerPressed))
+        if (shootable != null && shootTriggerPressed)
         {
             shootable.Shoot();
         }
+
+		if (throwable != null && useItemButtonPressed)
+		{
+			throwable.Throw();
+		}
 
 		if (InputManager.instance.WasButtonJustPressed(playerID, ButtonType.Taunt))
         {
@@ -120,7 +127,7 @@ public class InputController : MonoBehaviour
                 }
             }
 
-            if (shootButtonPressed)
+            if (useItemButtonPressed)
             {
                 animationController["attack"].speed = 2;
                 animationController.Play("attack");
