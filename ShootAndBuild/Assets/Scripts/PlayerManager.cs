@@ -71,7 +71,7 @@ public class PlayerManager : MonoBehaviour
 		{
 			if (playerPair.Value.isAlive)
 			{
-				return;
+				continue;
 			}
 
 			if (InputManager.instance.WasButtonJustPressed(playerPair.Key, spawnButton))
