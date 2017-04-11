@@ -28,7 +28,7 @@ public class PlayerManager : MonoBehaviour
     void Awake()
     {
         instance = this;
-        allPlayers = new List<GameObject>();
+        allAlivePlayers = new List<GameObject>();
     }
 
     void Update()
@@ -106,6 +106,8 @@ public class PlayerManager : MonoBehaviour
         player.playerObject.GetComponent<Attackable>().OnRespawn();
 
 		InputManager.instance.SetVibration(playerID, 0.5f, 0.5f, 0.2f);
+
+		allAlivePlayers.Add(player.playerObject);
     }
 
     private void OnPlayerDies(PlayerID playerID)
@@ -123,6 +125,8 @@ public class PlayerManager : MonoBehaviour
         player.playerObject.SetActive(false);
 
 		InputManager.instance.SetVibration(playerID, 1.0f, 1.0f, 0.8f);
+
+		allAlivePlayers.Remove(player.playerObject);
     }
 
 	public GameObject GetNearestPlayer(Vector3 position)
@@ -165,7 +169,7 @@ public class PlayerManager : MonoBehaviour
         newPlayer.isAlive = true;
 
         activePlayersById[playerID] = newPlayer;
-        allPlayers.Add(newPlayerObject);
+        allAlivePlayers.Add(newPlayerObject);
 
 		InputManager.instance.SetVibration(playerID, 0.5f, 0.5f, 0.2f);
 
@@ -183,7 +187,7 @@ public class PlayerManager : MonoBehaviour
         return activePlayersById[playerID];
     }
 
-    public List<GameObject> allPlayers
+    public List<GameObject> allAlivePlayers
     {
         get; private set;
     }

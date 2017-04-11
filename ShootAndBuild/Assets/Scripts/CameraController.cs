@@ -32,7 +32,7 @@ public class CameraController : MonoBehaviour
     
     void GetPlayerBoundingSphere(out Vector3 center, out float radius)
     {
-        List<GameObject> allPlayers = PlayerManager.instance.allPlayers;
+        List<GameObject> allPlayers = PlayerManager.instance.allAlivePlayers;
 
         if (allPlayers.Count == 0)
         {

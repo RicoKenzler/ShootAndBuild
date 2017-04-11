@@ -17,7 +17,7 @@ public class Collectable : MonoBehaviour
 
 	void Update()
 	{
-		List<GameObject> allPlayers = PlayerManager.instance.allPlayers;
+		List<GameObject> allPlayers = PlayerManager.instance.allAlivePlayers;
 
 		Vector3 selfPosition = transform.position;
 

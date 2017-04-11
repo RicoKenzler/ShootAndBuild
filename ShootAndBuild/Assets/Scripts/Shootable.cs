@@ -12,8 +12,6 @@ public class Shootable : MonoBehaviour
     public float flashMaxIntensity = 0.5f;
 
 	public int damage = 1;
-
-    private float lastShootTime = -1000.0f;
 	
     void Start()
     {
@@ -49,7 +47,6 @@ public class Shootable : MonoBehaviour
 		projectile.damage = damage;
 
         currentCooldown = shootCooldown;
-        lastShootTime = Time.time;
 
         AudioManager.instance.PlayRandomOneShot(shootSounds, new OneShotParams(transform.position, 0.5f));
 

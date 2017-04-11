@@ -319,7 +319,7 @@ GameObject:
   - component: {fileID: 185192498}
   - component: {fileID: 185192497}
   m_Layer: 5
-  m_Name: Text
+  m_Name: LifesText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -686,7 +686,7 @@ GameObject:
   - component: {fileID: 835660373}
   - component: {fileID: 835660372}
   m_Layer: 5
-  m_Name: Text
+  m_Name: GoldAmountTest
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1278,6 +1278,7 @@ Transform:
   - {fileID: 155119150}
   - {fileID: 907136720}
   - {fileID: 662947673}
+  - {fileID: 1270316009}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1444,6 +1445,49 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1250778232}
+--- !u!1 &1270316008
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 1270316009}
+  - component: {fileID: 1270316010}
+  m_Layer: 0
+  m_Name: GameManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1270316009
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1270316008}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1166809244}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1270316010
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1270316008}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 693ed2a6785dc6942a0a606e043cfecc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  winText: {fileID: 224037688484329938, guid: d60a6b3c6631baa4eb5fd4ec8635203e, type: 2}
+  loseText: {fileID: 224054935631800498, guid: 4aef694037a6ded4193a1fe324f1efde, type: 2}
+  canvas: {fileID: 1202426840}
 --- !u!4 &1274031181 stripped
 Transform:
   m_PrefabParentObject: {fileID: 4162470713642404, guid: c73838d1eb22e5d4a9e55aea47ac89f5,
@@ -1491,7 +1535,7 @@ GameObject:
   - component: {fileID: 1307750598}
   - component: {fileID: 1307750597}
   m_Layer: 5
-  m_Name: Image
+  m_Name: GoldImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
