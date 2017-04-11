@@ -355,7 +355,7 @@ InputManager:
     snap: 0
     invert: 0
     type: 2
-    axis: 10
+    axis: 9
     joyNum: 2
   - serializedVersion: 3
     m_Name: Shoot P3
@@ -371,7 +371,7 @@ InputManager:
     snap: 0
     invert: 0
     type: 2
-    axis: 10
+    axis: 9
     joyNum: 3
   - serializedVersion: 3
     m_Name: Shoot P4
@@ -387,7 +387,7 @@ InputManager:
     snap: 0
     invert: 0
     type: 2
-    axis: 10
+    axis: 9
     joyNum: 4
   - serializedVersion: 3
     m_Name: Shoot Keyboard
@@ -419,7 +419,7 @@ InputManager:
     snap: 0
     invert: 0
     type: 2
-    axis: 9
+    axis: 10
     joyNum: 1
   - serializedVersion: 3
     m_Name: UseItem P2
@@ -435,7 +435,7 @@ InputManager:
     snap: 0
     invert: 0
     type: 2
-    axis: 9
+    axis: 10
     joyNum: 2
   - serializedVersion: 3
     m_Name: UseItem P3
@@ -451,7 +451,7 @@ InputManager:
     snap: 0
     invert: 0
     type: 2
-    axis: 9
+    axis: 10
     joyNum: 3
   - serializedVersion: 3
     m_Name: UseItem P4
@@ -714,7 +714,7 @@ InputManager:
     descriptiveName: 
     descriptiveNegativeName: 
     negativeButton: 
-    positiveButton: q
+    positiveButton: 
     altNegativeButton: 
     altPositiveButton: 
     gravity: 1000

@@ -5,9 +5,11 @@ using UnityEngine.UI;
 
 public class GlobalPanel : MonoBehaviour
 {
-	int lastGoldAmount = -1;
+	int lastGoldAmount	= -1;
+	int lastLivesAmount = -1;
 
 	public Text goldAmountText;
+	public Text lifesAmountText;
 
 	// Use this for initialization
 	void Start ()
@@ -20,12 +22,20 @@ public class GlobalPanel : MonoBehaviour
 	{
 		Inventory sharedInventory = Inventory.sharedInventoryInstance;
 
-		int newAmount = sharedInventory.GetItemAmount(ItemType.Gold);
+		int newGoldAmount = sharedInventory.GetItemCount(ItemType.Gold);
 
-		if (newAmount != lastGoldAmount)
+		if (newGoldAmount != lastGoldAmount)
 		{
-			goldAmountText.text = newAmount.ToString();
-			lastGoldAmount = newAmount;
+			goldAmountText.text = newGoldAmount.ToString();
+			lastGoldAmount = newGoldAmount;
+		}
+
+		int newLivesAmount = sharedInventory.GetItemCount(ItemType.ExtraLifes);
+
+		if (newLivesAmount != lastLivesAmount)
+		{
+			lifesAmountText.text = newLivesAmount.ToString() + "  Lifes";
+			lastLivesAmount = newLivesAmount;
 		}
 	}
 }

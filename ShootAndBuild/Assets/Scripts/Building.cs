@@ -25,7 +25,7 @@ public class Building : MonoBehaviour
 
 	public bool IsPayable()
 	{
-		int goldAmount = Inventory.sharedInventoryInstance.GetItemAmount(ItemType.Gold);
+		int goldAmount = Inventory.sharedInventoryInstance.GetItemCount(ItemType.Gold);
 		if (goldAmount >= costs)
 		{
 			return true;
