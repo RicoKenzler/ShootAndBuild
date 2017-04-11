@@ -65,6 +65,17 @@ public class PlayerManager : MonoBehaviour
         }        
     }
 
+	private bool TrySpendLife()
+	{
+		if (Inventory.sharedInventoryInstance.GetItemCount(ItemType.ExtraLifes) > 0)
+		{
+			Inventory.sharedInventoryInstance.AddItem(ItemType.ExtraLifes, -1);
+			return true;
+		}
+
+		return false;
+	}
+
     private void TryRespawnDeadPlayers()
     {
 		foreach (KeyValuePair<PlayerID, Player> playerPair in activePlayersById)
@@ -76,6 +87,11 @@ public class PlayerManager : MonoBehaviour
 
 			if (InputManager.instance.WasButtonJustPressed(playerPair.Key, spawnButton))
 			{
+				if (!TrySpendLife())
+				{
+					break;
+				}
+
 				RespawnDeadPlayer(playerPair.Key);
 			}
 		}

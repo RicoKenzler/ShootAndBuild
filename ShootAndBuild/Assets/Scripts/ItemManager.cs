@@ -8,6 +8,7 @@ public enum ItemType
 
 	Gold		= 1,
 	Granades	= 2,
+	ExtraLifes	= 3,
 }
 
 [System.Serializable]
@@ -27,10 +28,12 @@ public class ItemManager : MonoBehaviour
 	void Start ()
 	{
 		usesSharedInventory.Add(ItemType.Gold);
+		usesSharedInventory.Add(ItemType.ExtraLifes);
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	void Update ()
+	{
 		
 	}
 

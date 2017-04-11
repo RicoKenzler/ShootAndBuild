@@ -13,6 +13,7 @@ public class Inventory : MonoBehaviour
 		{
 			sharedInventoryInstance = this;
 			AddItem(ItemType.Gold, 10);
+			AddItem(ItemType.ExtraLifes, 1);
 		}
 	}
 	
@@ -34,7 +35,7 @@ public class Inventory : MonoBehaviour
 		}
 	}
 
-	public int GetItemAmount(ItemType itemType)
+	public int GetItemCount(ItemType itemType)
 	{
 		int itemAmount = 0;
 
