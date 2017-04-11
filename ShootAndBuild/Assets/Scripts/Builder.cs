@@ -14,6 +14,7 @@ public class Builder : MonoBehaviour
 	public void TryBuild()
 	{
 		Vector3 pos = transform.position + transform.rotation * (distance * Vector3.forward);
+		pos = Grid.instance.ToTileCenter(pos);
 
 		if (!towerPrefab.IsPayable())
 		{
