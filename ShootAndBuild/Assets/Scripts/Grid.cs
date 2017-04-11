@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class Grid : MonoBehaviour
 {
+	private static Vector3 epsilon = new Vector3(0.001f, 0, 0.001f);
+
 	public float resolution = 0.5f;
 	public int size = 10;
 
@@ -10,7 +12,7 @@ public class Grid : MonoBehaviour
 	private int width = 0;
 	private int height = 0;
 	private Vector3 center = new Vector3();
-	
+
 
 	void Awake()
 	{
@@ -21,6 +23,7 @@ public class Grid : MonoBehaviour
 		grid.Capacity = width * height;
 
 		center.Set(width / 2, 0, height / 2);
+		halfTile = new Vector3(resolution * 0.5f, 0.0f, resolution * 0.5f);
 		
 		for (int i = 0; i < width * height; ++i)
 		{
@@ -32,14 +35,13 @@ public class Grid : MonoBehaviour
 	{
 		float w = width;
 		float h = height;
-		Vector3 half = new Vector3(resolution * 0.5f, resolution * 0.5f, resolution * 0.5f);
 
 		for (int i = 0; i < grid.Count; ++i)
 		{
 			float x = (i % w - w / 2.0f) * resolution;
 			float y = ((int)(i / h) - h / 2.0f) * resolution;
 			Vector3 drawPos = new Vector3(x, 5.0f, y);
-			drawPos += half;
+			drawPos += halfTile;
 
 			Gizmos.color = grid[i] == true ? Color.red : Color.yellow;
 			Gizmos.DrawCube(drawPos, Vector3.one * resolution * 0.8f);
@@ -109,20 +111,26 @@ public class Grid : MonoBehaviour
 				extents = capsule.radius * Vector3.one;
 			}
 		}
-
-		position = Round(position);
-
-		Vector3 min = (position - extents) / resolution + center;
-		Vector3 max = (position + extents) / resolution + center;
-		min = Round(min);
-		max = Round(max);
+		
+		Vector3 min = ToNextTile(position - extents) + center;
+		Vector3 max = ToNextTile(position + extents) + center;
 
 		return new Rect(min.x, min.z, max.x - min.x, max.z - min.z);
 	}
 
-	public Vector3 Round(Vector3 input)
+	private Vector3 ToNextTile(Vector3 worldPos)
 	{
-		return new Vector3(Mathf.Round(input.x / resolution) * resolution, Mathf.Round(input.y / resolution) * resolution, Mathf.Round(input.z / resolution) * resolution);
+		return new Vector3(Mathf.Round(worldPos.x / resolution), worldPos.y, Mathf.Round(worldPos.z / resolution));
+	}
+
+	public Vector3 ToTileCenter(Vector3 input)
+	{
+		return new Vector3(Mathf.Floor(input.x) + halfTile.x, input.y, Mathf.Floor(input.z) + halfTile.z);
+	}
+
+	public Vector3 halfTile
+	{
+		get; private set;
 	}
 
 	public static Grid instance
