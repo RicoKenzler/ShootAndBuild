@@ -2259,6 +2259,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   projectilePrefab: {fileID: 1996455648613418, guid: 02f11bb25c102a64bbb91a3b977a0668,
     type: 2}
+  throwSounds:
+  - {fileID: 8300000, guid: 35701647c8c797e46b640269abfa843b, type: 3}
+  - {fileID: 8300000, guid: f3276e4eb6e105e4c960db02b1600a3c, type: 3}
 --- !u!114 &114673583163577024
 MonoBehaviour:
   m_ObjectHideFlags: 1

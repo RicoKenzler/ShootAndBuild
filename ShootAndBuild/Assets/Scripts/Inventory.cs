@@ -6,14 +6,17 @@ public class Inventory : MonoBehaviour
 {
 	Dictionary<ItemType, int> itemCounts = new Dictionary<ItemType, int>();
 
+	public int startGold	= 10;
+	public int startLives	= 4;
+
 	// Use this for initialization
 	void Start ()
 	{
 		if (!GetComponent<InputController>())
 		{
 			sharedInventoryInstance = this;
-			AddItem(ItemType.Gold, 10);
-			AddItem(ItemType.ExtraLifes, 1);
+			AddItem(ItemType.Gold,			startGold);
+			AddItem(ItemType.ExtraLifes,	startLives);
 		}
 	}
 	

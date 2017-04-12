@@ -152,3 +152,9 @@ MonoBehaviour:
   timeToExplode: 3
   explosionParticles: {fileID: 198000012777718758, guid: acf39d9f4addf294d93fa56fa373961b,
     type: 2}
+  maxDamage: 10
+  radius: 8
+  explosionSounds:
+  - {fileID: 8300000, guid: af96b97e6be1540458b0ef5e7fed0033, type: 3}
+  - {fileID: 8300000, guid: 0f5826357ee18ec4191431491b73f5c9, type: 3}
+  - {fileID: 8300000, guid: ec6dff564a1cfc34281603dd6ca256ec, type: 3}

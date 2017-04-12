@@ -6,6 +6,7 @@ public class Grenade : MonoBehaviour
 	public ParticleSystem explosionParticles;
 	public float maxDamage = 10.0f;
 	public float radius = 8.0f;
+	public AudioClip[] explosionSounds;
 
 	private float explodeTimer = 0.0f;
 	private float radiusSquared = 0.0f;
@@ -31,8 +32,6 @@ public class Grenade : MonoBehaviour
 	{
 		explodeTimer = 0;
 
-		ParticleManager.instance.SpawnParticle(explosionParticles, gameObject, transform.position, Quaternion.identity, false, 10.0f, false, false);
-
 		Vector3 selfPos = transform.position;
 
 		foreach (Attackable attackable in AttackableManager.instance.allAttackables)
@@ -46,6 +45,9 @@ public class Grenade : MonoBehaviour
 				attackable.DealDamage((int)damage, gameObject);
 			}
 		}
+
+		ParticleManager.instance.SpawnParticle(explosionParticles, gameObject, transform.position, Quaternion.identity, false, 10.0f, false, false);
+		AudioManager.instance.PlayRandomOneShot(explosionSounds, new OneShotParams(selfPos, 1.0f, true, 0.5f));
 
 		Destroy(gameObject);
 	}
