@@ -8,7 +8,6 @@ public class Builder : MonoBehaviour
 	public AudioClip[] buildSounds;
 	public ParticleSystem buildEffect;
 
-	public AudioClip[] noMoneySounds;
 	public AudioClip[] noSpaceSounds;
 
 	public void TryBuild()
@@ -18,8 +17,7 @@ public class Builder : MonoBehaviour
 
 		if (!towerPrefab.IsPayable())
 		{
-			float pitch = AudioManager.instance.GetRandomMusicalPitch();
-			AudioManager.instance.PlayRandomOneShot(noMoneySounds, new OneShotParams(transform.position, 0.5f, false, 1.0f, pitch));
+			Inventory.sharedInventoryInstance.TriggerNotEnoughItemsSound();
 
 			GlobalPanel.instance.HighlightMoney();
 			return;

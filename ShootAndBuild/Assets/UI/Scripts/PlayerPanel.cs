@@ -30,9 +30,11 @@ public class PlayerPanel : MonoBehaviour
 	private Attackable	assignedAttackable;
 	private Inventory	assignedInventory;
 	private Animator	activeItemCountTextAnimator;
+	private Animator	activeItemImageAnimator;
 
 	private Color deactivatedColorTint = new Color(0.5f, 0.5f, 0.5f, 0.5f);
 	private Color activatedColorTint   = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+	private Color defaultTextColor;
 
 	// Update is called once per frame
 	void Update ()
@@ -122,14 +124,11 @@ public class PlayerPanel : MonoBehaviour
 		ItemType activeItemType = assignedInventory.activeItemType;
 		int activeItemCount = assignedInventory.GetItemCount(assignedInventory.activeItemType);
 
-		bool forceItemCountUpdate = false;
-
 		bool itemTypeChanged = (displayedActiveItemType != activeItemType);
 		if (forceUpdateAll || itemTypeChanged)
 		{
 			// Update Active item Type
 			displayedActiveItemType = activeItemType;
-			forceItemCountUpdate = true;
 		}
 
 		bool itemCountChanged = (displayedActiveItemCount != activeItemCount);
@@ -138,25 +137,39 @@ public class PlayerPanel : MonoBehaviour
 			// Update Item Count
 			activeItemCountText.text = activeItemCount.ToString();
 
-			if (itemCountChanged)
+			if (activeItemCount > displayedActiveItemCount && activeItemCount > 0)
 			{
-				activeItemCountTextAnimator.SetTrigger("Grow");
+				HighlightActiveItemCount();
 			}
 
 			displayedActiveItemCount = activeItemCount;
 		}
 
-		Color activeItemColor = (!IsPlayerAlive() || (activeItemCount == 0)) ? deactivatedColorTint : activatedColorTint;
+		bool deactivatedItem = (!IsPlayerAlive() || (activeItemCount == 0));
 		
-		activeItemImage.color	= activeItemColor;
-		activeWeaponImage.color = IsPlayerAlive() ? activatedColorTint : deactivatedColorTint;
+		activeItemImage.color		= deactivatedItem ? deactivatedColorTint : activatedColorTint;
+		activeItemCountText.color	= deactivatedItem ? deactivatedColorTint : defaultTextColor;
+		activeWeaponImage.color		= IsPlayerAlive() ? activatedColorTint : deactivatedColorTint;
+	}
+
+	public void HighlightActiveItem()
+	{
+		activeItem.SetTrigger("Grow");
+	}
+
+	public void HighlightActiveItemCount()
+	{
+		activeItemCountTextAnimator.SetTrigger("Grow");
 	}
 
 	public void AssignPlayer(GameObject player)
 	{
-		assignedAttackable = player.GetComponent<Attackable>();
-		assignedInventory  = player.GetComponent<Inventory>();
+		assignedAttackable			= player.GetComponent<Attackable>();
+		assignedInventory			= player.GetComponent<Inventory>();
 		activeItemCountTextAnimator = activeItemCountText.GetComponent<Animator>();
+		activeItemImageAnimator		= activeItemImage.GetComponent<Animator>();
+
+		defaultTextColor			= activeItemCountText.color;
 
 		UpdateUI();
 	}

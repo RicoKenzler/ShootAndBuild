@@ -12,7 +12,7 @@ public class InputController : MonoBehaviour
 	private TauntController tauntController;
 	private Shootable		shootable;
 	private Builder			builder;
-	private Throwable		throwable;
+	private Inventory		inventory;
 
 	void Start()
 	{
@@ -29,7 +29,7 @@ public class InputController : MonoBehaviour
 		tauntController	= GetComponent<TauntController>();
 		shootable		= GetComponent<Shootable>();
 		builder			= GetComponent<Builder>();
-		throwable		= GetComponent<Throwable>();
+		inventory		= GetComponent<Inventory>();
 	}
 
 	//--------------------------------------------------------------------------------------------------
@@ -83,17 +83,17 @@ public class InputController : MonoBehaviour
         /////////////////////////////////////////
         // Buttons
         /////////////////////////////////////////
-        bool useItemButtonPressed  = InputManager.instance.IsButtonDown(playerID, ButtonType.UseItem);
-		bool shootTriggerPressed = InputManager.instance.IsButtonDown(playerID, ButtonType.Shoot);
+        bool useItemButtonPressed	= InputManager.instance.WasButtonJustPressed(playerID, ButtonType.UseItem);
+		bool shootTriggerPressed	= InputManager.instance.IsButtonDown(playerID, ButtonType.Shoot);
 
         if (shootable != null && shootTriggerPressed)
         {
             shootable.Shoot();
         }
 
-		if (throwable != null && useItemButtonPressed)
+		if (useItemButtonPressed)
 		{
-			throwable.Throw();
+			inventory.TryUseActiveItem();
 		}
 
 		if (InputManager.instance.WasButtonJustPressed(playerID, ButtonType.Taunt))

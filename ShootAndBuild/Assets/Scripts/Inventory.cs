@@ -10,27 +10,80 @@ public class Inventory : MonoBehaviour
 	public int startLives		= 4;
 	public int startGrenades	= 4;
 
+	public AudioClip[] noMoneySounds;
+
+	private Throwable		throwable;
+	private InputController inputController;
+
 	// Use this for initialization
-	void Start ()
+	void Start()
 	{
-		if (!GetComponent<InputController>())
+		inputController = GetComponent<InputController>();
+
+		if (inputController)
+		{
+			AddItem(ItemType.Granades,		startGrenades);
+
+			throwable = GetComponent<Throwable>();
+			activeItemType = ItemType.Granades;
+		}
+		else
 		{
 			sharedInventoryInstance = this;
 			AddItem(ItemType.Gold,			startGold);
 			AddItem(ItemType.ExtraLifes,	startLives);
 		}
-		else
-		{
-			AddItem(ItemType.Granades,		startGrenades);
-		}
 
-		activeItemType = ItemType.Granades;
 	}
 	
 	// Update is called once per frame
 	void Update ()
 	{
 		
+	}
+
+	public void TriggerNotEnoughItemsSound()
+	{
+		// Only applicable for shared inventory (so we have ONE place where to balance it)
+		Debug.Assert(!inputController);
+
+		float pitch = AudioManager.instance.GetRandomMusicalPitch();
+		AudioManager.instance.PlayRandomOneShot(noMoneySounds, new OneShotParams(transform.position, 0.5f, false, 1.0f, pitch));
+	}
+
+	public void TryUseActiveItem()
+	{
+		if (!inputController)
+		{
+			// not aplicable for shared inventory
+			Debug.Assert(false);
+			return;
+		}
+
+		PlayerPanel playerPanel = PlayerPanelGroup.instance.GetPlayerPanel(inputController.playerID);
+
+		if (GetItemCount(activeItemType) <= 0)
+		{
+			// Item not usable
+			sharedInventoryInstance.TriggerNotEnoughItemsSound();
+			
+			playerPanel.HighlightActiveItemCount();
+
+			return;
+		}
+
+		// Use Item
+		playerPanel.HighlightActiveItem();
+
+		if (activeItemType == ItemType.Granades)
+		{
+			AddItem(activeItemType, -1);
+
+			if (throwable != null)
+			{
+				throwable.Throw();
+			}
+		}
 	}
 
 	public void AddItem(ItemType itemType, int count)
