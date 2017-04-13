@@ -79,6 +79,7 @@ public class PlayerManager : MonoBehaviour
 			return true;
 		}
 
+		GlobalPanel.instance.HighlightLifes();
 		AudioManager.instance.PlayRandomOneShot2D(spawnFailSounds);
 		return false;
 	}

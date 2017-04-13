@@ -6,17 +6,24 @@ using UnityEngine.UI;
 public class GlobalPanel : MonoBehaviour
 {
 	int lastGoldAmount	= -1;
-	int lastLivesAmount = -1;
+	int lastLifesAmount = -1;
 
 	public Text goldAmountText;
 	public Text lifesAmountText;
 
 	public Animator goldAmountAnimator;
+	public Animator lifesAmountAnimator;
+
+	void Awake()
+	{
+		instance = this;
+	}
 
 	// Use this for initialization
 	void Start ()
 	{
 		goldAmountAnimator = goldAmountText.GetComponent<Animator>();
+		lifesAmountAnimator = lifesAmountText.GetComponent<Animator>();
 	}
 	
 	// Update is called once per frame
@@ -31,16 +38,32 @@ public class GlobalPanel : MonoBehaviour
 			goldAmountText.text = newGoldAmount.ToString();
 			lastGoldAmount = newGoldAmount;
 
-			goldAmountAnimator.ResetTrigger("Grow");
-			goldAmountAnimator.SetTrigger("Grow");
+			HighlightMoney();
 		}
 
 		int newLivesAmount = sharedInventory.GetItemCount(ItemType.ExtraLifes);
 
-		if (newLivesAmount != lastLivesAmount)
+		if (newLivesAmount != lastLifesAmount)
 		{
 			lifesAmountText.text = newLivesAmount.ToString() + "  Lifes";
-			lastLivesAmount = newLivesAmount;
+			lastLifesAmount = newLivesAmount;
+
+			HighlightLifes();
 		}
 	}
+
+	public void HighlightMoney()
+	{
+		goldAmountAnimator.SetTrigger("Grow");
+	}
+
+	public void HighlightLifes()
+	{
+		lifesAmountAnimator.SetTrigger("Grow");
+	}
+
+	public static GlobalPanel instance
+    {
+        get; private set;
+    }
 }

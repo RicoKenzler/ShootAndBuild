@@ -20,6 +20,8 @@ public class Builder : MonoBehaviour
 		{
 			float pitch = AudioManager.instance.GetRandomMusicalPitch();
 			AudioManager.instance.PlayRandomOneShot(noMoneySounds, new OneShotParams(transform.position, 0.5f, false, 1.0f, pitch));
+
+			GlobalPanel.instance.HighlightMoney();
 			return;
 		}
 
