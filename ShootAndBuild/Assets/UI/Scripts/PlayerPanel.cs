@@ -154,7 +154,7 @@ public class PlayerPanel : MonoBehaviour
 
 	public void HighlightActiveItem()
 	{
-		activeItem.SetTrigger("Grow");
+		activeItemImageAnimator.SetTrigger("Grow");
 	}
 
 	public void HighlightActiveItemCount()
