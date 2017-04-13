@@ -15,14 +15,24 @@ public class PlayerPanel : MonoBehaviour
 	[SerializeField]
 	Image activeWeaponImage;
 
-	private int		displayedHealthText			= 0;
-	private float	displayedHealthRelative		= 0.0f;
-	bool			displayedPlayerAlive		= false;
+	[SerializeField]
+	Text  activeItemCountText;
+
+	private int			displayedHealthText			= 0;
+	private float		displayedHealthRelative		= 0.0f;
+	bool				displayedPlayerAlive		= false;
+	private int			displayedActiveItemCount	= -1;
+	private ItemType	displayedActiveItemType		= ItemType.None;
 
 	public bool     useDynamicHealthColor		= false;
 	public float	healthBarSmoothness			= 0.8f;
 
-	private Attackable assignedAttackable;
+	private Attackable	assignedAttackable;
+	private Inventory	assignedInventory;
+	private Animator	activeItemCountTextAnimator;
+
+	private Color deactivatedColorTint = new Color(0.5f, 0.5f, 0.5f, 0.5f);
+	private Color activatedColorTint   = new Color(1.0f, 1.0f, 1.0f, 1.0f);
 
 	// Update is called once per frame
 	void Update ()
@@ -40,21 +50,23 @@ public class PlayerPanel : MonoBehaviour
 
 		UpdateHealthBar();
 		UpdateIsPlayerAlive();
+		UpdateItems();
+	}
+
+	bool IsPlayerAlive()
+	{
+		return assignedAttackable.health > 0;
 	}
 
 	void UpdateIsPlayerAlive()
 	{
-		bool isPlayerAlive = assignedAttackable.health > 0;
+		bool isPlayerAlive = IsPlayerAlive();
 
 		if (isPlayerAlive != displayedPlayerAlive)
 		{
 			// Do not interpolate
 			UpdateHealthBar(true);
-
-			Color indicatorColor = isPlayerAlive ? new Color(1.0f, 1.0f, 1.0f) : new Color(0.5f, 0.5f, 0.5f, 0.5f);
-			activeItemImage.color	= indicatorColor;
-			activeWeaponImage.color = indicatorColor;
-
+			UpdateItems(true);
 			displayedPlayerAlive = isPlayerAlive;
 		}
 	}
@@ -105,9 +117,46 @@ public class PlayerPanel : MonoBehaviour
 		displayedHealthText		= newHealth;
 	}
 
+	void UpdateItems(bool forceUpdateAll = false)
+	{
+		ItemType activeItemType = assignedInventory.activeItemType;
+		int activeItemCount = assignedInventory.GetItemCount(assignedInventory.activeItemType);
+
+		bool forceItemCountUpdate = false;
+
+		bool itemTypeChanged = (displayedActiveItemType != activeItemType);
+		if (forceUpdateAll || itemTypeChanged)
+		{
+			// Update Active item Type
+			displayedActiveItemType = activeItemType;
+			forceItemCountUpdate = true;
+		}
+
+		bool itemCountChanged = (displayedActiveItemCount != activeItemCount);
+		if (forceUpdateAll || itemTypeChanged || itemCountChanged)
+		{
+			// Update Item Count
+			activeItemCountText.text = activeItemCount.ToString();
+
+			if (itemCountChanged)
+			{
+				activeItemCountTextAnimator.SetTrigger("Grow");
+			}
+
+			displayedActiveItemCount = activeItemCount;
+		}
+
+		Color activeItemColor = (!IsPlayerAlive() || (activeItemCount == 0)) ? deactivatedColorTint : activatedColorTint;
+		
+		activeItemImage.color	= activeItemColor;
+		activeWeaponImage.color = IsPlayerAlive() ? activatedColorTint : deactivatedColorTint;
+	}
+
 	public void AssignPlayer(GameObject player)
 	{
 		assignedAttackable = player.GetComponent<Attackable>();
+		assignedInventory  = player.GetComponent<Inventory>();
+		activeItemCountTextAnimator = activeItemCountText.GetComponent<Animator>();
 
 		UpdateUI();
 	}

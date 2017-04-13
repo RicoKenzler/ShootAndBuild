@@ -6,8 +6,9 @@ public class Inventory : MonoBehaviour
 {
 	Dictionary<ItemType, int> itemCounts = new Dictionary<ItemType, int>();
 
-	public int startGold	= 10;
-	public int startLives	= 4;
+	public int startGold		= 10;
+	public int startLives		= 4;
+	public int startGrenades	= 4;
 
 	// Use this for initialization
 	void Start ()
@@ -18,6 +19,12 @@ public class Inventory : MonoBehaviour
 			AddItem(ItemType.Gold,			startGold);
 			AddItem(ItemType.ExtraLifes,	startLives);
 		}
+		else
+		{
+			AddItem(ItemType.Granades,		startGrenades);
+		}
+
+		activeItemType = ItemType.Granades;
 	}
 	
 	// Update is called once per frame
@@ -48,6 +55,11 @@ public class Inventory : MonoBehaviour
 		}
 
 		return itemAmount;
+	}
+
+	public ItemType activeItemType
+	{
+		get; private set;
 	}
 
 	public static Inventory sharedInventoryInstance

@@ -984,6 +984,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   startGold: 10
   startLives: 4
+  startGrenades: 4
 --- !u!1 &946731076
 GameObject:
   m_ObjectHideFlags: 0
