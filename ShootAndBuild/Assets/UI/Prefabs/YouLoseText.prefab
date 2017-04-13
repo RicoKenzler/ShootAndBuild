@@ -22,6 +22,7 @@ GameObject:
   - component: {fileID: 222927847793468488}
   - component: {fileID: 114199540344035938}
   - component: {fileID: 114474959966771420}
+  - component: {fileID: 95295897117072306}
   m_Layer: 5
   m_Name: YouLoseText
   m_TagString: Untagged
@@ -29,6 +30,23 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!95 &95295897117072306
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1331172857809820}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 4bccc35b0ade9d44d9b196ee86ba3395, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
 --- !u!114 &114199540344035938
 MonoBehaviour:
   m_ObjectHideFlags: 1
