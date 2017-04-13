@@ -11,10 +11,12 @@ public class GlobalPanel : MonoBehaviour
 	public Text goldAmountText;
 	public Text lifesAmountText;
 
+	public Animator goldAmountAnimator;
+
 	// Use this for initialization
 	void Start ()
 	{
-		
+		goldAmountAnimator = goldAmountText.GetComponent<Animator>();
 	}
 	
 	// Update is called once per frame
@@ -28,6 +30,9 @@ public class GlobalPanel : MonoBehaviour
 		{
 			goldAmountText.text = newGoldAmount.ToString();
 			lastGoldAmount = newGoldAmount;
+
+			goldAmountAnimator.ResetTrigger("Grow");
+			goldAmountAnimator.SetTrigger("Grow");
 		}
 
 		int newLivesAmount = sharedInventory.GetItemCount(ItemType.ExtraLifes);

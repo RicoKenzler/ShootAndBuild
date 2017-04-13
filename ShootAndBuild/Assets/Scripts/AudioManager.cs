@@ -85,6 +85,11 @@ public class AudioManager : MonoBehaviour
 
 	public AudioSource PlayOneShot(AudioClip clip, OneShotParams oneShotParams)
 	{
+		if (clip == null)
+		{
+			return null;
+		}
+
 		GameObject audioObject = Instantiate(oneShotPrefab, gameObject.transform);
 		audioObject.name = "OneShot " + clip.name;
 
