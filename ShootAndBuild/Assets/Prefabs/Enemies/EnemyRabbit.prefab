@@ -881,16 +881,11 @@ MonoBehaviour:
   maxHealth: 100
   showHealthBar: 1
   itemDrops:
-  - itemPrefab: {fileID: 1797189723984674, guid: ebaf5d1e5ef1660458836d848ca0b292,
-      type: 2}
-    dropProbability: 1
-    minDropAmount: 10
-    maxDropAmount: 30
   - itemPrefab: {fileID: 1797189723984674, guid: 55072d8c0e673154bb0f132188031dd9,
       type: 2}
-    dropProbability: 0.5
-    minDropAmount: 1
-    maxDropAmount: 1
+    dropProbability: 1
+    minDropAmount: 3
+    maxDropAmount: 5
   dieSounds:
   - {fileID: 8300000, guid: 0876e0aa780af4845aa5b3aea23a7283, type: 3}
   - {fileID: 8300000, guid: fa635055cbfaf214e9b55a426113e689, type: 3}

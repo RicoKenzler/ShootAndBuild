@@ -1464,7 +1464,7 @@ MonoBehaviour:
   itemDrops:
   - itemPrefab: {fileID: 1797189723984674, guid: ebaf5d1e5ef1660458836d848ca0b292,
       type: 2}
-    dropProbability: 0.5
+    dropProbability: 1
     minDropAmount: 2
     maxDropAmount: 10
   dieSounds:
