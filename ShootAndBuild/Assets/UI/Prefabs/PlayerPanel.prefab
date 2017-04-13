@@ -39,7 +39,7 @@ GameObject:
   - component: {fileID: 222171989007735782}
   - component: {fileID: 114952620082157758}
   - component: {fileID: 114392451014451856}
-  - component: {fileID: 114484300957082150}
+  - component: {fileID: 114115254150509698}
   m_Layer: 5
   m_Name: PlayerPanel
   m_TagString: Untagged
@@ -200,6 +200,24 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &114115254150509698
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1055621509293682}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1679637790, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IgnoreLayout: 0
+  m_MinWidth: 250
+  m_MinHeight: 180
+  m_PreferredWidth: -1
+  m_PreferredHeight: -1
+  m_FlexibleWidth: -1
+  m_FlexibleHeight: -1
 --- !u!114 &114163721411832986
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -241,6 +259,7 @@ MonoBehaviour:
   healthBarFillImage: {fileID: 114604971702907400}
   activeItemImage: {fileID: 114830827929897052}
   activeWeaponImage: {fileID: 114756472964393910}
+  useDynamicHealthColor: 0
   healthBarSmoothness: 0.8
 --- !u!114 &114456058045040402
 MonoBehaviour:
@@ -269,24 +288,6 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
---- !u!114 &114484300957082150
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1055621509293682}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d4c3bfa11be837f4aa2734bbc8d3ca4e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_IgnoreLayout: 0
-  m_MinWidth: 266.73492
-  m_MinHeight: -1
-  m_PreferredWidth: 266.73492
-  m_PreferredHeight: -1
-  m_FlexibleWidth: 0
-  m_FlexibleHeight: 0
 --- !u!114 &114520569318147166
 MonoBehaviour:
   m_ObjectHideFlags: 1
