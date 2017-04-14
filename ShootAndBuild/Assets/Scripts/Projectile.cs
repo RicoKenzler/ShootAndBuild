@@ -18,14 +18,8 @@ public class Projectile : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-		if (!owner)
-		{
-			Debug.Log("Shootable without owner");
-			return;
-		}
-
         // we are immune to our own projectiles
-        if (owner.gameObject != other.gameObject)
+        if (!owner || (owner.gameObject != other.gameObject))
         {
             Destroy(gameObject);
 

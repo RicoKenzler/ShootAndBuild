@@ -24,7 +24,7 @@ public class AudioData : ScriptableObject
 	[Range(-24.0f, 24.0f)]
 	public float		pitchOffsetSemitones	= 0.0f;
 
-	[Range(-24.0f, 24.0f)]
+	[Range(0.0f, 24.0f)]
 	public float		pitchRangeSemitones		= 2.0f;
 
 	public bool			isUISound				= false;

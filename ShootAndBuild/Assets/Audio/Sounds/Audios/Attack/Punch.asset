@@ -16,6 +16,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: ab2bf0f1cd8fef84ab8497ef6dc745cd, type: 3}
   - {fileID: 8300000, guid: 6568933817f4f8440b7edb4aedb0070c, type: 3}
   volume: 1
+  rndMusicalPitch: 0
   pitchOffsetSemitones: 0
   pitchRangeSemitones: 2
   isUISound: 0

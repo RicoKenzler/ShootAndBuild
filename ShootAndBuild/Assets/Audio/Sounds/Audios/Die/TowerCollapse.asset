@@ -14,8 +14,9 @@ MonoBehaviour:
   audioClips:
   - {fileID: 8300000, guid: 187eed3e16988ea4f92b7aa3c292c436, type: 3}
   volume: 1
+  rndMusicalPitch: 0
   pitchOffsetSemitones: 0
-  pitchRangeSemitones: 2
+  pitchRangeSemitones: 4.1
   isUISound: 0
   suppressDoppler: 0
   amount3D: 1
