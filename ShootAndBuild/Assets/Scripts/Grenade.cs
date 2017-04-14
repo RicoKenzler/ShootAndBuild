@@ -48,6 +48,7 @@ public class Grenade : MonoBehaviour
 
 		ParticleManager.instance.SpawnParticle(explosionParticles, gameObject, transform.position, Quaternion.identity, false, 10.0f, false, false);
 		AudioManager.instance.PlayRandomOneShot(explosionSounds, new OneShotParams(selfPos, 1.0f, true, 0.5f));
+		InputManager.instance.SetVibrationAll(0.1f, 0.1f, 0.5f);
 
 		Destroy(gameObject);
 	}

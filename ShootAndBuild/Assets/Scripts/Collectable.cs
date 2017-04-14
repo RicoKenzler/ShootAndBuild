@@ -17,13 +17,13 @@ public class Collectable : MonoBehaviour
 
 	void Update()
 	{
-		List<GameObject> allPlayers = PlayerManager.instance.allAlivePlayers;
+		List<InputController> allPlayers = PlayerManager.instance.allAlivePlayers;
 
 		Vector3 selfPosition = transform.position;
 
 		for (int i = 0; i < allPlayers.Count; ++i)
 		{
-			GameObject player = allPlayers[i];
+			GameObject player = allPlayers[i].gameObject;
 
 			Vector3 differenceVector = (player.transform.position - selfPosition);
 			differenceVector.y = 0.0f;

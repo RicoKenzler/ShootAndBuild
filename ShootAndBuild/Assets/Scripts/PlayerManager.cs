@@ -29,7 +29,7 @@ public class PlayerManager : MonoBehaviour
     void Awake()
     {
         instance = this;
-        allAlivePlayers = new List<GameObject>();
+        allAlivePlayers = new List<InputController>();
     }
 
     void Update()
@@ -115,7 +115,7 @@ public class PlayerManager : MonoBehaviour
 
 		InputManager.instance.SetVibration(playerID, 0.5f, 0.5f, 0.2f);
 
-		allAlivePlayers.Add(player.playerObject);
+		allAlivePlayers.Add(player.playerObject.GetComponent<InputController>());
     }
 
     private void OnPlayerDies(PlayerID playerID)
@@ -134,7 +134,7 @@ public class PlayerManager : MonoBehaviour
 
 		InputManager.instance.SetVibration(playerID, 1.0f, 1.0f, 0.8f);
 
-		bool removed = allAlivePlayers.Remove(player.playerObject);
+		bool removed = allAlivePlayers.Remove(player.playerObject.GetComponent<InputController>());
 
 		Debug.Assert(removed);
     }
@@ -154,7 +154,7 @@ public class PlayerManager : MonoBehaviour
         newPlayer.isAlive = true;
 
         activePlayersById[playerID] = newPlayer;
-        allAlivePlayers.Add(newPlayerObject);
+        allAlivePlayers.Add(newPlayerObject.GetComponent<InputController>());
 
 		InputManager.instance.SetVibration(playerID, 0.5f, 0.5f, 0.2f);
 
@@ -172,11 +172,11 @@ public class PlayerManager : MonoBehaviour
         return activePlayersById[playerID];
     }
 
-    public List<GameObject> allAlivePlayers
+    public List<InputController> allAlivePlayers
     {
         get; private set;
     }
-
+	
     public static PlayerManager instance
     {
         get; private set;

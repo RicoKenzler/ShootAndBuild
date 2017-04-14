@@ -32,7 +32,7 @@ public class CameraController : MonoBehaviour
     
     void GetPlayerBoundingSphere(out Vector3 center, out float radius)
     {
-        List<GameObject> allPlayers = PlayerManager.instance.allAlivePlayers;
+        List<InputController> allPlayers = PlayerManager.instance.allAlivePlayers;
 
         if (allPlayers.Count == 0)
         {
@@ -44,7 +44,7 @@ public class CameraController : MonoBehaviour
 
         Bounds playerBB = new Bounds(allPlayers[0].transform.position, Vector3.zero);
 
-        foreach (GameObject player in allPlayers)
+        foreach (InputController player in allPlayers)
         {
             playerBB.Encapsulate(player.transform.position);
         }

@@ -383,6 +383,14 @@ public class InputManager : MonoBehaviour
 		GetInputPlayer(playerID).StartVibration(amountLeft, amountRight, duration);
 	}
 
+	public void SetVibrationAll(float amountLeft, float amountRight, float duration)
+	{
+		foreach(InputController player in PlayerManager.instance.allAlivePlayers)
+		{
+			SetVibration(player.playerID, amountLeft, amountRight, duration);
+		} 
+	}
+
 	public static InputManager instance
     {
         get; private set;

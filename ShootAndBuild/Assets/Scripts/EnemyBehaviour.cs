@@ -40,14 +40,14 @@ public class EnemyBehaviour : MonoBehaviour
 		GameObject bestPlayer = null;
 		float bestDistanceSq = float.MaxValue;
 
-		foreach(GameObject player in PlayerManager.instance.allAlivePlayers)
+		foreach(InputController player in PlayerManager.instance.allAlivePlayers)
 		{
 			float distanceSq = (player.transform.position - selfPos).sqrMagnitude;
 
 			if (distanceSq < bestDistanceSq)
 			{
 				bestDistanceSq = distanceSq;
-				bestPlayer = player;
+				bestPlayer = player.gameObject;
 			}
 		}
 
