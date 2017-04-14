@@ -80,7 +80,7 @@ public class PlayerManager : MonoBehaviour
 		}
 
 		GlobalPanel.instance.HighlightLifes();
-		AudioManager.instance.PlayRandomOneShot2D(spawnFailSounds);
+		AudioManager.instance.PlayRandomOneShot2D(spawnFailSounds, 1.0f, 0.8f);
 		return false;
 	}
 

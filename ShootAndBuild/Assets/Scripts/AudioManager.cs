@@ -66,9 +66,9 @@ public class AudioManager : MonoBehaviour
 		return RandomPitchFromHalftones(niceHalftones);
 	}
 
-	public AudioSource PlayRandomOneShot2D(AudioClip[] audioClips)
+	public AudioSource PlayRandomOneShot2D(AudioClip[] audioClips, float pitch = 1.0f, float volume = 1.0f)
 	{
-		return PlayRandomOneShot(audioClips, new OneShotParams(new Vector3(0.0f, 0.0f, 0.0f), 1.0f, true, 0.0f));
+		return PlayRandomOneShot(audioClips, new OneShotParams(new Vector3(0.0f, 0.0f, 0.0f), volume, true, 0.0f, pitch));
 	}
 
 	public AudioSource PlayRandomOneShot(AudioClip[] audioClips, OneShotParams oneShotParams)

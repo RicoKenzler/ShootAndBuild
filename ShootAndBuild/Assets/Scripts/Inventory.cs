@@ -48,7 +48,7 @@ public class Inventory : MonoBehaviour
 		Debug.Assert(!inputController);
 
 		float pitch = AudioManager.instance.GetRandomMusicalPitch();
-		AudioManager.instance.PlayRandomOneShot(noMoneySounds, new OneShotParams(transform.position, 0.5f, false, 1.0f, pitch));
+		AudioManager.instance.PlayRandomOneShot2D(noMoneySounds, pitch, 0.3f);
 	}
 
 	public void TryUseActiveItem()

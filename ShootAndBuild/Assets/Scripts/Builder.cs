@@ -26,7 +26,7 @@ public class Builder : MonoBehaviour
 		if (!Grid.instance.IsFree(towerPrefab.gameObject, pos))
 		{
 			float pitch = AudioManager.instance.GetRandomMusicalPitch();
-			AudioManager.instance.PlayRandomOneShot(noSpaceSounds, new OneShotParams(transform.position, 0.5f, false, 1.0f, pitch));
+			AudioManager.instance.PlayRandomOneShot2D(noSpaceSounds, pitch, 0.3f);
 			return;
 		}
 
