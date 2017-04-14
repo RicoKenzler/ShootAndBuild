@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Collections.Generic;
 
 public class Grenade : MonoBehaviour
 {
@@ -28,11 +29,27 @@ public class Grenade : MonoBehaviour
 		}
 	}
 
+	struct AttackableAndDamage
+	{
+		public Attackable	attackable;
+		public int			damage;
+
+		public AttackableAndDamage(Attackable _attackable, int _damage)
+		{
+			attackable = _attackable;
+			damage = _damage;
+		}
+	};
+
 	public void Explode()
 	{
 		explodeTimer = 0;
 
 		Vector3 selfPos = transform.position;
+
+		// Note: we'll defer the damage dealing, because damage dealing can cause OnDisable, which
+		// changes the allAttackables list during enumeration
+		List<AttackableAndDamage> allDamages = new List<AttackableAndDamage>();
 
 		foreach (Attackable attackable in AttackableManager.instance.allAttackables)
 		{
@@ -42,8 +59,13 @@ public class Grenade : MonoBehaviour
 			{
 				float dist = Mathf.Sqrt(distanceSq);
 				float damage = dist / radius * maxDamage;
-				attackable.DealDamage((int)damage, gameObject);
+				allDamages.Add(new AttackableAndDamage(attackable, (int) damage));
 			}
+		}
+
+		foreach (AttackableAndDamage damage in allDamages)
+		{
+			damage.attackable.DealDamage((int) damage.damage, gameObject);
 		}
 
 		ParticleManager.instance.SpawnParticle(explosionParticles, gameObject, transform.position, Quaternion.identity, false, 10.0f, false, false);

@@ -28,7 +28,7 @@ public class EnemyBehaviour : MonoBehaviour
 		transform.SetParent(EnemyManager.instance.transform);
     }
 
-	void OnDestroy()
+	void OnDisable()
 	{
 		EnemyManager.instance.RegisterEnemy(this, true);
 	}

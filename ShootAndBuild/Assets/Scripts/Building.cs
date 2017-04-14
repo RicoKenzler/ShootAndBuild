@@ -18,7 +18,7 @@ public class Building : MonoBehaviour
 		
 	}
 
-	void OnDestroy()
+	void OnDisable()
 	{
 		BuildingManager.instance.RegisterBuilding(this, true);
 	}

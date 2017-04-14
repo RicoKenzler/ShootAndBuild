@@ -9,7 +9,7 @@ public class AttackableManager : MonoBehaviour
 		allAttackables = new List<Attackable>();
 	}
 
-	public void RegisterEnemy(Attackable behaviour, bool unregister)
+	public void RegisterAttackable(Attackable behaviour, bool unregister)
 	{
 		if (unregister)
 		{
