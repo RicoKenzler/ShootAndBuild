@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f472d17afb08304ab3773c852bf3637, type: 3}
+  m_Name: PlayerDie
+  m_EditorClassIdentifier: 
+  audioClips:
+  - {fileID: 8300000, guid: e720ed4e579da834c9c1f43b639895b3, type: 3}
+  - {fileID: 8300000, guid: 743ea515589636f4aac6d0dbf7d12b6f, type: 3}
+  - {fileID: 8300000, guid: 5bd5a335982178d40901e5f08cf0357e, type: 3}
+  - {fileID: 8300000, guid: f8ee29f2994da0f489230207ef10f0c8, type: 3}
+  - {fileID: 8300000, guid: 4ba65ecc863f9a94695b1c2946237186, type: 3}
+  volume: 1
+  pitchOffsetSemitones: 0
+  pitchRangeSemitones: 2
+  isUISound: 0
+  suppressDoppler: 0
+  amount3D: 1

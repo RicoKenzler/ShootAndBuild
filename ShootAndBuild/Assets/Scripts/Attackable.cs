@@ -7,8 +7,8 @@ public class Attackable : MonoBehaviour
  
     public ItemDrop[]  itemDrops;
 
-    public AudioClip[] dieSounds;
-	public AudioClip[] spawnSounds;
+    public AudioData dieSound;
+	public AudioData spawnSound;
 
 	public ParticleSystem dieParticles;
 	public ParticleSystem damageParticles;
@@ -58,7 +58,7 @@ public class Attackable : MonoBehaviour
 
 	private void Die(GameObject lastDamageDealer)
 	{
-		AudioManager.instance.PlayRandomOneShot(dieSounds, new OneShotParams(transform.position));
+		AudioManager.instance.PlayAudio(dieSound, transform.position);
 
 		DropItems();
 
@@ -210,7 +210,7 @@ public class Attackable : MonoBehaviour
 
 	private void PlaySpawnSound()
 	{
-		AudioManager.instance.PlayRandomOneShot(spawnSounds, new OneShotParams(transform.position, 0.5f, true, 0.5f));
+		AudioManager.instance.PlayAudio(spawnSound, transform.position);
 	}
 
     public int health

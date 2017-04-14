@@ -4,15 +4,15 @@ using System.Collections.Generic;
 public class Collectable : MonoBehaviour
 {
 	public float collectRadius = 0.5f;
-	public AudioClip[] collectSounds;
-	public AudioClip[] dropSounds;
+	public AudioData collectSound;
+	public AudioData dropSound;
 
 	public ItemType itemType	= ItemType.Gold;
 	public int		amount		= 1;
 
 	void Start()
 	{
-		AudioManager.instance.PlayRandomOneShot(dropSounds, new OneShotParams(transform.position));
+		AudioManager.instance.PlayAudio(dropSound, transform.position);
 	}
 
 	void Update()
@@ -50,7 +50,7 @@ public class Collectable : MonoBehaviour
 
     private void OnCollect(InputController player)
     {
-		AudioManager.instance.PlayRandomOneShot(collectSounds, new OneShotParams(transform.position));
+		AudioManager.instance.PlayAudio(collectSound, transform.position);
 
 		bool usesSharedInventory = ItemManager.instance.UsesSharedInventory(itemType);
 

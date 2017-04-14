@@ -10,7 +10,7 @@ public class Inventory : MonoBehaviour
 	public int startLives		= 4;
 	public int startGrenades	= 4;
 
-	public AudioClip[] noMoneySounds;
+	public AudioData notEnoughResourcesSound;
 
 	private Throwable		throwable;
 	private InputController inputController;
@@ -47,8 +47,7 @@ public class Inventory : MonoBehaviour
 		// Only applicable for shared inventory (so we have ONE place where to balance it)
 		Debug.Assert(!inputController);
 
-		float pitch = AudioManager.instance.GetRandomMusicalPitch();
-		AudioManager.instance.PlayRandomOneShot2D(noMoneySounds, pitch, 0.3f);
+		AudioManager.instance.PlayAudio(notEnoughResourcesSound);
 	}
 
 	public void TryUseActiveItem()

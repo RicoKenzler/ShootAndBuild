@@ -4,7 +4,7 @@ public class Throwable : MonoBehaviour
 {
 	public GameObject projectilePrefab;
 
-	public AudioClip[] throwSounds;
+	public AudioData throwSound;
 
 	public void Throw()
 	{
@@ -16,6 +16,6 @@ public class Throwable : MonoBehaviour
 		Rigidbody body = instance.GetComponent<Rigidbody>();
 		body.velocity = transform.rotation * Vector3.forward * 10;
 
-		AudioManager.instance.PlayRandomOneShot(throwSounds, new OneShotParams(instance.transform.position));
+		AudioManager.instance.PlayAudio(throwSound, instance.transform.position);
 	}
 }

@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f472d17afb08304ab3773c852bf3637, type: 3}
+  m_Name: Lose
+  m_EditorClassIdentifier: 
+  audioClips:
+  - {fileID: 8300000, guid: 43e559c3017938942b5f688e4928136d, type: 3}
+  - {fileID: 8300000, guid: 536bb843af1e21448bb2507667c2542d, type: 3}
+  - {fileID: 8300000, guid: c095ac3d4ca95714287affa05e1645e2, type: 3}
+  volume: 1
+  pitchOffsetSemitones: 0
+  pitchRangeSemitones: 2
+  isUISound: 1
+  suppressDoppler: 0
+  amount3D: 1

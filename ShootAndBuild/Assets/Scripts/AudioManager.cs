@@ -2,24 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public struct OneShotParams
-{
-	public Vector3	position;
-	public float	volume;	
-	public bool		suppressDoppler;
-	public float	amount3D;
-	public float	pitch;
-
-	public OneShotParams(Vector3 pos, float volume = 1.0f, bool suppressDoppler = false, float amount3D = 1.0f, float pitch = 1.0f)
-	{
-		this.position = pos;
-		this.volume = volume;
-		this.suppressDoppler = suppressDoppler;
-		this.amount3D = amount3D;
-		this.pitch = pitch;
-	}
-}
-
 public class AudioManager : MonoBehaviour
 {
 	public GameObject oneShotPrefab;
@@ -41,72 +23,93 @@ public class AudioManager : MonoBehaviour
         instance = this;
     }
 
-	public float HalftoneToPitch(int halfTone)
+	public float SemitoneToPitch(float semitone)
 	{
-		float pitch = Mathf.Pow(2.0f, ((float) halfTone / (float) 12.0f));
+		float pitch = Mathf.Pow(2.0f, (semitone / (float) 12.0f));
 		return pitch;
 	}
 
-	public float RandomPitchFromHalftones(int[] halftones)
+	public float RandomPitchFromSemitones(int[] semitones)
 	{
-		if (halftones.Length == 0)
+		if (semitones.Length == 0)
 		{
 			return 1.0f;
 		}
 
-		int rndSoundIndex = Random.Range(0, halftones.Length);
-		int halftone = halftones[rndSoundIndex];
+		int rndSoundIndex = Random.Range(0, semitones.Length);
+		int halftone = semitones[rndSoundIndex];
 
-		return HalftoneToPitch(halftone);
+		return SemitoneToPitch(halftone);
 	}
 
 	public float GetRandomMusicalPitch()
 	{
-		int[] niceHalftones = { 0, 2, 4, 5, 7, 9, 11, 12,  0, 4, 7, 12, 0, 7,   5};
-		return RandomPitchFromHalftones(niceHalftones);
+		int[] niceSemitones = { 0, 2, 4, 5, 7, 9, 11, 12,  0, 4, 7, 12, 0, 7,   5};
+		return RandomPitchFromSemitones(niceSemitones);
 	}
 
-	public AudioSource PlayRandomOneShot2D(AudioClip[] audioClips, float pitch = 1.0f, float volume = 1.0f)
+	public AudioSource PlayAudio(AudioData audioData, Vector3? position3D = null, float? overridePitch = null)
 	{
-		return PlayRandomOneShot(audioClips, new OneShotParams(new Vector3(0.0f, 0.0f, 0.0f), volume, true, 0.0f, pitch));
-	}
-
-	public AudioSource PlayRandomOneShot(AudioClip[] audioClips, OneShotParams oneShotParams)
-	{
-		if (audioClips.Length <= 0)
+		if (!audioData || audioData.audioClips.Length <= 0)
 		{
 			return null;
 		}
-		
-		int rndSoundIndex = Random.Range(0, audioClips.Length);
-		AudioClip rndSound = audioClips[rndSoundIndex];
-		return PlayOneShot(rndSound, oneShotParams);
-	}
 
-	public AudioSource PlayOneShot(AudioClip clip, OneShotParams oneShotParams)
-	{
-		if (clip == null)
+		int rndClipIndex = Random.Range(0, audioData.audioClips.Length);
+		AudioClip rndClip = audioData.audioClips[rndClipIndex];
+
+		if (rndClip == null)
 		{
 			return null;
 		}
+
+		bool playUISound = audioData.isUISound;
 
 		GameObject audioObject = Instantiate(oneShotPrefab, gameObject.transform);
-		audioObject.name = "OneShot " + clip.name;
+		audioObject.name = "OneShot " + rndClip.name;
 
-		audioObject.transform.position = oneShotParams.position;
-		AudioSource audioSource = audioObject.GetComponent<AudioSource>();
-		audioSource.clip			= clip;
-		audioSource.volume			= oneShotParams.volume;
-		audioSource.dopplerLevel	= oneShotParams.suppressDoppler ? 0.0f : 1.0f;
-		audioSource.spatialBlend	= oneShotParams.amount3D;
-		audioSource.pitch			= oneShotParams.pitch;
+		if (position3D.HasValue)
+		{
+			audioObject.transform.position = position3D.Value;
+		}
+		else
+		{
+			gameObject.transform.position = Vector3.zero;
+			playUISound = true;
+		}
+
+		AudioSource audioSource		= audioObject.GetComponent<AudioSource>();
+		audioSource.clip			= rndClip;
+		audioSource.volume			= audioData.volume;
+		audioSource.dopplerLevel	= (playUISound || audioData.suppressDoppler) ? 0.0f : 1.0f;
+		audioSource.spatialBlend	= playUISound ? 0.0f : audioData.amount3D;
+
+		if (overridePitch.HasValue)
+		{
+			audioSource.pitch = overridePitch.Value;
+		}
+		else
+		{
+			if (audioData.rndMusicalPitch)
+			{
+				audioSource.pitch = GetRandomMusicalPitch();
+			}
+			else
+			{
+				float semitoneOffsets = audioData.pitchOffsetSemitones;
+				float additionalOffset = Random.Range(-audioData.pitchRangeSemitones, audioData.pitchRangeSemitones);
+
+				audioSource.pitch = SemitoneToPitch(semitoneOffsets + additionalOffset);
+			}
+		}
+		
 		audioSource.Play();
 
-		Destroy(audioObject, clip.length);
+		Destroy(audioObject, rndClip.length);
 
 		return audioSource;
 	}
-   
+	
 	public static AudioManager instance
     {
         get; private set;

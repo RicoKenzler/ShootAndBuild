@@ -7,8 +7,8 @@ public class GameManager : MonoBehaviour
 	public RectTransform winText;
 	public RectTransform loseText;
 
-	public AudioClip[] winSounds;
-	public AudioClip[] loseSounds;
+	public AudioData winSound;
+	public AudioData loseSound;
 
 	public Canvas canvas;
 
@@ -62,14 +62,14 @@ public class GameManager : MonoBehaviour
 
 	void WinGame()
 	{
-		AudioManager.instance.PlayRandomOneShot2D(winSounds);
+		AudioManager.instance.PlayAudio(winSound);
 		Instantiate(winText.gameObject, canvas.transform, false);
 		gameStatus = GameStatus.Won;
 	}
 
 	void LoseGame()
 	{
-		AudioManager.instance.PlayRandomOneShot2D(loseSounds);
+		AudioManager.instance.PlayAudio(loseSound);
 		Instantiate(loseText.gameObject, canvas.transform, false);
 		gameStatus = GameStatus.Lost;
 	}

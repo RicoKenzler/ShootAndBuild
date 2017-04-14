@@ -7,7 +7,7 @@ public class Grenade : MonoBehaviour
 	public ParticleSystem explosionParticles;
 	public float maxDamage = 10.0f;
 	public float radius = 8.0f;
-	public AudioClip[] explosionSounds;
+	public AudioData explosionSound;
 
 	private float explodeTimer = 0.0f;
 	private float radiusSquared = 0.0f;
@@ -69,7 +69,7 @@ public class Grenade : MonoBehaviour
 		}
 
 		ParticleManager.instance.SpawnParticle(explosionParticles, gameObject, transform.position, Quaternion.identity, false, 10.0f, false, false);
-		AudioManager.instance.PlayRandomOneShot(explosionSounds, new OneShotParams(selfPos, 1.0f, true, 0.5f));
+		AudioManager.instance.PlayAudio(explosionSound, selfPos);
 		InputManager.instance.SetVibrationAll(0.1f, 0.1f, 0.5f);
 
 		Destroy(gameObject);

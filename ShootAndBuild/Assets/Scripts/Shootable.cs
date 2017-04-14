@@ -2,7 +2,7 @@
 
 public class Shootable : MonoBehaviour
 {
-    public AudioClip[] shootSounds;
+    public AudioData shootSound;
 	public ParticleSystem shootEffect;
 
     public GameObject projectilePrefab;
@@ -48,7 +48,7 @@ public class Shootable : MonoBehaviour
 
         currentCooldown = shootCooldown;
 
-        AudioManager.instance.PlayRandomOneShot(shootSounds, new OneShotParams(transform.position, 0.5f));
+        AudioManager.instance.PlayAudio(shootSound, transform.position);
 
 		if (shootEffect)
 		{

@@ -14,7 +14,7 @@ public delegate void PlayerHandler(PlayerID id);
 public class PlayerManager : MonoBehaviour
 {
     public GameObject playerPrefab;
-	public AudioClip[] spawnFailSounds;
+	public AudioData spawnFailSound;
 
 	private ButtonType spawnButton = ButtonType.Taunt;
 
@@ -80,7 +80,7 @@ public class PlayerManager : MonoBehaviour
 		}
 
 		GlobalPanel.instance.HighlightLifes();
-		AudioManager.instance.PlayRandomOneShot2D(spawnFailSounds, 1.0f, 0.8f);
+		AudioManager.instance.PlayAudio(spawnFailSound);
 		return false;
 	}
 

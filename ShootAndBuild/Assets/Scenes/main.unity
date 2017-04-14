@@ -348,9 +348,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerPrefab: {fileID: 1229075479329374, guid: f6383526f2d250f469efc2ccf8646d7e,
     type: 2}
-  spawnFailSounds:
-  - {fileID: 8300000, guid: 1865fa378a28b9f45a53bb3b3bf31350, type: 3}
-  - {fileID: 8300000, guid: c3ce0a75774d0504da643b157afc279b, type: 3}
+  spawnFailSound: {fileID: 11400000, guid: 80faac22e6623574299acf97f572436a, type: 2}
 --- !u!1 &185192495
 GameObject:
   m_ObjectHideFlags: 0
@@ -985,8 +983,8 @@ MonoBehaviour:
   startGold: 10
   startLives: 4
   startGrenades: 4
-  noMoneySounds:
-  - {fileID: 8300000, guid: a9203cc4266ac9a4abe52df16f793a76, type: 3}
+  notEnoughResourcesSound: {fileID: 11400000, guid: 4a296f9be14238049812b642393e3ba8,
+    type: 2}
 --- !u!1 &946731076
 GameObject:
   m_ObjectHideFlags: 0
@@ -1594,13 +1592,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   winText: {fileID: 224037688484329938, guid: d60a6b3c6631baa4eb5fd4ec8635203e, type: 2}
   loseText: {fileID: 224054935631800498, guid: 4aef694037a6ded4193a1fe324f1efde, type: 2}
-  winSounds:
-  - {fileID: 8300000, guid: 5901e0a9b7fadba4c9a3b47dffded34d, type: 3}
-  - {fileID: 8300000, guid: f25e2ec2ceab1d34e94f279e111a2425, type: 3}
-  loseSounds:
-  - {fileID: 8300000, guid: 43e559c3017938942b5f688e4928136d, type: 3}
-  - {fileID: 8300000, guid: 536bb843af1e21448bb2507667c2542d, type: 3}
-  - {fileID: 8300000, guid: c095ac3d4ca95714287affa05e1645e2, type: 3}
+  winSound: {fileID: 11400000, guid: 9a6cd1cbcb08f4646ae99d8752d6b2b7, type: 2}
+  loseSound: {fileID: 11400000, guid: a2e040e2702b51b41a3113e1648962e2, type: 2}
   canvas: {fileID: 1202426840}
 --- !u!4 &1274031181 stripped
 Transform:

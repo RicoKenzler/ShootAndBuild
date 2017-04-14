@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f472d17afb08304ab3773c852bf3637, type: 3}
+  m_Name: Fart
+  m_EditorClassIdentifier: 
+  audioClips:
+  - {fileID: 8300000, guid: c54c025104568474780300e0befbb442, type: 3}
+  - {fileID: 8300000, guid: fa0bb1c10432eac4e9b417744e9a6964, type: 3}
+  - {fileID: 8300000, guid: 8b825e7525d3f914281f3b39d27c5992, type: 3}
+  - {fileID: 8300000, guid: 4485dfc0d2d436f47b86c0c704f72138, type: 3}
+  - {fileID: 8300000, guid: 15492fa5bab0c7248b8b21b03bd9ce53, type: 3}
+  volume: 1
+  pitchOffsetSemitones: 0
+  pitchRangeSemitones: 2
+  isUISound: 0
+  suppressDoppler: 0
+  amount3D: 1

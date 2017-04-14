@@ -2148,16 +2148,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b85794b3d4575d744aec20967ba0e00d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shootSounds:
-  - {fileID: 8300000, guid: dd87dc347bf9afe4984abeee7ade6910, type: 3}
-  - {fileID: 8300000, guid: f9707dda01163c2478442de943a9d4a3, type: 3}
-  - {fileID: 8300000, guid: c87a15d2add65e6458ab6a26989be822, type: 3}
-  - {fileID: 8300000, guid: acf896d2d84c8fe4f9f42d769737c842, type: 3}
-  - {fileID: 8300000, guid: d4e06e60f465cf84d895cc0fd3b79b2f, type: 3}
-  - {fileID: 8300000, guid: 7390ac315e463f645824d11b6dc410d0, type: 3}
-  - {fileID: 8300000, guid: f0deecf98cb75df4ba1f9ad369a86066, type: 3}
-  - {fileID: 8300000, guid: 7a59e7cd8c34b2f4e99aae3f5496e642, type: 3}
-  - {fileID: 8300000, guid: 12597b2fd21a32c4e858cb9b3df69ddc, type: 3}
+  shootSound: {fileID: 11400000, guid: 18ba650aa9e549c47b6306e46c4c71be, type: 2}
   shootEffect: {fileID: 198000012944515248, guid: 9defeac88977c0d448aa4541073ee9e4,
     type: 2}
   projectilePrefab: {fileID: 1756644795331426, guid: 29425370c5332a84ab4ba74f42d81d54,
@@ -2179,6 +2170,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   startGold: 10
   startLives: 4
+  startGrenades: 4
+  notEnoughResourcesSound: {fileID: 0}
 --- !u!114 &114039302743832264
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2193,16 +2186,8 @@ MonoBehaviour:
   maxHealth: 100
   showHealthBar: 0
   itemDrops: []
-  dieSounds:
-  - {fileID: 8300000, guid: e720ed4e579da834c9c1f43b639895b3, type: 3}
-  - {fileID: 8300000, guid: 743ea515589636f4aac6d0dbf7d12b6f, type: 3}
-  - {fileID: 8300000, guid: 5bd5a335982178d40901e5f08cf0357e, type: 3}
-  - {fileID: 8300000, guid: f8ee29f2994da0f489230207ef10f0c8, type: 3}
-  - {fileID: 8300000, guid: 4ba65ecc863f9a94695b1c2946237186, type: 3}
-  spawnSounds:
-  - {fileID: 8300000, guid: 8d493d4af69485c428a7329d16642013, type: 3}
-  - {fileID: 8300000, guid: a52ade4cdfac41c4093a8ea2cafa5119, type: 3}
-  - {fileID: 8300000, guid: c87caee09abed8447ac959387760f577, type: 3}
+  dieSound: {fileID: 11400000, guid: 5cc595a5130f16a41bcc0fe0cdc3d790, type: 2}
+  spawnSound: {fileID: 11400000, guid: 894a3210224144b4c8d75c382fb8ad07, type: 2}
   dieParticles: {fileID: 198000014159833656, guid: a3768c8a9d1b90d4bb0eb0e4bdbe730c,
     type: 2}
   damageParticles: {fileID: 198000011143922816, guid: e5a3d6da48298a0458c1990f58c27069,
@@ -2221,18 +2206,9 @@ MonoBehaviour:
   towerPrefab: {fileID: 114834398469913796, guid: 15c07ba05a515e844b8bd7d7077e9ec1,
     type: 2}
   distance: 1.5
-  buildSounds:
-  - {fileID: 8300000, guid: 65856b54a91c8f94c8b659081a71efad, type: 3}
-  - {fileID: 8300000, guid: d12dab6651d90c2449b6eff63c7ef81d, type: 3}
-  - {fileID: 8300000, guid: 09f981782ccfd4546a2cb01d84fd13cd, type: 3}
-  - {fileID: 8300000, guid: 2efec74fda064b54c9337a894c2cefc4, type: 3}
-  - {fileID: 8300000, guid: 9c027bdd0aaa7a348aaad70e5cf54f06, type: 3}
-  - {fileID: 8300000, guid: f5918587ce25ee84ead07ebb5ae252fc, type: 3}
+  buildSound: {fileID: 11400000, guid: e88509a9cb215384799a752cea6cceb3, type: 2}
   buildEffect: {fileID: 19800000, guid: 65fda251c4973834da406c3378a88bb9, type: 2}
-  noMoneySounds:
-  - {fileID: 8300000, guid: a9203cc4266ac9a4abe52df16f793a76, type: 3}
-  noSpaceSounds:
-  - {fileID: 8300000, guid: 3cdb3f300ca090440b2143366436b2e5, type: 3}
+  noSpaceSound: {fileID: 11400000, guid: 613b948ce50650b49b51ef747263ee1b, type: 2}
 --- !u!114 &114401709228175904
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2261,9 +2237,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   projectilePrefab: {fileID: 1996455648613418, guid: 02f11bb25c102a64bbb91a3b977a0668,
     type: 2}
-  throwSounds:
-  - {fileID: 8300000, guid: 35701647c8c797e46b640269abfa843b, type: 3}
-  - {fileID: 8300000, guid: f3276e4eb6e105e4c960db02b1600a3c, type: 3}
+  throwSound: {fileID: 11400000, guid: 1bed37748b4451249a60bf6322d827d8, type: 2}
 --- !u!114 &114673583163577024
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2286,13 +2260,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1edf2b43cee39940aecf9e8663570fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tauntSounds:
-  - {fileID: 8300000, guid: c54c025104568474780300e0befbb442, type: 3}
-  - {fileID: 8300000, guid: fa0bb1c10432eac4e9b417744e9a6964, type: 3}
-  - {fileID: 8300000, guid: 8b825e7525d3f914281f3b39d27c5992, type: 3}
-  - {fileID: 8300000, guid: 4485dfc0d2d436f47b86c0c704f72138, type: 3}
-  - {fileID: 8300000, guid: 15492fa5bab0c7248b8b21b03bd9ce53, type: 3}
-  singSound: {fileID: 8300000, guid: cbb41e5900b9cef48ba86b681b70c241, type: 3}
+  tauntSound: {fileID: 11400000, guid: 9ab5ab4b327c99446904180d017c3795, type: 2}
+  singSound: {fileID: 11400000, guid: b44c8e0384bd9c54fa939cb4373fbb3f, type: 2}
 --- !u!136 &136200064567154072
 CapsuleCollider:
   m_ObjectHideFlags: 1

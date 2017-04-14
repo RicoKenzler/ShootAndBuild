@@ -6,7 +6,7 @@ public class EnemyBehaviour : MonoBehaviour
     public float		attackDistance = 1;
     public float		attackCooldown = 1;
     public int			damage = 1;
-    public AudioClip[]	hitSounds;
+    public AudioData	hitSound;
 
     private float		currentAttackCooldown = 0;
     private Animation	animationController;
@@ -133,7 +133,7 @@ public class EnemyBehaviour : MonoBehaviour
                 animationController.Play("attack");
             }
 
-            AudioManager.instance.PlayRandomOneShot(hitSounds, new OneShotParams(transform.position));
+            AudioManager.instance.PlayAudio(hitSound, transform.position);
         }
 
 

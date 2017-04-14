@@ -649,9 +649,7 @@ MonoBehaviour:
   attackDistance: 2
   attackCooldown: 1
   damage: 100
-  hitSounds:
-  - {fileID: 8300000, guid: ebfa2070a23ad5844bb59ca4f12abc65, type: 3}
-  - {fileID: 8300000, guid: f9f58772d3ed65a47a0ca89cee65c3d5, type: 3}
+  hitSound: {fileID: 11400000, guid: 05acd00bacedcbb46b95e13c68b4a7d2, type: 2}
 --- !u!114 &114454388468075342
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -682,10 +680,8 @@ MonoBehaviour:
     dropProbability: 1
     minDropAmount: 50
     maxDropAmount: 100
-  dieSounds:
-  - {fileID: 8300000, guid: 581c8b71f1c892041bf046945fb1f871, type: 3}
-  - {fileID: 8300000, guid: d56f8174ce5b0e34298b2ef9dc7fdbb9, type: 3}
-  spawnSounds: []
+  dieSound: {fileID: 11400000, guid: 41b3ca0c612b6264dbe86aaa15e75b0d, type: 2}
+  spawnSound: {fileID: 0}
   dieParticles: {fileID: 198000014159833656, guid: f016cebf9cfea7742b097b371ab02d42,
     type: 2}
   damageParticles: {fileID: 198000011254678926, guid: cad68ef040af27c4d8f6ee40ab97d5aa,

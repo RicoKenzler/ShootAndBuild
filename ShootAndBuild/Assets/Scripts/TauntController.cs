@@ -5,8 +5,8 @@ using UnityEngine;
 public class TauntController : MonoBehaviour
 {
 
-	public AudioClip[]	tauntSounds;
-	public AudioClip    singSound;
+	public AudioData	tauntSound;
+	public AudioData    singSound;
 	
 	private InputController	inputController;
 
@@ -31,9 +31,7 @@ public class TauntController : MonoBehaviour
 		if (playerID == PlayerID.Player1)
 		{
 			// Player1: Fart
-			float rndPitch = Random.Range(0.5f, 2.0f);
-
-			AudioManager.instance.PlayRandomOneShot(tauntSounds, new OneShotParams(transform.position, 0.5f, true, 0.5f, rndPitch));
+			AudioManager.instance.PlayAudio(tauntSound, transform.position);
 			return;
 		}
 
@@ -58,9 +56,9 @@ public class TauntController : MonoBehaviour
 		int index = tauntStep % steps.Length;
 		int pitchHalftoneDelta = steps[index];
 
-		float pitch = AudioManager.instance.HalftoneToPitch(pitchHalftoneDelta);
+		float pitch = AudioManager.instance.SemitoneToPitch(pitchHalftoneDelta);
 
-		AudioManager.instance.PlayOneShot(singSound, new OneShotParams(transform.position, 0.5f, true, 0.5f, pitch));
+		AudioManager.instance.PlayAudio(singSound, transform.position, pitch);
 
 		tauntStep++;
 	}
