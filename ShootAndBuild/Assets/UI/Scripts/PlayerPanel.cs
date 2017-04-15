@@ -18,10 +18,11 @@ public class PlayerPanel : MonoBehaviour
 	private int							displayedActiveItemCount			= -1;
 	private ItemType					displayedActiveItemType				= ItemType.None;
 	private	InventorySelectionCategory	displayedActiveSelectionCategory	= InventorySelectionCategory.Item;
-
+	private	float						lastMenuInteraction					= 0.0f;
 
 	public bool     useDynamicHealthColor		= false;
 	public float	healthBarSmoothness			= 0.8f;
+	public float	timeUntilSelectionFadeout	= 1.5f;
 
 	private Attackable	assignedAttackable;
 	private Inventory	assignedInventory;
@@ -108,8 +109,7 @@ public class PlayerPanel : MonoBehaviour
 				desiredColor = Color.Lerp(colorMediumHealth, colorFullHealth, (smoothRelativeHealth - 0.5f) * 2.0f);
 		   }
 		}
-		
-		
+
 		healthBarFillImage.color		= desiredColor;
 		healthBarFillImage.fillAmount	= smoothRelativeHealth;
 
@@ -168,7 +168,15 @@ public class PlayerPanel : MonoBehaviour
 	{
 		InventorySelectionCategory newCategory = assignedInventory.activeSelectionCategory;
 
-		if (!forceUpdate && (displayedActiveSelectionCategory == newCategory))
+		bool forceSelectionHide = false;
+
+		if ((lastMenuInteraction != 0.0f) && (Time.time > (lastMenuInteraction + timeUntilSelectionFadeout)))
+		{
+			forceSelectionHide  = true;
+			lastMenuInteraction = 0.0f;
+		}
+
+		if (!forceSelectionHide && !forceUpdate && (displayedActiveSelectionCategory == newCategory))
 		{
 			return;
 		}
@@ -177,9 +185,10 @@ public class PlayerPanel : MonoBehaviour
 		Animator newSelectionRect = GetSelectionRectForCategory(newCategory);
 
 		oldSelectionRect.SetBool("Visible", false);
-		newSelectionRect.SetBool("Visible", IsPlayerAlive() ? true : false);
+		newSelectionRect.SetBool("Visible", (!IsPlayerAlive() || forceSelectionHide) ? false : true);
 
-		displayedActiveSelectionCategory = newCategory;
+		displayedActiveSelectionCategory	= newCategory;
+		lastMenuInteraction					= Time.time;
 	}
 
 	Animator GetSelectionRectForCategory(InventorySelectionCategory category)
