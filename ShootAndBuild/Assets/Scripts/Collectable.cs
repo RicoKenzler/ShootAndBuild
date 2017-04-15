@@ -3,11 +3,13 @@ using System.Collections.Generic;
 
 public class Collectable : MonoBehaviour
 {
-	public float collectRadius = 0.5f;
+	public float collectRadius = 1.0f;
 	public AudioData collectSound;
 	public AudioData dropSound;
 
 	public ItemType itemType	= ItemType.Gold;
+
+	[System.NonSerialized]
 	public int		amount		= 1;
 
 	void Start()

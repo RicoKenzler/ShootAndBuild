@@ -20,12 +20,25 @@ public class Attackable : MonoBehaviour
 
 	void Start()
     {
-		currentHealth = maxHealth;
+		Heal();
 
 		PlaySpawnSound();
 
 		inputController = GetComponent<InputController>();
     }
+
+	public void Heal(int? healthAmount = null)
+	{
+		if (!healthAmount.HasValue)
+		{
+			currentHealth = maxHealth;
+		}
+		else
+		{
+			currentHealth += healthAmount.Value;
+			currentHealth = Mathf.Min(currentHealth, maxHealth);
+		}
+	}
 
 	void OnEnable()
 	{
@@ -197,7 +210,7 @@ public class Attackable : MonoBehaviour
 	public void OnRespawn()
 	{
 		// Prepare respawn
-        currentHealth = maxHealth;
+        Heal();
 
         float respawnRadius = 10.0f;
         transform.position = new Vector3(Random.Range(-1.0f, 1.0f), 0.0f, Random.Range(-1.0f, 1.0f)) * respawnRadius;

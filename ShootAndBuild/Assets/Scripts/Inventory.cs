@@ -13,10 +13,12 @@ public class Inventory : MonoBehaviour
 
 	private Throwable		throwable;
 	private InputController inputController;
+	private Attackable		attackable;
 
 	void Awake()
 	{
 		inputController = GetComponent<InputController>();
+		attackable		= GetComponent<Attackable>();
 
 		if (inputController)
 		{
@@ -109,7 +111,20 @@ public class Inventory : MonoBehaviour
 				Debug.Assert(false, "Weapons are not usable");
 				break;
 			case ItemUsageCategory.StatChanger:
-				// TODO;
+				switch (itemInfos.itemType)
+				{
+					case ItemType.FullHealth:
+						attackable.Heal();
+						break;
+
+					default:
+						Debug.LogWarning("Missing case statement for " + itemInfos.itemType);
+						break;
+				}
+				break;
+
+			default:
+				Debug.LogWarning("Missing case statement for " + itemInfos.itemType);
 				break;
 		}
 	}

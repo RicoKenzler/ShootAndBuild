@@ -10,6 +10,7 @@ public enum ItemType
 	Gold		= 1,
 	Granades	= 2,
 	ExtraLifes	= 3,
+	FullHealth	= 4,
 }
 
 public enum ItemUsageCategory
@@ -67,7 +68,7 @@ public class ItemManager : MonoBehaviour
 		{
 			if (!itemDataMap.ContainsKey(itemType))
 			{
-				Debug.Log("You forgot to configure itemType " + itemType);
+				Debug.Log("You forgot to add " + itemType + " configuration to itemManager");
 			}
 		}
 	}
