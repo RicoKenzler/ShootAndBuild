@@ -3,23 +3,22 @@ using UnityEngine.UI;
 
 public class PlayerPanel : MonoBehaviour
 {
-	[SerializeField]
-	Image healthBarFillImage;
+	[SerializeField] Image healthBarFillImage;
+	[SerializeField] Image activeItemImage;
+	[SerializeField] Image activeWeaponImage;
+	[SerializeField] Image activeBuildingImage;
+	[SerializeField] Text  activeItemCountText;
+	[SerializeField] Animator weaponSelectionRect;
+	[SerializeField] Animator itemSelectionRect;
+	[SerializeField] Animator buildingSelectionRect;
 
-	[SerializeField]
-	Image activeItemImage;
+	private int							displayedHealthText					= 0;
+	private float						displayedHealthRelative				= 0.0f;
+	bool								displayedPlayerAlive				= false;
+	private int							displayedActiveItemCount			= -1;
+	private ItemType					displayedActiveItemType				= ItemType.None;
+	private	InventorySelectionCategory	displayedActiveSelectionCategory	= InventorySelectionCategory.Item;
 
-	[SerializeField]
-	Image activeWeaponImage;
-
-	[SerializeField]
-	Text  activeItemCountText;
-
-	private int			displayedHealthText			= 0;
-	private float		displayedHealthRelative		= 0.0f;
-	bool				displayedPlayerAlive		= false;
-	private int			displayedActiveItemCount	= -1;
-	private ItemType	displayedActiveItemType		= ItemType.None;
 
 	public bool     useDynamicHealthColor		= false;
 	public float	healthBarSmoothness			= 0.8f;
@@ -50,6 +49,7 @@ public class PlayerPanel : MonoBehaviour
 		UpdateHealthBar();
 		UpdateIsPlayerAlive();
 		UpdateItems();
+		UpdateInventorySelection();
 	}
 
 	bool IsPlayerAlive()
@@ -66,6 +66,7 @@ public class PlayerPanel : MonoBehaviour
 			// Do not interpolate
 			UpdateHealthBar(true);
 			UpdateItems(true);
+			UpdateInventorySelection(true);
 			displayedPlayerAlive = isPlayerAlive;
 		}
 	}
@@ -150,6 +151,7 @@ public class PlayerPanel : MonoBehaviour
 		activeItemImage.color		= deactivatedItem ? deactivatedColorTint : activatedColorTint;
 		activeItemCountText.color	= deactivatedItem ? deactivatedColorTint : defaultTextColor;
 		activeWeaponImage.color		= IsPlayerAlive() ? activatedColorTint : deactivatedColorTint;
+		activeBuildingImage.color   = IsPlayerAlive() ? activatedColorTint : deactivatedColorTint;
 	}
 
 	public void HighlightActiveItem()
@@ -160,6 +162,40 @@ public class PlayerPanel : MonoBehaviour
 	public void HighlightActiveItemCount()
 	{
 		activeItemCountTextAnimator.SetTrigger("Grow");
+	}
+
+	void UpdateInventorySelection(bool forceUpdate = false)
+	{
+		InventorySelectionCategory newCategory = assignedInventory.activeSelectionCategory;
+
+		if (!forceUpdate && (displayedActiveSelectionCategory == newCategory))
+		{
+			return;
+		}
+
+		Animator oldSelectionRect = GetSelectionRectForCategory(displayedActiveSelectionCategory);
+		Animator newSelectionRect = GetSelectionRectForCategory(newCategory);
+
+		oldSelectionRect.SetBool("Visible", false);
+		newSelectionRect.SetBool("Visible", IsPlayerAlive() ? true : false);
+
+		displayedActiveSelectionCategory = newCategory;
+	}
+
+	Animator GetSelectionRectForCategory(InventorySelectionCategory category)
+	{
+		switch (category)
+		{
+			case InventorySelectionCategory.Item:
+				return itemSelectionRect;
+			case InventorySelectionCategory.Weapon:
+				return weaponSelectionRect;
+			case InventorySelectionCategory.Building:
+				return buildingSelectionRect;
+		}
+
+		Debug.LogWarning("Missing case statement");
+		return null;
 	}
 
 	public void AssignPlayer(GameObject player)

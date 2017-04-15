@@ -1,6 +1,15 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
+public enum InventorySelectionCategory
+{
+	Item,
+	Weapon,
+	Building,
+
+	Count,
+}
+
 public class Inventory : MonoBehaviour
 {
 	Dictionary<ItemType, int> itemCounts = new Dictionary<ItemType, int>();
@@ -14,6 +23,9 @@ public class Inventory : MonoBehaviour
 	private Throwable		throwable;
 	private InputController inputController;
 	private Attackable		attackable;
+
+	[System.NonSerialized]
+	public InventorySelectionCategory activeSelectionCategory = InventorySelectionCategory.Item;
 
 	void Awake()
 	{
@@ -160,6 +172,29 @@ public class Inventory : MonoBehaviour
 
 		return itemAmount;
 	}
+
+	public void ChangeActiveItem(bool positiveOrder)
+	{	
+		
+	}
+
+	public void ChangeSelectionCategory(bool positiveOrder)
+	{
+		activeSelectionCategory += positiveOrder ? 1 : -1;
+
+		if (activeSelectionCategory >= InventorySelectionCategory.Count)
+		{
+			activeSelectionCategory = 0;
+		}
+		else if (activeSelectionCategory < 0)
+		{
+			activeSelectionCategory = InventorySelectionCategory.Count - 1;
+		}
+
+
+	}
+
+
 
 	public ItemType activeItemType
 	{

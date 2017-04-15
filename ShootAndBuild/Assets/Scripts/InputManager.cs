@@ -12,16 +12,19 @@ public enum AxisType
 
     RightAxisH,
     RightAxisV,
+
+	MenuH,
+	MenuV,
 }
 
 public enum ButtonType
 {
-    Unused,
 	Taunt,
 	Build,
-
 	UseItem,
 	Shoot,
+
+	Unused,
 }
 
 public enum InputMethod
@@ -87,7 +90,24 @@ public class InputManager : MonoBehaviour
 			}
 		}
 
-		private Dictionary<ButtonType, PlayerButtonInfos> buttonInfos = new Dictionary<ButtonType, PlayerButtonInfos>();
+		class PlayerAxisInfos
+		{
+			public string	axisIdentifier;
+			public bool		wasJustPressedState;
+			public float	axisValue;
+			public int		isDownState;		// -1) negative, 0) none, 1) positive
+
+			public PlayerAxisInfos(string identifier)
+			{
+				axisIdentifier			= identifier;
+				wasJustPressedState		= false;
+				axisValue				= 0.0f;
+				isDownState				= 0;
+			}
+		}
+
+		private Dictionary<ButtonType, PlayerButtonInfos> buttonInfos	= new Dictionary<ButtonType,	PlayerButtonInfos>();
+		private Dictionary<AxisType,   PlayerAxisInfos> axisInfos		= new Dictionary<AxisType,		PlayerAxisInfos>();
 
 		public InputMethod inputMethod	= InputMethod.Keyboard;
 		private float vibrationAmountR	= 0.0f;
@@ -98,11 +118,18 @@ public class InputManager : MonoBehaviour
 		public void InitButtonStates()
 		{
 			buttonInfos.Clear();
+			axisInfos.Clear();
 
 			foreach (ButtonType buttonType in System.Enum.GetValues(typeof(ButtonType)))
 			{
 				string inputIdentifier = InputManager.instance.ButtonToPrefix(buttonType) + InputManager.instance.InputMethodToPostfix(inputMethod);
 				buttonInfos[buttonType] = new PlayerButtonInfos(inputIdentifier);
+			}
+
+			foreach (AxisType axisType in System.Enum.GetValues(typeof(AxisType)))
+			{
+				string inputIdentifier = InputManager.instance.AxisToPrefix(axisType) + InputManager.instance.InputMethodToPostfix(inputMethod);
+				axisInfos[axisType] = new PlayerAxisInfos(inputIdentifier);
 			}
 
 			UpdateButtonStates();
@@ -119,6 +146,22 @@ public class InputManager : MonoBehaviour
 			return outState;
 		}
 
+		PlayerAxisInfos GetAxisInfos(AxisType axisType)
+		{
+			PlayerAxisInfos outState = null;
+			if (!axisInfos.TryGetValue(axisType, out outState))
+			{
+				Debug.Log("Trying to access unknown axis " + axisType);
+			}
+
+			return outState;
+		}
+
+		public float GetAxisValue(AxisType axisType)
+		{
+			return GetAxisInfos(axisType).axisValue;
+		}
+
 		public bool IsButtonDown(ButtonType buttonType)
 		{
 			PlayerButtonInfos buttonInfos = GetButtonInfos(buttonType);
@@ -129,6 +172,14 @@ public class InputManager : MonoBehaviour
 		{
 			PlayerButtonInfos buttonInfos = GetButtonInfos(buttonType);
 			return buttonInfos.wasJustPressedState;
+		}
+
+		public bool WasAxisJustPressed(AxisType axisType, out bool positive)
+		{
+			PlayerAxisInfos axisInfos = GetAxisInfos(axisType);
+			positive = axisInfos.axisValue > 0.0f;
+
+			return axisInfos.wasJustPressedState;
 		}
 
 		public void UpdateButtonStates()
@@ -152,6 +203,37 @@ public class InputManager : MonoBehaviour
 
 				infos.wasJustPressedState	= (!infos.isDownState && isButtonDown);
 				infos.isDownState			= isButtonDown;
+			}
+
+			foreach (KeyValuePair<AxisType, PlayerAxisInfos> axisInfoPair in axisInfos)
+			{
+				PlayerAxisInfos infos = axisInfoPair.Value;
+
+				float axisValue;
+
+				if (InputManager.instance.UsesDebugEmulation())
+				{
+					axisValue = Input.GetAxisRaw(InputManager.instance.ApplyDebugEmulationOnString(infos.axisIdentifier));
+				}
+				else
+				{
+					axisValue = Input.GetAxisRaw(infos.axisIdentifier); 
+				}
+
+				int isDownState = 0;
+
+				if (axisValue > TRIGGER_DOWN_THRESHOLD)
+				{
+					isDownState = 1;
+				}
+				else if (axisValue < -TRIGGER_DOWN_THRESHOLD)
+				{
+					isDownState = -1;
+				}
+
+				infos.wasJustPressedState	= (isDownState != 0 && (isDownState != infos.isDownState));
+				infos.axisValue				= axisValue;
+				infos.isDownState			= isDownState;
 			}
 		}
 
@@ -306,6 +388,11 @@ public class InputManager : MonoBehaviour
                 return "Right Horizontal";
             case AxisType.RightAxisV:
                 return "Right Vertical";
+
+			case AxisType.MenuH:
+				return "Menu Horizontal";
+			case AxisType.MenuV:
+				return "Menu Vertical";
         }
 
         return "InvalidAxis";
@@ -313,10 +400,10 @@ public class InputManager : MonoBehaviour
 
     public string ButtonToPrefix(ButtonType buttonType)
     {
-        switch (buttonType)
-        {
-            case ButtonType.Unused:
-                return "Unused";
+		switch (buttonType)
+		{
+			case ButtonType.Unused:
+				return "Unused";
 			case ButtonType.Taunt:
 				return "Taunt";
 			case ButtonType.Build:
@@ -326,28 +413,16 @@ public class InputManager : MonoBehaviour
 				return "UseItem";
 			case ButtonType.Shoot:
 				return "Shoot";
-        }
-
-        return "InvalidButton ";
-    }
-
-    private float GetAxisValue(InputMethod inputMethod, AxisType axisType)
-    {
-        string inputName = AxisToPrefix(axisType) + InputMethodToPostfix(inputMethod);
-
-		if (UsesDebugEmulation())
-		{
-			inputName = ApplyDebugEmulationOnString(inputName);
 		}
 
-        return Input.GetAxis(inputName);
-    }
-
+		return "InvalidButton";
+	}
+	
     public float GetAxisValue(PlayerID playerID, AxisType axisType)
     {
-        InputMethod inputMethod = GetInputMethod(playerID);
+        InputPlayer player = GetInputPlayer(playerID);
 
-        return GetAxisValue(inputMethod, axisType);
+        return player.GetAxisValue(axisType);
 	}
 
     public bool IsButtonDown(PlayerID playerID, ButtonType buttonType)
@@ -389,6 +464,13 @@ public class InputManager : MonoBehaviour
 		{
 			SetVibration(player.playerID, amountLeft, amountRight, duration);
 		} 
+	}
+
+	public bool WasAxisJustPressed(PlayerID playerID, AxisType axisType, out bool positive)
+	{
+		InputPlayer inputPlayer = GetInputPlayer(playerID);
+		
+		return inputPlayer.WasAxisJustPressed(axisType, out positive);
 	}
 
 	public static InputManager instance

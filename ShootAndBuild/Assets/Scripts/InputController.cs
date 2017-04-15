@@ -107,6 +107,21 @@ public class InputController : MonoBehaviour
 		}
 
 		/////////////////////////////////////////
+		/// Menu Navigation
+		/////////////////////////////////////////
+
+		bool positive;
+		if (InputManager.instance.WasAxisJustPressed(playerID, AxisType.MenuH, out positive))
+		{
+			inventory.ChangeSelectionCategory(positive);
+		}
+		
+		if (InputManager.instance.WasAxisJustPressed(playerID, AxisType.MenuV, out positive))
+		{
+			inventory.ChangeActiveItem(positive);
+		}
+
+		/////////////////////////////////////////
 		// Animation
 		/////////////////////////////////////////
 
