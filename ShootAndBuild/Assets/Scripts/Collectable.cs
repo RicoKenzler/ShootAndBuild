@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 public class Collectable : MonoBehaviour
 {
-	public float collectRadius = 1.0f;
+	public float collectRadius = 1.1f;
 	public AudioData collectSound;
 	public AudioData dropSound;
 

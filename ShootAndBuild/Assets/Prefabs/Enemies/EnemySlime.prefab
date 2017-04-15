@@ -680,6 +680,11 @@ MonoBehaviour:
     dropProbability: 1
     minDropAmount: 50
     maxDropAmount: 100
+  - itemPrefab: {fileID: 1592344206062772, guid: dcd2af2f45710cb489f707e8d0c097b6,
+      type: 2}
+    dropProbability: 0.25
+    minDropAmount: 1
+    maxDropAmount: 1
   dieSound: {fileID: 11400000, guid: 41b3ca0c612b6264dbe86aaa15e75b0d, type: 2}
   spawnSound: {fileID: 0}
   dieParticles: {fileID: 198000014159833656, guid: f016cebf9cfea7742b097b371ab02d42,
