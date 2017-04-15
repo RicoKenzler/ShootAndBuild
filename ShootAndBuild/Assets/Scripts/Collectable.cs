@@ -52,9 +52,9 @@ public class Collectable : MonoBehaviour
     {
 		AudioManager.instance.PlayAudio(collectSound, transform.position);
 
-		bool usesSharedInventory = ItemManager.instance.UsesSharedInventory(itemType);
-
-		Inventory inventory = usesSharedInventory ? Inventory.sharedInventoryInstance : player.gameObject.GetComponent<Inventory>();
+		ItemData itemData = ItemManager.instance.GetItemInfos(itemType);
+		
+		Inventory inventory = itemData.isShared ? Inventory.sharedInventoryInstance : player.gameObject.GetComponent<Inventory>();
 		inventory.AddItem(itemType, amount); 
 
         Destroy(gameObject);

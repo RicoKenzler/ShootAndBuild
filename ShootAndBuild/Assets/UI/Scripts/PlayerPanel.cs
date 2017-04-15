@@ -1,8 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using UnityEngine;
 using UnityEngine.UI;
-
-using UnityEngine;
 
 public class PlayerPanel : MonoBehaviour
 {
@@ -122,13 +119,16 @@ public class PlayerPanel : MonoBehaviour
 	void UpdateItems(bool forceUpdateAll = false)
 	{
 		ItemType activeItemType = assignedInventory.activeItemType;
+		ItemData itemData = ItemManager.instance.GetItemInfos(activeItemType);
+
 		int activeItemCount = assignedInventory.GetItemCount(assignedInventory.activeItemType);
 
 		bool itemTypeChanged = (displayedActiveItemType != activeItemType);
 		if (forceUpdateAll || itemTypeChanged)
 		{
 			// Update Active item Type
-			displayedActiveItemType = activeItemType;
+			displayedActiveItemType		= activeItemType;
+			activeItemImage.overrideSprite = itemData.icon;
 		}
 
 		bool itemCountChanged = (displayedActiveItemCount != activeItemCount);

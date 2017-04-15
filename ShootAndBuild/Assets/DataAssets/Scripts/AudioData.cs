@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
-[CreateAssetMenu(menuName = "AudioData", fileName = "AudioData")]
+[CreateAssetMenu(menuName = "Custom/AudioData", fileName = "AudioData")]
 public class AudioData : ScriptableObject
 {
 	public AudioClip[]	audioClips;
 
 	[Range(0.0f, 10.0f)]
-	public float		volume					= 1.0f;	
+	public float volume	= 1.0f;	
 
 	public enum PitchMode
 	{
@@ -19,19 +19,19 @@ public class AudioData : ScriptableObject
 		Mozart
 	}
 
-	public bool			rndMusicalPitch			= false;
+	public bool	rndMusicalPitch	= false;
 
 	[Range(-24.0f, 24.0f)]
-	public float		pitchOffsetSemitones	= 0.0f;
+	public float pitchOffsetSemitones = 0.0f;
 
 	[Range(0.0f, 24.0f)]
-	public float		pitchRangeSemitones		= 2.0f;
+	public float pitchRangeSemitones = 2.0f;
 
-	public bool			isUISound				= false;
-	public bool			suppressDoppler			= false;
+	public bool isUISound = false;
+	public bool	suppressDoppler = false;
 
 	[Range(0.0f, 1.0f)]
-	public float		amount3D				= 1.0f;
+	public float amount3D = 1.0f;
 
 	// Use this for initialization
 	void Start()

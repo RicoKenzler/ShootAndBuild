@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 public enum ItemType
@@ -9,6 +10,14 @@ public enum ItemType
 	Gold		= 1,
 	Granades	= 2,
 	ExtraLifes	= 3,
+}
+
+public enum ItemUsageCategory
+{
+	PassiveItem = 1,		//< only counts are relevant (e.g. gold)
+	Throwable	= 2,		//< e.g. grenade
+	Weapon		= 3,		//< e.g. shotgun
+	StatChanger = 4,		//< e.g. health pack
 }
 
 [System.Serializable]
@@ -22,17 +31,48 @@ public struct ItemDrop
 
 public class ItemManager : MonoBehaviour
 {
-	List<ItemType> usesSharedInventory = new List<ItemType>();
+	[SerializeField]
+	private ItemData[] allItemDatas;
 
-	// Use this for initialization
-	void Start ()
+	void Start()
 	{
-		usesSharedInventory.Add(ItemType.Gold);
-		usesSharedInventory.Add(ItemType.ExtraLifes);
+		InitItemDatasAndStartGoods();
 	}
-	
-	// Update is called once per frame
-	void Update ()
+
+	void InitItemDatasAndStartGoods()
+	{
+		foreach (ItemData itemData in allItemDatas)
+		{
+			// 1) store into map
+			if (itemDataMap.ContainsKey(itemData.itemType))
+			{
+				Debug.LogWarning("Item type " + itemData.itemType + " is configured multiple times.");
+				continue;
+			}
+
+			itemDataMap[itemData.itemType] = itemData;
+
+			// 2) add initialCount
+			if (itemData.initialCount > 0)
+			{
+				if (itemData.isShared)
+				{
+					// start items of other players are added in inventory creation
+					Inventory.sharedInventoryInstance.AddItem(itemData.itemType, itemData.initialCount);
+				}
+			}
+		}
+
+		foreach (ItemType itemType in System.Enum.GetValues(typeof(ItemType)))
+		{
+			if (!itemDataMap.ContainsKey(itemType))
+			{
+				Debug.Log("You forgot to configure itemType " + itemType);
+			}
+		}
+	}
+
+	void Update()
 	{
 		
 	}
@@ -40,15 +80,27 @@ public class ItemManager : MonoBehaviour
 	void Awake()
     {
         instance = this;
+		itemDataMap = new Dictionary<ItemType, ItemData>();
     }
 
-	public bool UsesSharedInventory(ItemType itemType)
+	public ItemData GetItemInfos(ItemType itemType)
 	{
-		return usesSharedInventory.Contains(itemType);
+		ItemData outItemData;
+		if (!itemDataMap.TryGetValue(itemType, out outItemData))
+		{
+			Debug.LogWarning("No item configured for itemType " + itemType);
+		}
+
+		return outItemData;
 	}
 
 	public static ItemManager instance
     {
         get; private set;
     }
+
+	public Dictionary<ItemType, ItemData> itemDataMap
+	{
+		get; private set;
+	}
 }
