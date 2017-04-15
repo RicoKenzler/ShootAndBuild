@@ -19,6 +19,7 @@ public class Inventory : MonoBehaviour
 	public int startGrenades	= 4;
 
 	public AudioData notEnoughResourcesSound;
+	public AudioData menuSelectionSound;
 
 	private Throwable		throwable;
 	private InputController inputController;
@@ -191,7 +192,9 @@ public class Inventory : MonoBehaviour
 			activeSelectionCategory = InventorySelectionCategory.Count - 1;
 		}
 
-
+		float halfTonesPositive = 24.0f;
+		float halfTonesNegative = 21.0f;
+		AudioManager.instance.PlayAudio(menuSelectionSound, null, positiveOrder ? halfTonesPositive : halfTonesNegative);
 	}
 
 

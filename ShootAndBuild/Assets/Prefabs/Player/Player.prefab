@@ -2171,7 +2171,9 @@ MonoBehaviour:
   startGold: 10
   startLives: 4
   startGrenades: 4
-  notEnoughResourcesSound: {fileID: 0}
+  notEnoughResourcesSound: {fileID: 11400000, guid: 4a296f9be14238049812b642393e3ba8,
+    type: 2}
+  menuSelectionSound: {fileID: 11400000, guid: af72c869f519b7d4baf1938b3b66441e, type: 2}
 --- !u!114 &114039302743832264
 MonoBehaviour:
   m_ObjectHideFlags: 1

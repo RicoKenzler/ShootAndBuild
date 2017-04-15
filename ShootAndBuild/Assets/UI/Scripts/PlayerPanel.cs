@@ -20,9 +20,9 @@ public class PlayerPanel : MonoBehaviour
 	private	InventorySelectionCategory	displayedActiveSelectionCategory	= InventorySelectionCategory.Item;
 	private	float						lastMenuInteraction					= 0.0f;
 
-	public bool     useDynamicHealthColor		= false;
-	public float	healthBarSmoothness			= 0.8f;
-	public float	timeUntilSelectionFadeout	= 1.5f;
+	public bool			useDynamicHealthColor		= false;
+	public float		healthBarSmoothness			= 0.8f;
+	public float		timeUntilSelectionFadeout	= 1.5f;
 
 	private Attackable	assignedAttackable;
 	private Inventory	assignedInventory;
