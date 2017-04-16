@@ -19,7 +19,13 @@ public class Inventory : MonoBehaviour
 	public int startGrenades	= 4;
 
 	public AudioData notEnoughResourcesSound;
-	public AudioData menuSelectionSound;
+
+	[Header("Menu")]
+	public AudioData menuSelectionRightSound;
+	public AudioData menuSelectionLeftSound;
+	public AudioData menuSelectionUpSound;
+	public AudioData menuSelectionDownSound;
+	public AudioData menuSelectionFailedSound;
 
 	private Throwable		throwable;
 	private InputController inputController;
@@ -176,7 +182,27 @@ public class Inventory : MonoBehaviour
 
 	public void ChangeActiveItem(bool positiveOrder)
 	{	
-		
+		bool success = false;
+
+		switch (activeSelectionCategory)
+		{
+			case InventorySelectionCategory.Item:
+				break;
+			case InventorySelectionCategory.Weapon:
+				break;
+			case InventorySelectionCategory.Building:
+				success = true;
+				break;
+		}
+
+		if (success)
+		{
+			AudioManager.instance.PlayAudio(positiveOrder ? menuSelectionUpSound : menuSelectionDownSound);
+		}
+		else
+		{
+			AudioManager.instance.PlayAudio(menuSelectionFailedSound);
+		}
 	}
 
 	public void ChangeSelectionCategory(bool positiveOrder)
@@ -192,9 +218,7 @@ public class Inventory : MonoBehaviour
 			activeSelectionCategory = InventorySelectionCategory.Count - 1;
 		}
 
-		float halfTonesPositive = 24.0f;
-		float halfTonesNegative = 21.0f;
-		AudioManager.instance.PlayAudio(menuSelectionSound, null, positiveOrder ? halfTonesPositive : halfTonesNegative);
+		AudioManager.instance.PlayAudio(positiveOrder ? menuSelectionRightSound : menuSelectionLeftSound);
 	}
 
 
