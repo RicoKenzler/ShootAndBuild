@@ -19,7 +19,7 @@ public class PlayerPanel : MonoBehaviour
 	private ItemType					displayedActiveItemType				= ItemType.None;
 
 	private	InventorySelectionCategory	displayedActiveSelectionCategory	= InventorySelectionCategory.Item;
-	private bool						displayedSelectionHidden			= true;
+	private bool						displayedSelectionHidden			= false;
 
 	public bool			useDynamicHealthColor		= false;
 	public float		healthBarSmoothness			= 0.8f;

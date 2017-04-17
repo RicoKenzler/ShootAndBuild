@@ -120,7 +120,7 @@ public class InputController : MonoBehaviour
 		
 		if (InputManager.instance.WasAxisJustPressed(playerID, AxisType.MenuV, out positive))
 		{
-			playerMenu.ChangeActiveWithinCategory(positive);
+			playerMenu.CycleThroughCategory(positive);
 		}
 
 		/////////////////////////////////////////

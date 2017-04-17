@@ -57,18 +57,38 @@ public class PlayerMenu : MonoBehaviour
 		
 	}
 
-	public void ChangeActiveWithinCategory(bool positiveOrder)
+	private bool TryCycleThroughItems(bool positiveOrder)
+	{
+		// Not implemented yet
+		return false;
+	}
+
+	private bool TryCycleThroughWeapons(bool positiveOrder)
+	{
+		// Not implemented yet
+		return false;
+	}
+
+	private bool TryCycleThroughBuildings(bool positiveOrder)
+	{
+		// Not implemented yet
+		return true;
+	}
+
+	public void CycleThroughCategory(bool positiveOrder)
 	{	
 		bool success = false;
 
 		switch (activeSelectionCategory)
 		{
 			case InventorySelectionCategory.Item:
+				success = TryCycleThroughItems(positiveOrder);
 				break;
 			case InventorySelectionCategory.Weapon:
+				success = TryCycleThroughWeapons(positiveOrder);
 				break;
 			case InventorySelectionCategory.Building:
-				success = true;
+				success = TryCycleThroughBuildings(positiveOrder);
 				break;
 		}
 
