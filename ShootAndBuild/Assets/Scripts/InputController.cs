@@ -11,6 +11,7 @@ public class InputController : MonoBehaviour
     private Animation		animationController;
 	private TauntController tauntController;
 	private Shootable		shootable;
+	private Movable			movable;
 	private Builder			builder;
 	private Inventory		inventory;
 	private PlayerMenu		playerMenu;
@@ -19,6 +20,7 @@ public class InputController : MonoBehaviour
 	{
 		tauntController	= GetComponent<TauntController>();
 		shootable		= GetComponent<Shootable>();
+		movable			= GetComponent<Movable>();
 		builder			= GetComponent<Builder>();
 		inventory		= GetComponent<Inventory>();
 		playerMenu		= GetComponent<PlayerMenu>();
@@ -46,7 +48,7 @@ public class InputController : MonoBehaviour
         float rightHorizontal   =  InputManager.instance.GetAxisValue(playerID, AxisType.RightAxisH);
         float rightVertical     =  InputManager.instance.GetAxisValue(playerID, AxisType.RightAxisV);
 
-        Vector2 leftInputVector = new Vector2(leftHorizontal, leftVertical);
+        Vector3 leftInputVector = new Vector3(leftHorizontal, 0, leftVertical);
         float leftInputVectorLength = leftInputVector.magnitude;
         
         if (leftInputVectorLength > 1.0f)
@@ -55,15 +57,10 @@ public class InputController : MonoBehaviour
         }
         else if (Mathf.Abs(leftHorizontal) < deadzone && Mathf.Abs(leftVertical) < deadzone)
         {
-            leftInputVector = Vector2.zero;
+            leftInputVector = Vector3.zero;
         }
 
-		Rigidbody rigidbody = GetComponent<Rigidbody>();
-        Vector3 velocity    = rigidbody.velocity;
-        velocity.x		    = leftInputVector.x * speed;
-        velocity.z		    = leftInputVector.y * speed;
-
-        rigidbody.velocity = velocity;
+		movable.moveForce = leftInputVector * speed;
 
         /////////////////////////////////////////
         // Rotation
@@ -129,7 +126,7 @@ public class InputController : MonoBehaviour
 
 		if (animationController != null)
         {
-            float movementSpeed = velocity.magnitude;
+			float movementSpeed = movable.moveForce.magnitude;
 
             if (!animationController.IsPlaying("attack"))
             {

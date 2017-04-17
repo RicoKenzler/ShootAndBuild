@@ -301,6 +301,7 @@ GameObject:
   - component: {fileID: 114038263645953718}
   - component: {fileID: 114569976537219696}
   - component: {fileID: 114573611399926386}
+  - component: {fileID: 114270027438886738}
   m_Layer: 8
   m_Name: Player
   m_TagString: Untagged
@@ -2212,6 +2213,17 @@ MonoBehaviour:
   buildSound: {fileID: 11400000, guid: e88509a9cb215384799a752cea6cceb3, type: 2}
   buildEffect: {fileID: 19800000, guid: 65fda251c4973834da406c3378a88bb9, type: 2}
   noSpaceSound: {fileID: 11400000, guid: 613b948ce50650b49b51ef747263ee1b, type: 2}
+--- !u!114 &114270027438886738
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1229075479329374}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4035f8777ce03bf4880575e81bf5954d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114401709228175904
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2262,6 +2274,7 @@ MonoBehaviour:
     type: 2}
   menuSelectionFailedSound: {fileID: 11400000, guid: bf53d8aea4ff9924b8a38cebe5ab5649,
     type: 2}
+  lastMenuInteractionTime: 0
 --- !u!114 &114673583163577024
 MonoBehaviour:
   m_ObjectHideFlags: 1

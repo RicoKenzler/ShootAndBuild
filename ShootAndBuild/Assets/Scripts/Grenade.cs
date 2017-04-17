@@ -3,9 +3,10 @@ using System.Collections.Generic;
 
 public class Grenade : MonoBehaviour
 {
-	public float timeToExplode = 3.0f;
+	public float timeToExplode = 2.0f;
 	public ParticleSystem explosionParticles;
 	public float maxDamage = 10.0f;
+	public float maxForce = 10.0f;
 	public float radius = 8.0f;
 	public AudioData explosionSound;
 
@@ -33,11 +34,13 @@ public class Grenade : MonoBehaviour
 	{
 		public Attackable	attackable;
 		public int			damage;
+		public Vector3		impulse;
 
-		public AttackableAndDamage(Attackable _attackable, int _damage)
+		public AttackableAndDamage(Attackable _attackable, int _damage, Vector3 _impulse)
 		{
 			attackable = _attackable;
 			damage = _damage;
+			impulse = _impulse;
 		}
 	};
 
@@ -58,14 +61,26 @@ public class Grenade : MonoBehaviour
 			if (distanceSq < radiusSquared)
 			{
 				float dist = Mathf.Sqrt(distanceSq);
-				float damage = dist / radius * maxDamage;
-				allDamages.Add(new AttackableAndDamage(attackable, (int) damage));
+				float f = dist / radius;
+				float damage = f * maxDamage;
+				float force = f * maxForce;
+
+				Vector3 direction = attackable.transform.position - selfPos;
+                Vector3 impulse = direction.normalized * force;
+
+				allDamages.Add(new AttackableAndDamage(attackable, (int) damage, impulse));
 			}
 		}
 
 		foreach (AttackableAndDamage damage in allDamages)
 		{
-			damage.attackable.DealDamage((int) damage.damage, gameObject);
+			Movable movable = damage.attackable.gameObject.GetComponent<Movable>();
+			if (movable != null)
+			{
+				movable.impulseForce = damage.impulse;
+			}
+
+			damage.attackable.DealDamage(damage.damage, gameObject);
 		}
 
 		ParticleManager.instance.SpawnParticle(explosionParticles, gameObject, transform.position, Quaternion.identity, false, 10.0f, false, false);

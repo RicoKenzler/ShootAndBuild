@@ -149,9 +149,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6cc4ff242c16b1746800c26284056fec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  timeToExplode: 2
+  timeToExplode: 1.5
   explosionParticles: {fileID: 198000012777718758, guid: acf39d9f4addf294d93fa56fa373961b,
     type: 2}
-  maxDamage: 100
+  maxDamage: 50
+  maxForce: 50
   radius: 4
   explosionSound: {fileID: 11400000, guid: bac2341babaf07a4dad54ac5b1651053, type: 2}
