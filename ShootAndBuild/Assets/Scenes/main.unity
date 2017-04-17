@@ -991,7 +991,6 @@ MonoBehaviour:
   startGrenades: 4
   notEnoughResourcesSound: {fileID: 11400000, guid: 4a296f9be14238049812b642393e3ba8,
     type: 2}
-  menuSelectionSound: {fileID: 0}
 --- !u!1 &946731076
 GameObject:
   m_ObjectHideFlags: 0

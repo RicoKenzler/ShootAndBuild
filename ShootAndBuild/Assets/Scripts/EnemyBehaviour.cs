@@ -10,6 +10,7 @@ public class EnemyBehaviour : MonoBehaviour
 
     private float		currentAttackCooldown = 0;
     private Animation	animationController;
+	private Movable		movable;
 
     void Start()
     {
@@ -23,6 +24,8 @@ public class EnemyBehaviour : MonoBehaviour
             animationController["idle"].speed = 1;
             animationController.Play();
         }
+
+		movable = GetComponent<Movable>();
 
 		EnemyManager.instance.RegisterEnemy(this, false);
 		transform.SetParent(EnemyManager.instance.transform);
@@ -98,7 +101,7 @@ public class EnemyBehaviour : MonoBehaviour
 				animationController.Play("idle");
 			}
 
-			GetComponent<Rigidbody>().velocity = new Vector3(0.0f, 0.0f, 0.0f);
+			movable.moveForce = Vector2.zero;
             return;
         }
 
@@ -119,23 +122,26 @@ public class EnemyBehaviour : MonoBehaviour
 
         if (distToPlayer > attackDistance)
         {
-            Vector3 velocity = direction * speed;
-            GetComponent<Rigidbody>().velocity = velocity;
+            movable.moveForce = direction * speed;
         }
-        else if (currentAttackCooldown == 0)
-        {
-            currentAttackCooldown = attackCooldown;
-            nearestTarget.GetComponent<Attackable>().DealDamage(damage, gameObject);
+		else
+		{
+			movable.moveForce = Vector2.zero;
 
-            if (animationController)
-            {
-                animationController["attack"].speed = 4.0f;
-                animationController.Play("attack");
-            }
+			if (currentAttackCooldown == 0)
+			{
+				currentAttackCooldown = attackCooldown;
+				nearestTarget.GetComponent<Attackable>().DealDamage(damage, gameObject);
 
-            AudioManager.instance.PlayAudio(hitSound, transform.position);
-        }
+				if (animationController)
+				{
+					animationController["attack"].speed = 4.0f;
+					animationController.Play("attack");
+				}
 
+				AudioManager.instance.PlayAudio(hitSound, transform.position);
+			}
+		}
 
         /////////////////////////////////////////
         // Animation
