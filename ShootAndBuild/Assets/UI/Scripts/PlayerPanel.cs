@@ -17,6 +17,7 @@ public class PlayerPanel : MonoBehaviour
 	bool								displayedPlayerAlive				= false;
 	private int							displayedActiveItemCount			= -1;
 	private ItemType					displayedActiveItemType				= ItemType.None;
+	private Building					displayedActiveBuilding				= null;
 
 	private	InventorySelectionCategory	displayedActiveSelectionCategory	= InventorySelectionCategory.Item;
 	private bool						displayedSelectionHidden			= false;
@@ -54,6 +55,7 @@ public class PlayerPanel : MonoBehaviour
 		UpdateIsPlayerAlive();
 		UpdateItems();
 		UpdateInventorySelection();
+		UpdateBuildings();
 	}
 
 	bool IsPlayerAlive()
@@ -70,6 +72,7 @@ public class PlayerPanel : MonoBehaviour
 			// Do not interpolate
 			UpdateHealthBar(true);
 			UpdateItems(true);
+			UpdateBuildings(true);
 			UpdateInventorySelection(true);
 			displayedPlayerAlive = isPlayerAlive;
 		}
@@ -120,6 +123,23 @@ public class PlayerPanel : MonoBehaviour
 		displayedHealthText		= newHealth;
 	}
 
+	void UpdateBuildings(bool forceUpdateAll = false)
+	{
+		Building activeBuilding = assignedPlayerMenu.activeBuildingPrefab;
+
+		bool buildingTypeChanged = (displayedActiveBuilding != activeBuilding);
+		if (forceUpdateAll || buildingTypeChanged)
+		{
+			// Update Active item Type
+			displayedActiveBuilding				= activeBuilding;
+			activeBuildingImage.overrideSprite	= activeBuilding ? activeBuilding.icon : null;
+		}
+		
+		bool buildingBuildable = (IsPlayerAlive() && (activeBuilding && activeBuilding.IsPayable()));
+		
+		activeBuildingImage.color   = buildingBuildable ? activatedColorTint : deactivatedColorTint;
+	}
+
 	void UpdateItems(bool forceUpdateAll = false)
 	{
 		ItemType activeItemType = assignedPlayerMenu.activeItemType;
@@ -154,7 +174,6 @@ public class PlayerPanel : MonoBehaviour
 		activeItemImage.color		= deactivatedItem ? deactivatedColorTint : activatedColorTint;
 		activeItemCountText.color	= deactivatedItem ? deactivatedColorTint : defaultTextColor;
 		activeWeaponImage.color		= IsPlayerAlive() ? activatedColorTint : deactivatedColorTint;
-		activeBuildingImage.color   = IsPlayerAlive() ? activatedColorTint : deactivatedColorTint;
 	}
 
 	public void HighlightActiveItem()

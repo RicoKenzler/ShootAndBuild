@@ -1,8 +1,9 @@
 ﻿using UnityEngine;
+using System.Collections.Generic;
 
 public class Builder : MonoBehaviour
 {
-	public Building towerPrefab;
+	public List<Building> buildingPrefabs;
 	public float distance = 2;
 
 	public AudioData buildSound;
@@ -10,12 +11,31 @@ public class Builder : MonoBehaviour
 
 	public AudioData noSpaceSound;
 
+	private PlayerMenu playerMenu;
+
+	void Awake()
+	{
+		
+	}
+
+	private void Start()
+	{
+		playerMenu = GetComponent<PlayerMenu>();
+	}
+
 	public void TryBuild()
 	{
 		Vector3 pos = transform.position + transform.rotation * (distance * Vector3.forward);
 		pos = Grid.instance.ToTileCenter(pos);
 
-		if (!towerPrefab.IsPayable())
+		Building activeBuilding = playerMenu.activeBuildingPrefab;
+
+		if (!activeBuilding)
+		{
+			return;
+		}
+
+		if (!activeBuilding.IsPayable())
 		{
 			Inventory.sharedInventoryInstance.TriggerNotEnoughItemsSound();
 
@@ -23,23 +43,23 @@ public class Builder : MonoBehaviour
 			return;
 		}
 
-		if (!Grid.instance.IsFree(towerPrefab.gameObject, pos))
+		if (!Grid.instance.IsFree(activeBuilding.gameObject, pos))
 		{
 			AudioManager.instance.PlayAudio(noSpaceSound);
 			return;
 		}
 
-		Build(pos);
+		Build(activeBuilding, pos);
 	}
 
-	private void Build(Vector3 pos)
+	private void Build(Building buildingPrefab, Vector3 pos)
 	{
-		GameObject newTower = Instantiate(towerPrefab.gameObject);
+		GameObject newTower = Instantiate(buildingPrefab.gameObject);
 		newTower.transform.position = pos;
 
 		AudioManager.instance.PlayAudio(buildSound, transform.position);
 		
-		towerPrefab.Pay();
+		buildingPrefab.Pay();
 
 		if (buildEffect)
 		{

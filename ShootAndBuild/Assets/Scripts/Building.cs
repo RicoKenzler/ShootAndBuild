@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class Building : MonoBehaviour
 {
-	public int costs = 10;
+	public int		costs = 10;
+	public Sprite	icon;
 
 	// Use this for initialization
 	void Start ()

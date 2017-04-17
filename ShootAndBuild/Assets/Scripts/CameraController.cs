@@ -24,6 +24,7 @@ public class CameraController : MonoBehaviour
     private Vector3 lastPlayerSphereCenter	= new Vector3(0.0f, 0.0f, 0.0f);
     private float lastPlayerSphereRadius	= 1.0f;
 
+	public AudioListener audioListener;
 
 	void Start()
 	{
@@ -75,17 +76,8 @@ public class CameraController : MonoBehaviour
         transform.position = newCameraPos;
         transform.LookAt(playerSphereCenter);
 
-		AudioListener listener = FindObjectOfType<AudioListener>();
 
-		if (!listener)
-		{
-			Debug.Log("No Listener found");
-		}
-		else
-		{
-			listener.transform.position = playerSphereCenter;
-			listener.transform.rotation = Quaternion.AngleAxis(180.0f, new Vector3(0.0f, 1.0f, 0.0f)) * transform.rotation;
-		}
-
+		audioListener.transform.position = playerSphereCenter;
+		audioListener.transform.rotation = Quaternion.AngleAxis(180.0f, new Vector3(0.0f, 1.0f, 0.0f)) * transform.rotation;
     }
 }

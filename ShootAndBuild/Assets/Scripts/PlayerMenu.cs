@@ -14,11 +14,16 @@ public class PlayerMenu : MonoBehaviour
 	public InventorySelectionCategory activeSelectionCategory = InventorySelectionCategory.Item;
 
 	private Inventory inventory;
+	private Builder   builder;
 
-	public float lastMenuInteractionTime = 0.0f;
+	public float lastMenuInteractionTime
+	{
+		get; private set;
+	} 
 
 	void Awake()
 	{
+		lastMenuInteractionTime = 0.0f;
 		activeItemType = ItemType.None;
 	}
 
@@ -45,11 +50,25 @@ public class PlayerMenu : MonoBehaviour
 		}
 	}
 
+	void InitActiveBuildingType()
+	{
+		if (builder.buildingPrefabs.Count == 0)
+		{
+			activeBuildingPrefab = null;
+		}
+		else
+		{
+			activeBuildingPrefab = builder.buildingPrefabs[0];
+		}
+	}
+
 	void Start() 
 	{
-		inventory = GetComponent<Inventory>();
+		inventory	= GetComponent<Inventory>();
+		builder		= GetComponent<Builder>();
 
 		InitActiveItemType();
+		InitActiveBuildingType();
 	}
 	
 	void Update() 
@@ -71,8 +90,69 @@ public class PlayerMenu : MonoBehaviour
 
 	private bool TryCycleThroughBuildings(bool positiveOrder)
 	{
-		// Not implemented yet
-		return true;
+		bool foundCurrentBuilding = false;
+		
+		if (positiveOrder)
+		{
+			Building validBuildingAfterCurrent  = null;
+
+			for (int i = 0; i <= 1; ++i)
+			{
+				foreach (Building building in builder.buildingPrefabs)
+				{
+					if (foundCurrentBuilding)
+					{
+						validBuildingAfterCurrent = building;
+						i = 2;
+						break;
+					}
+					
+					if (building == activeBuildingPrefab)
+					{
+						foundCurrentBuilding = true;
+					}
+				}
+			}
+
+			if (validBuildingAfterCurrent && (validBuildingAfterCurrent != activeBuildingPrefab))
+			{
+				activeBuildingPrefab = validBuildingAfterCurrent;
+				return true;
+			}
+
+			return false;
+		}
+		else
+		{
+			Building validBuildingBeforeCurrent  = null;
+
+			for (int i = 0; i <= 1; ++i)
+			{
+				foreach (Building building in builder.buildingPrefabs)
+				{					
+					if (building == activeBuildingPrefab)
+					{
+						if (foundCurrentBuilding)
+						{
+							i = 2;
+							break;
+						}
+
+						foundCurrentBuilding = true;
+					}
+
+					validBuildingBeforeCurrent = building;
+				}
+			}
+
+			if (validBuildingBeforeCurrent && (validBuildingBeforeCurrent != activeBuildingPrefab))
+			{
+				activeBuildingPrefab = validBuildingBeforeCurrent;
+				return true;
+			}
+
+			return false;
+		}
 	}
 
 	public void CycleThroughCategory(bool positiveOrder)
@@ -123,6 +203,11 @@ public class PlayerMenu : MonoBehaviour
 	}
 
 	public ItemType activeItemType
+	{
+		get; private set;
+	}
+
+	public Building activeBuildingPrefab
 	{
 		get; private set;
 	}
