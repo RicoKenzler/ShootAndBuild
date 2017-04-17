@@ -1,0 +1,22 @@
+fileFormatVersion: 2
+guid: 678ca468ae418614396bcd0fd0220ff2
+timeCreated: 1492422217
+licenseType: Free
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences:
+  - menuSelectionRightSound: {fileID: 11400000, guid: af72c869f519b7d4baf1938b3b66441e,
+      type: 2}
+  - menuSelectionLeftSound: {fileID: 11400000, guid: 29f1f032e5f850a40b9befe73c1a5e4c,
+      type: 2}
+  - menuSelectionUpSound: {fileID: 11400000, guid: 05fcc0a93575f704b851805694016193,
+      type: 2}
+  - menuSelectionDownSound: {fileID: 11400000, guid: dabf79b88ab230641bbc330e2a9ce112,
+      type: 2}
+  - menuSelectionFailedSound: {fileID: 11400000, guid: bf53d8aea4ff9924b8a38cebe5ab5649,
+      type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

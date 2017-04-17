@@ -13,10 +13,17 @@ public class InputController : MonoBehaviour
 	private Shootable		shootable;
 	private Builder			builder;
 	private Inventory		inventory;
+	private PlayerMenu		playerMenu;
 
 	void Start()
 	{
-        animationController = GetComponentInChildren<Animation>();
+		tauntController	= GetComponent<TauntController>();
+		shootable		= GetComponent<Shootable>();
+		builder			= GetComponent<Builder>();
+		inventory		= GetComponent<Inventory>();
+		playerMenu		= GetComponent<PlayerMenu>();
+
+		animationController = GetComponentInChildren<Animation>();
         if (animationController == null)
         {
             Debug.LogWarning("no animation found on player " + playerID);
@@ -25,11 +32,6 @@ public class InputController : MonoBehaviour
             animationController["idle"].speed = 1;
             animationController.Play();
         }
-
-		tauntController	= GetComponent<TauntController>();
-		shootable		= GetComponent<Shootable>();
-		builder			= GetComponent<Builder>();
-		inventory		= GetComponent<Inventory>();
 	}
 
 	//--------------------------------------------------------------------------------------------------
@@ -113,12 +115,12 @@ public class InputController : MonoBehaviour
 		bool positive;
 		if (InputManager.instance.WasAxisJustPressed(playerID, AxisType.MenuH, out positive))
 		{
-			inventory.ChangeSelectionCategory(positive);
+			playerMenu.ChangeSelectionCategory(positive);
 		}
 		
 		if (InputManager.instance.WasAxisJustPressed(playerID, AxisType.MenuV, out positive))
 		{
-			inventory.ChangeActiveItem(positive);
+			playerMenu.ChangeActiveWithinCategory(positive);
 		}
 
 		/////////////////////////////////////////

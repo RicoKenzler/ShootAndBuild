@@ -300,6 +300,7 @@ GameObject:
   - component: {fileID: 114190577841373536}
   - component: {fileID: 114038263645953718}
   - component: {fileID: 114569976537219696}
+  - component: {fileID: 114573611399926386}
   m_Layer: 8
   m_Name: Player
   m_TagString: Untagged
@@ -2173,16 +2174,6 @@ MonoBehaviour:
   startGrenades: 4
   notEnoughResourcesSound: {fileID: 11400000, guid: 4a296f9be14238049812b642393e3ba8,
     type: 2}
-  menuSelectionRightSound: {fileID: 11400000, guid: af72c869f519b7d4baf1938b3b66441e,
-    type: 2}
-  menuSelectionLeftSound: {fileID: 11400000, guid: 29f1f032e5f850a40b9befe73c1a5e4c,
-    type: 2}
-  menuSelectionUpSound: {fileID: 11400000, guid: 05fcc0a93575f704b851805694016193,
-    type: 2}
-  menuSelectionDownSound: {fileID: 11400000, guid: dabf79b88ab230641bbc330e2a9ce112,
-    type: 2}
-  menuSelectionFailedSound: {fileID: 11400000, guid: bf53d8aea4ff9924b8a38cebe5ab5649,
-    type: 2}
 --- !u!114 &114039302743832264
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2249,6 +2240,27 @@ MonoBehaviour:
   projectilePrefab: {fileID: 1996455648613418, guid: 02f11bb25c102a64bbb91a3b977a0668,
     type: 2}
   throwSound: {fileID: 11400000, guid: 1bed37748b4451249a60bf6322d827d8, type: 2}
+--- !u!114 &114573611399926386
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1229075479329374}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 678ca468ae418614396bcd0fd0220ff2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  menuSelectionRightSound: {fileID: 11400000, guid: af72c869f519b7d4baf1938b3b66441e,
+    type: 2}
+  menuSelectionLeftSound: {fileID: 11400000, guid: 29f1f032e5f850a40b9befe73c1a5e4c,
+    type: 2}
+  menuSelectionUpSound: {fileID: 11400000, guid: 05fcc0a93575f704b851805694016193,
+    type: 2}
+  menuSelectionDownSound: {fileID: 11400000, guid: dabf79b88ab230641bbc330e2a9ce112,
+    type: 2}
+  menuSelectionFailedSound: {fileID: 11400000, guid: bf53d8aea4ff9924b8a38cebe5ab5649,
+    type: 2}
 --- !u!114 &114673583163577024
 MonoBehaviour:
   m_ObjectHideFlags: 1

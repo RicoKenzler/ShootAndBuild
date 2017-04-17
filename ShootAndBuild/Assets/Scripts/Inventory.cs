@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using UnityEngine;
 
 public enum InventorySelectionCategory
@@ -20,31 +21,28 @@ public class Inventory : MonoBehaviour
 
 	public AudioData notEnoughResourcesSound;
 
-	[Header("Menu")]
-	public AudioData menuSelectionRightSound;
-	public AudioData menuSelectionLeftSound;
-	public AudioData menuSelectionUpSound;
-	public AudioData menuSelectionDownSound;
-	public AudioData menuSelectionFailedSound;
-
 	private Throwable		throwable;
 	private InputController inputController;
 	private Attackable		attackable;
+	private PlayerMenu		playerMenu;
 
-	[System.NonSerialized]
-	public InventorySelectionCategory activeSelectionCategory = InventorySelectionCategory.Item;
+	// ReadOnly Dictionaries are not supported before .Net 4.5
+	public Dictionary<ItemType, int> GetItemsReadOnly()
+	{
+		return itemCounts;
+	}
 
 	void Awake()
 	{
 		inputController = GetComponent<InputController>();
 		attackable		= GetComponent<Attackable>();
+		playerMenu		= GetComponent<PlayerMenu>();
+		throwable		= GetComponent<Throwable>();
 
 		if (inputController)
 		{
 			// init start items
 			Dictionary<ItemType, ItemData> itemInfos = ItemManager.instance.itemDataMap;
-
-			activeItemType = ItemType.Granades;
 
 			foreach (KeyValuePair<ItemType, ItemData> item in itemInfos)
 			{
@@ -54,10 +52,7 @@ public class Inventory : MonoBehaviour
 				}
 
 				AddItem(item.Value.itemType, item.Value.initialCount);
-				activeItemType = item.Value.itemType;
 			}
-
-			throwable = GetComponent<Throwable>();
 		}
 		else
 		{
@@ -68,7 +63,7 @@ public class Inventory : MonoBehaviour
 	// Use this for initialization
 	void Start()
 	{
-	
+		
 	}
 	
 	// Update is called once per frame
@@ -96,7 +91,7 @@ public class Inventory : MonoBehaviour
 
 		PlayerPanel playerPanel = PlayerPanelGroup.instance.GetPlayerPanel(inputController.playerID);
 
-		if (GetItemCount(activeItemType) <= 0)
+		if (GetItemCount(playerMenu.activeItemType) <= 0)
 		{
 			// Item not usable
 			sharedInventoryInstance.TriggerNotEnoughItemsSound();
@@ -109,9 +104,9 @@ public class Inventory : MonoBehaviour
 		// Use Item
 		playerPanel.HighlightActiveItem();
 
-		UseItem(activeItemType);
+		UseItem(playerMenu.activeItemType);
 
-		AddItem(activeItemType, -1);
+		AddItem(playerMenu.activeItemType, -1);
 	}
 
 	void UseItem(ItemType itemType, int count = 1)
@@ -123,7 +118,7 @@ public class Inventory : MonoBehaviour
 			case ItemUsageCategory.PassiveItem:
 				Debug.Assert(false, "Passive Items are not usable");
 				break;
-			case ItemUsageCategory.Throwable:
+			case ItemUsageCategory.UsableItem:
 				throwable.Throw();
 				break;
 			case ItemUsageCategory.Weapon:
@@ -179,57 +174,11 @@ public class Inventory : MonoBehaviour
 
 		return itemAmount;
 	}
-
-	public void ChangeActiveItem(bool positiveOrder)
-	{	
-		bool success = false;
-
-		switch (activeSelectionCategory)
-		{
-			case InventorySelectionCategory.Item:
-				break;
-			case InventorySelectionCategory.Weapon:
-				break;
-			case InventorySelectionCategory.Building:
-				success = true;
-				break;
-		}
-
-		if (success)
-		{
-			AudioManager.instance.PlayAudio(positiveOrder ? menuSelectionUpSound : menuSelectionDownSound);
-		}
-		else
-		{
-			AudioManager.instance.PlayAudio(menuSelectionFailedSound);
-		}
-	}
-
-	public void ChangeSelectionCategory(bool positiveOrder)
-	{
-		activeSelectionCategory += positiveOrder ? 1 : -1;
-
-		if (activeSelectionCategory >= InventorySelectionCategory.Count)
-		{
-			activeSelectionCategory = 0;
-		}
-		else if (activeSelectionCategory < 0)
-		{
-			activeSelectionCategory = InventorySelectionCategory.Count - 1;
-		}
-
-		AudioManager.instance.PlayAudio(positiveOrder ? menuSelectionRightSound : menuSelectionLeftSound);
-	}
-
-
-
-	public ItemType activeItemType
-	{
-		get; private set;
-	}
-
+	
 	public static Inventory sharedInventoryInstance
     {
         get; private set;
     }
 }
+
+

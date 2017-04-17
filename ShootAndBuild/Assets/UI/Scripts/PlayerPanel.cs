@@ -17,8 +17,9 @@ public class PlayerPanel : MonoBehaviour
 	bool								displayedPlayerAlive				= false;
 	private int							displayedActiveItemCount			= -1;
 	private ItemType					displayedActiveItemType				= ItemType.None;
+
 	private	InventorySelectionCategory	displayedActiveSelectionCategory	= InventorySelectionCategory.Item;
-	private	float						lastMenuInteraction					= 0.0f;
+	private bool						displayedSelectionHidden			= true;
 
 	public bool			useDynamicHealthColor		= false;
 	public float		healthBarSmoothness			= 0.8f;
@@ -26,6 +27,8 @@ public class PlayerPanel : MonoBehaviour
 
 	private Attackable	assignedAttackable;
 	private Inventory	assignedInventory;
+	private PlayerMenu	assignedPlayerMenu;
+
 	private Animator	activeItemCountTextAnimator;
 	private Animator	activeItemImageAnimator;
 
@@ -34,7 +37,7 @@ public class PlayerPanel : MonoBehaviour
 	private Color defaultTextColor;
 
 	// Update is called once per frame
-	void Update ()
+	void Update()
 	{
 		UpdateUI();
 	}
@@ -119,10 +122,10 @@ public class PlayerPanel : MonoBehaviour
 
 	void UpdateItems(bool forceUpdateAll = false)
 	{
-		ItemType activeItemType = assignedInventory.activeItemType;
+		ItemType activeItemType = assignedPlayerMenu.activeItemType;
 		ItemData itemData = ItemManager.instance.GetItemInfos(activeItemType);
 
-		int activeItemCount = assignedInventory.GetItemCount(assignedInventory.activeItemType);
+		int activeItemCount = assignedInventory.GetItemCount(assignedPlayerMenu.activeItemType);
 
 		bool itemTypeChanged = (displayedActiveItemType != activeItemType);
 		if (forceUpdateAll || itemTypeChanged)
@@ -166,17 +169,29 @@ public class PlayerPanel : MonoBehaviour
 
 	void UpdateInventorySelection(bool forceUpdate = false)
 	{
-		InventorySelectionCategory newCategory = assignedInventory.activeSelectionCategory;
+		InventorySelectionCategory newCategory = assignedPlayerMenu.activeSelectionCategory;
 
-		bool forceSelectionHide = false;
+		bool triggerSelectionTimeout = false;
+		bool triggerRevertSelectionTimeout = false;
 
-		if ((lastMenuInteraction != 0.0f) && (Time.time > (lastMenuInteraction + timeUntilSelectionFadeout)))
+		if ((Time.time > (assignedPlayerMenu.lastMenuInteractionTime + timeUntilSelectionFadeout)))
 		{
-			forceSelectionHide  = true;
-			lastMenuInteraction = 0.0f;
+			if (!displayedSelectionHidden)
+			{
+				triggerSelectionTimeout		 = true;
+				displayedSelectionHidden = true;
+			}
+		}
+		else
+		{
+			if (displayedSelectionHidden)
+			{
+				triggerRevertSelectionTimeout = true;
+				displayedSelectionHidden = false;
+			}
 		}
 
-		if (!forceSelectionHide && !forceUpdate && (displayedActiveSelectionCategory == newCategory))
+		if (!triggerSelectionTimeout && !triggerRevertSelectionTimeout && !forceUpdate && (displayedActiveSelectionCategory == newCategory))
 		{
 			return;
 		}
@@ -185,10 +200,9 @@ public class PlayerPanel : MonoBehaviour
 		Animator newSelectionRect = GetSelectionRectForCategory(newCategory);
 
 		oldSelectionRect.SetBool("Visible", false);
-		newSelectionRect.SetBool("Visible", (!IsPlayerAlive() || forceSelectionHide) ? false : true);
+		newSelectionRect.SetBool("Visible", (!IsPlayerAlive() || triggerSelectionTimeout) ? false : true);
 
-		displayedActiveSelectionCategory	= newCategory;
-		lastMenuInteraction					= Time.time;
+		displayedActiveSelectionCategory = newCategory;
 	}
 
 	Animator GetSelectionRectForCategory(InventorySelectionCategory category)
@@ -211,6 +225,8 @@ public class PlayerPanel : MonoBehaviour
 	{
 		assignedAttackable			= player.GetComponent<Attackable>();
 		assignedInventory			= player.GetComponent<Inventory>();
+		assignedPlayerMenu			= player.GetComponent<PlayerMenu>();
+
 		activeItemCountTextAnimator = activeItemCountText.GetComponent<Animator>();
 		activeItemImageAnimator		= activeItemImage.GetComponent<Animator>();
 

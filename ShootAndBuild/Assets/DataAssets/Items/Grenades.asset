@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Name: Grenades
   m_EditorClassIdentifier: 
   itemType: 2
-  usageCategory: 2
+  usageCategory: 3
   usagePrefab: {fileID: 0}
   isShared: 0
   initialCount: 4

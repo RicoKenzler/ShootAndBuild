@@ -15,10 +15,11 @@ public enum ItemType
 
 public enum ItemUsageCategory
 {
-	PassiveItem = 1,		//< only counts are relevant (e.g. gold)
-	Throwable	= 2,		//< e.g. grenade
-	Weapon		= 3,		//< e.g. shotgun
-	StatChanger = 4,		//< e.g. health pack
+	PassiveItem = 1,		//< only counts are relevant (e.g. gold, xtraLives)
+	StatChanger = 2,		//< e.g. health pack
+
+	UsableItem	= 3,		//< e.g. grenade
+	Weapon		= 4,		//< e.g. shotgun
 }
 
 [System.Serializable]
