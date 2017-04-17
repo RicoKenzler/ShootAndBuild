@@ -902,6 +902,7 @@ MonoBehaviour:
   buildingSelectionRect: {fileID: 95872189628408608}
   useDynamicHealthColor: 0
   healthBarSmoothness: 0.8
+  timeUntilSelectionFadeout: -1
 --- !u!114 &114396841195093088
 MonoBehaviour:
   m_ObjectHideFlags: 1

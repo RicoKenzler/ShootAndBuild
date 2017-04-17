@@ -20,7 +20,6 @@ public class PlayerPanel : MonoBehaviour
 	private Building					displayedActiveBuilding				= null;
 
 	private	InventorySelectionCategory	displayedActiveSelectionCategory	= InventorySelectionCategory.Item;
-	private bool						displayedSelectionHidden			= false;
 
 	public bool			useDynamicHealthColor		= false;
 	public float		healthBarSmoothness			= 0.8f;
@@ -73,7 +72,7 @@ public class PlayerPanel : MonoBehaviour
 			UpdateHealthBar(true);
 			UpdateItems(true);
 			UpdateBuildings(true);
-			UpdateInventorySelection(true);
+			UpdateInventorySelection();
 			displayedPlayerAlive = isPlayerAlive;
 		}
 	}
@@ -186,40 +185,25 @@ public class PlayerPanel : MonoBehaviour
 		activeItemCountTextAnimator.SetTrigger("Grow");
 	}
 
-	void UpdateInventorySelection(bool forceUpdate = false)
+	void UpdateInventorySelection()
 	{
 		InventorySelectionCategory newCategory = assignedPlayerMenu.activeSelectionCategory;
 
-		bool triggerSelectionTimeout = false;
-		bool triggerRevertSelectionTimeout = false;
+		bool hideSelection = false;
 
-		if ((Time.time > (assignedPlayerMenu.lastMenuInteractionTime + timeUntilSelectionFadeout)))
+		if (timeUntilSelectionFadeout >= 0.0f)
 		{
-			if (!displayedSelectionHidden)
+			if ((Time.time > (assignedPlayerMenu.lastMenuInteractionTime + timeUntilSelectionFadeout)))
 			{
-				triggerSelectionTimeout		 = true;
-				displayedSelectionHidden = true;
+				hideSelection = true;
 			}
 		}
-		else
-		{
-			if (displayedSelectionHidden)
-			{
-				triggerRevertSelectionTimeout = true;
-				displayedSelectionHidden = false;
-			}
-		}
-
-		if (!triggerSelectionTimeout && !triggerRevertSelectionTimeout && !forceUpdate && (displayedActiveSelectionCategory == newCategory))
-		{
-			return;
-		}
-
+		
 		Animator oldSelectionRect = GetSelectionRectForCategory(displayedActiveSelectionCategory);
 		Animator newSelectionRect = GetSelectionRectForCategory(newCategory);
 
 		oldSelectionRect.SetBool("Visible", false);
-		newSelectionRect.SetBool("Visible", (!IsPlayerAlive() || triggerSelectionTimeout) ? false : true);
+		newSelectionRect.SetBool("Visible", (!IsPlayerAlive() || hideSelection) ? false : true);
 
 		displayedActiveSelectionCategory = newCategory;
 	}
