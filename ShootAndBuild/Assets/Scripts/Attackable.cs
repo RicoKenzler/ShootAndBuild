@@ -143,6 +143,11 @@ public class Attackable : MonoBehaviour
 		newCollectable.amount = itemAmount;
 	}
 
+	public void DealLethalDamage(GameObject damageDealer)
+	{
+		DealDamage(currentHealth, damageDealer);
+	}
+
     public void DealDamage(int damage, GameObject damageDealer)
     {
         currentHealth -= damage;
@@ -203,7 +208,14 @@ public class Attackable : MonoBehaviour
 
         if (currentHealth <= 0)
         {
-           Die(damageDealer);
+			if (inputController && CheatManager.instance.invinciblePlayers)
+			{
+				currentHealth = 1;
+			}
+			else
+			{
+				Die(damageDealer);
+			}
         }
     }
 

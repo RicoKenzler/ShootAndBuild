@@ -17,13 +17,29 @@ public class EnemySpawner : MonoBehaviour
 	void Update()
     {
         nextSpawnDuration -= Time.deltaTime;
+
         if (nextSpawnDuration <= 0)
         {
-			totalSpawnCount++;
-            nextSpawnDuration = spawnInterval;
-            GameObject instance = Instantiate(enemyPrefab);
-            instance.transform.position = transform.position;
-			instance.name = enemyPrefab.name + " " + totalSpawnCount;
+			Spawn();
         }
+	}
+
+	public void ForceImmediateSpawn()
+	{
+		Spawn();
+	}
+
+	void Spawn()
+	{
+		if (CheatManager.instance.stopEnemySpawns)
+		{
+			return;
+		}
+
+		totalSpawnCount++;
+        nextSpawnDuration = spawnInterval;
+        GameObject instance = Instantiate(enemyPrefab);
+        instance.transform.position = transform.position;
+		instance.name = enemyPrefab.name + " " + totalSpawnCount;
 	}
 }

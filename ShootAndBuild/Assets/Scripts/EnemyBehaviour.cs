@@ -79,6 +79,12 @@ public class EnemyBehaviour : MonoBehaviour
 
     void Update()
     {
+		if (CheatManager.instance.freezeEnemies)
+		{
+			GetComponent<Rigidbody>().velocity = new Vector3(0.0f, 0.0f, 0.0f);
+			return;
+		}
+
         if (currentAttackCooldown > 0)
         {
             currentAttackCooldown = Mathf.Max(currentAttackCooldown - Time.deltaTime, 0);
@@ -148,7 +154,6 @@ public class EnemyBehaviour : MonoBehaviour
             {
                 animationController["walk"].speed = movementSpeed;
                 animationController.Play("walk");
-
             }
         }
     }

@@ -62,6 +62,11 @@ public class GameManager : MonoBehaviour
 
 	void WinGame()
 	{
+		if (CheatManager.instance.disableWin)
+		{
+			return;
+		}
+
 		AudioManager.instance.PlayAudio(winSound);
 		Instantiate(winText.gameObject, canvas.transform, false);
 		gameStatus = GameStatus.Won;
@@ -69,6 +74,11 @@ public class GameManager : MonoBehaviour
 
 	void LoseGame()
 	{
+		if (CheatManager.instance.disableLose)
+		{
+			return;
+		}
+
 		AudioManager.instance.PlayAudio(loseSound);
 		Instantiate(loseText.gameObject, canvas.transform, false);
 		gameStatus = GameStatus.Lost;
