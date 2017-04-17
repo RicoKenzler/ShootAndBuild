@@ -1,10 +1,17 @@
 ﻿using UnityEngine;
 
+public enum Faction
+{
+	Player,
+	Enemy
+}
+
 public class Attackable : MonoBehaviour
 {
     public int maxHealth = 10;
 	public bool showHealthBar = true;
- 
+	public Faction faction = Faction.Enemy;
+
     public ItemDrop[]  itemDrops;
 
     public AudioData dieSound;

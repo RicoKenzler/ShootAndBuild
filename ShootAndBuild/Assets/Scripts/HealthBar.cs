@@ -12,10 +12,12 @@ public class HealthBar : MonoBehaviour
     private Vector2 originalSize;
 	private bool alwaysShowHealth = false;
 	private float lastDisplayedHealthFactor;
+	private Image image;
 
     void Start()
     {
         originalSize				= GetComponent<RectTransform>().sizeDelta;
+		image						= GetComponent<Image>();
 		lastDisplayedHealthFactor	= 1.0f;
 		alwaysShowHealth			= (target.GetComponent<InputController>() != null);
     }
@@ -42,7 +44,7 @@ public class HealthBar : MonoBehaviour
 		
 		if (isBackgroundDuplicate)
 		{
-			GetComponent<Image>().color = new Color(0.2f, 0.2f, 0.2f, 1.0f);
+			image.color = new Color(0.2f, 0.2f, 0.2f, 1.0f);
 			rect.sizeDelta = originalSize;
 			return;
 		}
@@ -55,8 +57,6 @@ public class HealthBar : MonoBehaviour
 		uiPos.x -= (originalSize.x - rect.sizeDelta.x) / 2;
 		rect.anchoredPosition = uiPos;
 		
-		
-
 		if (hasDynamicColor)
 		{
 			Color desiredColor;
@@ -64,7 +64,6 @@ public class HealthBar : MonoBehaviour
 			Color colorMediumHealth =   new Color(1.0f, 1.0f, 0.0f, 1.0f);
 			Color colorNoHealth =       new Color(1.0f, 0.0f, 0.0f, 1.0f);
 
-        
 			if (smoothedHealthFactor < 0.5f)
 			{
 				desiredColor = Color.Lerp(colorNoHealth, colorMediumHealth, smoothedHealthFactor * 2.0f);
@@ -74,7 +73,11 @@ public class HealthBar : MonoBehaviour
 				desiredColor = Color.Lerp(colorMediumHealth, colorFullHealth, (smoothedHealthFactor - 0.5f) * 2.0f);
 			}
 
-			GetComponent<Image>().color = desiredColor;
+			image.color = desiredColor;
+		}
+		else if (target.faction == Faction.Player)
+		{
+			image.color = new Color(0.4f, 0.7f, 0.2f, 1.0f);
 		}
     }
 

@@ -11,6 +11,7 @@ public class CheatManager : MonoBehaviour
 	public bool stopEnemySpawns			= false;
 	public bool disableWin				= false;
 	public bool disableLose				= false;
+	public bool disableAudio			= false;
 
 	void Awake()
 	{

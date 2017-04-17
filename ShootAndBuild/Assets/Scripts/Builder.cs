@@ -54,7 +54,7 @@ public class Builder : MonoBehaviour
 
 	private void Build(Building buildingPrefab, Vector3 pos)
 	{
-		GameObject newTower = Instantiate(buildingPrefab.gameObject);
+		GameObject newTower = Instantiate(buildingPrefab.gameObject, BuildingManager.instance.transform);
 		newTower.transform.position = pos;
 
 		AudioManager.instance.PlayAudio(buildSound, transform.position);

@@ -19,16 +19,27 @@ public class Projectile : MonoBehaviour
     void OnTriggerEnter(Collider other)
     {
         // we are immune to our own projectiles
-        if (!owner || (owner.gameObject != other.gameObject))
-        {
-            Destroy(gameObject);
+        if (owner && (owner.gameObject == other.gameObject))
+		{
+			return;
+		}
 
-            Attackable attackable = other.GetComponent<Attackable>();
-            if (attackable != null)
-            {
-                attackable.DealDamage(damage, gameObject);
-            }
+		Attackable targetAttackable = other.GetComponent<Attackable>();
+		Attackable ownerAttackable  = owner.GetComponent<Attackable>();
+
+		if (targetAttackable && (targetAttackable.faction == ownerAttackable.faction))
+		{
+			// no friendly fire
+			return;
+		}
+		
+        Destroy(gameObject);
+
+        if (targetAttackable != null)
+        {
+            targetAttackable.DealDamage(damage, gameObject);
         }
+        
     }
 
     public Vector3 direction

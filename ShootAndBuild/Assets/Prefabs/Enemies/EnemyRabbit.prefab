@@ -890,6 +890,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 100
   showHealthBar: 1
+  faction: 1
   itemDrops:
   - itemPrefab: {fileID: 1797189723984674, guid: 55072d8c0e673154bb0f132188031dd9,
       type: 2}

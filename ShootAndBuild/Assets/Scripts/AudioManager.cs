@@ -50,6 +50,11 @@ public class AudioManager : MonoBehaviour
 
 	public AudioSource PlayAudio(AudioData audioData, Vector3? position3D = null, float? overridePitch = null)
 	{
+		if (CheatManager.instance.disableAudio)
+		{
+			return null;
+		}
+
 		if (!audioData || audioData.audioClips.Length <= 0)
 		{
 			return null;
