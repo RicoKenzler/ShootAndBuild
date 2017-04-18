@@ -127,8 +127,12 @@ public class Inventory : MonoBehaviour
 			case ItemUsageCategory.StatChanger:
 				switch (itemInfos.itemType)
 				{
-					case ItemType.FullHealth:
-						attackable.Heal();
+					case ItemType.CheeseHeal:
+						attackable.Heal(1.0f);
+						break;
+
+					case ItemType.AppleHeal:
+						attackable.Heal(0.25f);
 						break;
 
 					default:

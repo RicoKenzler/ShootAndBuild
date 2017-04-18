@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f472d17afb08304ab3773c852bf3637, type: 3}
+  m_Name: DropGeneric
+  m_EditorClassIdentifier: 
+  audioClips:
+  - {fileID: 8300000, guid: 86ce4be702cdac947a40c4665c09ed36, type: 3}
+  - {fileID: 8300000, guid: 87db96c4a1c7cb643bc6ae72080353cf, type: 3}
+  - {fileID: 8300000, guid: 4d6559eca2ad19a408f798ecca8f2336, type: 3}
+  - {fileID: 8300000, guid: 87917b6f30b5a2140908a1ad30b49f43, type: 3}
+  - {fileID: 8300000, guid: e2d3a5de48880bc4b93899870f0caf55, type: 3}
+  - {fileID: 8300000, guid: 2a1e7254d96343748ad08d540e208adf, type: 3}
+  - {fileID: 8300000, guid: ceb55baa0734c434c98d3b41c582de2d, type: 3}
+  volume: 1
+  rndMusicalPitch: 0
+  pitchOffsetSemitones: 0
+  pitchRangeSemitones: 2
+  isUISound: 0
+  suppressDoppler: 0
+  amount3D: 1

@@ -1477,7 +1477,7 @@ MonoBehaviour:
     dropProbability: 1
     minDropAmount: 2
     maxDropAmount: 10
-  - itemPrefab: {fileID: 1021980560320182, guid: f3d45e6a116eaf74a8d70667a7da898d,
+  - itemPrefab: {fileID: 1264481893144556, guid: 8b7f4feb6f83f87499e1fd939a9273ff,
       type: 2}
     dropProbability: 0.25
     minDropAmount: 1

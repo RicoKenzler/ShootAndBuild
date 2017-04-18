@@ -34,17 +34,10 @@ public class Attackable : MonoBehaviour
 		inputController = GetComponent<InputController>();
     }
 
-	public void Heal(int? healthAmount = null)
+	public void Heal(float relativeAmount = 1.0f)
 	{
-		if (!healthAmount.HasValue)
-		{
-			currentHealth = maxHealth;
-		}
-		else
-		{
-			currentHealth += healthAmount.Value;
-			currentHealth = Mathf.Min(currentHealth, maxHealth);
-		}
+		currentHealth += (int) Mathf.Round(maxHealth * relativeAmount);
+		currentHealth = Mathf.Min(currentHealth, maxHealth);
 	}
 
 	void OnEnable()

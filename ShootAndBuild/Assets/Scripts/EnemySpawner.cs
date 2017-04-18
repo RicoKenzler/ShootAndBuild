@@ -20,6 +20,11 @@ public class EnemySpawner : MonoBehaviour
 
         if (nextSpawnDuration <= 0)
         {
+			if (CheatManager.instance.stopEnemySpawns)
+			{
+				return;
+			}
+
 			Spawn();
         }
 	}
@@ -31,11 +36,6 @@ public class EnemySpawner : MonoBehaviour
 
 	void Spawn()
 	{
-		if (CheatManager.instance.stopEnemySpawns)
-		{
-			return;
-		}
-
 		totalSpawnCount++;
         nextSpawnDuration = spawnInterval;
         GameObject instance = Instantiate(enemyPrefab);

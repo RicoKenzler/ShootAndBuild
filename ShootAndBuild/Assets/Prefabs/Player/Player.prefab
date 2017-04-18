@@ -2188,6 +2188,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 100
   showHealthBar: 0
+  faction: 0
   itemDrops: []
   dieSound: {fileID: 11400000, guid: 5cc595a5130f16a41bcc0fe0cdc3d790, type: 2}
   spawnSound: {fileID: 11400000, guid: 894a3210224144b4c8d75c382fb8ad07, type: 2}
@@ -2274,7 +2275,6 @@ MonoBehaviour:
     type: 2}
   menuSelectionFailedSound: {fileID: 11400000, guid: bf53d8aea4ff9924b8a38cebe5ab5649,
     type: 2}
-  lastMenuInteractionTime: 0
 --- !u!114 &114673583163577024
 MonoBehaviour:
   m_ObjectHideFlags: 1

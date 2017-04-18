@@ -5,7 +5,6 @@ public class Projectile : MonoBehaviour
     [Tooltip("Speed in units per second")]
     public float speed = 5;
 
-
     void Start()
     {
     }
@@ -13,7 +12,7 @@ public class Projectile : MonoBehaviour
     void Update()
     {
         float delta = Time.deltaTime * speed;
-        transform.Translate(delta * direction);
+        transform.Translate(delta * Direction);
     }
 
     void OnTriggerEnter(Collider other)
@@ -25,9 +24,8 @@ public class Projectile : MonoBehaviour
 		}
 
 		Attackable targetAttackable = other.GetComponent<Attackable>();
-		Attackable ownerAttackable  = owner.GetComponent<Attackable>();
 
-		if (targetAttackable && (targetAttackable.faction == ownerAttackable.faction))
+		if (targetAttackable && (targetAttackable.faction == ownerFaction))
 		{
 			// no friendly fire
 			return;
@@ -37,23 +35,35 @@ public class Projectile : MonoBehaviour
 
         if (targetAttackable != null)
         {
-            targetAttackable.DealDamage(damage, gameObject);
+            targetAttackable.DealDamage(Damage, gameObject);
         }
         
     }
 
-    public Vector3 direction
+    public Vector3 Direction
     {
         get; set;
     }
 
-	public int damage
+	public int Damage
     {
         get; set;
     }
 
-    public Shootable owner
+	private Shootable	owner;
+	private Faction		ownerFaction;	//< remember faction separately as Owner could have died when we need the info
+
+    public Shootable Owner
     {
-        get; set;
+        get
+		{
+			return owner;
+		}
+
+		set
+		{
+			owner = value;
+			ownerFaction = owner.GetComponent<Attackable>().faction;
+		}
     }
 }

@@ -12,8 +12,12 @@ MonoBehaviour:
   m_Name: Eat
   m_EditorClassIdentifier: 
   audioClips:
-  - {fileID: 8300000, guid: 0abba094a9ca6f94ab2b404deb699215, type: 3}
-  - {fileID: 8300000, guid: ea9a6f8acce2ae745a54b7350e693965, type: 3}
+  - {fileID: 8300000, guid: c82ab83b4b0cb19458203c6bc04d3218, type: 3}
+  - {fileID: 8300000, guid: 38ef3ab2151639044b50926a3d760516, type: 3}
+  - {fileID: 8300000, guid: 2a84d04d4f8d74049976bad5af2ebe4a, type: 3}
+  - {fileID: 8300000, guid: 952ebec0620642542bbbb7ed99a302a7, type: 3}
+  - {fileID: 8300000, guid: 8573a03febb4090468b687f1bff1729c, type: 3}
+  - {fileID: 8300000, guid: 8b7e10ee4fce6194fbd4aca01903f8ac, type: 3}
   volume: 1
   rndMusicalPitch: 0
   pitchOffsetSemitones: 0

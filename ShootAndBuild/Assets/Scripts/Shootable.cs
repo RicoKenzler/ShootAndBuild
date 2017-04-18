@@ -42,9 +42,9 @@ public class Shootable : MonoBehaviour
 		instance.transform.rotation = (projectileDirection.HasValue) ? projectileDirection.Value : transform.rotation;
 
         Projectile projectile = instance.GetComponent<Projectile>();
-        projectile.direction = new Vector3(0.0f, 0.0f, 1.0f);
-        projectile.owner = this;
-		projectile.damage = damage;
+        projectile.Direction = new Vector3(0.0f, 0.0f, 1.0f);
+        projectile.Owner = this;
+		projectile.Damage = damage;
 
         currentCooldown = shootCooldown;
 

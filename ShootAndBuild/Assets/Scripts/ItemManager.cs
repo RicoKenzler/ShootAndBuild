@@ -5,12 +5,13 @@ using UnityEngine;
 
 public enum ItemType
 {
-	None		= 0,
+	None			= 0,
 
-	Gold		= 1,
-	Granades	= 2,
-	ExtraLifes	= 3,
-	FullHealth	= 4,
+	Gold			= 1,
+	Granades		= 2,
+	ExtraLifes		= 3,
+	CheeseHeal		= 4,
+	AppleHeal		= 5,
 }
 
 public enum ItemUsageCategory

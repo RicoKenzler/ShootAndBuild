@@ -793,10 +793,10 @@ InputManager:
     m_Name: Menu Horizontal Keyboard
     descriptiveName: 
     descriptiveNegativeName: 
-    negativeButton: j
-    positiveButton: l
-    altNegativeButton: 
-    altPositiveButton: 
+    negativeButton: '[4]'
+    positiveButton: '[6]'
+    altNegativeButton: j
+    altPositiveButton: l
     gravity: 1
     dead: 0.001
     sensitivity: 1
@@ -873,10 +873,10 @@ InputManager:
     m_Name: Menu Vertical Keyboard
     descriptiveName: 
     descriptiveNegativeName: 
-    negativeButton: k
-    positiveButton: i
-    altNegativeButton: 
-    altPositiveButton: 
+    negativeButton: '[5]'
+    positiveButton: '[8]'
+    altNegativeButton: k
+    altPositiveButton: i
     gravity: 1
     dead: 0.001
     sensitivity: 1

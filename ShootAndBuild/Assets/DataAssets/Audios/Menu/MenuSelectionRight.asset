@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Name: MenuSelectionRight
   m_EditorClassIdentifier: 
   audioClips:
-  - {fileID: 8300000, guid: 3cdb3f300ca090440b2143366436b2e5, type: 3}
-  volume: 1
+  - {fileID: 8300000, guid: 5220e2d7c9cbdef428eb4b5062f5ee26, type: 3}
+  volume: 0.5
   rndMusicalPitch: 0
-  pitchOffsetSemitones: 24
+  pitchOffsetSemitones: 0
   pitchRangeSemitones: 0
   isUISound: 1
   suppressDoppler: 0
