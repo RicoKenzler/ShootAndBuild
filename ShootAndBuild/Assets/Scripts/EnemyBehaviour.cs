@@ -84,7 +84,7 @@ public class EnemyBehaviour : MonoBehaviour
     {
 		if (CheatManager.instance.freezeEnemies)
 		{
-			GetComponent<Rigidbody>().velocity = new Vector3(0.0f, 0.0f, 0.0f);
+			GetComponent<Movable>().moveForce = new Vector3(0.0f, 0.0f, 0.0f);
 			return;
 		}
 

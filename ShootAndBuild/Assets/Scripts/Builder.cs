@@ -56,6 +56,7 @@ public class Builder : MonoBehaviour
 	{
 		GameObject newTower = Instantiate(buildingPrefab.gameObject, BuildingManager.instance.transform);
 		newTower.transform.position = pos;
+		newTower.GetComponent<Attackable>().faction = GetComponent<Attackable>().faction;
 
 		AudioManager.instance.PlayAudio(buildSound, transform.position);
 		

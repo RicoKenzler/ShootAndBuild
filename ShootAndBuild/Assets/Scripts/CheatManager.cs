@@ -5,12 +5,21 @@ using UnityEditor;
 
 public class CheatManager : MonoBehaviour 
 {
-	[Header("Rules")]
+	[Header("Invincible")]
 	public bool invinciblePlayers		= false;
+	public bool invincibleEnemies		= false;
+	public bool invincibleBuildings		= false;
+
+	[Header("Freeze")]
 	public bool freezeEnemies			= false;
+	public bool freezeTowers			= false;
 	public bool stopEnemySpawns			= false;
+
+	[Header("Rules")]
 	public bool disableWin				= false;
 	public bool disableLose				= false;
+
+	[Header("Disable Systems")]
 	public bool disableAudio			= false;
 
 	void Awake()

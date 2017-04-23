@@ -18,6 +18,11 @@ public class TowerBehaviour : MonoBehaviour
 			return;
 		}
 
+		if (CheatManager.instance.freezeTowers)
+		{
+			return;
+		}
+
 		if (turnTowardsEnemy)
 		{
 			transform.LookAt(nearestEnemy.transform);

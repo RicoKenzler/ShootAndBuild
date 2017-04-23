@@ -208,7 +208,9 @@ public class Attackable : MonoBehaviour
 
         if (currentHealth <= 0)
         {
-			if (inputController && CheatManager.instance.invinciblePlayers)
+			if ((CheatManager.instance.invinciblePlayers && inputController)
+			||  (CheatManager.instance.invincibleEnemies && GetComponent<EnemyBehaviour>())
+			||  (CheatManager.instance.invincibleBuildings && GetComponent<Building>()))
 			{
 				currentHealth = 1;
 			}
