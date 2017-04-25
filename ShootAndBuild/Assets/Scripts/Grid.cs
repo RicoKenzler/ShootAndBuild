@@ -31,6 +31,12 @@ public class Grid : MonoBehaviour
 
 	void OnDrawGizmos()
 	{
+
+        if (Application.isPlaying && !CheatManager.instance.drawGrid)
+        {
+            return;
+        }
+
 		float w = width;
 		float h = height;
 

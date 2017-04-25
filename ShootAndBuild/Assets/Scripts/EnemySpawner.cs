@@ -2,6 +2,8 @@
 
 public class EnemySpawner : MonoBehaviour
 {
+    //public string id;
+
     public float spawnInterval = 5.0f;
 	public float firstSpawn    = 2.0f;
     public GameObject enemyPrefab;
@@ -9,12 +11,26 @@ public class EnemySpawner : MonoBehaviour
     private float nextSpawnDuration = 0.0f;
 	int totalSpawnCount = 0;
 
-	void Start()
+    //----------------------------------------------------------------------
+
+    public string ID
+    {
+        get
+        {
+            return this.gameObject.name;
+        }
+    }
+
+    //----------------------------------------------------------------------
+
+    void Start()
     {
         nextSpawnDuration = firstSpawn;
 	}
-	
-	void Update()
+
+    //----------------------------------------------------------------------
+
+    void Update()
     {
         nextSpawnDuration -= Time.deltaTime;
 
@@ -29,12 +45,16 @@ public class EnemySpawner : MonoBehaviour
         }
 	}
 
-	public void ForceImmediateSpawn()
+    //----------------------------------------------------------------------
+
+    public void ForceImmediateSpawn()
 	{
 		Spawn();
 	}
 
-	void Spawn()
+    //----------------------------------------------------------------------
+
+    void Spawn()
 	{
 		totalSpawnCount++;
         nextSpawnDuration = spawnInterval;

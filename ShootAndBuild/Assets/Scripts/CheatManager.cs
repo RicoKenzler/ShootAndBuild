@@ -21,6 +21,7 @@ public class CheatManager : MonoBehaviour
 
 	[Header("Disable Systems")]
 	public bool disableAudio			= false;
+    public bool drawGrid                = false;
 
 	void Awake()
 	{
