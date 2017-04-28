@@ -145,6 +145,8 @@ public class Inventory : MonoBehaviour
 				Debug.LogWarning("Missing case statement for " + itemInfos.itemType);
 				break;
 		}
+
+		CounterManager.instance.AddToCounter(CounterType.ItemsUsed, count);
 	}
 
 	public void AddItem(ItemType itemType, int count)

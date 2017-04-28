@@ -12,6 +12,9 @@ public class EnemyBehaviour : MonoBehaviour
     private Animation	animationController;
 	private Movable		movable;
 
+	[System.NonSerialized]
+	public GameObject	enemyPrefab;
+
     void Start()
     {
         animationController = GetComponentInChildren<Animation>();
@@ -34,6 +37,7 @@ public class EnemyBehaviour : MonoBehaviour
 	void OnDisable()
 	{
 		EnemyManager.instance.RegisterEnemy(this, true);
+		CounterManager.instance.AddToCounter(CounterType.KilledEnemies, 1, enemyPrefab.name);
 	}
 
 	GameObject GetNearestPlayer(out float distSq)

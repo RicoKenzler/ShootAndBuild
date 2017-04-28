@@ -61,5 +61,7 @@ public class EnemySpawner : MonoBehaviour
         GameObject instance = Instantiate(enemyPrefab);
         instance.transform.position = transform.position;
 		instance.name = enemyPrefab.name + " " + totalSpawnCount;
+
+		instance.GetComponent<EnemyBehaviour>().enemyPrefab = enemyPrefab;
 	}
 }
