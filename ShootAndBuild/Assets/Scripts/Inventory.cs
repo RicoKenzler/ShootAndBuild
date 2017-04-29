@@ -146,7 +146,9 @@ public class Inventory : MonoBehaviour
 				break;
 		}
 
-		CounterManager.instance.AddToCounter(CounterType.ItemsUsed, count);
+		// Player Counter
+		PlayerID? user = inputController ? (PlayerID?) inputController.playerID : null;
+		CounterManager.instance.AddToCounter(user, CounterType.ItemsUsed, count);
 	}
 
 	public void AddItem(ItemType itemType, int count)

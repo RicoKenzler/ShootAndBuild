@@ -69,12 +69,15 @@ public class Attackable : MonoBehaviour
 		}
 	}
 
-	private void Die(GameObject lastDamageDealer)
+	private void Die(GameObject damageDealerMedium, GameObject damageDealerActor)
 	{
-		AudioManager.instance.PlayAudio(dieSound, transform.position);
-
+		// Drops
 		DropItems();
 
+		// Audio
+		AudioManager.instance.PlayAudio(dieSound, transform.position);
+
+		// Particles
 		if (dieParticles)
 		{
 			Vector3 towardsBottom = new Vector3(0.0f, 1.0f, 0.0f);
@@ -83,6 +86,19 @@ public class Attackable : MonoBehaviour
 			ParticleManager.instance.SpawnParticle(dieParticles, gameObject, transform.position, rotation, false, 10.0f, true, false);
 		}
 
+		// Player Counter
+		EnemyBehaviour enemy = GetComponent<EnemyBehaviour>();
+		
+		if (enemy)
+		{
+			InputController playerWhoKilledMe = damageDealerActor ? damageDealerActor.GetComponent<InputController>() : null;
+		
+			PlayerID? playerIDWhoKilledMe = playerWhoKilledMe ? (PlayerID?) playerWhoKilledMe.playerID : null;
+
+			CounterManager.instance.AddToCounter(playerIDWhoKilledMe, CounterType.KilledEnemies, 1, enemy.enemyPrefab.name);
+		}
+
+		// Execute Die
         if (inputController)
         {
             PlayerDies(inputController.playerID);
@@ -143,12 +159,12 @@ public class Attackable : MonoBehaviour
 		newCollectable.amount = itemAmount;
 	}
 
-	public void DealLethalDamage(GameObject damageDealer)
+	public void DealLethalDamage(GameObject damageDealerMedium, GameObject damageDealerActor)
 	{
-		DealDamage(currentHealth, damageDealer);
+		DealDamage(currentHealth, damageDealerMedium, damageDealerActor);
 	}
 
-    public void DealDamage(int damage, GameObject damageDealer)
+    public void DealDamage(int damage, GameObject damageDealerMedium, GameObject damageDealerActor)
     {
         currentHealth -= damage;
 		currentHealth = Mathf.Max(currentHealth, 0);
@@ -168,7 +184,7 @@ public class Attackable : MonoBehaviour
 				vibrationAmount = Mathf.Lerp(0.1f, 1.0f, damagePercentage);
 			}
 
-			Vector3 towardsDamageDealer3D = (damageDealer.transform.position - transform.position);
+			Vector3 towardsDamageDealer3D = (damageDealerMedium.transform.position - transform.position);
 			Vector2 towardsDamageDealer2D = new Vector2(towardsDamageDealer3D.x, towardsDamageDealer3D.z);
 			float leftAmount  = vibrationAmount;
 			float rightAmount = vibrationAmount;
@@ -197,7 +213,7 @@ public class Attackable : MonoBehaviour
 
 		if (damageParticles)
 		{
-			Vector3 towardsEnemy = (damageDealer.transform.position - transform.position);
+			Vector3 towardsEnemy = (damageDealerMedium.transform.position - transform.position);
 
 			Quaternion rotationTowardsEnemy = Quaternion.FromToRotation(new Vector3(0.0f, 0.0f, 1.0f), towardsEnemy);
 
@@ -216,7 +232,7 @@ public class Attackable : MonoBehaviour
 			}
 			else
 			{
-				Die(damageDealer);
+				Die(damageDealerMedium, damageDealerActor);
 			}
         }
     }

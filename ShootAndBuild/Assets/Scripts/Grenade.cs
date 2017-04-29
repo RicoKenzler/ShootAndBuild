@@ -9,6 +9,7 @@ public class Grenade : MonoBehaviour
 	public float maxForce = 10.0f;
 	public float radius = 8.0f;
 	public AudioData explosionSound;
+	public Throwable owner;
 
 	private float explodeTimer = 0.0f;
 	private float radiusSquared = 0.0f;
@@ -80,7 +81,7 @@ public class Grenade : MonoBehaviour
 				movable.impulseForce = damage.impulse;
 			}
 
-			damage.attackable.DealDamage(damage.damage, gameObject);
+			damage.attackable.DealDamage(damage.damage, gameObject, owner.gameObject);
 		}
 
 		ParticleManager.instance.SpawnParticle(explosionParticles, gameObject, transform.position, Quaternion.identity, false, 10.0f, false, false);

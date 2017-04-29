@@ -37,7 +37,6 @@ public class EnemyBehaviour : MonoBehaviour
 	void OnDisable()
 	{
 		EnemyManager.instance.RegisterEnemy(this, true);
-		CounterManager.instance.AddToCounter(CounterType.KilledEnemies, 1, enemyPrefab.name);
 	}
 
 	GameObject GetNearestPlayer(out float distSq)
@@ -141,7 +140,7 @@ public class EnemyBehaviour : MonoBehaviour
 			if (currentAttackCooldown == 0)
 			{
 				currentAttackCooldown = attackCooldown;
-				nearestTarget.GetComponent<Attackable>().DealDamage(damage, gameObject);
+				nearestTarget.GetComponent<Attackable>().DealDamage(damage, gameObject, gameObject);
 
 				if (animationController)
 				{

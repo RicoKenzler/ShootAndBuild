@@ -12,6 +12,7 @@ public class Throwable : MonoBehaviour
 
 		GameObject instance = Instantiate(projectilePrefab, projectileContainer.transform);
 		instance.transform.position = transform.position;
+		instance.GetComponent<Grenade>().owner = this;
 
 		Rigidbody body = instance.GetComponent<Rigidbody>();
 		body.velocity = transform.rotation * Vector3.forward * 10;

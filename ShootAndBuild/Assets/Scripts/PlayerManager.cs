@@ -3,10 +3,12 @@ using UnityEngine;
 
 public enum PlayerID
 {
-    Player1,
-    Player2,
-    Player3,
-    Player4
+    Player1 = 0,
+    Player2 = 1,
+    Player3 = 2,
+    Player4 = 3,
+
+	Count   = 4
 }
 
 public delegate void PlayerHandler(PlayerID id);
@@ -29,7 +31,7 @@ public class PlayerManager : MonoBehaviour
     void Awake()
     {
         instance = this;
-        allAlivePlayers = new List<InputController>();
+        allAlivePlayers  = new List<InputController>();
     }
 
     void Update()
@@ -70,6 +72,11 @@ public class PlayerManager : MonoBehaviour
             break;
         }        
     }
+
+	public bool HasPlayerJoined(PlayerID playerID)
+	{
+		return activePlayersById.ContainsKey(playerID);
+	}
 
 	private bool TrySpendLife()
 	{
@@ -155,7 +162,7 @@ public class PlayerManager : MonoBehaviour
 
         activePlayersById[playerID] = newPlayer;
         allAlivePlayers.Add(newPlayerObject.GetComponent<InputController>());
-
+		
 		InputManager.instance.SetVibration(playerID, 0.5f, 0.5f, 0.2f);
 
 		PlayerPanelGroup.instance.AddPlayerPanel(playerID, newPlayerObject);

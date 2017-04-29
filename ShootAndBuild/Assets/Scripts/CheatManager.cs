@@ -86,7 +86,7 @@ public class CheatManagerEditor : Editor
 
 		foreach (Attackable attackable in attackablesToKill)
 		{
-			attackable.DealLethalDamage(cheatManager.gameObject);
+			attackable.DealLethalDamage(cheatManager.gameObject, cheatManager.gameObject);
 		}
 
 		GUILayout.Label("Add", EditorStyles.boldLabel);
