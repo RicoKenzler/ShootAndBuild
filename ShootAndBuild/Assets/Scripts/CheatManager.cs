@@ -43,6 +43,7 @@ public class CheatManager : MonoBehaviour
 	}
 }
 
+
 [CustomEditor(typeof(CheatManager))]
 public class CheatManagerEditor : Editor
 {
