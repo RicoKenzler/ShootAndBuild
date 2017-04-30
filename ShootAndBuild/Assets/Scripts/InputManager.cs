@@ -23,6 +23,7 @@ public enum ButtonType
 	Build,
 	UseItem,
 	Shoot,
+	Start,
 
 	Unused,
 }
@@ -413,6 +414,8 @@ public class InputManager : MonoBehaviour
 				return "UseItem";
 			case ButtonType.Shoot:
 				return "Shoot";
+			case ButtonType.Start:
+				return "Start";
 		}
 
 		return "InvalidButton";
@@ -471,6 +474,19 @@ public class InputManager : MonoBehaviour
 		InputPlayer inputPlayer = GetInputPlayer(playerID);
 		
 		return inputPlayer.WasAxisJustPressed(axisType, out positive);
+	}
+
+	public bool DidAnyPlayerJustPress(ButtonType buttonType)
+	{
+		foreach (KeyValuePair<PlayerID, InputPlayer> activePlayer in activePlayersById)
+		{
+			if (activePlayer.Value.WasButtonJustPressed(buttonType))
+			{
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	public static InputManager instance

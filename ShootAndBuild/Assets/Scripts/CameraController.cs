@@ -26,6 +26,11 @@ public class CameraController : MonoBehaviour
 
 	public AudioListener audioListener;
 
+	void Awake()
+	{
+		instance = this;
+	}
+
 	void Start()
 	{
         GetPlayerBoundingSphere(out lastPlayerSphereCenter, out lastPlayerSphereRadius);
@@ -80,4 +85,9 @@ public class CameraController : MonoBehaviour
 		audioListener.transform.position = playerSphereCenter;
 		audioListener.transform.rotation = Quaternion.AngleAxis(180.0f, new Vector3(0.0f, 1.0f, 0.0f)) * transform.rotation;
     }
+
+	public static CameraController instance
+	{
+		get; private set;
+	}
 }

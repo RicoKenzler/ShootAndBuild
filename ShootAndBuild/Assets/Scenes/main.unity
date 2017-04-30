@@ -37,7 +37,7 @@ RenderSettings:
   m_ReflectionIntensity: 0.043
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 886024144}
-  m_IndirectSpecularColor: {r: 0.010083243, g: 0.008521583, b: 0.027594082, a: 0.043}
+  m_IndirectSpecularColor: {r: 0.010077285, g: 0.00852815, b: 0.02759779, a: 0.043}
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -138,8 +138,8 @@ MonoBehaviour:
   freezeEnemies: 0
   freezeTowers: 0
   stopEnemySpawns: 0
-  disableWin: 0
-  disableLose: 0
+  disableWin: 1
+  disableLose: 1
   disableAudio: 0
 --- !u!1 &83095321
 GameObject:
@@ -594,13 +594,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   killingSpreeDefinitions:
-  - KillCount: 10
-    Title: MultiKill
+  - KillCount: 5
+    Title: Killing Spree
     AudioMessage: {fileID: 11400000, guid: 8900b7fb7edd01a40ac29f7fad9f3336, type: 2}
-  - KillCount: 20
-    Title: IncrediKill
+  - KillCount: 15
+    Title: M-M-M-Monsterkill
     AudioMessage: {fileID: 11400000, guid: 5a4d414bed0ab074893797c352b0e85f, type: 2}
-  killingSpreeInterval: 3
+  killingSpreeInterval: 1
 --- !u!4 &441971553
 Transform:
   m_ObjectHideFlags: 0
@@ -2806,6 +2806,8 @@ GameObject:
   - component: {fileID: 2128807609}
   - component: {fileID: 2128807608}
   - component: {fileID: 2128807612}
+  - component: {fileID: 2128807607}
+  - component: {fileID: 2128807613}
   m_Layer: 0
   m_Name: Camera
   m_TagString: MainCamera
@@ -2813,6 +2815,44 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &2128807607
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2128807606}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7fceaeb339b971b429c4cc600acabd13, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tweakMode: 1
+  screenBlendMode: 1
+  hdr: 0
+  sepBlurSpread: 5.74
+  quality: 1
+  bloomIntensity: 2
+  bloomThreshold: 0.81
+  bloomThresholdColor: {r: 1, g: 1, b: 1, a: 1}
+  bloomBlurIterations: 2
+  hollywoodFlareBlurIterations: 2
+  flareRotation: 0
+  lensflareMode: 1
+  hollyStretchWidth: 2.5
+  lensflareIntensity: 2.44
+  lensflareThreshold: 0.05
+  lensFlareSaturation: 0.75
+  flareColorA: {r: 0.4, g: 0.4, b: 0.8, a: 0.75}
+  flareColorB: {r: 0.4, g: 0.8, b: 0.8, a: 0.75}
+  flareColorC: {r: 0.8, g: 0.4, b: 0.8, a: 0.75}
+  flareColorD: {r: 0.8, g: 0.4, b: 0, a: 0.75}
+  lensFlareVignetteMask: {fileID: 2800000, guid: 95ef4804fe0be4c999ddaa383536cde8,
+    type: 3}
+  lensFlareShader: {fileID: 4800000, guid: 459fe69d2f6d74ddb92f04dbf45a866b, type: 3}
+  screenBlendShader: {fileID: 4800000, guid: 7856cbff0a0ca45c787d5431eb805bb0, type: 3}
+  blurAndFlaresShader: {fileID: 4800000, guid: be6e39cf196f146d5be72fbefb18ed75, type: 3}
+  brightPassFilterShader: {fileID: 4800000, guid: 0aeaa4cb29f5d4e9c8455f04c8575c8c,
+    type: 3}
 --- !u!92 &2128807608
 Behaviour:
   m_ObjectHideFlags: 0
@@ -2892,3 +2932,17 @@ MonoBehaviour:
   minimumRadius: 2
   rotZ: 0.1
   audioListener: {fileID: 197147373}
+--- !u!114 &2128807613
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2128807606}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34382083ad114a07d000fbfb8d76c639, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  iterations: 2
+  blurSpread: 0.586
+  blurShader: {fileID: 4800000, guid: 57e6deea7c2924e22a5138e2b70bb4dc, type: 3}

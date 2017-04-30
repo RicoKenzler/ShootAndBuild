@@ -9,14 +9,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9f472d17afb08304ab3773c852bf3637, type: 3}
-  m_Name: MultiKill
+  m_Name: KillingSpree
   m_EditorClassIdentifier: 
   audioClips:
-  - {fileID: 8300000, guid: cbb41e5900b9cef48ba86b681b70c241, type: 3}
+  - {fileID: 8300000, guid: 91ad17669244f5f4f8b123b2c5a4275f, type: 3}
   volume: 1
   rndMusicalPitch: 0
   pitchOffsetSemitones: 0
   pitchRangeSemitones: 2
-  isUISound: 0
+  isUISound: 1
   suppressDoppler: 0
   amount3D: 1

@@ -17,6 +17,8 @@ public class GameManager : MonoBehaviour
 	enum GameStatus
 	{
 		Running,
+		Paused,
+
 		Lost,
 		Won
 	}
@@ -39,10 +41,20 @@ public class GameManager : MonoBehaviour
 		{
 			CheckLoseConditions();
 		}
+
+		if (gameStatus == GameStatus.Running || gameStatus == GameStatus.Paused)
+		{
+			if (InputManager.instance.DidAnyPlayerJustPress(ButtonType.Start))
+            {
+				TogglePause();
+			}
+		}
 	}
 
 	void CheckWinConditions()
 	{
+		Debug.Assert(gameStatus == GameStatus.Running);
+
 		if (Inventory.sharedInventoryInstance.GetItemCount(ItemType.Gold) >= 1000)
 		{
 			WinGame();
@@ -51,6 +63,8 @@ public class GameManager : MonoBehaviour
 
 	void CheckLoseConditions()
 	{
+		Debug.Assert(gameStatus == GameStatus.Running);
+
 		if (Inventory.sharedInventoryInstance.GetItemCount(ItemType.ExtraLifes) <= 0)
 		{
 			if (PlayerManager.instance.allAlivePlayers.Count == 0)
@@ -58,6 +72,24 @@ public class GameManager : MonoBehaviour
 				LoseGame();
 			}
 		}
+	}
+
+	void TogglePause()
+	{
+		Debug.Assert(gameStatus == GameStatus.Running || gameStatus == GameStatus.Paused);
+
+		if (gameStatus == GameStatus.Running)
+		{
+			Time.timeScale = 0.0f;
+			gameStatus = GameStatus.Paused;
+		}
+		else
+		{
+			Time.timeScale = 1.0f;
+			gameStatus = GameStatus.Running;
+		}
+
+		CameraController.instance.GetComponent<UnityStandardAssets.ImageEffects.Blur>().enabled = (gameStatus == GameStatus.Paused);
 	}
 
 	void WinGame()
