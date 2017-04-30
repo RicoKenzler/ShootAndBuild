@@ -95,7 +95,7 @@ public class Attackable : MonoBehaviour
 		
 			PlayerID? playerIDWhoKilledMe = playerWhoKilledMe ? (PlayerID?) playerWhoKilledMe.playerID : null;
 
-			CounterManager.instance.AddToCounter(playerIDWhoKilledMe, CounterType.KilledEnemies, 1, enemy.enemyPrefab.name);
+			CounterManager.instance.AddToCounters(playerIDWhoKilledMe, CounterType.KilledEnemies, 1, enemy.enemyPrefab.name);
 		}
 
 		// Execute Die

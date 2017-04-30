@@ -13,7 +13,7 @@ public enum CounterType
 
 public struct CounterValue
 {
-	public int		CurrentCount;
+	public int CurrentCount;
 
 	public void Init()
 	{
@@ -21,11 +21,20 @@ public struct CounterValue
 	}
 }
 
+public delegate void CountersChangedCallback();
+
 public class CounterManager : MonoBehaviour 
 {
 	[System.NonSerialized]
 	public const string NO_CONTEXT = "";
 	public static int COUNTER_PER_PLAYER_COUNT = (int) PlayerID.Count + 1;
+
+	public event CountersChangedCallback OnCountersChanged;
+
+	public bool countersAreDirty
+	{
+		get; private set;
+	}
 
 	// example:
 	// If we kill an enemy, we increment
@@ -65,33 +74,25 @@ public class CounterManager : MonoBehaviour
 		{
 			counters[i] = new Dictionary<CounterType, Dictionary<TCounterContext, CounterValue>>();
 		}
+
+		countersAreDirty = true;
 	}
 
 	void Update() 
 	{
-		
+		if (countersAreDirty)
+		{
+			if (OnCountersChanged != null)
+			{
+				OnCountersChanged(); 
+			}
+
+			countersAreDirty = false;
+		}
 	}
 
-	public void AddToCounter(PlayerID? player, CounterType type, int delta, TCounterContext context = NO_CONTEXT, bool specificShouldIncludeUnspecificPlayer = true, bool specificShouldIncludeUnspecificContext = true)
+	private void AddToCounter(PlayerID? player, CounterType type, int delta, TCounterContext context)
 	{
-		if (specificShouldIncludeUnspecificPlayer && player.HasValue)
-		{
-			// also add to sum playerIndependent
-			AddToCounter(null, type, delta, context);
-		}
-
-		if (specificShouldIncludeUnspecificContext && (context != NO_CONTEXT))
-		{
-			// also add to contextless counter
-			AddToCounter(player, type, delta, NO_CONTEXT, false, false);
-		}
-
-		if (delta == 0)
-		{
-			Debug.LogWarning("Playercounter Change with delta 0");
-			return;
-		}
-
 		int playerIndex = PlayerIDToCounterIndex(player);
 
 		Dictionary<TCounterContext, CounterValue> contextToValue;
@@ -116,6 +117,39 @@ public class CounterManager : MonoBehaviour
 		contextToValue[context] = value;
 
 		OnValueChanged(type, delta, context);
+	}
+
+	public void AddToCounters(PlayerID? player, CounterType type, int delta, TCounterContext context = NO_CONTEXT)
+	{
+		if (delta == 0)
+		{
+			Debug.LogWarning("Playercounter Change with delta 0");
+			return;
+		}
+
+		bool hasPlayer	= player.HasValue;
+		bool hasContext = context != NO_CONTEXT;
+
+		// Add to most specific counter
+		AddToCounter(player, type, delta, context);
+
+		if (hasPlayer)
+		{
+			// also add to sum playerIndependent
+			AddToCounter(null, type, delta, context);
+
+			if (hasContext)
+			{
+				// also add to playerIndependent, contextless counter
+				AddToCounter(null, type, delta, NO_CONTEXT);
+			}
+		}
+
+		if (hasContext)
+		{
+			// also add to contextless counter
+			AddToCounter(player, type, delta, NO_CONTEXT);
+		}
 	}
 
 	public CounterValue GetCounterValue(PlayerID? player, CounterType type, TCounterContext contextObject = NO_CONTEXT)
@@ -144,12 +178,10 @@ public class CounterManager : MonoBehaviour
 		return value;
 	}
 
-	const float KillingSpreeInterval = 1.0f;
-
 	// Here we can trigger CounterType specific stuff
 	private void OnValueChanged(CounterType type, int delta, TCounterContext context = NO_CONTEXT)
 	{
-
+		countersAreDirty = true;
 	}
 
 	public static CounterManager instance
@@ -241,6 +273,11 @@ public class CounterManagerEditor : Editor
 					GUILayout.Label("- " + keyString + ": " + valueString, EditorStyles.miniLabel);
 				}		
 			}
+		}
+
+		if (counterManager.countersAreDirty)
+		{
+			GUILayout.Label("Dirty");
 		}
 	}
 }
