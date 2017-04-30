@@ -62,7 +62,10 @@ public class Grenade : MonoBehaviour
 			if (distanceSq < radiusSquared)
 			{
 				float dist = Mathf.Sqrt(distanceSq);
-				float f = dist / radius;
+
+				float f = 1.0f - (dist / radius);
+				f = Mathf.Sqrt(f);
+
 				float damage = f * maxDamage;
 				float force = f * maxForce;
 

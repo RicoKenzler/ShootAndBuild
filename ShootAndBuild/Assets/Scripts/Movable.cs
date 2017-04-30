@@ -2,7 +2,7 @@
 
 public class Movable : MonoBehaviour
 {
-	private float forceDegenerationPerSecond = 50;
+	private float forceDegenerationPerSecond = 64;
 
 	private Rigidbody rigid;
 
