@@ -15,7 +15,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 91ad17669244f5f4f8b123b2c5a4275f, type: 3}
   volume: 1
   rndMusicalPitch: 0
-  pitchOffsetSemitones: 0
+  pitchOffsetSemitones: -1
   pitchRangeSemitones: 2
   isUISound: 1
   suppressDoppler: 0
