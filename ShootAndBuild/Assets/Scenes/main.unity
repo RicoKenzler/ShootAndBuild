@@ -594,10 +594,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   killingSpreeDefinitions:
-  - KillCount: 2
-    Title: Killing Spree
-  - KillCount: 4
-    Title: Multi Kill
+  - KillCount: 10
+    Title: MultiKill
+    AudioMessage: {fileID: 11400000, guid: 8900b7fb7edd01a40ac29f7fad9f3336, type: 2}
+  - KillCount: 20
+    Title: IncrediKill
+    AudioMessage: {fileID: 11400000, guid: 5a4d414bed0ab074893797c352b0e85f, type: 2}
   killingSpreeInterval: 3
 --- !u!4 &441971553
 Transform:

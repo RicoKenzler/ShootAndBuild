@@ -5,8 +5,9 @@ using UnityEngine;
 [System.Serializable]
 public struct KillingSpreeDefinition
 {
-	public int		KillCount;
-	public string	Title; 
+	public int			KillCount;
+	public string		Title; 
+	public AudioData	AudioMessage;
 }
 
 public class KillCounters : MonoBehaviour 
@@ -25,6 +26,7 @@ public class KillCounters : MonoBehaviour
 		for (int i = 0; i < killCounters.Length; ++i)
 		{
 			killCounters[i] = new KillCounter();
+			killCounters[i].playerID = (PlayerID)i;
 		}
 	}
 
@@ -65,13 +67,14 @@ public class KillCounters : MonoBehaviour
 
 public class KillCounter
 {
+	public PlayerID playerID;
+
 	//                 . |K  KK .  .  . |K  K
 	// Time            0  1  2  3  4  5  6  7
 	// Count           0  1  3  3  3  3  4  5 
 	// LastKillTime     0  1  2  2  2  2  6  7  
 	// LastKillCount    -  1  3  3  3  3  4  5
 	// LastKillCountBIS -  0  0  0  0  0  2  2    
-	
 	float lastKillTime						= 0.0f;
 	int	  lastKillCount						= 0;
 	int   lastKillCountBeforeIntervalStart	= 0;
@@ -85,7 +88,7 @@ public class KillCounter
 		}
 
 		// so we had new kills....
-		float elapsedTime = currentTime - lastKillTime;
+ 		float elapsedTime = currentTime - lastKillTime;
 
 		lastKillTime = currentTime;
 
@@ -122,7 +125,12 @@ public class KillCounter
 
 			KillingSpreeDefinition definition = killingSpreeDefinitions[triggerLevel];
 
-			Debug.Log("Killing Spree: " + definition.Title + " (" + killsThisInterval + ")");
+			if (definition.AudioMessage)
+			{
+				AudioManager.instance.PlayAudio(definition.AudioMessage);
+			}
+
+			Debug.Log(playerID + " Spree: " + definition.Title + " (" + killsThisInterval + ")");
 		}
 	}
 }
