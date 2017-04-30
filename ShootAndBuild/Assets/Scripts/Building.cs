@@ -26,6 +26,11 @@ public class Building : MonoBehaviour
 
 	public void Pay()
 	{
+		if (CheatManager.instance.noResourceCosts)
+		{
+			return;
+		}
+
 		Inventory.sharedInventoryInstance.AddItem(ItemType.Gold, -costs);
 	}
 
@@ -33,6 +38,11 @@ public class Building : MonoBehaviour
 	{
 		int goldAmount = Inventory.sharedInventoryInstance.GetItemCount(ItemType.Gold);
 		if (goldAmount >= costs)
+		{
+			return true;
+		}
+
+		if (CheatManager.instance.noResourceCosts)
 		{
 			return true;
 		}

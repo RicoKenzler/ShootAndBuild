@@ -91,7 +91,7 @@ public class Inventory : MonoBehaviour
 
 		PlayerPanel playerPanel = PlayerPanelGroup.instance.GetPlayerPanel(inputController.playerID);
 
-		if (GetItemCount(playerMenu.activeItemType) <= 0)
+		if ((GetItemCount(playerMenu.activeItemType) <= 0) && !CheatManager.instance.noResourceCosts)
 		{
 			// Item not usable
 			sharedInventoryInstance.TriggerNotEnoughItemsSound();
@@ -106,7 +106,10 @@ public class Inventory : MonoBehaviour
 
 		UseItem(playerMenu.activeItemType);
 
-		AddItem(playerMenu.activeItemType, -1);
+		if (!CheatManager.instance.noResourceCosts)
+		{
+			AddItem(playerMenu.activeItemType, -1);
+		}
 	}
 
 	void UseItem(ItemType itemType, int count = 1)

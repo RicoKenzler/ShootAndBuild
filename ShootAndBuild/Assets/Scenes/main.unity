@@ -140,6 +140,7 @@ MonoBehaviour:
   stopEnemySpawns: 0
   disableWin: 1
   disableLose: 1
+  noResourceCosts: 1
   disableAudio: 0
 --- !u!1 &83095321
 GameObject:
