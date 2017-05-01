@@ -35,7 +35,7 @@ public class Projectile : MonoBehaviour
 
         if (targetAttackable != null)
         {
-            targetAttackable.DealDamage(Damage, gameObject, owner.gameObject);
+            targetAttackable.DealDamage(Damage, gameObject, owner ? owner.gameObject : null);
         }
         
     }

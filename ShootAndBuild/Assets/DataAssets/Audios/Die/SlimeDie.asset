@@ -12,8 +12,10 @@ MonoBehaviour:
   m_Name: SlimeDie
   m_EditorClassIdentifier: 
   audioClips:
-  - {fileID: 8300000, guid: 581c8b71f1c892041bf046945fb1f871, type: 3}
-  - {fileID: 8300000, guid: d56f8174ce5b0e34298b2ef9dc7fdbb9, type: 3}
+  - {fileID: 8300000, guid: 2dfcf0eb30589154591a5ab10c760726, type: 3}
+  - {fileID: 8300000, guid: 6e04b7237cfc3dd4993d1576b96c65f3, type: 3}
+  - {fileID: 8300000, guid: 3c8eb7261d1e45a44bebdd0a5a31696e, type: 3}
+  - {fileID: 8300000, guid: 46088ceca6937f542ab748e0657a7c7e, type: 3}
   volume: 1
   rndMusicalPitch: 0
   pitchOffsetSemitones: 0

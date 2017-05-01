@@ -166,6 +166,11 @@ public class Attackable : MonoBehaviour
 
     public void DealDamage(int damage, GameObject damageDealerMedium, GameObject damageDealerActor)
     {
+		if (CheatManager.instance.ultraHighDamage)
+		{
+			damage = maxHealth + 100000;
+		}
+
         currentHealth -= damage;
 		currentHealth = Mathf.Max(currentHealth, 0);
 

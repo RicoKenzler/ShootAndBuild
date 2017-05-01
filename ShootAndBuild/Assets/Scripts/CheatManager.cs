@@ -19,6 +19,7 @@ public class CheatManager : MonoBehaviour
 	public bool disableWin				= false;
 	public bool disableLose				= false;
 	public bool noResourceCosts			= false;
+	public bool ultraHighDamage			= false;
 
 	[Header("Disable Systems")]
 	public bool disableAudio			= false;

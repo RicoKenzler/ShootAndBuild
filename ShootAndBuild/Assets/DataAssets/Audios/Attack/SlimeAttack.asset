@@ -12,11 +12,10 @@ MonoBehaviour:
   m_Name: SlimeAttack
   m_EditorClassIdentifier: 
   audioClips:
-  - {fileID: 8300000, guid: c9c3601c5d5cfd447b6f9a54677bba2a, type: 3}
-  - {fileID: 8300000, guid: 240bbbd4085a0ab40ae03138dc04708a, type: 3}
-  - {fileID: 8300000, guid: ebfa2070a23ad5844bb59ca4f12abc65, type: 3}
-  - {fileID: 8300000, guid: f9f58772d3ed65a47a0ca89cee65c3d5, type: 3}
+  - {fileID: 8300000, guid: f1cdb9d681bcad94a9fe0be7e9edab65, type: 3}
+  - {fileID: 8300000, guid: 46e44d6166a5f7445bc19b2f4619c61a, type: 3}
   volume: 1
+  rndMusicalPitch: 0
   pitchOffsetSemitones: 0
   pitchRangeSemitones: 2
   isUISound: 0
