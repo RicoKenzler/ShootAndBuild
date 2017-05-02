@@ -143,7 +143,7 @@ MonoBehaviour:
   noResourceCosts: 1
   ultraHighDamage: 0
   disableAudio: 0
-  disableMusic: 0
+  disableMusic: 1
 --- !u!1 &83095321
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,240 +1,252 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-public class PlayerPanel : MonoBehaviour
+namespace SAB
 {
-	[SerializeField] Image healthBarFillImage;
-	[SerializeField] Image activeItemImage;
-	[SerializeField] Image activeWeaponImage;
-	[SerializeField] Image activeBuildingImage;
-	[SerializeField] Text  activeItemCountText;
-	[SerializeField] Animator weaponSelectionRect;
-	[SerializeField] Animator itemSelectionRect;
-	[SerializeField] Animator buildingSelectionRect;
 
-	private int							displayedHealthText					= 0;
-	private float						displayedHealthRelative				= 0.0f;
-	bool								displayedPlayerAlive				= false;
-	private int							displayedActiveItemCount			= -1;
-	private ItemType					displayedActiveItemType				= ItemType.None;
-	private Building					displayedActiveBuilding				= null;
+    public class PlayerPanel : MonoBehaviour
+    {
+        [SerializeField]
+        Image healthBarFillImage;
+        [SerializeField]
+        Image activeItemImage;
+        [SerializeField]
+        Image activeWeaponImage;
+        [SerializeField]
+        Image activeBuildingImage;
+        [SerializeField]
+        Text activeItemCountText;
+        [SerializeField]
+        Animator weaponSelectionRect;
+        [SerializeField]
+        Animator itemSelectionRect;
+        [SerializeField]
+        Animator buildingSelectionRect;
 
-	private	InventorySelectionCategory	displayedActiveSelectionCategory	= InventorySelectionCategory.Item;
+        private int displayedHealthText = 0;
+        private float displayedHealthRelative = 0.0f;
+        bool displayedPlayerAlive = false;
+        private int displayedActiveItemCount = -1;
+        private ItemType displayedActiveItemType = ItemType.None;
+        private Building displayedActiveBuilding = null;
 
-	public bool			useDynamicHealthColor		= false;
-	public float		healthBarSmoothness			= 0.8f;
-	public float		timeUntilSelectionFadeout	= 1.5f;
+        private InventorySelectionCategory displayedActiveSelectionCategory = InventorySelectionCategory.Item;
 
-	private Attackable	assignedAttackable;
-	private Inventory	assignedInventory;
-	private PlayerMenu	assignedPlayerMenu;
+        public bool useDynamicHealthColor = false;
+        public float healthBarSmoothness = 0.8f;
+        public float timeUntilSelectionFadeout = 1.5f;
 
-	private Animator	activeItemCountTextAnimator;
-	private Animator	activeItemImageAnimator;
+        private Attackable assignedAttackable;
+        private Inventory assignedInventory;
+        private PlayerMenu assignedPlayerMenu;
 
-	private Color deactivatedColorTint = new Color(0.5f, 0.5f, 0.5f, 0.5f);
-	private Color activatedColorTint   = new Color(1.0f, 1.0f, 1.0f, 1.0f);
-	private Color defaultTextColor;
+        private Animator activeItemCountTextAnimator;
+        private Animator activeItemImageAnimator;
 
-	// Update is called once per frame
-	void Update()
-	{
-		UpdateUI();
-	}
+        private Color deactivatedColorTint = new Color(0.5f, 0.5f, 0.5f, 0.5f);
+        private Color activatedColorTint = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+        private Color defaultTextColor;
 
-	void UpdateUI()
-	{
-		if (!assignedAttackable)
-		{
-			// for testing standalone version
-			return;
-		}
+        // Update is called once per frame
+        void Update()
+        {
+            UpdateUI();
+        }
 
-		UpdateHealthBar();
-		UpdateIsPlayerAlive();
-		UpdateItems();
-		UpdateInventorySelection();
-		UpdateBuildings();
-	}
+        void UpdateUI()
+        {
+            if (!assignedAttackable)
+            {
+                // for testing standalone version
+                return;
+            }
 
-	bool IsPlayerAlive()
-	{
-		return assignedAttackable.health > 0;
-	}
+            UpdateHealthBar();
+            UpdateIsPlayerAlive();
+            UpdateItems();
+            UpdateInventorySelection();
+            UpdateBuildings();
+        }
 
-	void UpdateIsPlayerAlive()
-	{
-		bool isPlayerAlive = IsPlayerAlive();
+        bool IsPlayerAlive()
+        {
+            return assignedAttackable.Health > 0;
+        }
 
-		if (isPlayerAlive != displayedPlayerAlive)
-		{
-			// Do not interpolate
-			UpdateHealthBar(true);
-			UpdateItems(true);
-			UpdateBuildings(true);
-			UpdateInventorySelection();
-			displayedPlayerAlive = isPlayerAlive;
-		}
-	}
+        void UpdateIsPlayerAlive()
+        {
+            bool isPlayerAlive = IsPlayerAlive();
 
-	private void UpdateHealthBar(bool forceImmediateUpdate = false)
-	{
-		int   newHealth			= assignedAttackable.health;
-		float newHealthRelative = (float) assignedAttackable.health / (float) assignedAttackable.maxHealth;
+            if (isPlayerAlive != displayedPlayerAlive)
+            {
+                // Do not interpolate
+                UpdateHealthBar(true);
+                UpdateItems(true);
+                UpdateBuildings(true);
+                UpdateInventorySelection();
+                displayedPlayerAlive = isPlayerAlive;
+            }
+        }
 
-		if (!forceImmediateUpdate && displayedHealthText == newHealth && newHealthRelative == displayedHealthRelative)
-		{
-			return;
-		}
+        private void UpdateHealthBar(bool forceImmediateUpdate = false)
+        {
+            int newHealth = assignedAttackable.Health;
+            float newHealthRelative = (float)assignedAttackable.Health / (float)assignedAttackable.maxHealth;
 
-		float healthDifference = newHealthRelative - displayedHealthRelative;
-	
-		// Method 2: start fast
-		float smoothRelativeHealth = Mathf.Lerp(newHealthRelative, displayedHealthRelative, healthBarSmoothness);
+            if (!forceImmediateUpdate && displayedHealthText == newHealth && newHealthRelative == displayedHealthRelative)
+            {
+                return;
+            }
 
-		if (forceImmediateUpdate || Mathf.Abs(healthDifference) <= 0.001f)
-		{
-			smoothRelativeHealth = newHealthRelative;
-		}
+            float healthDifference = newHealthRelative - displayedHealthRelative;
 
-		Color desiredColor = new Color(1.0f, 0.0f, 0.0f);
+            // Method 2: start fast
+            float smoothRelativeHealth = Mathf.Lerp(newHealthRelative, displayedHealthRelative, healthBarSmoothness);
 
-		if (useDynamicHealthColor)
-		{
-			Color colorFullHealth =     new Color(0.0f, 1.0f, 0.0f, 1.0f);
-			Color colorMediumHealth =   new Color(1.0f, 1.0f, 0.0f, 1.0f);
-			Color colorNoHealth =       new Color(1.0f, 0.0f, 0.0f, 1.0f);
+            if (forceImmediateUpdate || Mathf.Abs(healthDifference) <= 0.001f)
+            {
+                smoothRelativeHealth = newHealthRelative;
+            }
 
-			if (smoothRelativeHealth < 0.5f)
-			{
-				desiredColor = Color.Lerp(colorNoHealth, colorMediumHealth, smoothRelativeHealth * 2.0f);
-			}
-			else
-			{
-				desiredColor = Color.Lerp(colorMediumHealth, colorFullHealth, (smoothRelativeHealth - 0.5f) * 2.0f);
-		   }
-		}
+            Color desiredColor = new Color(1.0f, 0.0f, 0.0f);
 
-		healthBarFillImage.color		= desiredColor;
-		healthBarFillImage.fillAmount	= smoothRelativeHealth;
+            if (useDynamicHealthColor)
+            {
+                Color colorFullHealth = new Color(0.0f, 1.0f, 0.0f, 1.0f);
+                Color colorMediumHealth = new Color(1.0f, 1.0f, 0.0f, 1.0f);
+                Color colorNoHealth = new Color(1.0f, 0.0f, 0.0f, 1.0f);
 
-		displayedHealthRelative = smoothRelativeHealth;
-		displayedHealthText		= newHealth;
-	}
+                if (smoothRelativeHealth < 0.5f)
+                {
+                    desiredColor = Color.Lerp(colorNoHealth, colorMediumHealth, smoothRelativeHealth * 2.0f);
+                }
+                else
+                {
+                    desiredColor = Color.Lerp(colorMediumHealth, colorFullHealth, (smoothRelativeHealth - 0.5f) * 2.0f);
+                }
+            }
 
-	void UpdateBuildings(bool forceUpdateAll = false)
-	{
-		Building activeBuilding = assignedPlayerMenu.activeBuildingPrefab;
+            healthBarFillImage.color = desiredColor;
+            healthBarFillImage.fillAmount = smoothRelativeHealth;
 
-		bool buildingTypeChanged = (displayedActiveBuilding != activeBuilding);
-		if (forceUpdateAll || buildingTypeChanged)
-		{
-			// Update Active item Type
-			displayedActiveBuilding				= activeBuilding;
-			activeBuildingImage.overrideSprite	= activeBuilding ? activeBuilding.icon : null;
-		}
-		
-		bool buildingBuildable = (IsPlayerAlive() && (activeBuilding && activeBuilding.IsPayable()));
-		
-		activeBuildingImage.color   = buildingBuildable ? activatedColorTint : deactivatedColorTint;
-	}
+            displayedHealthRelative = smoothRelativeHealth;
+            displayedHealthText = newHealth;
+        }
 
-	void UpdateItems(bool forceUpdateAll = false)
-	{
-		ItemType activeItemType = assignedPlayerMenu.activeItemType;
-		ItemData itemData = ItemManager.instance.GetItemInfos(activeItemType);
+        void UpdateBuildings(bool forceUpdateAll = false)
+        {
+            Building activeBuilding = assignedPlayerMenu.activeBuildingPrefab;
 
-		int activeItemCount = assignedInventory.GetItemCount(assignedPlayerMenu.activeItemType);
+            bool buildingTypeChanged = (displayedActiveBuilding != activeBuilding);
+            if (forceUpdateAll || buildingTypeChanged)
+            {
+                // Update Active item Type
+                displayedActiveBuilding = activeBuilding;
+                activeBuildingImage.overrideSprite = activeBuilding ? activeBuilding.icon : null;
+            }
 
-		bool itemTypeChanged = (displayedActiveItemType != activeItemType);
-		if (forceUpdateAll || itemTypeChanged)
-		{
-			// Update Active item Type
-			displayedActiveItemType		= activeItemType;
-			activeItemImage.overrideSprite = itemData.icon;
-		}
+            bool buildingBuildable = (IsPlayerAlive() && (activeBuilding && activeBuilding.IsPayable()));
 
-		bool itemCountChanged = (displayedActiveItemCount != activeItemCount);
-		if (forceUpdateAll || itemTypeChanged || itemCountChanged)
-		{
-			// Update Item Count
-			activeItemCountText.text = activeItemCount.ToString();
+            activeBuildingImage.color = buildingBuildable ? activatedColorTint : deactivatedColorTint;
+        }
 
-			if (activeItemCount > displayedActiveItemCount && activeItemCount > 0)
-			{
-				HighlightActiveItemCount();
-			}
+        void UpdateItems(bool forceUpdateAll = false)
+        {
+            ItemType activeItemType = assignedPlayerMenu.activeItemType;
+            ItemData itemData = ItemManager.instance.GetItemInfos(activeItemType);
 
-			displayedActiveItemCount = activeItemCount;
-		}
+            int activeItemCount = assignedInventory.GetItemCount(assignedPlayerMenu.activeItemType);
 
-		bool deactivatedItem = (!IsPlayerAlive() || (activeItemCount == 0));
-		
-		activeItemImage.color		= deactivatedItem ? deactivatedColorTint : activatedColorTint;
-		activeItemCountText.color	= deactivatedItem ? deactivatedColorTint : defaultTextColor;
-		activeWeaponImage.color		= IsPlayerAlive() ? activatedColorTint : deactivatedColorTint;
-	}
+            bool itemTypeChanged = (displayedActiveItemType != activeItemType);
+            if (forceUpdateAll || itemTypeChanged)
+            {
+                // Update Active item Type
+                displayedActiveItemType = activeItemType;
+                activeItemImage.overrideSprite = itemData.icon;
+            }
 
-	public void HighlightActiveItem()
-	{
-		activeItemImageAnimator.SetTrigger("Grow");
-	}
+            bool itemCountChanged = (displayedActiveItemCount != activeItemCount);
+            if (forceUpdateAll || itemTypeChanged || itemCountChanged)
+            {
+                // Update Item Count
+                activeItemCountText.text = activeItemCount.ToString();
 
-	public void HighlightActiveItemCount()
-	{
-		activeItemCountTextAnimator.SetTrigger("Grow");
-	}
+                if (activeItemCount > displayedActiveItemCount && activeItemCount > 0)
+                {
+                    HighlightActiveItemCount();
+                }
 
-	void UpdateInventorySelection()
-	{
-		InventorySelectionCategory newCategory = assignedPlayerMenu.activeSelectionCategory;
+                displayedActiveItemCount = activeItemCount;
+            }
 
-		bool hideSelection = false;
+            bool deactivatedItem = (!IsPlayerAlive() || (activeItemCount == 0));
 
-		if (timeUntilSelectionFadeout >= 0.0f)
-		{
-			if ((Time.time > (assignedPlayerMenu.lastMenuInteractionTime + timeUntilSelectionFadeout)))
-			{
-				hideSelection = true;
-			}
-		}
-		
-		Animator oldSelectionRect = GetSelectionRectForCategory(displayedActiveSelectionCategory);
-		Animator newSelectionRect = GetSelectionRectForCategory(newCategory);
+            activeItemImage.color = deactivatedItem ? deactivatedColorTint : activatedColorTint;
+            activeItemCountText.color = deactivatedItem ? deactivatedColorTint : defaultTextColor;
+            activeWeaponImage.color = IsPlayerAlive() ? activatedColorTint : deactivatedColorTint;
+        }
 
-		oldSelectionRect.SetBool("Visible", false);
-		newSelectionRect.SetBool("Visible", (!IsPlayerAlive() || hideSelection) ? false : true);
+        public void HighlightActiveItem()
+        {
+            activeItemImageAnimator.SetTrigger("Grow");
+        }
 
-		displayedActiveSelectionCategory = newCategory;
-	}
+        public void HighlightActiveItemCount()
+        {
+            activeItemCountTextAnimator.SetTrigger("Grow");
+        }
 
-	Animator GetSelectionRectForCategory(InventorySelectionCategory category)
-	{
-		switch (category)
-		{
-			case InventorySelectionCategory.Item:
-				return itemSelectionRect;
-			case InventorySelectionCategory.Weapon:
-				return weaponSelectionRect;
-			case InventorySelectionCategory.Building:
-				return buildingSelectionRect;
-		}
+        void UpdateInventorySelection()
+        {
+            InventorySelectionCategory newCategory = assignedPlayerMenu.activeSelectionCategory;
 
-		Debug.LogWarning("Missing case statement");
-		return null;
-	}
+            bool hideSelection = false;
 
-	public void AssignPlayer(GameObject player)
-	{
-		assignedAttackable			= player.GetComponent<Attackable>();
-		assignedInventory			= player.GetComponent<Inventory>();
-		assignedPlayerMenu			= player.GetComponent<PlayerMenu>();
+            if (timeUntilSelectionFadeout >= 0.0f)
+            {
+                if ((Time.time > (assignedPlayerMenu.lastMenuInteractionTime + timeUntilSelectionFadeout)))
+                {
+                    hideSelection = true;
+                }
+            }
 
-		activeItemCountTextAnimator = activeItemCountText.GetComponent<Animator>();
-		activeItemImageAnimator		= activeItemImage.GetComponent<Animator>();
+            Animator oldSelectionRect = GetSelectionRectForCategory(displayedActiveSelectionCategory);
+            Animator newSelectionRect = GetSelectionRectForCategory(newCategory);
 
-		defaultTextColor			= activeItemCountText.color;
+            oldSelectionRect.SetBool("Visible", false);
+            newSelectionRect.SetBool("Visible", (!IsPlayerAlive() || hideSelection) ? false : true);
 
-		UpdateUI();
-	}
+            displayedActiveSelectionCategory = newCategory;
+        }
+
+        Animator GetSelectionRectForCategory(InventorySelectionCategory category)
+        {
+            switch (category)
+            {
+                case InventorySelectionCategory.Item:
+                    return itemSelectionRect;
+                case InventorySelectionCategory.Weapon:
+                    return weaponSelectionRect;
+                case InventorySelectionCategory.Building:
+                    return buildingSelectionRect;
+            }
+
+            Debug.LogWarning("Missing case statement");
+            return null;
+        }
+
+        public void AssignPlayer(GameObject player)
+        {
+            assignedAttackable = player.GetComponent<Attackable>();
+            assignedInventory = player.GetComponent<Inventory>();
+            assignedPlayerMenu = player.GetComponent<PlayerMenu>();
+
+            activeItemCountTextAnimator = activeItemCountText.GetComponent<Animator>();
+            activeItemImageAnimator = activeItemImage.GetComponent<Animator>();
+
+            defaultTextColor = activeItemCountText.color;
+
+            UpdateUI();
+        }
+    }
 }
