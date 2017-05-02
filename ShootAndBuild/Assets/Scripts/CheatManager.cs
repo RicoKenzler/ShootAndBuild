@@ -23,6 +23,7 @@ public class CheatManager : MonoBehaviour
 
 	[Header("Disable Systems")]
 	public bool disableAudio			= false;
+	public bool disableMusic			= false;
 
 	void Awake()
 	{
