@@ -26,13 +26,13 @@ public class ParticleManager : MonoBehaviour
         get; private set;
     }
 
-	public void SpawnParticle(ParticleSystem particleAsset, GameObject spawner, Vector3 position, Quaternion rotation, bool isInLocalSpace, float lifetime, bool scaleByParentSize, bool offsetToOutside)
+	public void SpawnParticle(ParticleSystem particleAsset, GameObject spawner, Vector3 position, Quaternion? rotation, bool isInLocalSpace, float lifetime, bool scaleByParentSize, bool offsetToOutside)
 	{
 		Transform parent = isInLocalSpace ? spawner.transform : this.transform;
 
 		GameObject newObject = Instantiate(particleAsset.gameObject, parent);
 		newObject.transform.position = position;
-		newObject.transform.rotation = rotation;
+		newObject.transform.rotation = rotation.HasValue ? rotation.Value : Quaternion.Euler(0.0f, Random.Range(0.0f, 360.0f), 0.0f);
 		newObject.name = particleAsset.gameObject.name + "(" + spawner.name + ")";
 
 		if (scaleByParentSize)

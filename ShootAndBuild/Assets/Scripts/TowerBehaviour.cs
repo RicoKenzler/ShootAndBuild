@@ -1,58 +1,62 @@
 ﻿using UnityEngine;
 
-public class TowerBehaviour : MonoBehaviour
+namespace SAB
 {
-	private Shootable shootable;
-	public bool turnTowardsEnemy = false;
 
-	void Awake()
-	{
-		shootable = GetComponent<Shootable>();
-	}
+    public class TowerBehaviour : MonoBehaviour
+    {
+        private Shootable shootable;
+        public bool turnTowardsEnemy = false;
 
-	void Update()
-	{
-		GameObject nearestEnemy = GetNearestEnemy();
-		if (!nearestEnemy)
-		{
-			return;
-		}
+        void Awake()
+        {
+            shootable = GetComponent<Shootable>();
+        }
 
-		if (CheatManager.instance.freezeTowers)
-		{
-			return;
-		}
+        void Update()
+        {
+            GameObject nearestEnemy = GetNearestEnemy();
+            if (!nearestEnemy)
+            {
+                return;
+            }
 
-		if (turnTowardsEnemy)
-		{
-			transform.LookAt(nearestEnemy.transform);
-		}
-		
-		if (shootable.currentCooldown == 0)
-		{
-			Quaternion rotationToEnemy = Quaternion.LookRotation(nearestEnemy.transform.position - transform.position);
+            if (CheatManager.instance.freezeTowers)
+            {
+                return;
+            }
 
-			shootable.Shoot(rotationToEnemy);
-		}
-	}
+            if (turnTowardsEnemy)
+            {
+                transform.LookAt(nearestEnemy.transform);
+            }
 
-	private GameObject GetNearestEnemy()
-	{
-		EnemyBehaviour[] enemies = FindObjectsOfType<EnemyBehaviour>();
-		GameObject bestEnemy = null;
-		float bestDistanceSq = float.MaxValue;
+            if (shootable.currentCooldown == 0)
+            {
+                Quaternion rotationToEnemy = Quaternion.LookRotation(nearestEnemy.transform.position - transform.position);
 
-		foreach (EnemyBehaviour enemy in enemies)
-		{
-			float distanceSq = (enemy.transform.position - transform.position).sqrMagnitude;
+                shootable.Shoot(rotationToEnemy);
+            }
+        }
 
-			if (distanceSq < bestDistanceSq)
-			{
-				bestDistanceSq = distanceSq;
-				bestEnemy = enemy.gameObject;
-			}
-		}
+        private GameObject GetNearestEnemy()
+        {
+            EnemyBehaviour[] enemies = FindObjectsOfType<EnemyBehaviour>();
+            GameObject bestEnemy = null;
+            float bestDistanceSq = float.MaxValue;
 
-		return bestEnemy;
-	}
+            foreach (EnemyBehaviour enemy in enemies)
+            {
+                float distanceSq = (enemy.transform.position - transform.position).sqrMagnitude;
+
+                if (distanceSq < bestDistanceSq)
+                {
+                    bestDistanceSq = distanceSq;
+                    bestEnemy = enemy.gameObject;
+                }
+            }
+
+            return bestEnemy;
+        }
+    }
 }

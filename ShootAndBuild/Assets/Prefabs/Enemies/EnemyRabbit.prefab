@@ -855,6 +855,7 @@ MonoBehaviour:
   attackCooldown: 1
   damage: 50
   hitSound: {fileID: 11400000, guid: 8f2d936bac126a341b741ab44e392604, type: 2}
+  type: 2
 --- !u!114 &114441391789738886
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -900,6 +901,11 @@ MonoBehaviour:
   - itemPrefab: {fileID: 1021980560320182, guid: f3d45e6a116eaf74a8d70667a7da898d,
       type: 2}
     dropProbability: 0.25
+    minDropAmount: 1
+    maxDropAmount: 1
+  - itemPrefab: {fileID: 1592344206062772, guid: dcd2af2f45710cb489f707e8d0c097b6,
+      type: 2}
+    dropProbability: 0.1
     minDropAmount: 1
     maxDropAmount: 1
   dieSound: {fileID: 11400000, guid: 3a742507d3b7d384788725fcd4121f10, type: 2}

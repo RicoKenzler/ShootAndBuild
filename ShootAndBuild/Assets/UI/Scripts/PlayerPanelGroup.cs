@@ -3,57 +3,62 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine;
 
-public class PlayerPanelGroup : MonoBehaviour
+
+namespace SAB
 {
-	[SerializeField]
-	private PlayerPanel playerPanelPrefab;
 
-	private Dictionary<PlayerID, PlayerPanel> playerPanels = new Dictionary<PlayerID, PlayerPanel>();
+    public class PlayerPanelGroup : MonoBehaviour
+    {
+        [SerializeField]
+        private PlayerPanel playerPanelPrefab;
 
-	void Awake()
-	{
-		instance = this;
-	}
+        private Dictionary<PlayerID, PlayerPanel> playerPanels = new Dictionary<PlayerID, PlayerPanel>();
 
-	// Use this for initialization
-	void Start()
-	{
+        void Awake()
+        {
+            instance = this;
+        }
 
-	}
+        // Use this for initialization
+        void Start()
+        {
 
-	// Update is called once per frame
-	void Update()
-	{
-		
-	}
+        }
 
-	public void AddPlayerPanel(PlayerID playerID, GameObject player)
-	{
-		if (GetPlayerPanel(playerID) != null)
-		{
-			Debug.LogWarning("Creating player UI for " + playerID + "twice?");
-			return;
-		}
+        // Update is called once per frame
+        void Update()
+        {
 
-		GameObject newPlayerPanelObject = Instantiate(playerPanelPrefab.gameObject, gameObject.transform, false);
-		newPlayerPanelObject.name = "Player Panel " + playerID;
+        }
 
-		PlayerPanel newPlayerPanel = newPlayerPanelObject.GetComponent<PlayerPanel>();
-		newPlayerPanel.AssignPlayer(player);
+        public void AddPlayerPanel(PlayerID playerID, GameObject player)
+        {
+            if (GetPlayerPanel(playerID) != null)
+            {
+                Debug.LogWarning("Creating player UI for " + playerID + "twice?");
+                return;
+            }
 
-		playerPanels.Add(playerID, newPlayerPanel);
-	}
+            GameObject newPlayerPanelObject = Instantiate(playerPanelPrefab.gameObject, gameObject.transform, false);
+            newPlayerPanelObject.name = "Player Panel " + playerID;
 
-	public PlayerPanel GetPlayerPanel(PlayerID playerID)
-	{
-		PlayerPanel outPanel;
-		playerPanels.TryGetValue(playerID, out outPanel);
+            PlayerPanel newPlayerPanel = newPlayerPanelObject.GetComponent<PlayerPanel>();
+            newPlayerPanel.AssignPlayer(player);
 
-		return outPanel;
-	}
+            playerPanels.Add(playerID, newPlayerPanel);
+        }
 
-	public static PlayerPanelGroup instance
-	{
-		get; private set;
-	}
+        public PlayerPanel GetPlayerPanel(PlayerID playerID)
+        {
+            PlayerPanel outPanel;
+            playerPanels.TryGetValue(playerID, out outPanel);
+
+            return outPanel;
+        }
+
+        public static PlayerPanelGroup instance
+        {
+            get; private set;
+        }
+    }
 }

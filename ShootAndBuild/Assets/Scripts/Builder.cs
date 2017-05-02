@@ -1,70 +1,74 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-public class Builder : MonoBehaviour
+namespace SAB
 {
-	public List<Building> buildingPrefabs;
-	public float distance = 2;
 
-	public AudioData buildSound;
-	public ParticleSystem buildEffect;
+    public class Builder : MonoBehaviour
+    {
+        public List<Building> buildingPrefabs;
+        public float distance = 2;
 
-	public AudioData noSpaceSound;
+        public AudioData buildSound;
+        public ParticleSystem buildEffect;
 
-	private PlayerMenu playerMenu;
+        public AudioData noSpaceSound;
 
-	void Awake()
-	{
-		
-	}
+        private PlayerMenu playerMenu;
 
-	private void Start()
-	{
-		playerMenu = GetComponent<PlayerMenu>();
-	}
+        void Awake()
+        {
 
-	public void TryBuild()
-	{
-		Vector3 pos = transform.position + transform.rotation * (distance * Vector3.forward);
-		pos = Grid.instance.ToTileCenter(pos);
+        }
 
-		Building activeBuilding = playerMenu.activeBuildingPrefab;
+        private void Start()
+        {
+            playerMenu = GetComponent<PlayerMenu>();
+        }
 
-		if (!activeBuilding)
-		{
-			return;
-		}
+        public void TryBuild()
+        {
+            Vector3 pos = transform.position + transform.rotation * (distance * Vector3.forward);
+            pos = Grid.instance.ToTileCenter(pos);
 
-		if (!activeBuilding.IsPayable())
-		{
-			Inventory.sharedInventoryInstance.TriggerNotEnoughItemsSound();
+            Building activeBuilding = playerMenu.activeBuildingPrefab;
 
-			GlobalPanel.instance.HighlightMoney();
-			return;
-		}
+            if (!activeBuilding)
+            {
+                return;
+            }
 
-		if (!Grid.instance.IsFree(activeBuilding.gameObject, pos))
-		{
-			AudioManager.instance.PlayAudio(noSpaceSound);
-			return;
-		}
+            if (!activeBuilding.IsPayable())
+            {
+                Inventory.sharedInventoryInstance.TriggerNotEnoughItemsSound();
 
-		Build(activeBuilding, pos);
-	}
+                GlobalPanel.instance.HighlightMoney();
+                return;
+            }
 
-	private void Build(Building buildingPrefab, Vector3 pos)
-	{
-		GameObject newTower = Instantiate(buildingPrefab.gameObject, BuildingManager.instance.transform);
-		newTower.transform.position = pos;
-		newTower.GetComponent<Attackable>().faction = GetComponent<Attackable>().faction;
+            if (!Grid.instance.IsFree(activeBuilding.gameObject, pos))
+            {
+                AudioManager.instance.PlayAudio(noSpaceSound);
+                return;
+            }
 
-		AudioManager.instance.PlayAudio(buildSound, transform.position);
-		
-		buildingPrefab.Pay();
+            Build(activeBuilding, pos);
+        }
 
-		if (buildEffect)
-		{
-			ParticleManager.instance.SpawnParticle(buildEffect, newTower, newTower.transform.position, Quaternion.identity, false, 6.0f, true, false);
-		}
-	}
+        private void Build(Building buildingPrefab, Vector3 pos)
+        {
+            GameObject newTower = Instantiate(buildingPrefab.gameObject, BuildingManager.instance.transform);
+            newTower.transform.position = pos;
+            newTower.GetComponent<Attackable>().faction = GetComponent<Attackable>().faction;
+
+            AudioManager.instance.PlayAudio(buildSound, transform.position);
+
+            buildingPrefab.Pay();
+
+            if (buildEffect)
+            {
+                ParticleManager.instance.SpawnParticle(buildEffect, newTower, newTower.transform.position, null, false, 6.0f, true, false);
+            }
+        }
+    }
 }

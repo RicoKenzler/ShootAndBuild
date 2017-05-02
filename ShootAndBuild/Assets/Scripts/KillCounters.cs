@@ -2,135 +2,139 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[System.Serializable]
-public struct KillingSpreeDefinition
+namespace SAB
 {
-	public int			KillCount;
-	public string		Title; 
-	public AudioData	AudioMessage;
-}
 
-public class KillCounters : MonoBehaviour 
-{
-	public KillingSpreeDefinition[]	killingSpreeDefinitions;
-	public float					killingSpreeInterval		= 3.0f;
+    [System.Serializable]
+    public struct KillingSpreeDefinition
+    {
+        public int KillCount;
+        public string Title;
+        public AudioData AudioMessage;
+    }
 
-	KillCounter[] killCounters;
+    public class KillCounters : MonoBehaviour
+    {
+        public KillingSpreeDefinition[] killingSpreeDefinitions;
+        public float killingSpreeInterval = 3.0f;
 
-	void Awake()
-	{
-		instance = this;
+        KillCounter[] killCounters;
 
-		killCounters = new KillCounter[(int) PlayerID.Count];
+        void Awake()
+        {
+            instance = this;
 
-		for (int i = 0; i < killCounters.Length; ++i)
-		{
-			killCounters[i] = new KillCounter();
-			killCounters[i].playerID = (PlayerID)i;
-		}
-	}
+            killCounters = new KillCounter[(int)PlayerID.Count];
 
-	void Start() 
-	{
-		CounterManager.instance.OnCountersChanged += OnCountersChanged;
-	}
-	
-	void Update() 
-	{
-		
-	}
+            for (int i = 0; i < killCounters.Length; ++i)
+            {
+                killCounters[i] = new KillCounter();
+                killCounters[i].playerID = (PlayerID)i;
+            }
+        }
 
-	void OnCountersChanged()
-	{
-		for (int p = 0; p < (int) PlayerID.Count; ++p)
-		{
-			PlayerID playerID = (PlayerID) p;
+        void Start()
+        {
+            CounterManager.instance.OnCountersChanged += OnCountersChanged;
+        }
 
-			if (!PlayerManager.instance.HasPlayerJoined(playerID))
-			{
-				continue;
-			}
+        void Update()
+        {
 
-			int killCount = CounterManager.instance.GetCounterValue(playerID, CounterType.KilledEnemies, "").CurrentCount;
+        }
 
-			killCounters[(int) playerID].OnCountersChanged(Time.time, killCount);
-		}
-	}
+        void OnCountersChanged()
+        {
+            for (int p = 0; p < (int)PlayerID.Count; ++p)
+            {
+                PlayerID playerID = (PlayerID)p;
 
-	public static KillCounters instance
-	{
-		get; private set;
-	}
-}
+                if (!PlayerManager.instance.HasPlayerJoined(playerID))
+                {
+                    continue;
+                }
 
-//////////////////////////////////////////////////////////////
+                int killCount = CounterManager.instance.GetCounterValue(playerID, CounterType.KilledEnemies, "").CurrentCount;
 
-public class KillCounter
-{
-	public PlayerID playerID;
+                killCounters[(int)playerID].OnCountersChanged(Time.time, killCount);
+            }
+        }
 
-	//                 . |K  KK .  .  . |K  K
-	// Time            0  1  2  3  4  5  6  7
-	// Count           0  1  3  3  3  3  4  5 
-	// LastKillTime     0  1  2  2  2  2  6  7  
-	// LastKillCount    -  1  3  3  3  3  4  5
-	// LastKillCountBIS -  0  0  0  0  0  2  2    
-	float lastKillTime						= 0.0f;
-	int	  lastKillCount						= 0;
-	int   lastKillCountBeforeIntervalStart	= 0;
-	int	  lastSpreeLevelThisInterval		= -1;
+        public static KillCounters instance
+        {
+            get; private set;
+        }
+    }
 
-	public void OnCountersChanged(float currentTime, int currentKillCount)
-	{
-		if (currentKillCount == lastKillCount)
-		{
-			return;
-		}
+    //////////////////////////////////////////////////////////////
 
-		// so we had new kills....
- 		float elapsedTime = currentTime - lastKillTime;
+    public class KillCounter
+    {
+        public PlayerID playerID;
 
-		lastKillTime = currentTime;
+        //                 . |K  KK .  .  . |K  K
+        // Time            0  1  2  3  4  5  6  7
+        // Count           0  1  3  3  3  3  4  5 
+        // LastKillTime     0  1  2  2  2  2  6  7  
+        // LastKillCount    -  1  3  3  3  3  4  5
+        // LastKillCountBIS -  0  0  0  0  0  2  2    
+        float lastKillTime = 0.0f;
+        int lastKillCount = 0;
+        int lastKillCountBeforeIntervalStart = 0;
+        int lastSpreeLevelThisInterval = -1;
 
-		if (elapsedTime > KillCounters.instance.killingSpreeInterval)
-		{
-			// start new interval
-			lastKillCountBeforeIntervalStart	= lastKillCount;
-			lastSpreeLevelThisInterval			= -1;
-		}
+        public void OnCountersChanged(float currentTime, int currentKillCount)
+        {
+            if (currentKillCount == lastKillCount)
+            {
+                return;
+            }
 
-		int killsThisInterval = currentKillCount - lastKillCountBeforeIntervalStart;
-		
-		lastKillCount = currentKillCount;
+            // so we had new kills....
+            float elapsedTime = currentTime - lastKillTime;
 
-		KillingSpreeDefinition[] killingSpreeDefinitions = KillCounters.instance.killingSpreeDefinitions;
+            lastKillTime = currentTime;
 
-		int triggerLevel = -1;
+            if (elapsedTime > KillCounters.instance.killingSpreeInterval)
+            {
+                // start new interval
+                lastKillCountBeforeIntervalStart = lastKillCount;
+                lastSpreeLevelThisInterval = -1;
+            }
 
-		for (int lvl = lastSpreeLevelThisInterval + 1; lvl < killingSpreeDefinitions.Length; ++lvl)
-		{
-			KillingSpreeDefinition definition = killingSpreeDefinitions[lvl];
+            int killsThisInterval = currentKillCount - lastKillCountBeforeIntervalStart;
 
-			if (killsThisInterval < definition.KillCount)
-			{
-				break;
-			}
+            lastKillCount = currentKillCount;
 
-			triggerLevel = lvl;
-		}
+            KillingSpreeDefinition[] killingSpreeDefinitions = KillCounters.instance.killingSpreeDefinitions;
 
-		if (triggerLevel != -1)
-		{
-			lastSpreeLevelThisInterval = triggerLevel;
+            int triggerLevel = -1;
 
-			KillingSpreeDefinition definition = killingSpreeDefinitions[triggerLevel];
+            for (int lvl = lastSpreeLevelThisInterval + 1; lvl < killingSpreeDefinitions.Length; ++lvl)
+            {
+                KillingSpreeDefinition definition = killingSpreeDefinitions[lvl];
 
-			if (definition.AudioMessage)
-			{
-				AudioManager.instance.PlayAudio(definition.AudioMessage);
-			}
+                if (killsThisInterval < definition.KillCount)
+                {
+                    break;
+                }
 
-			Debug.Log(playerID + " Spree: " + definition.Title + " (" + killsThisInterval + ")");
-		}
-	}
+                triggerLevel = lvl;
+            }
+
+            if (triggerLevel != -1)
+            {
+                lastSpreeLevelThisInterval = triggerLevel;
+
+                KillingSpreeDefinition definition = killingSpreeDefinitions[triggerLevel];
+
+                if (definition.AudioMessage)
+                {
+                    AudioManager.instance.PlayAudio(definition.AudioMessage);
+                }
+
+                Debug.Log(playerID + " Spree: " + definition.Title + " (" + killsThisInterval + ")");
+            }
+        }
+    }
 }

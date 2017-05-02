@@ -2,213 +2,217 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerMenu : MonoBehaviour 
+namespace SAB
 {
-	public AudioData menuSelectionRightSound;
-	public AudioData menuSelectionLeftSound;
-	public AudioData menuSelectionUpSound;
-	public AudioData menuSelectionDownSound;
-	public AudioData menuSelectionFailedSound;
 
-	[System.NonSerialized]
-	public InventorySelectionCategory activeSelectionCategory = InventorySelectionCategory.Item;
+    public class PlayerMenu : MonoBehaviour
+    {
+        public AudioData menuSelectionRightSound;
+        public AudioData menuSelectionLeftSound;
+        public AudioData menuSelectionUpSound;
+        public AudioData menuSelectionDownSound;
+        public AudioData menuSelectionFailedSound;
 
-	private Inventory inventory;
-	private Builder   builder;
+        [System.NonSerialized]
+        public InventorySelectionCategory activeSelectionCategory = InventorySelectionCategory.Item;
 
-	public float lastMenuInteractionTime
-	{
-		get; private set;
-	} 
+        private Inventory inventory;
+        private Builder builder;
 
-	void Awake()
-	{
-		lastMenuInteractionTime = 0.0f;
-		activeItemType = ItemType.None;
-	}
+        public float lastMenuInteractionTime
+        {
+            get; private set;
+        }
 
-	void InitActiveItemType()
-	{
-		Dictionary<ItemType, int> allItems = inventory.GetItemsReadOnly();
+        void Awake()
+        {
+            lastMenuInteractionTime = 0.0f;
+            activeItemType = ItemType.None;
+        }
 
-		activeItemType = ItemType.Granades;
+        void InitActiveItemType()
+        {
+            Dictionary<ItemType, int> allItems = inventory.GetItemsReadOnly();
 
-		foreach (KeyValuePair<ItemType, int> item in allItems)
-		{
-			if (item.Value <= 0)
-			{
-				continue;
-			}
+            activeItemType = ItemType.Granades;
 
-			ItemData itemData = ItemManager.instance.GetItemInfos(item.Key);
+            foreach (KeyValuePair<ItemType, int> item in allItems)
+            {
+                if (item.Value <= 0)
+                {
+                    continue;
+                }
 
-			if (itemData.usageCategory == ItemUsageCategory.UsableItem)
-			{
-				activeItemType = item.Key;
-				break;
-			}
-		}
-	}
+                ItemData itemData = ItemManager.instance.GetItemInfos(item.Key);
 
-	void InitActiveBuildingType()
-	{
-		if (builder.buildingPrefabs.Count == 0)
-		{
-			activeBuildingPrefab = null;
-		}
-		else
-		{
-			activeBuildingPrefab = builder.buildingPrefabs[0];
-		}
-	}
+                if (itemData.usageCategory == ItemUsageCategory.UsableItem)
+                {
+                    activeItemType = item.Key;
+                    break;
+                }
+            }
+        }
 
-	void Start() 
-	{
-		inventory	= GetComponent<Inventory>();
-		builder		= GetComponent<Builder>();
+        void InitActiveBuildingType()
+        {
+            if (builder.buildingPrefabs.Count == 0)
+            {
+                activeBuildingPrefab = null;
+            }
+            else
+            {
+                activeBuildingPrefab = builder.buildingPrefabs[0];
+            }
+        }
 
-		InitActiveItemType();
-		InitActiveBuildingType();
-	}
-	
-	void Update() 
-	{
-		
-	}
+        void Start()
+        {
+            inventory = GetComponent<Inventory>();
+            builder = GetComponent<Builder>();
 
-	private bool TryCycleThroughItems(bool positiveOrder)
-	{
-		// Not implemented yet
-		return false;
-	}
+            InitActiveItemType();
+            InitActiveBuildingType();
+        }
 
-	private bool TryCycleThroughWeapons(bool positiveOrder)
-	{
-		// Not implemented yet
-		return false;
-	}
+        void Update()
+        {
 
-	private bool TryCycleThroughBuildings(bool positiveOrder)
-	{
-		bool foundCurrentBuilding = false;
-		
-		if (positiveOrder)
-		{
-			Building validBuildingAfterCurrent  = null;
+        }
 
-			for (int i = 0; i <= 1; ++i)
-			{
-				foreach (Building building in builder.buildingPrefabs)
-				{
-					if (foundCurrentBuilding)
-					{
-						validBuildingAfterCurrent = building;
-						i = 2;
-						break;
-					}
-					
-					if (building == activeBuildingPrefab)
-					{
-						foundCurrentBuilding = true;
-					}
-				}
-			}
+        private bool TryCycleThroughItems(bool positiveOrder)
+        {
+            // Not implemented yet
+            return false;
+        }
 
-			if (validBuildingAfterCurrent && (validBuildingAfterCurrent != activeBuildingPrefab))
-			{
-				activeBuildingPrefab = validBuildingAfterCurrent;
-				return true;
-			}
+        private bool TryCycleThroughWeapons(bool positiveOrder)
+        {
+            // Not implemented yet
+            return false;
+        }
 
-			return false;
-		}
-		else
-		{
-			Building validBuildingBeforeCurrent  = null;
+        private bool TryCycleThroughBuildings(bool positiveOrder)
+        {
+            bool foundCurrentBuilding = false;
 
-			for (int i = 0; i <= 1; ++i)
-			{
-				foreach (Building building in builder.buildingPrefabs)
-				{					
-					if (building == activeBuildingPrefab)
-					{
-						if (foundCurrentBuilding)
-						{
-							i = 2;
-							break;
-						}
+            if (positiveOrder)
+            {
+                Building validBuildingAfterCurrent = null;
 
-						foundCurrentBuilding = true;
-					}
+                for (int i = 0; i <= 1; ++i)
+                {
+                    foreach (Building building in builder.buildingPrefabs)
+                    {
+                        if (foundCurrentBuilding)
+                        {
+                            validBuildingAfterCurrent = building;
+                            i = 2;
+                            break;
+                        }
 
-					validBuildingBeforeCurrent = building;
-				}
-			}
+                        if (building == activeBuildingPrefab)
+                        {
+                            foundCurrentBuilding = true;
+                        }
+                    }
+                }
 
-			if (validBuildingBeforeCurrent && (validBuildingBeforeCurrent != activeBuildingPrefab))
-			{
-				activeBuildingPrefab = validBuildingBeforeCurrent;
-				return true;
-			}
+                if (validBuildingAfterCurrent && (validBuildingAfterCurrent != activeBuildingPrefab))
+                {
+                    activeBuildingPrefab = validBuildingAfterCurrent;
+                    return true;
+                }
 
-			return false;
-		}
-	}
+                return false;
+            }
+            else
+            {
+                Building validBuildingBeforeCurrent = null;
 
-	public void CycleThroughCategory(bool positiveOrder)
-	{	
-		bool success = false;
+                for (int i = 0; i <= 1; ++i)
+                {
+                    foreach (Building building in builder.buildingPrefabs)
+                    {
+                        if (building == activeBuildingPrefab)
+                        {
+                            if (foundCurrentBuilding)
+                            {
+                                i = 2;
+                                break;
+                            }
 
-		switch (activeSelectionCategory)
-		{
-			case InventorySelectionCategory.Item:
-				success = TryCycleThroughItems(positiveOrder);
-				break;
-			case InventorySelectionCategory.Weapon:
-				success = TryCycleThroughWeapons(positiveOrder);
-				break;
-			case InventorySelectionCategory.Building:
-				success = TryCycleThroughBuildings(positiveOrder);
-				break;
-		}
+                            foundCurrentBuilding = true;
+                        }
 
-		if (success)
-		{
-			AudioManager.instance.PlayAudio(positiveOrder ? menuSelectionUpSound : menuSelectionDownSound);
-		}
-		else
-		{
-			AudioManager.instance.PlayAudio(menuSelectionFailedSound);
-		}
+                        validBuildingBeforeCurrent = building;
+                    }
+                }
 
-		lastMenuInteractionTime = Time.time;
-	}
+                if (validBuildingBeforeCurrent && (validBuildingBeforeCurrent != activeBuildingPrefab))
+                {
+                    activeBuildingPrefab = validBuildingBeforeCurrent;
+                    return true;
+                }
 
-	public void ChangeSelectionCategory(bool positiveOrder)
-	{
-		activeSelectionCategory += positiveOrder ? 1 : -1;
+                return false;
+            }
+        }
 
-		if (activeSelectionCategory >= InventorySelectionCategory.Count)
-		{
-			activeSelectionCategory = 0;
-		}
-		else if (activeSelectionCategory < 0)
-		{
-			activeSelectionCategory = InventorySelectionCategory.Count - 1;
-		}
+        public void CycleThroughCategory(bool positiveOrder)
+        {
+            bool success = false;
 
-		AudioManager.instance.PlayAudio(positiveOrder ? menuSelectionRightSound : menuSelectionLeftSound);
+            switch (activeSelectionCategory)
+            {
+                case InventorySelectionCategory.Item:
+                    success = TryCycleThroughItems(positiveOrder);
+                    break;
+                case InventorySelectionCategory.Weapon:
+                    success = TryCycleThroughWeapons(positiveOrder);
+                    break;
+                case InventorySelectionCategory.Building:
+                    success = TryCycleThroughBuildings(positiveOrder);
+                    break;
+            }
 
-		lastMenuInteractionTime = Time.time;
-	}
+            if (success)
+            {
+                AudioManager.instance.PlayAudio(positiveOrder ? menuSelectionUpSound : menuSelectionDownSound);
+            }
+            else
+            {
+                AudioManager.instance.PlayAudio(menuSelectionFailedSound);
+            }
 
-	public ItemType activeItemType
-	{
-		get; private set;
-	}
+            lastMenuInteractionTime = Time.time;
+        }
 
-	public Building activeBuildingPrefab
-	{
-		get; private set;
-	}
+        public void ChangeSelectionCategory(bool positiveOrder)
+        {
+            activeSelectionCategory += positiveOrder ? 1 : -1;
+
+            if (activeSelectionCategory >= InventorySelectionCategory.Count)
+            {
+                activeSelectionCategory = 0;
+            }
+            else if (activeSelectionCategory < 0)
+            {
+                activeSelectionCategory = InventorySelectionCategory.Count - 1;
+            }
+
+            AudioManager.instance.PlayAudio(positiveOrder ? menuSelectionRightSound : menuSelectionLeftSound);
+
+            lastMenuInteractionTime = Time.time;
+        }
+
+        public ItemType activeItemType
+        {
+            get; private set;
+        }
+
+        public Building activeBuildingPrefab
+        {
+            get; private set;
+        }
+    }
 }

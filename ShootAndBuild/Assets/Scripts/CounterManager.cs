@@ -5,279 +5,283 @@ using UnityEditor;
 
 using TCounterContext = System.String;
 
-public enum CounterType
+namespace SAB
 {
-	KilledEnemies,
-	ItemsUsed,
-}
 
-public struct CounterValue
-{
-	public int CurrentCount;
+    public enum CounterType
+    {
+        KilledEnemies,
+        ItemsUsed,
+    }
 
-	public void Init()
-	{
-		CurrentCount	= 0;
-	}
-}
+    public struct CounterValue
+    {
+        public int CurrentCount;
 
-public delegate void CountersChangedCallback();
+        public void Init()
+        {
+            CurrentCount = 0;
+        }
+    }
 
-public class CounterManager : MonoBehaviour 
-{
-	[System.NonSerialized]
-	public const string NO_CONTEXT = "";
-	public static int COUNTER_PER_PLAYER_COUNT = (int) PlayerID.Count + 1;
+    public delegate void CountersChangedCallback();
 
-	public event CountersChangedCallback OnCountersChanged;
+    public class CounterManager : MonoBehaviour
+    {
+        [System.NonSerialized]
+        public const string NO_CONTEXT = "";
+        public static int COUNTER_PER_PLAYER_COUNT = (int)PlayerID.Count + 1;
 
-	public bool countersAreDirty
-	{
-		get; private set;
-	}
+        public event CountersChangedCallback OnCountersChanged;
 
-	// example:
-	// If we kill an enemy, we increment
-	// [KilledEnemies][specificType]++		//< counts kills of specific types
-	// [KilledEnemies][null]++				//< counts sum of all kills / unspecific kills
-	public Dictionary<CounterType, Dictionary<TCounterContext, CounterValue>>[] counters
-	{
-		get; private set;
-	}
+        public bool countersAreDirty
+        {
+            get; private set;
+        }
 
-	void Awake()
-	{
-		instance = this;
-		ResetAllCounters();
-	}
+        // example:
+        // If we kill an enemy, we increment
+        // [KilledEnemies][specificType]++		//< counts kills of specific types
+        // [KilledEnemies][null]++				//< counts sum of all kills / unspecific kills
+        public Dictionary<CounterType, Dictionary<TCounterContext, CounterValue>>[] counters
+        {
+            get; private set;
+        }
 
-	int PlayerIDToCounterIndex(PlayerID? srcPlayer)
-	{
-		if (!srcPlayer.HasValue || srcPlayer.Value == PlayerID.Count)
-		{
-			return (int) PlayerID.Count;
-		}
+        void Awake()
+        {
+            instance = this;
+            ResetAllCounters();
+        }
 
-		return (int) srcPlayer.Value;
-	}
+        int PlayerIDToCounterIndex(PlayerID? srcPlayer)
+        {
+            if (!srcPlayer.HasValue || srcPlayer.Value == PlayerID.Count)
+            {
+                return (int)PlayerID.Count;
+            }
 
-	void Start() 
-	{
-		
-	}
-	
-	public void ResetAllCounters()
-	{
-		counters = new Dictionary<CounterType, Dictionary<TCounterContext, CounterValue>>[COUNTER_PER_PLAYER_COUNT];
+            return (int)srcPlayer.Value;
+        }
 
-		for (int i = 0; i < COUNTER_PER_PLAYER_COUNT; ++i)
-		{
-			counters[i] = new Dictionary<CounterType, Dictionary<TCounterContext, CounterValue>>();
-		}
+        void Start()
+        {
 
-		countersAreDirty = true;
-	}
+        }
 
-	void Update() 
-	{
-		if (countersAreDirty)
-		{
-			if (OnCountersChanged != null)
-			{
-				OnCountersChanged(); 
-			}
+        public void ResetAllCounters()
+        {
+            counters = new Dictionary<CounterType, Dictionary<TCounterContext, CounterValue>>[COUNTER_PER_PLAYER_COUNT];
 
-			countersAreDirty = false;
-		}
-	}
+            for (int i = 0; i < COUNTER_PER_PLAYER_COUNT; ++i)
+            {
+                counters[i] = new Dictionary<CounterType, Dictionary<TCounterContext, CounterValue>>();
+            }
 
-	private void AddToCounter(PlayerID? player, CounterType type, int delta, TCounterContext context)
-	{
-		int playerIndex = PlayerIDToCounterIndex(player);
+            countersAreDirty = true;
+        }
 
-		Dictionary<TCounterContext, CounterValue> contextToValue;
-		bool foundDictionary = counters[playerIndex].TryGetValue(type, out contextToValue);
+        void Update()
+        {
+            if (countersAreDirty)
+            {
+                if (OnCountersChanged != null)
+                {
+                    OnCountersChanged();
+                }
 
-		if (!foundDictionary)
-		{
-			counters[playerIndex].Add(type, new Dictionary<TCounterContext, CounterValue>());
-			contextToValue = counters[playerIndex][type];
-		}
+                countersAreDirty = false;
+            }
+        }
 
-		CounterValue value;
-		bool foundValue = contextToValue.TryGetValue(context, out value);
+        private void AddToCounter(PlayerID? player, CounterType type, int delta, TCounterContext context)
+        {
+            int playerIndex = PlayerIDToCounterIndex(player);
 
-		if (!foundValue)
-		{
-			value.Init();
-		}
+            Dictionary<TCounterContext, CounterValue> contextToValue;
+            bool foundDictionary = counters[playerIndex].TryGetValue(type, out contextToValue);
 
-		value.CurrentCount += delta;
+            if (!foundDictionary)
+            {
+                counters[playerIndex].Add(type, new Dictionary<TCounterContext, CounterValue>());
+                contextToValue = counters[playerIndex][type];
+            }
 
-		contextToValue[context] = value;
+            CounterValue value;
+            bool foundValue = contextToValue.TryGetValue(context, out value);
 
-		OnValueChanged(type, delta, context);
-	}
+            if (!foundValue)
+            {
+                value.Init();
+            }
 
-	public void AddToCounters(PlayerID? player, CounterType type, int delta, TCounterContext context = NO_CONTEXT)
-	{
-		if (delta == 0)
-		{
-			Debug.LogWarning("Playercounter Change with delta 0");
-			return;
-		}
+            value.CurrentCount += delta;
 
-		bool hasPlayer	= player.HasValue;
-		bool hasContext = context != NO_CONTEXT;
+            contextToValue[context] = value;
 
-		// Add to most specific counter
-		AddToCounter(player, type, delta, context);
+            OnValueChanged(type, delta, context);
+        }
 
-		if (hasPlayer)
-		{
-			// also add to sum playerIndependent
-			AddToCounter(null, type, delta, context);
+        public void AddToCounters(PlayerID? player, CounterType type, int delta, TCounterContext context = NO_CONTEXT)
+        {
+            if (delta == 0)
+            {
+                Debug.LogWarning("Playercounter Change with delta 0");
+                return;
+            }
 
-			if (hasContext)
-			{
-				// also add to playerIndependent, contextless counter
-				AddToCounter(null, type, delta, NO_CONTEXT);
-			}
-		}
+            bool hasPlayer = player.HasValue;
+            bool hasContext = context != NO_CONTEXT;
 
-		if (hasContext)
-		{
-			// also add to contextless counter
-			AddToCounter(player, type, delta, NO_CONTEXT);
-		}
-	}
+            // Add to most specific counter
+            AddToCounter(player, type, delta, context);
 
-	public CounterValue GetCounterValue(PlayerID? player, CounterType type, TCounterContext contextObject = NO_CONTEXT)
-	{
-		CounterValue fallbackValue = new CounterValue();
-		fallbackValue.Init();
+            if (hasPlayer)
+            {
+                // also add to sum playerIndependent
+                AddToCounter(null, type, delta, context);
 
-		int playerIndex = PlayerIDToCounterIndex(player);
+                if (hasContext)
+                {
+                    // also add to playerIndependent, contextless counter
+                    AddToCounter(null, type, delta, NO_CONTEXT);
+                }
+            }
 
-		Dictionary<string, CounterValue> contextToValue;
-		bool foundDictionary = counters[playerIndex].TryGetValue(type, out contextToValue);
+            if (hasContext)
+            {
+                // also add to contextless counter
+                AddToCounter(player, type, delta, NO_CONTEXT);
+            }
+        }
 
-		if (!foundDictionary)
-		{
-			return fallbackValue;
-		}
+        public CounterValue GetCounterValue(PlayerID? player, CounterType type, TCounterContext contextObject = NO_CONTEXT)
+        {
+            CounterValue fallbackValue = new CounterValue();
+            fallbackValue.Init();
 
-		CounterValue value;
-		bool foundValue = contextToValue.TryGetValue(contextObject, out value);
+            int playerIndex = PlayerIDToCounterIndex(player);
 
-		if (!foundValue)
-		{
-			return fallbackValue;
-		}
+            Dictionary<string, CounterValue> contextToValue;
+            bool foundDictionary = counters[playerIndex].TryGetValue(type, out contextToValue);
 
-		return value;
-	}
+            if (!foundDictionary)
+            {
+                return fallbackValue;
+            }
 
-	// Here we can trigger CounterType specific stuff
-	private void OnValueChanged(CounterType type, int delta, TCounterContext context = NO_CONTEXT)
-	{
-		countersAreDirty = true;
-	}
+            CounterValue value;
+            bool foundValue = contextToValue.TryGetValue(contextObject, out value);
 
-	public static CounterManager instance
-	{
-		get; private set;
-	}
-}
+            if (!foundValue)
+            {
+                return fallbackValue;
+            }
 
-////////////////////////////////////////////////////////////////////////////////////////////////
+            return value;
+        }
 
-[CustomEditor(typeof(CounterManager))]
-public class CounterManagerEditor : Editor
-{
-	private void OnEnable()
-	{
-		EditorApplication.update += UpdateWhenVisible;
-	}
+        // Here we can trigger CounterType specific stuff
+        private void OnValueChanged(CounterType type, int delta, TCounterContext context = NO_CONTEXT)
+        {
+            countersAreDirty = true;
+        }
 
-	private void OnDisable()
-	{
-		EditorApplication.update -= UpdateWhenVisible;
-	}
+        public static CounterManager instance
+        {
+            get; private set;
+        }
+    }
 
-	private void UpdateWhenVisible()
-	{
-		Repaint();
-	}
+    ////////////////////////////////////////////////////////////////////////////////////////////////
 
-	bool[] playerFoldout = new bool[CounterManager.COUNTER_PER_PLAYER_COUNT];
+    [CustomEditor(typeof(CounterManager))]
+    public class CounterManagerEditor : Editor
+    {
+        private void OnEnable()
+        {
+            EditorApplication.update += UpdateWhenVisible;
+        }
 
-	public override void OnInspectorGUI()
-	{
-		CounterManager counterManager = (CounterManager)target;
+        private void OnDisable()
+        {
+            EditorApplication.update -= UpdateWhenVisible;
+        }
 
-		DrawDefaultInspector();
+        private void UpdateWhenVisible()
+        {
+            Repaint();
+        }
 
-		if (!Application.isPlaying)
-		{
-			return;
-		}
+        bool[] playerFoldout = new bool[CounterManager.COUNTER_PER_PLAYER_COUNT];
 
-		if (GUILayout.Button("Reset Counters"))
-		{
-			counterManager.ResetAllCounters();
-		}
+        public override void OnInspectorGUI()
+        {
+            CounterManager counterManager = (CounterManager)target;
 
-		GUILayout.Label("All Counters:", EditorStyles.boldLabel);
+            DrawDefaultInspector();
 
-		for (int playerIndex = 0; playerIndex < (int)(CounterManager.COUNTER_PER_PLAYER_COUNT); ++playerIndex)
-		{
-			PlayerID playerID = (PlayerID)playerIndex;
+            if (!Application.isPlaying)
+            {
+                return;
+            }
 
-			if ((playerID != PlayerID.Count) && !PlayerManager.instance.HasPlayerJoined(playerID))
-			{
-				// only show active players
-				continue;
-			}
+            if (GUILayout.Button("Reset Counters"))
+            {
+                counterManager.ResetAllCounters();
+            }
 
-			string playerName = playerIndex < (int)PlayerID.Count ? ((PlayerID)playerIndex).ToString() : "Total";
-			playerFoldout[playerIndex] = EditorGUILayout.Foldout(playerFoldout[playerIndex], playerName);
+            GUILayout.Label("All Counters:", EditorStyles.boldLabel);
 
-			if (!playerFoldout[playerIndex])
-			{
-				// collapse separate players
-				continue;
-			}
+            for (int playerIndex = 0; playerIndex < (int)(CounterManager.COUNTER_PER_PLAYER_COUNT); ++playerIndex)
+            {
+                PlayerID playerID = (PlayerID)playerIndex;
 
-			foreach (CounterType type in System.Enum.GetValues(typeof(CounterType)))
-			{
-				CounterValue fallbackValue = new CounterValue();
-				fallbackValue.Init();
+                if ((playerID != PlayerID.Count) && !PlayerManager.instance.HasPlayerJoined(playerID))
+                {
+                    // only show active players
+                    continue;
+                }
 
-				Dictionary<TCounterContext, CounterValue> contextToValue;
-				bool foundDictionary = counterManager.counters[playerIndex].TryGetValue(type, out contextToValue);
+                string playerName = playerIndex < (int)PlayerID.Count ? ((PlayerID)playerIndex).ToString() : "Total";
+                playerFoldout[playerIndex] = EditorGUILayout.Foldout(playerFoldout[playerIndex], playerName);
 
-				if (!foundDictionary)
-				{
-					// Nothing happened to this counter yet
-					continue;
-				}
+                if (!playerFoldout[playerIndex])
+                {
+                    // collapse separate players
+                    continue;
+                }
 
-				GUILayout.Label(type + ":");
+                foreach (CounterType type in System.Enum.GetValues(typeof(CounterType)))
+                {
+                    CounterValue fallbackValue = new CounterValue();
+                    fallbackValue.Init();
 
-				foreach (KeyValuePair<string, CounterValue> contextValuePair in contextToValue)
-				{
-					string keyString = (contextValuePair.Key == CounterManager.NO_CONTEXT) ? "Total" : contextValuePair.Key;
-					string valueString = contextValuePair.Value.CurrentCount.ToString();
+                    Dictionary<TCounterContext, CounterValue> contextToValue;
+                    bool foundDictionary = counterManager.counters[playerIndex].TryGetValue(type, out contextToValue);
 
-					GUILayout.Label("- " + keyString + ": " + valueString, EditorStyles.miniLabel);
-				}		
-			}
-		}
+                    if (!foundDictionary)
+                    {
+                        // Nothing happened to this counter yet
+                        continue;
+                    }
 
-		if (counterManager.countersAreDirty)
-		{
-			GUILayout.Label("Dirty");
-		}
-	}
+                    GUILayout.Label(type + ":");
+
+                    foreach (KeyValuePair<string, CounterValue> contextValuePair in contextToValue)
+                    {
+                        string keyString = (contextValuePair.Key == CounterManager.NO_CONTEXT) ? "Total" : contextValuePair.Key;
+                        string valueString = contextValuePair.Value.CurrentCount.ToString();
+
+                        GUILayout.Label("- " + keyString + ": " + valueString, EditorStyles.miniLabel);
+                    }
+                }
+            }
+
+            if (counterManager.countersAreDirty)
+            {
+                GUILayout.Label("Dirty");
+            }
+        }
+    }
 }

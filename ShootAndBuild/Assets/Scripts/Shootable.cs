@@ -1,67 +1,71 @@
 ﻿using UnityEngine;
 
-public class Shootable : MonoBehaviour
+namespace SAB
 {
-    public AudioData shootSound;
-	public ParticleSystem shootEffect;
 
-    public GameObject projectilePrefab;
-    public float shootCooldown = 0.5f;
-
-    public float flashDuration = 0.5f;
-    public float flashMaxIntensity = 0.5f;
-
-	public int damage = 1;
-	
-    void Start()
+    public class Shootable : MonoBehaviour
     {
-		currentCooldown = 0.0f;
-    }
+        public AudioData shootSound;
+        public ParticleSystem shootEffect;
 
-    void Update()
-    {
-        if (currentCooldown > 0.0f)
+        public GameObject projectilePrefab;
+        public float shootCooldown = 0.5f;
+
+        public float flashDuration = 0.5f;
+        public float flashMaxIntensity = 0.5f;
+
+        public int damage = 1;
+
+        void Start()
         {
-            currentCooldown = Mathf.Max(currentCooldown - Time.deltaTime, 0.0f);
-        }
-    }
-
-    public void Shoot(Quaternion? projectileDirection = null)
-    {
-        if (currentCooldown > 0.0f)
-        {
-            return;
+            currentCooldown = 0.0f;
         }
 
-        GameObject projectileContainer = GameObject.Find("Projectiles");
+        void Update()
+        {
+            if (currentCooldown > 0.0f)
+            {
+                currentCooldown = Mathf.Max(currentCooldown - Time.deltaTime, 0.0f);
+            }
+        }
 
-		Vector3 shootHeightOffset = new Vector3(0.0f, 0.5f, 0.0f);
+        public void Shoot(Quaternion? projectileDirection = null)
+        {
+            if (currentCooldown > 0.0f)
+            {
+                return;
+            }
 
-        GameObject instance = Instantiate(projectilePrefab, projectileContainer.transform);
-        instance.transform.position = transform.position + shootHeightOffset;
-		instance.transform.rotation = (projectileDirection.HasValue) ? projectileDirection.Value : transform.rotation;
+            GameObject projectileContainer = GameObject.Find("Projectiles");
 
-        Projectile projectile = instance.GetComponent<Projectile>();
-        projectile.Direction = new Vector3(0.0f, 0.0f, 1.0f);
-        projectile.Owner = this;
-		projectile.Damage = damage;
+            Vector3 shootHeightOffset = new Vector3(0.0f, 0.5f, 0.0f);
 
-        currentCooldown = shootCooldown;
+            GameObject instance = Instantiate(projectilePrefab, projectileContainer.transform);
+            instance.transform.position = transform.position + shootHeightOffset;
+            instance.transform.rotation = (projectileDirection.HasValue) ? projectileDirection.Value : transform.rotation;
 
-        AudioManager.instance.PlayAudio(shootSound, transform.position);
+            Projectile projectile = instance.GetComponent<Projectile>();
+            projectile.Direction = new Vector3(0.0f, 0.0f, 1.0f);
+            projectile.Owner = this;
+            projectile.Damage = damage;
 
-		if (shootEffect)
-		{
-			Vector3 towardsEnemy = instance.transform.forward;
+            currentCooldown = shootCooldown;
 
-			Quaternion rotationTowardsEnemy = Quaternion.FromToRotation(new Vector3(0.0f, 0.0f, 1.0f), towardsEnemy);
+            AudioManager.instance.PlayAudio(shootSound, transform.position);
 
-			ParticleManager.instance.SpawnParticle(shootEffect, gameObject, transform.position + shootHeightOffset, rotationTowardsEnemy, true, 4.0f, true, true);
-		}
+            if (shootEffect)
+            {
+                Vector3 towardsEnemy = instance.transform.forward;
+
+                Quaternion rotationTowardsEnemy = Quaternion.FromToRotation(new Vector3(0.0f, 0.0f, 1.0f), towardsEnemy);
+
+                ParticleManager.instance.SpawnParticle(shootEffect, gameObject, transform.position + shootHeightOffset, rotationTowardsEnemy, true, 4.0f, true, true);
+            }
+        }
+
+        public float currentCooldown
+        {
+            get; private set;
+        }
     }
-
-	public float currentCooldown
-	{
-		get; private set;
-	}
 }

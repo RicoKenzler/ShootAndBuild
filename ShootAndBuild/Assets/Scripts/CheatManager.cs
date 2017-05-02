@@ -3,138 +3,141 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
-public class CheatManager : MonoBehaviour 
+namespace SAB
 {
-	[Header("Invincible")]
-	public bool invinciblePlayers		= false;
-	public bool invincibleEnemies		= false;
-	public bool invincibleBuildings		= false;
-
-	[Header("Freeze")]
-	public bool freezeEnemies			= false;
-	public bool freezeTowers			= false;
-	public bool stopEnemySpawns			= false;
-
-	[Header("Rules")]
-	public bool disableWin				= false;
-	public bool disableLose				= false;
-	public bool noResourceCosts			= false;
-	public bool ultraHighDamage			= false;
-
-	[Header("Disable Systems")]
-	public bool disableAudio			= false;
-
-	void Awake()
-	{
-		instance = this;
-	}
-
-	void Start() 
-	{
-		
-	}
-	
-	void Update() 
-	{
-
-	}
-
-	public static CheatManager instance
-	{
-		get; private set;
-	}
-}
-
-
-[CustomEditor(typeof(CheatManager))]
-public class CheatManagerEditor : Editor
-{
-	public override void OnInspectorGUI()
+    public class CheatManager : MonoBehaviour
     {
-		CheatManager cheatManager = (CheatManager)target;
+        [Header("Invincible")]
+        public bool invinciblePlayers = false;
+        public bool invincibleEnemies = false;
+        public bool invincibleBuildings = false;
 
-		bool freezeEnemyOld = cheatManager.freezeEnemies;
+        [Header("Freeze")]
+        public bool freezeEnemies = false;
+        public bool freezeTowers = false;
+        public bool stopEnemySpawns = false;
 
-		DrawDefaultInspector();
+        [Header("Rules")]
+        public bool disableWin = false;
+        public bool disableLose = false;
+        public bool noResourceCosts = false;
+        public bool ultraHighDamage = false;
 
-		// We only want to modify Scene data during play mode
-		GUI.enabled = Application.isPlaying;
+        [Header("Disable Systems")]
+        public bool disableAudio = false;
 
-		List<Attackable> attackablesToKill = new List<Attackable>();
+        void Awake()
+        {
+            instance = this;
+        }
 
-		GUILayout.Label("Kill", EditorStyles.boldLabel);
-		if (GUILayout.Button("Kill all Enemies"))
-		{
-			foreach (EnemyBehaviour enemy in EnemyManager.instance.allEnemies)
-			{
-				attackablesToKill.Add(enemy.GetComponent<Attackable>());
-			}
-		}
+        void Start()
+        {
 
-		if (GUILayout.Button("Kill all Players"))
-		{
-			foreach (InputController player  in PlayerManager.instance.allAlivePlayers)
-			{
-				attackablesToKill.Add(player.GetComponent<Attackable>());
-			}
-		}
+        }
 
-		if (GUILayout.Button("Kill all Buildings"))
-		{
-			foreach (Building building in BuildingManager.instance.allBuildings)
-			{
-				attackablesToKill.Add(building.GetComponent<Attackable>());
-			}
-		}
+        void Update()
+        {
 
-		foreach (Attackable attackable in attackablesToKill)
-		{
-			attackable.DealLethalDamage(cheatManager.gameObject, cheatManager.gameObject);
-		}
+        }
 
-		GUILayout.Label("Add", EditorStyles.boldLabel);
-		if (GUILayout.Button("Add Resources"))
-		{
-			int cheatCount = 500;
+        public static CheatManager instance
+        {
+            get; private set;
+        }
+    }
 
-			foreach (ItemType itemType in System.Enum.GetValues(typeof(ItemType)))
-			{
-				ItemData itemData = ItemManager.instance.GetItemInfos(itemType);
-				if (itemData.useOnCollect)
-				{
-					continue;
-				}
 
-				if (itemData.isShared)
-				{
-					Inventory.sharedInventoryInstance.AddItem(itemType, cheatCount);
-				}
-				else
-				{
-					foreach (InputController player in PlayerManager.instance.allAlivePlayers)
-					{
-						player.GetComponent<Inventory>().AddItem(itemType, cheatCount);
-					}
-				}
-				
-			}
-		}
+    [CustomEditor(typeof(CheatManager))]
+    public class CheatManagerEditor : Editor
+    {
+        public override void OnInspectorGUI()
+        {
+            CheatManager cheatManager = (CheatManager)target;
 
-		if (GUILayout.Button("Add Enemies"))
-		{
-			EnemySpawner[] allSpawners = FindObjectsOfType<EnemySpawner>();
-			
-			foreach (EnemySpawner spawner in allSpawners)
-			{
-				spawner.ForceImmediateSpawn();
-			}
-		}
+            bool freezeEnemyOld = cheatManager.freezeEnemies;
 
-		GUI.enabled = true;		
+            DrawDefaultInspector();
 
-		if (!freezeEnemyOld && cheatManager.freezeEnemies)
-		{
-			cheatManager.stopEnemySpawns = true;
-		}
+            // We only want to modify Scene data during play mode
+            GUI.enabled = Application.isPlaying;
+
+            List<Attackable> attackablesToKill = new List<Attackable>();
+
+            GUILayout.Label("Kill", EditorStyles.boldLabel);
+            if (GUILayout.Button("Kill all Enemies"))
+            {
+                foreach (EnemyBehaviour enemy in EnemyManager.instance.allEnemies)
+                {
+                    attackablesToKill.Add(enemy.GetComponent<Attackable>());
+                }
+            }
+
+            if (GUILayout.Button("Kill all Players"))
+            {
+                foreach (InputController player in PlayerManager.instance.allAlivePlayers)
+                {
+                    attackablesToKill.Add(player.GetComponent<Attackable>());
+                }
+            }
+
+            if (GUILayout.Button("Kill all Buildings"))
+            {
+                foreach (Building building in BuildingManager.instance.allBuildings)
+                {
+                    attackablesToKill.Add(building.GetComponent<Attackable>());
+                }
+            }
+
+            foreach (Attackable attackable in attackablesToKill)
+            {
+                attackable.DealLethalDamage(cheatManager.gameObject, cheatManager.gameObject);
+            }
+
+            GUILayout.Label("Add", EditorStyles.boldLabel);
+            if (GUILayout.Button("Add Resources"))
+            {
+                int cheatCount = 500;
+
+                foreach (ItemType itemType in System.Enum.GetValues(typeof(ItemType)))
+                {
+                    ItemData itemData = ItemManager.instance.GetItemInfos(itemType);
+                    if (itemData.useOnCollect)
+                    {
+                        continue;
+                    }
+
+                    if (itemData.isShared)
+                    {
+                        Inventory.sharedInventoryInstance.AddItem(itemType, cheatCount);
+                    }
+                    else
+                    {
+                        foreach (InputController player in PlayerManager.instance.allAlivePlayers)
+                        {
+                            player.GetComponent<Inventory>().AddItem(itemType, cheatCount);
+                        }
+                    }
+
+                }
+            }
+
+            if (GUILayout.Button("Add Enemies"))
+            {
+                Spawn.EnemySpawner[] allSpawners = FindObjectsOfType<Spawn.EnemySpawner>();
+
+                foreach (Spawn.EnemySpawner spawner in allSpawners)
+                {
+                    spawner.ForceImmediateSpawn();
+                }
+            }
+
+            GUI.enabled = true;
+
+            if (!freezeEnemyOld && cheatManager.freezeEnemies)
+            {
+                cheatManager.stopEnemySpawns = true;
+            }
+        }
     }
 }

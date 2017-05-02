@@ -2,117 +2,133 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameManager : MonoBehaviour
-{
-	public RectTransform winText;
-	public RectTransform loseText;
+namespace SAB
+{ 
+    public enum GameStatus
+    {
+        Running,
+        Paused,
 
-	public AudioData winSound;
-	public AudioData loseSound;
+        Lost,
+        Won
+    }
 
-	public Canvas canvas;
+    public class GameManager : MonoBehaviour
+    {
 
-	private GameStatus gameStatus = GameStatus.Running;
+        public RectTransform winText;
+        public RectTransform loseText;
 
-	enum GameStatus
-	{
-		Running,
-		Paused,
+        public AudioData winSound;
+        public AudioData loseSound;
 
-		Lost,
-		Won
-	}
+        public Canvas canvas;
 
-	// Use this for initialization
-	void Start ()
-	{
-		
-	}
-	
-	// Update is called once per frame
-	void Update ()
-	{
-		if (gameStatus == GameStatus.Running)
-		{
-			CheckWinConditions();
-		}
+        private GameStatus gameStatus = GameStatus.Running;
 
-		if (gameStatus == GameStatus.Running)
-		{
-			CheckLoseConditions();
-		}
+        public GameStatus Status
+        {
+            get {  return this.gameStatus; }
+        }
 
-		if (gameStatus == GameStatus.Running || gameStatus == GameStatus.Paused)
-		{
-			if (InputManager.instance.DidAnyPlayerJustPress(ButtonType.Start))
+        public static GameManager Instance
+        {
+            get; private set;
+        }
+
+
+        // Use this for initialization
+        void Awake()
+        {
+            Instance = this;
+        }
+
+        // Update is called once per frame
+        void Update()
+        {
+            if (gameStatus == GameStatus.Running)
             {
-				TogglePause();
-			}
-		}
-	}
+                CheckWinConditions();
+            }
 
-	void CheckWinConditions()
-	{
-		Debug.Assert(gameStatus == GameStatus.Running);
+            if (gameStatus == GameStatus.Running)
+            {
+                CheckLoseConditions();
+            }
 
-		if (Inventory.sharedInventoryInstance.GetItemCount(ItemType.Gold) >= 1000)
-		{
-			WinGame();
-		}
-	}
+            if (gameStatus == GameStatus.Running || gameStatus == GameStatus.Paused)
+            {
+                if (InputManager.instance.DidAnyPlayerJustPress(ButtonType.Start))
+                {
+                    TogglePause();
+                }
+            }
+        }
 
-	void CheckLoseConditions()
-	{
-		Debug.Assert(gameStatus == GameStatus.Running);
+        void CheckWinConditions()
+        {
+            Debug.Assert(gameStatus == GameStatus.Running);
 
-		if (Inventory.sharedInventoryInstance.GetItemCount(ItemType.ExtraLifes) <= 0)
-		{
-			if (PlayerManager.instance.allAlivePlayers.Count == 0)
-			{
-				LoseGame();
-			}
-		}
-	}
+            if (Inventory.sharedInventoryInstance.GetItemCount(ItemType.Gold) >= 1000)
+            {
+                WinGame();
+            }
+        }
 
-	void TogglePause()
-	{
-		Debug.Assert(gameStatus == GameStatus.Running || gameStatus == GameStatus.Paused);
+        void CheckLoseConditions()
+        {
+            Debug.Assert(gameStatus == GameStatus.Running);
 
-		if (gameStatus == GameStatus.Running)
-		{
-			Time.timeScale = 0.0f;
-			gameStatus = GameStatus.Paused;
-		}
-		else
-		{
-			Time.timeScale = 1.0f;
-			gameStatus = GameStatus.Running;
-		}
+            if (Inventory.sharedInventoryInstance.GetItemCount(ItemType.ExtraLifes) <= 0)
+            {
+                if (PlayerManager.instance.allAlivePlayers.Count == 0)
+                {
+                    LoseGame();
+                }
+            }
+        }
 
-		CameraController.instance.GetComponent<UnityStandardAssets.ImageEffects.Blur>().enabled = (gameStatus == GameStatus.Paused);
-	}
+        void TogglePause()
+        {
+            Debug.Assert(gameStatus == GameStatus.Running || gameStatus == GameStatus.Paused);
 
-	void WinGame()
-	{
-		if (CheatManager.instance.disableWin)
-		{
-			return;
-		}
+            if (gameStatus == GameStatus.Running)
+            {
+                Time.timeScale = 0.0f;
+                gameStatus = GameStatus.Paused;
+            }
+            else
+            {
+                Time.timeScale = 1.0f;
+                gameStatus = GameStatus.Running;
+            }
 
-		AudioManager.instance.PlayAudio(winSound);
-		Instantiate(winText.gameObject, canvas.transform, false);
-		gameStatus = GameStatus.Won;
-	}
+            CameraController.instance.GetComponent<UnityStandardAssets.ImageEffects.Blur>().enabled = (gameStatus == GameStatus.Paused);
+        }
 
-	void LoseGame()
-	{
-		if (CheatManager.instance.disableLose)
-		{
-			return;
-		}
+        void WinGame()
+        {
+            if (CheatManager.instance.disableWin)
+            {
+                return;
+            }
 
-		AudioManager.instance.PlayAudio(loseSound);
-		Instantiate(loseText.gameObject, canvas.transform, false);
-		gameStatus = GameStatus.Lost;
-	}
+            AudioManager.instance.PlayAudio(winSound);
+            Instantiate(winText.gameObject, canvas.transform, false);
+            gameStatus = GameStatus.Won;
+        }
+
+        void LoseGame()
+        {
+            if (CheatManager.instance.disableLose)
+            {
+                return;
+            }
+
+            AudioManager.instance.PlayAudio(loseSound);
+            Instantiate(loseText.gameObject, canvas.transform, false);
+            gameStatus = GameStatus.Lost;
+        }
+    }
+
 }

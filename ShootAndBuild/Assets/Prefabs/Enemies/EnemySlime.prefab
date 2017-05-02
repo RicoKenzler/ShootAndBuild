@@ -651,6 +651,7 @@ MonoBehaviour:
   attackCooldown: 1
   damage: 100
   hitSound: {fileID: 11400000, guid: 05acd00bacedcbb46b95e13c68b4a7d2, type: 2}
+  type: 3
 --- !u!114 &114454388468075342
 MonoBehaviour:
   m_ObjectHideFlags: 1

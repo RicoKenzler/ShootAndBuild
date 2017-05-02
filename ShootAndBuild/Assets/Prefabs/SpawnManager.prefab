@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4959958103518120}
   - component: {fileID: 114756207108468830}
   m_Layer: 0
-  m_Name: EnemySpawner
+  m_Name: SpawnManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -51,6 +51,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cdc0d8966b8b8749b4fe34f337cfba6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spawnInterval: 5
-  enemyPrefab: {fileID: 1343933964636394, guid: 56493cad562934f46a935581303feaa9,
-    type: 2}
+  spawnRadius: 3

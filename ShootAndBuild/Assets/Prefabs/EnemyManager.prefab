@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4520260024008650}
   - component: {fileID: 114552701511615204}
   m_Layer: 0
-  m_Name: EnemySpawner Slime
+  m_Name: EnemySpawner3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -37,7 +37,7 @@ GameObject:
   - component: {fileID: 4127607126353374}
   - component: {fileID: 114500221820644298}
   m_Layer: 0
-  m_Name: EnemySpawner Rabbit
+  m_Name: EnemySpawner2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -69,7 +69,7 @@ GameObject:
   - component: {fileID: 4231089994140084}
   - component: {fileID: 114352963834132446}
   m_Layer: 0
-  m_Name: EnemySpawner Bat
+  m_Name: EnemySpawner1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -98,7 +98,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1236907863792116}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 11.72, y: 0, z: 11.58}
+  m_LocalPosition: {x: 14.97, y: 0, z: 9.71}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4088430342554304}
@@ -111,7 +111,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1782630021365796}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -12.29, y: 0, z: 11.58}
+  m_LocalPosition: {x: -15.6, y: 0, z: 8.9}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4088430342554304}
@@ -124,7 +124,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1102659810414132}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -10}
+  m_LocalPosition: {x: 0, y: 0, z: -24.16}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4088430342554304}
@@ -141,10 +141,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cdc0d8966b8b8749b4fe34f337cfba6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spawnInterval: 3
-  firstSpawn: 2
-  enemyPrefab: {fileID: 1689664021860500, guid: 3c52e5d3f7f36844085688653d9c73b8,
-    type: 2}
+  spawnRadius: 3
 --- !u!114 &114500221820644298
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -156,10 +153,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cdc0d8966b8b8749b4fe34f337cfba6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spawnInterval: 16
-  firstSpawn: 2
-  enemyPrefab: {fileID: 1201289100612482, guid: 9ce0e76df95a9ea47a55b4c329d11a4c,
-    type: 2}
+  spawnRadius: 3
 --- !u!114 &114552701511615204
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -171,10 +165,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cdc0d8966b8b8749b4fe34f337cfba6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spawnInterval: 30
-  firstSpawn: 20
-  enemyPrefab: {fileID: 1201289100612482, guid: 708f9debb04499c49b893c3ca3f07cfb,
-    type: 2}
+  spawnRadius: 3
 --- !u!114 &114554427420127092
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -186,9 +177,102 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7cd3da48be666ad4ead4634a89a1ad0a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  waves: []
+  waves:
+  - duration: 5
+    spawnPropability:
+    - enemies: 01000000
+      spawnRate:
+      - 5
+    - enemies: 0100000002000000
+      spawnRate:
+      - 5
+      - 1
+    - enemies: 01000000
+      spawnRate:
+      - 5
+  - duration: 30
+    spawnPropability:
+    - enemies: 
+      spawnRate: []
+    - enemies: 
+      spawnRate: []
+    - enemies: 
+      spawnRate: []
+  - duration: 5
+    spawnPropability:
+    - enemies: 0100000002000000
+      spawnRate:
+      - 2
+      - 0.4
+    - enemies: 0100000002000000
+      spawnRate:
+      - 2
+      - 0.4
+    - enemies: 0100000002000000
+      spawnRate:
+      - 2
+      - 0.4
+  - duration: 30
+    spawnPropability:
+    - enemies: 
+      spawnRate: []
+    - enemies: 
+      spawnRate: []
+    - enemies: 
+      spawnRate: []
+  - duration: 30
+    spawnPropability:
+    - enemies: 0300000001000000
+      spawnRate:
+      - 0.1
+      - 1
+    - enemies: 0300000001000000
+      spawnRate:
+      - 0.1
+      - 1
+    - enemies: 0300000002000000
+      spawnRate:
+      - 0.1
+      - 0.5
+  - duration: 30
+    spawnPropability:
+    - enemies: 
+      spawnRate: []
+    - enemies: 
+      spawnRate: []
+    - enemies: 
+      spawnRate: []
+  - duration: 30
+    spawnPropability:
+    - enemies: 010000000200000003000000
+      spawnRate:
+      - 0.5
+      - 0.3
+      - 0.3
+    - enemies: 020000000200000002000000
+      spawnRate:
+      - 0.5
+      - 1
+      - 0.5
+    - enemies: 030000000100000003000000
+      spawnRate:
+      - 0.5
+      - 1
+      - 0.5
+  - duration: 300
+    spawnPropability:
+    - enemies: 
+      spawnRate: []
+    - enemies: 
+      spawnRate: []
+    - enemies: 
+      spawnRate: []
   spawners:
   - {fileID: 114352963834132446}
   - {fileID: 114500221820644298}
   - {fileID: 114552701511615204}
-  enemyTemplates: []
+  enemyTemplates:
+  - {fileID: 0}
+  - {fileID: 114278665344766292, guid: 3c52e5d3f7f36844085688653d9c73b8, type: 2}
+  - {fileID: 114065223908063668, guid: 9ce0e76df95a9ea47a55b4c329d11a4c, type: 2}
+  - {fileID: 114065223908063668, guid: 708f9debb04499c49b893c3ca3f07cfb, type: 2}
