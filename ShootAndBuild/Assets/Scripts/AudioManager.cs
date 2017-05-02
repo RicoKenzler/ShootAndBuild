@@ -1,12 +1,21 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Audio;
 
 public class AudioManager : MonoBehaviour
 {
 	public GameObject oneShotPrefab;
 
-	// Use this for initialization
+	public AudioMixer audioMixer;
+	private AudioMixerGroup soundGroup;
+
+	void Awake()
+    {
+        instance = this;
+		soundGroup = audioMixer.FindMatchingGroups("Sound")[0];
+    }
+
 	void Start ()
 	{
 		
@@ -17,12 +26,6 @@ public class AudioManager : MonoBehaviour
 	{
 		
 	}
-
-	void Awake()
-    {
-        instance = this;
-    }
-
 	public float SemitoneToPitch(float semitone)
 	{
 		float pitch = Mathf.Pow(2.0f, (semitone / (float) 12.0f));
@@ -83,11 +86,12 @@ public class AudioManager : MonoBehaviour
 			playUISound = true;
 		}
 
-		AudioSource audioSource		= audioObject.GetComponent<AudioSource>();
-		audioSource.clip			= rndClip;
-		audioSource.volume			= audioData.volume;
-		audioSource.dopplerLevel	= (playUISound || audioData.suppressDoppler) ? 0.0f : 1.0f;
-		audioSource.spatialBlend	= playUISound ? 0.0f : audioData.amount3D;
+		AudioSource audioSource				= audioObject.GetComponent<AudioSource>();
+		audioSource.clip					= rndClip;
+		audioSource.volume					= audioData.volume;
+		audioSource.dopplerLevel			= (playUISound || audioData.suppressDoppler) ? 0.0f : 1.0f;
+		audioSource.spatialBlend			= playUISound ? 0.0f : audioData.amount3D;
+		audioSource.outputAudioMixerGroup	= soundGroup;
 
 		if (overridePitch.HasValue)
 		{

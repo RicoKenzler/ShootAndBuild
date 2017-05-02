@@ -143,7 +143,7 @@ MonoBehaviour:
   noResourceCosts: 1
   ultraHighDamage: 0
   disableAudio: 0
-  disableMusic: 1
+  disableMusic: 0
 --- !u!1 &83095321
 GameObject:
   m_ObjectHideFlags: 0
@@ -2671,6 +2671,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   oneShotPrefab: {fileID: 1923018058346438, guid: 64c2276d619a5374589bce0c5fdc6e30,
     type: 2}
+  audioMixer: {fileID: 24100000, guid: 4bbc8c941e664a1458add2f014bede89, type: 2}
 --- !u!1 &1752819846
 GameObject:
   m_ObjectHideFlags: 0
@@ -2905,12 +2906,13 @@ AudioSource:
   m_GameObject: {fileID: 1908339256}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 243900988399201620, guid: 4bbc8c941e664a1458add2f014bede89,
+    type: 2}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
-  Loop: 0
+  Loop: 1
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
