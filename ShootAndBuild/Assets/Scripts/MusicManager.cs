@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.Audio;
 
 namespace SAB
 {
@@ -11,42 +11,140 @@ namespace SAB
 		public AudioClip BaseTrack;
 		public AudioClip CalmTrack;
 		public AudioClip CombatTrack;
-
-		public float loopStart;
-		public float loopEnd;
 	}
 
 	//-------------------------------------------------
 
 	public class MusicManager : MonoBehaviour 
 	{
+		private const float MusicGroupVolumeMuted   = -80.0f;
+		public  float		MusicGroupVolumeDefault = 0.0f;
+
+		private const float TrackVolumeMuted		= 0.0f;
+		private const float TrackVolumeDefault		= 1.0f;
+
+		public AudioMixer	audioMixer;
 		public ModularTrack musicTrack;
-		public AudioSource	audioSource;
+
+		public float keepCombatStateDuration = 1.0f;
+		public float combatFadeInDuration    = 2.0f;
+		public float combatFadeOutDuration   = 3.0f;
+
+		private AudioSource	baseTrackSource;
+		private AudioSource	calmSource;
+		private AudioSource	combatSource;
+
+		private float	lastCombatTime	= 0.0f;
+		private bool	isInCombat		= false;
+		private float	combatAmount	= 0.001f;
+
+		private AudioMixerGroup soundGroup;
+
 		//-------------------------------------------------
 
 		void Awake()
 		{
-			instance = this;
+			instance = this; 
 		}
 
 		//-------------------------------------------------
 
 		void Start() 
 		{
-			audioSource = GetComponent<AudioSource>();
+			AudioSource[] audioSources = GetComponents<AudioSource>();
 
-			if (!CheatManager.instance.disableMusic)
+			soundGroup = audioMixer.FindMatchingGroups("Music")[0];
+
+			if (audioSources.Length != 3)
 			{
-				audioSource.clip = musicTrack.BaseTrack;
-				audioSource.Play();
+				Debug.LogWarning("Not enough audioSources");
+				return;
 			}
+			
+			baseTrackSource = audioSources[0];
+			calmSource		= audioSources[1];
+			combatSource	= audioSources[2];
+			
+			baseTrackSource.clip = musicTrack.BaseTrack;
+			calmSource.clip		 = musicTrack.CalmTrack;
+			combatSource.clip	 = musicTrack.CombatTrack;
+
+			baseTrackSource.loop	= true;
+			calmSource.loop			= true;
+			combatSource.loop		= true;
+
+			baseTrackSource.Play();
+			calmSource.Play();
+			combatSource.Play();
 		}
 	
 		//-------------------------------------------------
 
+		public void SignalIsInCombat()
+		{
+			lastCombatTime = Time.time;
+			isInCombat = true;
+		}
+
+		//-------------------------------------------------
+
 		void Update() 
 		{
-			
+			if (CheatManager.instance.disableMusic)
+			{
+				soundGroup.audioMixer.SetFloat("MusicVolume", MusicGroupVolumeMuted);
+			}
+			else
+			{
+				soundGroup.audioMixer.SetFloat("MusicVolume", MusicGroupVolumeDefault);
+			}
+
+			TickCombatState();
+			TickMoodFades();
+		}
+
+		//-------------------------------------------------
+
+		private void TickMoodFades()
+		{
+			if (isInCombat)
+			{
+				if (combatAmount == 1.0f)
+				{
+					return;
+				}
+
+				combatAmount += Time.deltaTime * (1.0f / (combatFadeInDuration + float.Epsilon));
+			}
+			else
+			{
+				if (combatAmount == 0.0f)
+				{
+					return;
+				}
+
+				combatAmount -= Time.deltaTime * (1.0f / (combatFadeOutDuration + float.Epsilon));
+			}
+
+			combatAmount = Mathf.Clamp(combatAmount, 0.0f, 1.0f);
+
+			calmSource.volume	= 1.0f - combatAmount;
+			combatSource.volume = combatAmount;
+		}
+
+		//-------------------------------------------------
+
+		void TickCombatState()
+		{
+			if (!isInCombat)
+			{
+				return;
+			}
+
+			if (Time.time > lastCombatTime + keepCombatStateDuration)
+			{
+				isInCombat = false;
+			}
 		}
 
 		//-------------------------------------------------
