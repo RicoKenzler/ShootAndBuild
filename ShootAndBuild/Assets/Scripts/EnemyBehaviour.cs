@@ -111,6 +111,12 @@ namespace SAB
             GameObject nearestPlayer = GetNearestPlayer(out playerDistanceSq);
             GameObject nearestBuilding = GetNearestBuilding(out buildingDistanceSq);
 
+			const float PLAYER_DISTANCE_COMBAT_STATE = 15.0f;
+			if (playerDistanceSq < (PLAYER_DISTANCE_COMBAT_STATE * PLAYER_DISTANCE_COMBAT_STATE))
+			{
+				MusicManager.instance.SignalIsInCombat();
+			}
+
             GameObject nearestTarget = playerDistanceSq < buildingDistanceSq ? nearestPlayer : nearestBuilding;
 
             if (!nearestTarget)

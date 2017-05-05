@@ -27,6 +27,8 @@ namespace SAB
 		public ModularTrack musicTrack;
 
 		public float keepCombatStateDuration = 1.0f;
+		public float combatFadeInDuration    = 2.0f;
+		public float combatFadeOutDuration   = 3.0f;
 
 		private AudioSource	baseTrackSource;
 		private AudioSource	calmSource;
@@ -34,7 +36,7 @@ namespace SAB
 
 		private float	lastCombatTime	= 0.0f;
 		private bool	isInCombat		= false;
-
+		private float	combatAmount	= 0.001f;
 
 		private AudioMixerGroup soundGroup;
 
@@ -107,14 +109,27 @@ namespace SAB
 		{
 			if (isInCombat)
 			{
-				calmSource.volume	= TrackVolumeMuted;
-				combatSource.volume = TrackVolumeDefault;
+				if (combatAmount == 1.0f)
+				{
+					return;
+				}
+
+				combatAmount += Time.deltaTime * (1.0f / (combatFadeInDuration + float.Epsilon));
 			}
 			else
 			{
-				combatSource.volume	= TrackVolumeMuted;
-				calmSource.volume	= TrackVolumeDefault;
+				if (combatAmount == 0.0f)
+				{
+					return;
+				}
+
+				combatAmount -= Time.deltaTime * (1.0f / (combatFadeOutDuration + float.Epsilon));
 			}
+
+			combatAmount = Mathf.Clamp(combatAmount, 0.0f, 1.0f);
+
+			calmSource.volume	= 1.0f - combatAmount;
+			combatSource.volume = combatAmount;
 		}
 
 		//-------------------------------------------------
