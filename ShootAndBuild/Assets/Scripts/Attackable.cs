@@ -2,7 +2,7 @@
 
 namespace SAB
 {
-    public enum Faction
+	public enum Faction
     {
         Player,
         Enemy
@@ -21,6 +21,8 @@ namespace SAB
 
         public ParticleSystem dieParticles;
         public ParticleSystem damageParticles;
+
+		public BloodDecal bloodDecal;
 
         public delegate void PlayerDiesEvent(PlayerID id);
         public event PlayerDiesEvent PlayerDies;
@@ -108,12 +110,15 @@ namespace SAB
             if (inputController)
             {
                 PlayerDies(inputController.playerID);
-                return;
             }
             else
             {
-                Destroy(gameObject);
-                return;
+				DieAnimation ani = gameObject.AddComponent<DieAnimation>();
+
+				if (bloodDecal)
+				{
+					ani.ShowBloodDecal(bloodDecal.gameObject);
+				}
             }
         }
 

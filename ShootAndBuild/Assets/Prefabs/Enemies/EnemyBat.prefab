@@ -1489,6 +1489,8 @@ MonoBehaviour:
     type: 2}
   damageParticles: {fileID: 198000013597187216, guid: 83e55d3418297934fab882559d009285,
     type: 2}
+  bloodDecal: {fileID: 114453302406263870, guid: 64a24b6f7f4c34f4b9910eebd9adb72c,
+    type: 2}
 --- !u!137 &137751449705913236
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 1
