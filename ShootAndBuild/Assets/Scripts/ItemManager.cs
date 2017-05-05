@@ -40,6 +40,8 @@ namespace SAB
         [SerializeField]
         private ItemData[] allItemDatas;
 
+		public float itemFadeOutTime = 10.0f;
+
         void Start()
         {
             InitItemDatasAndStartGoods();
