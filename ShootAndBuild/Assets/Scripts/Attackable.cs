@@ -172,6 +172,8 @@ namespace SAB
 
         public void DealDamage(int damage, GameObject damageDealerMedium, GameObject damageDealerActor)
         {
+			MusicManager.instance.SignalIsInCombat();
+
             if (CheatManager.instance.ultraHighDamage)
             {
                 damage = maxHealth + 100000;
