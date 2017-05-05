@@ -58,16 +58,25 @@ namespace SAB
 
 			float lifetimeLeft = (spawnTime + ItemManager.instance.itemFadeOutTime) - Time.time;
 
-			const float START_FADE_BEFORE_END = 5.0f;
+			const float START_FADE_BEFORE_END = 7.0f;
 			if (lifetimeLeft < START_FADE_BEFORE_END)
 			{
-				float fadeoutAmount = 1.0f - (lifetimeLeft / Mathf.Min(ItemManager.instance.itemFadeOutTime, START_FADE_BEFORE_END));
+				float fadeDuration = Mathf.Min(ItemManager.instance.itemFadeOutTime, START_FADE_BEFORE_END);
+				float fadeoutAmount = 1.0f - (lifetimeLeft / fadeDuration);
+
+				// fadeoutAmount = 0     -> t = 0
+				// fadeoutAmount = 1     -> t = fadeDuration
+				float blinkSpeed = (fadeoutAmount + 0.01f) * 3.0f * fadeDuration * Mathf.PI;
+
+				float cosAlpha = Mathf.Abs(Mathf.Cos(fadeoutAmount * blinkSpeed));
+				float alphaWithoutSin = (1.0f - fadeoutAmount);
+
+				float alpha = Mathf.Lerp(alphaWithoutSin * 0.5f, alphaWithoutSin, cosAlpha);
 
 				Color newColor = defaultColor;
-				newColor.a = Mathf.Lerp(defaultColor.a, 0.0f, fadeoutAmount);
+				newColor.a = Mathf.Lerp(0.0f, defaultColor.a, alpha);
 
 				material.color = newColor;
-				material.color = new Color(1.0f - fadeoutAmount, 1.0f - fadeoutAmount, 1.0f - fadeoutAmount);
 			}
 
 			if (lifetimeLeft <= 0.0f)

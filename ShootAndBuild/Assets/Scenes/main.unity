@@ -142,7 +142,7 @@ MonoBehaviour:
   disableLose: 1
   noResourceCosts: 1
   ultraHighDamage: 0
-  disableAudio: 1
+  disableAudio: 0
   disableMusic: 1
 --- !u!1 &83095321
 GameObject:
@@ -618,10 +618,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   killingSpreeDefinitions:
-  - KillCount: 5
+  - KillCount: 8
     Title: Killing Spree
     AudioMessage: {fileID: 11400000, guid: 8900b7fb7edd01a40ac29f7fad9f3336, type: 2}
-  - KillCount: 15
+  - KillCount: 20
     Title: M-M-M-Monsterkill
     AudioMessage: {fileID: 11400000, guid: 5a4d414bed0ab074893797c352b0e85f, type: 2}
   killingSpreeInterval: 1
@@ -893,6 +893,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: de4969fecc7740e42b89f12588eb9735, type: 2}
   - {fileID: 11400000, guid: 7008b4c6e0f1fa840976437e5abb84c1, type: 2}
   - {fileID: 11400000, guid: 6034e8829f91b104fb86d3f3b71d0d9b, type: 2}
+  itemFadeOutTime: 20
 --- !u!4 &782104108
 Transform:
   m_ObjectHideFlags: 0

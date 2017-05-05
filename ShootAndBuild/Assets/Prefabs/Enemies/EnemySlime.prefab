@@ -694,7 +694,7 @@ MonoBehaviour:
     type: 2}
   damageParticles: {fileID: 198000011254678926, guid: cad68ef040af27c4d8f6ee40ab97d5aa,
     type: 2}
-  bloodDecal: {fileID: 114453302406263870, guid: 64a24b6f7f4c34f4b9910eebd9adb72c,
+  bloodDecal: {fileID: 114305398997730348, guid: b23f963abb7595d4da000eb4fd427bcb,
     type: 2}
 --- !u!114 &114717791578205610
 MonoBehaviour:
