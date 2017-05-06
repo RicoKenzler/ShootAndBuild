@@ -111,7 +111,11 @@ namespace SAB
             {
                 PlayerDies(inputController.playerID);
             }
-            else
+            else if (GetComponent<Building>())
+			{
+				Destroy(gameObject);
+			}
+			else
             {
 				DieAnimation ani = gameObject.AddComponent<DieAnimation>();
 

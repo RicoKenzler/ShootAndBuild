@@ -28,6 +28,8 @@ public class DieAnimation : MonoBehaviour
 		GetComponent<Rigidbody>().velocity = Vector3.zero;
 
 		GetComponentInChildren<Animation>().Play("die");
+		NetworkView[] nV = new NetworkView[1000];
+
 	}
 
 	void Update()
