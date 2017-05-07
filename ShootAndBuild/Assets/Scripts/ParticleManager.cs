@@ -32,7 +32,9 @@ public class ParticleManager : MonoBehaviour
 
 		GameObject newObject = Instantiate(particleAsset.gameObject, parent);
 		newObject.transform.position = position;
-		newObject.transform.rotation = rotation.HasValue ? rotation.Value : Quaternion.Euler(0.0f, Random.Range(0.0f, 360.0f), 0.0f);
+
+		Quaternion additionalRotation = rotation.HasValue ? rotation.Value : Quaternion.Euler(0.0f, Random.Range(0.0f, 360.0f), 0.0f);
+		newObject.transform.rotation = additionalRotation * particleAsset.transform.rotation;
 		newObject.name = particleAsset.gameObject.name + "(" + spawner.name + ")";
 
 		if (scaleByParentSize)

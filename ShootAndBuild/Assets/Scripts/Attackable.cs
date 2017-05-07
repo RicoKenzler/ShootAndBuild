@@ -88,10 +88,12 @@ namespace SAB
             // Particles
             if (dieParticles)
             {
-                Vector3 towardsBottom = new Vector3(0.0f, 1.0f, 0.0f);
-                Quaternion rotation = Quaternion.FromToRotation(new Vector3(0.0f, 0.0f, 1.0f), towardsBottom);
+				Vector3 towardsEnemy = (damageDealerMedium.transform.position - transform.position);
 
-                ParticleManager.instance.SpawnParticle(dieParticles, gameObject, transform.position, rotation, false, 10.0f, true, false);
+                Quaternion rotationAwayFromEnemy = Quaternion.FromToRotation(new Vector3(0.0f, 0.0f, 1.0f), -towardsEnemy);
+
+				Vector3 posOffset = new Vector3(0.0f, 1.0f, 0.0f);
+                ParticleManager.instance.SpawnParticle(dieParticles, gameObject, transform.position + posOffset, rotationAwayFromEnemy, false, 10.0f, true, false);
             }
 
             // Player Counter
