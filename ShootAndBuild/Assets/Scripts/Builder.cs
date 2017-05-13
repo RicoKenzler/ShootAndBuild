@@ -67,7 +67,7 @@ namespace SAB
 
             if (buildEffect)
             {
-                ParticleManager.instance.SpawnParticle(buildEffect, newTower, newTower.transform.position, null, false, 6.0f, true, false);
+                ParticleManager.instance.SpawnParticle(buildEffect.gameObject, newTower, newTower.transform.position, null, false, 6.0f, true, false);
             }
         }
     }

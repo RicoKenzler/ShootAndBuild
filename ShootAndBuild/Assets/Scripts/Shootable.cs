@@ -5,67 +5,66 @@ namespace SAB
 
     public class Shootable : MonoBehaviour
     {
-        public AudioData shootSound;
-        public ParticleSystem shootEffect;
+        public WeaponData defaultWeapon;
+        
+        private WeaponData currentWeapon = null;
 
-        public GameObject projectilePrefab;
-        public float shootCooldown = 0.5f;
+        //----------------------------------------------------------------------
 
-        public float flashDuration = 0.5f;
-        public float flashMaxIntensity = 0.5f;
+        public float Cooldown
+        {
+            get
+            {
+                if (currentWeapon != null)
+                {
+                    return currentWeapon.Cooldown;
+                }
 
-        public int damage = 1;
+                return float.MaxValue;
+            }
+        }
+
+        //----------------------------------------------------------------------
+        
+        void Awake()
+        {
+            SetWeapon(defaultWeapon);
+        }
+
+        //----------------------------------------------------------------------
 
         void Start()
         {
-            currentCooldown = 0.0f;
+
         }
+
+        //----------------------------------------------------------------------
 
         void Update()
         {
-            if (currentCooldown > 0.0f)
-            {
-                currentCooldown = Mathf.Max(currentCooldown - Time.deltaTime, 0.0f);
-            }
+            //TODO move to physics timestep to be more precise
+            currentWeapon.OnUpdate();
         }
+
+        //----------------------------------------------------------------------
 
         public void Shoot(Quaternion? projectileDirection = null)
         {
-            if (currentCooldown > 0.0f)
-            {
-                return;
-            }
 
-            GameObject projectileContainer = GameObject.Find("Projectiles");
+            currentWeapon.Shoot(this, transform.position, projectileDirection.HasValue ? projectileDirection.Value : this.transform.rotation);
 
-            Vector3 shootHeightOffset = new Vector3(0.0f, 0.5f, 0.0f);
-
-            GameObject instance = Instantiate(projectilePrefab, projectileContainer.transform);
-            instance.transform.position = transform.position + shootHeightOffset;
-            instance.transform.rotation = (projectileDirection.HasValue) ? projectileDirection.Value : transform.rotation;
-
-            Projectile projectile = instance.GetComponent<Projectile>();
-            projectile.Direction = new Vector3(0.0f, 0.0f, 1.0f);
-            projectile.Owner = this;
-            projectile.Damage = damage;
-
-            currentCooldown = shootCooldown;
-
-            AudioManager.instance.PlayAudio(shootSound, transform.position);
-
-            if (shootEffect)
-            {
-                Vector3 towardsEnemy = instance.transform.forward;
-
-                Quaternion rotationTowardsEnemy = Quaternion.FromToRotation(new Vector3(0.0f, 0.0f, 1.0f), towardsEnemy);
-
-                ParticleManager.instance.SpawnParticle(shootEffect, gameObject, transform.position + shootHeightOffset, rotationTowardsEnemy, true, 4.0f, true, true);
-            }
         }
 
-        public float currentCooldown
+        //----------------------------------------------------------------------
+
+        public void SetWeapon(WeaponData _newWeapon)
         {
-            get; private set;
+
+            //maybe do this differenly  - store weapns in list so instances of available weapons will be kept
+            currentWeapon = Object.Instantiate(_newWeapon);
+            currentWeapon.Init(this);
         }
+
+
     }
 }

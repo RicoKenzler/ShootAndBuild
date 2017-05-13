@@ -90,7 +90,7 @@ namespace SAB
                 damage.attackable.DealDamage(damage.damage, gameObject, owner.gameObject);
             }
 
-            ParticleManager.instance.SpawnParticle(explosionParticles, gameObject, transform.position, null, false, 10.0f, false, false);
+            ParticleManager.instance.SpawnParticle(explosionParticles.gameObject, gameObject, transform.position, null, false, 10.0f, false, false);
             AudioManager.instance.PlayAudio(explosionSound, selfPos);
             InputManager.instance.SetVibrationAll(0.1f, 0.1f, 0.5f);
 

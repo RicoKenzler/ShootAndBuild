@@ -3,296 +3,311 @@
 namespace SAB
 {
 	public enum Faction
-    {
-        Player,
-        Enemy
-    }
+	{
+		Player,
+		Enemy
+	}
 
-    public class Attackable : MonoBehaviour
-    {
-        public int maxHealth = 10;
-        public bool showHealthBar = true;
-        public Faction faction = Faction.Enemy;
+	public class Attackable : MonoBehaviour
+	{
+		public int maxHealth = 10;
+		public bool showHealthBar = true;
+		public Faction faction = Faction.Enemy;
 
-        public ItemDrop[] itemDrops;
+		public ItemDrop[] itemDrops;
 
-        public AudioData dieSound;
-        public AudioData spawnSound;
+		public AudioData dieSound;
+		public AudioData spawnSound;
 
-        public ParticleSystem dieParticles;
-        public ParticleSystem damageParticles;
+		public ParticleSystem dieParticles;
+		public ParticleSystem damageParticles;
 
 		public BloodDecal bloodDecal;
 
-        public delegate void PlayerDiesEvent(PlayerID id);
-        public event PlayerDiesEvent PlayerDies;
+		public delegate void PlayerDiesEvent(PlayerID id);
+		public event PlayerDiesEvent PlayerDies;
 
-        public delegate void ReceiveDmage();
-        public event ReceiveDmage OnDamage;
+		public delegate void ReceiveDmage();
+		public event ReceiveDmage OnDamage;
 
-        private int currentHealth = 0;
-        private InputController inputController;
+		private int currentHealth = 0;
+		private InputController inputController;
 
-        void Start()
-        {
-            Heal();
+		void Start()
+		{
+			Heal();
 
-            PlaySpawnSound();
+			PlaySpawnSound();
 
-            inputController = GetComponent<InputController>();
-        }
+			inputController = GetComponent<InputController>();
+		}
 
-        public void Heal(float relativeAmount = 1.0f)
-        {
-            currentHealth += (int)Mathf.Round(maxHealth * relativeAmount);
-            currentHealth = Mathf.Min(currentHealth, maxHealth);
-        }
+		public void Heal(float relativeAmount = 1.0f)
+		{
+			currentHealth += (int)Mathf.Round(maxHealth * relativeAmount);
+			currentHealth = Mathf.Min(currentHealth, maxHealth);
+		}
 
-        void OnEnable()
-        {
-            RegisterHealthBar();
-            AttackableManager.instance.RegisterAttackable(this, false);
-        }
+		void OnEnable()
+		{
+			RegisterHealthBar();
+			AttackableManager.instance.RegisterAttackable(this, false);
+		}
 
-        void OnDisable()
-        {
-            RegisterHealthBar(true);
-            AttackableManager.instance.RegisterAttackable(this, true);
-        }
+		void OnDisable()
+		{
+			RegisterHealthBar(true);
+			AttackableManager.instance.RegisterAttackable(this, true);
+		}
 
-        public void RegisterHealthBar(bool unregister = false)
-        {
-            if (!showHealthBar || GetComponent<Building>())
-            {
-                return;
-            }
+		public void RegisterHealthBar(bool unregister = false)
+		{
+			if (!showHealthBar || GetComponent<Building>())
+			{
+				return;
+			}
 
-            if (unregister)
-            {
-                HealthBarManager.instance.RemoveHealthBar(this);
-            }
-            else
-            {
-                HealthBarManager.instance.AddHealthBar(this);
-            }
-        }
+			if (unregister)
+			{
+				HealthBarManager.instance.RemoveHealthBar(this);
+			}
+			else
+			{
+				HealthBarManager.instance.AddHealthBar(this);
+			}
+		}
 
-        private void Die(GameObject damageDealerMedium, GameObject damageDealerActor)
-        {
-            // Drops
-            DropItems();
+		private void Die(GameObject damageDealerMedium, GameObject damageDealerActor)
+		{
+			// Drops
+			DropItems();
 
-            // Audio
-            AudioManager.instance.PlayAudio(dieSound, transform.position);
+			// Audio
+			AudioManager.instance.PlayAudio(dieSound, transform.position);
 
-            // Particles
-            if (dieParticles)
-            {
+			// Particles
+			if (dieParticles)
+			{
 				Vector3 towardsEnemy = (damageDealerMedium.transform.position - transform.position);
 
-                Quaternion rotationAwayFromEnemy = Quaternion.FromToRotation(new Vector3(0.0f, 0.0f, 1.0f), -towardsEnemy);
+				Quaternion rotationAwayFromEnemy = Quaternion.FromToRotation(new Vector3(0.0f, 0.0f, 1.0f), -towardsEnemy);
 
 				Vector3 posOffset = new Vector3(0.0f, 1.0f, 0.0f);
-                ParticleManager.instance.SpawnParticle(dieParticles, gameObject, transform.position + posOffset, rotationAwayFromEnemy, false, 10.0f, true, false);
-            }
+				ParticleManager.instance.SpawnParticle(dieParticles.gameObject, gameObject, transform.position + posOffset, rotationAwayFromEnemy, false, 10.0f, true, false);
+			}
 
-            // Player Counter
-            EnemyBehaviour enemy = GetComponent<EnemyBehaviour>();
+			// Player Counter
+			EnemyBehaviour enemy = GetComponent<EnemyBehaviour>();
 
-            if (enemy)
-            {
-                InputController playerWhoKilledMe = damageDealerActor ? damageDealerActor.GetComponent<InputController>() : null;
+			if (enemy)
+			{
+				InputController playerWhoKilledMe = damageDealerActor ? damageDealerActor.GetComponent<InputController>() : null;
 
-                PlayerID? playerIDWhoKilledMe = playerWhoKilledMe ? (PlayerID?)playerWhoKilledMe.playerID : null;
+				PlayerID? playerIDWhoKilledMe = playerWhoKilledMe ? (PlayerID?)playerWhoKilledMe.playerID : null;
 
-                CounterManager.instance.AddToCounters(playerIDWhoKilledMe, CounterType.KilledEnemies, 1, enemy.type.ToString() );
-            }
+				CounterManager.instance.AddToCounters(playerIDWhoKilledMe, CounterType.KilledEnemies, 1, enemy.type.ToString() );
+			}
 
-            // Execute Die
-            if (inputController)
-            {
-                PlayerDies(inputController.playerID);
-            }
-            else if (GetComponent<Building>())
+			// Execute Die
+			if (inputController)
+			{
+				PlayerDies(inputController.playerID);
+			}
+			else if (GetComponent<Building>())
 			{
 				Destroy(gameObject);
 			}
 			else
-            {
+			{
 				DieAnimation ani = gameObject.AddComponent<DieAnimation>();
 
 				if (bloodDecal)
 				{
 					ani.ShowBloodDecal(bloodDecal.gameObject);
 				}
-            }
-        }
+			}
+		}
 
-        private void DropItems()
-        {
-            int itemToDrop = -1;
-            float lowestProbability = 1.0f;
+		private void DropItems()
+		{
+			int itemToDrop = -1;
+			float lowestProbability = 1.0f;
 
-            for (int i = 0; i < itemDrops.Length; ++i)
-            {
-                if (itemDrops[i].dropProbability > lowestProbability)
-                {
-                    // give lower probabilities higher prio, such that shitty items do not suppres rare items
-                    continue;
-                }
+			for (int i = 0; i < itemDrops.Length; ++i)
+			{
+				if (itemDrops[i].dropProbability > lowestProbability)
+				{
+					// give lower probabilities higher prio, such that shitty items do not suppres rare items
+					continue;
+				}
 
-                if ((Random.Range(0.0f, 1.0f) <= itemDrops[i].dropProbability))
-                {
-                    itemToDrop = i;
-                }
-            }
+				if ((Random.Range(0.0f, 1.0f) <= itemDrops[i].dropProbability))
+				{
+					itemToDrop = i;
+				}
+			}
 
-            if (itemToDrop == -1)
-            {
-                return;
-            }
+			if (itemToDrop == -1)
+			{
+				return;
+			}
 
-            ItemDrop bestItemDrop = itemDrops[itemToDrop];
+			ItemDrop bestItemDrop = itemDrops[itemToDrop];
 
-            int itemAmount = Random.Range(bestItemDrop.minDropAmount, bestItemDrop.maxDropAmount);
+			int itemAmount = Random.Range(bestItemDrop.minDropAmount, bestItemDrop.maxDropAmount);
 
-            if (itemAmount <= 0)
-            {
-                Debug.LogWarning("Unit drops 0 items");
-                return;
-            }
+			if (itemAmount <= 0)
+			{
+				Debug.LogWarning("Unit drops 0 items");
+				return;
+			}
 
-            GameObject itemInstance = Instantiate(bestItemDrop.itemPrefab, ItemManager.instance.transform);
-            itemInstance.name = "Dropped " + bestItemDrop.itemPrefab.name;
+			GameObject itemInstance = Instantiate(bestItemDrop.itemPrefab, ItemManager.instance.transform);
+			itemInstance.name = "Dropped " + bestItemDrop.itemPrefab.name;
 
-            float dropHeight = 2.0f;
+			float dropHeight = 2.0f;
 
-            itemInstance.transform.position = transform.position + new Vector3(0.0f, dropHeight, 0.0f);
-            itemInstance.transform.rotation = Quaternion.AngleAxis(Random.Range(0.0f, 360.0f), new Vector3(0.0f, 1.0f, 0.0f));
+			itemInstance.transform.position = transform.position + new Vector3(0.0f, dropHeight, 0.0f);
+			itemInstance.transform.rotation = Quaternion.AngleAxis(Random.Range(0.0f, 360.0f), new Vector3(0.0f, 1.0f, 0.0f));
 
-            Collectable newCollectable = itemInstance.GetComponent<Collectable>();
+			Collectable newCollectable = itemInstance.GetComponent<Collectable>();
 
-            newCollectable.targetHeight = transform.position.y;
-            newCollectable.amount = itemAmount;
-        }
+			newCollectable.targetHeight = transform.position.y;
+			newCollectable.amount = itemAmount;
+		}
 
-        public void DealLethalDamage(GameObject damageDealerMedium, GameObject damageDealerActor)
-        {
-            DealDamage(currentHealth, damageDealerMedium, damageDealerActor);
-        }
+		public void DealLethalDamage(GameObject damageDealerMedium, GameObject damageDealerActor)
+		{
+			DealDamage(currentHealth, damageDealerMedium, damageDealerActor);
+		}
 
-        public void DealDamage(int damage, GameObject damageDealerMedium, GameObject damageDealerActor)
-        {
+        /// <summary>
+        /// reduces health of attackable, triggers effects etc
+        /// </summary>
+        /// <param name="damage"></param>
+        /// <param name="damageDealerMedium"></param>
+        /// <param name="damageDealerActor"></param>
+        /// <returns>the damage actually dealt</returns>
+		public int DealDamage(int damage, GameObject damageDealerMedium, GameObject damageDealerActor)
+		{
+            int damageDealt = 0;
+
 			MusicManager.instance.SignalIsInCombat();
 
-            if (CheatManager.instance.ultraHighDamage)
-            {
-                damage = maxHealth + 100000;
-            }
+			if (CheatManager.instance.ultraHighDamage)
+			{
+				damage = maxHealth + 100000;
+			}
+
+            int lastHealth = currentHealth;
 
             currentHealth -= damage;
             currentHealth = Mathf.Max(currentHealth, 0);
 
-            if (OnDamage != null)
-            {
-                OnDamage();
-            }
+            damageDealt = lastHealth - currentHealth;
 
-            if (inputController)
-            {
-                // vibrate for taking damage
-                float damagePercentage = (float)damage / (float)maxHealth;
-                float vibrationAmount;
+			if (OnDamage != null)
+			{
+				OnDamage();
+			}
 
-                if (currentHealth == 0)
-                {
-                    vibrationAmount = 1.0f;
-                }
-                else
-                {
-                    vibrationAmount = Mathf.Lerp(0.1f, 1.0f, damagePercentage);
-                }
+			if (inputController)
+			{
+				// vibrate for taking damage
+				float damagePercentage = (float)damage / (float)maxHealth;
+				float vibrationAmount;
 
-                Vector3 towardsDamageDealer3D = (damageDealerMedium.transform.position - transform.position);
-                Vector2 towardsDamageDealer2D = new Vector2(towardsDamageDealer3D.x, towardsDamageDealer3D.z);
-                float leftAmount = vibrationAmount;
-                float rightAmount = vibrationAmount;
+				if (currentHealth == 0)
+				{
+					vibrationAmount = 1.0f;
+				}
+				else
+				{
+					vibrationAmount = Mathf.Lerp(0.1f, 1.0f, damagePercentage);
+				}
 
-                float distToDamageDealer = towardsDamageDealer2D.magnitude;
+				Vector3 towardsDamageDealer3D = (damageDealerMedium.transform.position - transform.position);
+				Vector2 towardsDamageDealer2D = new Vector2(towardsDamageDealer3D.x, towardsDamageDealer3D.z);
+				float leftAmount = vibrationAmount;
+				float rightAmount = vibrationAmount;
 
-                if (distToDamageDealer >= 0.01f)
-                {
-                    towardsDamageDealer2D /= distToDamageDealer;
+				float distToDamageDealer = towardsDamageDealer2D.magnitude;
 
-                    // rightness in  left[0,1]right
-                    float directionalAmount = Mathf.Abs(towardsDamageDealer2D.x);
+				if (distToDamageDealer >= 0.01f)
+				{
+					towardsDamageDealer2D /= distToDamageDealer;
 
-                    float dampOppositeFactor = Mathf.Lerp(1.0f, 0.5f, directionalAmount);
-                    float boostFactor = Mathf.Lerp(1.0f, 2.0f, directionalAmount);
+					// rightness in  left[0,1]right
+					float directionalAmount = Mathf.Abs(towardsDamageDealer2D.x);
 
-                    leftAmount *= (towardsDamageDealer2D.x < 0) ? boostFactor : dampOppositeFactor;
-                    rightAmount *= (towardsDamageDealer2D.x > 0) ? boostFactor : dampOppositeFactor;
+					float dampOppositeFactor = Mathf.Lerp(1.0f, 0.5f, directionalAmount);
+					float boostFactor = Mathf.Lerp(1.0f, 2.0f, directionalAmount);
 
-                    leftAmount = Mathf.Clamp(leftAmount, 0.0f, 1.0f);
-                    rightAmount = Mathf.Clamp(rightAmount, 0.0f, 1.0f);
-                }
+					leftAmount *= (towardsDamageDealer2D.x < 0) ? boostFactor : dampOppositeFactor;
+					rightAmount *= (towardsDamageDealer2D.x > 0) ? boostFactor : dampOppositeFactor;
 
-                InputManager.instance.SetVibration(inputController.playerID, leftAmount, rightAmount, 0.3f);
-            }
+					leftAmount = Mathf.Clamp(leftAmount, 0.0f, 1.0f);
+					rightAmount = Mathf.Clamp(rightAmount, 0.0f, 1.0f);
+				}
 
-            if (damageParticles)
-            {
-                Vector3 towardsEnemy = (damageDealerMedium.transform.position - transform.position);
+				InputManager.instance.SetVibration(inputController.playerID, leftAmount, rightAmount, 0.3f);
+			}
 
-                Quaternion rotationTowardsEnemy = Quaternion.FromToRotation(new Vector3(0.0f, 0.0f, 1.0f), towardsEnemy);
+			if (damageParticles)
+			{
+				Vector3 towardsEnemy = (damageDealerMedium.transform.position - transform.position);
 
-                Vector3 posOffset = new Vector3(0.0f, 1.0f, 0.0f);
+				Quaternion rotationTowardsEnemy = Quaternion.FromToRotation(new Vector3(0.0f, 0.0f, 1.0f), towardsEnemy);
 
-                ParticleManager.instance.SpawnParticle(damageParticles, gameObject, transform.position + posOffset, rotationTowardsEnemy, false, 3.0f, true, true);
-            }
+				Vector3 posOffset = new Vector3(0.0f, 1.0f, 0.0f);
 
-            if (currentHealth <= 0)
-            {
-                if ((CheatManager.instance.invinciblePlayers && inputController)
-                || (CheatManager.instance.invincibleEnemies && GetComponent<EnemyBehaviour>())
-                || (CheatManager.instance.invincibleBuildings && GetComponent<Building>()))
-                {
-                    currentHealth = 1;
-                }
-                else
-                {
-                    Die(damageDealerMedium, damageDealerActor);
-                }
-            }
-        }
+				ParticleManager.instance.SpawnParticle(damageParticles.gameObject, gameObject, transform.position + posOffset, rotationTowardsEnemy, false, 3.0f, true, true);
+			}
 
-        public void OnRespawn()
-        {
-            // Prepare respawn
-            Heal();
+			if (currentHealth <= 0)
+			{
+				if ((CheatManager.instance.invinciblePlayers && inputController)
+				|| (CheatManager.instance.invincibleEnemies && GetComponent<EnemyBehaviour>())
+				|| (CheatManager.instance.invincibleBuildings && GetComponent<Building>()))
+				{
+					currentHealth = 1;
+				}
+				else
+				{
+					Die(damageDealerMedium, damageDealerActor);
+				}
+			}
 
-            float respawnRadius = 10.0f;
-            transform.position = new Vector3(Random.Range(-1.0f, 1.0f), 0.0f, Random.Range(-1.0f, 1.0f)) * respawnRadius;
-            transform.rotation = Quaternion.Euler(0.0f, Random.Range(0.0f, 360.0f), 0.0f);
+            return damageDealt;
+		}
 
-            RegisterHealthBar();
+		public void OnRespawn()
+		{
+			// Prepare respawn
+			Heal();
 
-            PlaySpawnSound();
-        }
+			float respawnRadius = 10.0f;
+			transform.position = new Vector3(Random.Range(-1.0f, 1.0f), 0.0f, Random.Range(-1.0f, 1.0f)) * respawnRadius;
+			transform.rotation = Quaternion.Euler(0.0f, Random.Range(0.0f, 360.0f), 0.0f);
 
-        private void PlaySpawnSound()
-        {
-            AudioManager.instance.PlayAudio(spawnSound, transform.position);
-        }
+			RegisterHealthBar();
 
-        public int Health
-        {
-            get { return currentHealth; }
-        }
+			PlaySpawnSound();
+		}
 
-        public float HealthNormalized
-        {
-            get { return (float)this.currentHealth / (float)this.maxHealth; }
-        }
-    }
+		private void PlaySpawnSound()
+		{
+			AudioManager.instance.PlayAudio(spawnSound, transform.position);
+		}
+
+		public int Health
+		{
+			get { return currentHealth; }
+		}
+
+		public float HealthNormalized
+		{
+			get { return (float)this.currentHealth / (float)this.maxHealth; }
+		}
+	}
 }

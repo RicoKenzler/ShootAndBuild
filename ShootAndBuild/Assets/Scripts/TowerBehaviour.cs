@@ -31,7 +31,7 @@ namespace SAB
                 transform.LookAt(nearestEnemy.transform);
             }
 
-            if (shootable.currentCooldown == 0)
+            if (shootable.Cooldown <= 0)
             {
                 Quaternion rotationToEnemy = Quaternion.LookRotation(nearestEnemy.transform.position - transform.position);
 
