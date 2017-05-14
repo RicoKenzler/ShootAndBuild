@@ -9,18 +9,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9f472d17afb08304ab3773c852bf3637, type: 3}
-  m_Name: ShootSubtle
+  m_Name: ShootSubtle 1
   m_EditorClassIdentifier: 
   audioClips:
-  - {fileID: 8300000, guid: dd87dc347bf9afe4984abeee7ade6910, type: 3}
-  - {fileID: 8300000, guid: f9707dda01163c2478442de943a9d4a3, type: 3}
-  - {fileID: 8300000, guid: c87a15d2add65e6458ab6a26989be822, type: 3}
-  - {fileID: 8300000, guid: acf896d2d84c8fe4f9f42d769737c842, type: 3}
-  - {fileID: 8300000, guid: d4e06e60f465cf84d895cc0fd3b79b2f, type: 3}
-  - {fileID: 8300000, guid: 7390ac315e463f645824d11b6dc410d0, type: 3}
-  - {fileID: 8300000, guid: f0deecf98cb75df4ba1f9ad369a86066, type: 3}
-  - {fileID: 8300000, guid: 7a59e7cd8c34b2f4e99aae3f5496e642, type: 3}
-  - {fileID: 8300000, guid: 12597b2fd21a32c4e858cb9b3df69ddc, type: 3}
+  - {fileID: 8300000, guid: 6faf8966be2e8464f8efd7aeac14952b, type: 3}
   volume: 1
   rndMusicalPitch: 0
   pitchOffsetSemitones: 0

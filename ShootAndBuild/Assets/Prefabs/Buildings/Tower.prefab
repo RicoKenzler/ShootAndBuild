@@ -167,6 +167,7 @@ MonoBehaviour:
     type: 2}
   damageParticles: {fileID: 198000012529019072, guid: 4edabb1c0dde62743b137378c7d22980,
     type: 2}
+  bloodDecal: {fileID: 0}
 --- !u!114 &114194631205614250
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -178,15 +179,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b85794b3d4575d744aec20967ba0e00d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shootSound: {fileID: 11400000, guid: 9d98e43a1075308458e5138d0155a5b5, type: 2}
-  shootEffect: {fileID: 198000012944515248, guid: 9defeac88977c0d448aa4541073ee9e4,
-    type: 2}
-  projectilePrefab: {fileID: 1756644795331426, guid: c1f7badcdf67c614184324fc7af75d91,
-    type: 2}
-  shootCooldown: 2
-  flashDuration: 0.5
-  flashMaxIntensity: 0.5
-  damage: 15
+  defaultWeapon: {fileID: 11400000, guid: 5f0046e4e67f23e418f008cfe1549022, type: 2}
 --- !u!114 &114542118627913480
 MonoBehaviour:
   m_ObjectHideFlags: 1

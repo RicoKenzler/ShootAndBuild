@@ -13,12 +13,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: 3
   spread: 0
-  coolDownTime: 2
+  coolDownTime: 1.5
   viewModel: {fileID: 0}
   projectile: {fileID: 1756644795331426, guid: 29425370c5332a84ab4ba74f42d81d54, type: 2}
-  muzzleFlashEffect: {fileID: 1000010254994808, guid: 9defeac88977c0d448aa4541073ee9e4,
+  muzzleFlashEffect: {fileID: 1221003165901616, guid: 76d9a0a0a8b1f064882013af283baf73,
     type: 2}
-  shootSound: {fileID: 11400000, guid: 9d98e43a1075308458e5138d0155a5b5, type: 2}
+  shootSound: {fileID: 11400000, guid: 88152dc859cc3414a96243ee2abe94cd, type: 2}
   damage: 200
   projectileSpeed: 5
   projectilesPerShot: 1
@@ -26,4 +26,4 @@ MonoBehaviour:
   range: 50
   areaDamage: 0
   areaRadius: 0
-  recoilForce: 0
+  recoilForce: 10

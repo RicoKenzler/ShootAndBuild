@@ -27,6 +27,8 @@ namespace SAB
         Constant = 1,
     }
 
+    //----------------------------------------------------------------------
+
     [CreateAssetMenu(menuName = "Custom/WeaponData", fileName = "WeaponData")]
     public class WeaponData : ScriptableObject
     {
@@ -34,6 +36,8 @@ namespace SAB
         static int layerMask;
 
         public WeaponType type = WeaponType.Projectile;
+
+        public DamageType damageType = DamageType.Direct;
 
         /// <summary>
         /// spread in degrees
@@ -130,6 +134,7 @@ namespace SAB
                     proj.Damage = damage;
                     proj.speed = projectileSpeed + Random.Range(-projectileSpeed * projectileRandomSpeed, projectileSpeed * projectileRandomSpeed);
                     //TODO range of projectile
+                    //TODO damage type to projectile
                 }
             }
             else if (type == WeaponType.Hitscan)
@@ -148,27 +153,37 @@ namespace SAB
 
                     Debug.DrawLine(_origin, _origin + dir * (Vector3.forward * range), Color.magenta, 1f);
 
-                    hits = hits.OrderBy(h => h.distance).ToArray(); //seems lite the most unefficient way to do it
+                    hits = hits.OrderBy(h => h.distance).ToArray(); //seems like the most unefficient way to do it
 
-                    Attackable attackable = null;
-                    for (int h = 0; h < hitCount; ++h)
+                    if (damageType == DamageType.Direct)
                     {
-                        //if we found we hit something that blocks the shot
-                        //break
-
-                        if (hits[h].rigidbody != null)
+                        Attackable attackable = null;
+                        for (int h = 0; h < hitCount; ++h)
                         {
-                            //Debug.Log(hits[h].rigidbody.gameObject.name);
-                            attackable = hits[h].rigidbody.GetComponent<Attackable>();
-                            if (attackable != null)
+                            //if we found we hit something that blocks the shot
+                            //break
+
+                            if (hits[h].rigidbody != null)
                             {
-                                damageToDeal -= attackable.DealDamage(damageToDeal, owner.gameObject, owner.gameObject);
+                                //Debug.Log(hits[h].rigidbody.gameObject.name);
+                                attackable = hits[h].rigidbody.GetComponent<Attackable>();
+                                if (attackable != null)
+                                {
+                                    damageToDeal -= attackable.DealDamage(damageToDeal, owner.gameObject, owner.gameObject);
+                                }
+
+                                if (damageToDeal <= 0)
+                                {
+                                    break;
+                                }
                             }
 
-                            if (damageToDeal <= 0)
-                            {
-                                break;
-                            }
+                        }
+                    } else if (damageType == DamageType.Area)
+                    {
+                        if (hitCount > 0 && hits[0].rigidbody != null)
+                        {
+                             // do area damage at psotion of first hit
                         }
 
                     }
