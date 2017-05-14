@@ -1,4 +1,7 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
 
 namespace SAB
 {
@@ -6,7 +9,10 @@ namespace SAB
     public class Shootable : MonoBehaviour
     {
         public WeaponData defaultWeapon;
-        
+
+        private List<WeaponData> arsenal = new List<WeaponData>();
+
+        int currentWeaponIndex = 0;
         private WeaponData currentWeapon = null;
 
         //----------------------------------------------------------------------
@@ -28,7 +34,7 @@ namespace SAB
         
         void Awake()
         {
-            SetWeapon(defaultWeapon);
+            AddWeapon(defaultWeapon, true);
         }
 
         //----------------------------------------------------------------------
@@ -57,14 +63,53 @@ namespace SAB
 
         //----------------------------------------------------------------------
 
-        public void SetWeapon(WeaponData _newWeapon)
+        public void AddWeapon(WeaponData _newWeapon, bool setAsCurrent = false)
         {
 
-            //maybe do this differenly  - store weapns in list so instances of available weapons will be kept
-            currentWeapon = Object.Instantiate(_newWeapon);
-            currentWeapon.Init(this);
+            if ( !arsenal.Any(w => w.weaponID == _newWeapon.weaponID) ) {
+
+                //Debug.Log("picked up " + _newWeapon.weaponID.ToString());
+                //weapon is not contained -> add
+                WeaponData weapon = UnityEngine.Object.Instantiate(_newWeapon);
+                weapon.Init(this);
+                arsenal.Add(weapon);
+
+                if (setAsCurrent)
+                {
+                    this.currentWeapon = arsenal.Last();
+                }
+
+            } else
+            {
+                //weapon is contained
+                //add ammo or something
+            }
+
         }
 
+        //----------------------------------------------------------------------
 
+        public bool CycleWeapons(bool positiveOrder)
+        {
+            if (arsenal.Count > 1)
+            {
+
+                currentWeaponIndex += positiveOrder ? 1 : -1;
+
+                if (currentWeaponIndex >= arsenal.Count)
+                {
+                    currentWeaponIndex = 0;
+                } else if (currentWeaponIndex < 0)
+                {
+                    currentWeaponIndex = arsenal.Count - 1;
+                }
+
+                this.currentWeapon = arsenal[currentWeaponIndex];
+
+                return true;        
+            }
+
+            return false;
+        }
     }
 }

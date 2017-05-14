@@ -35,6 +35,8 @@ namespace SAB
 
         static int layerMask;
 
+        public ItemType weaponID;
+
         public WeaponType type = WeaponType.Projectile;
 
         public DamageType damageType = DamageType.Direct;
@@ -54,6 +56,8 @@ namespace SAB
         public GameObject projectile = null;
 
         public GameObject muzzleFlashEffect;
+
+        public GameObject ricochetEffect;
 
         public AudioData shootSound;
 
@@ -133,6 +137,8 @@ namespace SAB
                     proj.Owner = _owner;
                     proj.Damage = damage;
                     proj.speed = projectileSpeed + Random.Range(-projectileSpeed * projectileRandomSpeed, projectileSpeed * projectileRandomSpeed);
+                    proj.range = range;
+                    proj.ricochetEffect = ricochetEffect;
                     //TODO range of projectile
                     //TODO damage type to projectile
                 }
@@ -145,9 +151,14 @@ namespace SAB
 
                     Quaternion dir = _direction * Quaternion.AngleAxis(Random.Range(-spread * 0.5f, spread * 0.5f), Vector3.up);
 
+                    //this is shit!
+                    for(int r = 0; r < hits.Length; ++r)
+                    {
+                        hits[r].distance = float.MaxValue;
+                    }
+
                     //raycast goes here
-                    int hitCount = Physics.RaycastNonAlloc(_origin, dir * Vector3.forward, hits, range, layerMask);
-                    //Debug.Log(hitCount);
+                    int hitCount = Physics.RaycastNonAlloc(_origin, dir * Vector3.forward, hits, range, layerMask, QueryTriggerInteraction.Ignore);
 
                     int damageToDeal = damage;
 
@@ -160,8 +171,18 @@ namespace SAB
                         Attackable attackable = null;
                         for (int h = 0; h < hitCount; ++h)
                         {
-                            //if we found we hit something that blocks the shot
-                            //break
+                            if (hits[h].transform != null && hits[h].transform.gameObject.layer == 0)
+                            {
+                                //display ricochet effect
+                                if (ricochetEffect != null)
+                                {
+                                    Debug.DrawLine(hits[h].point, hits[h].point + hits[h].normal * 2f, Color.green, 5f);
+                                    ParticleManager.instance.SpawnParticle(ricochetEffect, ParticleManager.instance.gameObject, hits[h].point, 
+                                                                                Quaternion.LookRotation(hits[h].normal, Vector3.up), false, 2.0f, false, false);
+
+                                }
+                                break;
+                            }
 
                             if (hits[h].rigidbody != null)
                             {
@@ -206,7 +227,7 @@ namespace SAB
             //muzzleflash
             if (muzzleFlashEffect != null)
             {
-                ParticleManager.instance.SpawnParticle(muzzleFlashEffect, _owner.gameObject, _origin, _direction, false, 1.0f, true, true);
+                ParticleManager.instance.SpawnParticle(muzzleFlashEffect, _owner.gameObject, _origin, _direction, false, 1.0f, false, false);
             }
         }
 

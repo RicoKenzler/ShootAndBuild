@@ -19,6 +19,8 @@ namespace SAB
         public bool useOnCollect = false;                               //< is the item used instantanously when collected?
         public Sprite icon;                                                 //< icon to show in UI
 
+        public WeaponData weaponData = null;                 // if the item is a wepon this is the weapon meta data
+
         // Use this for initialization
         void Start()
         {

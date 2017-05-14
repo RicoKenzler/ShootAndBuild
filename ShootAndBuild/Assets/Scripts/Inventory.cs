@@ -162,6 +162,17 @@ namespace SAB
         {
             ItemData itemInfos = ItemManager.instance.GetItemInfos(itemType);
 
+            if (itemInfos.usageCategory == ItemUsageCategory.Weapon && count > 0) {
+
+                Shootable shoot = this.GetComponent<Shootable>();
+                if (shoot != null && itemInfos.weaponData != null)
+                {
+                    shoot.AddWeapon(itemInfos.weaponData);
+                }
+                return;
+            }
+
+
             if (itemInfos.useOnCollect)
             {
                 UseItem(itemType, count);

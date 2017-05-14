@@ -15,6 +15,9 @@ namespace SAB
         ExtraLifes = 3,
         CheeseHeal = 4,
         AppleHeal = 5,
+
+        WeaponDefault = 100,
+        WeaponRailgun = 101,
     }
 
     public enum ItemUsageCategory
@@ -111,5 +114,6 @@ namespace SAB
         {
             get; private set;
         }
+
     }
 }

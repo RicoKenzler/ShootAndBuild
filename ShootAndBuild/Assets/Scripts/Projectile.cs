@@ -8,14 +8,25 @@ namespace SAB
         [Tooltip("Speed in units per second")]
         public float speed = 5;
 
+        public float range;
+
+        private Vector3 startPos;
+
+
         void Start()
         {
+            startPos = transform.position;
         }
 
         void Update()
         {
             float delta = Time.deltaTime * speed;
             transform.Translate(delta * Direction);
+
+            if ((startPos - transform.position).sqrMagnitude > range* range)
+            {
+                Destroy(gameObject);
+            }
         }
 
         void OnTriggerEnter(Collider other)
@@ -24,6 +35,13 @@ namespace SAB
             if (owner && (owner.gameObject == other.gameObject))
             {
                 return;
+            }
+
+            if (other.gameObject.layer == 0)
+            {
+                //might work better in oncollision enter with collision normal
+                ParticleManager.instance.SpawnParticle(ricochetEffect, ParticleManager.instance.gameObject, this.transform.position,
+                                            Quaternion.LookRotation(this.transform.forward * -1f, Vector3.up), false, 2.0f, false, false);
             }
 
             Attackable targetAttackable = other.GetComponent<Attackable>();
@@ -55,6 +73,7 @@ namespace SAB
 
         private Shootable owner;
         private Faction ownerFaction;   //< remember faction separately as Owner could have died when we need the info
+        public GameObject ricochetEffect;
 
         public Shootable Owner
         {

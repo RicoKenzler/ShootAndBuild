@@ -11,12 +11,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 89f713af7e752454cab87fc5f167d697, type: 3}
   m_Name: Railgun
   m_EditorClassIdentifier: 
+  weaponID: 101
   type: 3
+  damageType: 0
   spread: 0
   coolDownTime: 1.5
   viewModel: {fileID: 0}
   projectile: {fileID: 1756644795331426, guid: 29425370c5332a84ab4ba74f42d81d54, type: 2}
   muzzleFlashEffect: {fileID: 1221003165901616, guid: 76d9a0a0a8b1f064882013af283baf73,
+    type: 2}
+  ricochetEffect: {fileID: 1813940037691992, guid: 5e4c5a91f5a3ace47aae38cc1948cc3e,
     type: 2}
   shootSound: {fileID: 11400000, guid: 88152dc859cc3414a96243ee2abe94cd, type: 2}
   damage: 200

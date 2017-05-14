@@ -18,6 +18,7 @@ namespace SAB
 
         private Inventory inventory;
         private Builder builder;
+        private Shootable shootable;
 
         public float lastMenuInteractionTime
         {
@@ -69,6 +70,7 @@ namespace SAB
         {
             inventory = GetComponent<Inventory>();
             builder = GetComponent<Builder>();
+            shootable = GetComponent<Shootable>();
 
             InitActiveItemType();
             InitActiveBuildingType();
@@ -87,8 +89,8 @@ namespace SAB
 
         private bool TryCycleThroughWeapons(bool positiveOrder)
         {
-            // Not implemented yet
-            return false;
+
+            return shootable.CycleWeapons(positiveOrder);
         }
 
         private bool TryCycleThroughBuildings(bool positiveOrder)
