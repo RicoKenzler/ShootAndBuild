@@ -27,6 +27,10 @@ namespace SAB
 
         void Awake()
         {
+			inventory = GetComponent<Inventory>();
+            builder = GetComponent<Builder>();
+            shootable = GetComponent<Shootable>();
+
             lastMenuInteractionTime = 0.0f;
             activeItemType = ItemType.None;
         }
@@ -68,10 +72,6 @@ namespace SAB
 
         void Start()
         {
-            inventory = GetComponent<Inventory>();
-            builder = GetComponent<Builder>();
-            shootable = GetComponent<Shootable>();
-
             InitActiveItemType();
             InitActiveBuildingType();
         }
@@ -216,5 +216,13 @@ namespace SAB
         {
             get; private set;
         }
+
+		public WeaponData activeWeapon
+		{
+			get
+			{
+				return shootable.CurrentWeapon;
+			}
+		}
     }
 }

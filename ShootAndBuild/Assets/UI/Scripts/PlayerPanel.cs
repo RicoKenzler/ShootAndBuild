@@ -29,6 +29,7 @@ namespace SAB
         private int displayedActiveItemCount = -1;
         private ItemType displayedActiveItemType = ItemType.None;
         private Building displayedActiveBuilding = null;
+		private WeaponData displayedActiveWeapon = null;
 
         private InventorySelectionCategory displayedActiveSelectionCategory = InventorySelectionCategory.Item;
 
@@ -66,6 +67,7 @@ namespace SAB
             UpdateItems();
             UpdateInventorySelection();
             UpdateBuildings();
+			UpdateWeapons();
         }
 
         bool IsPlayerAlive()
@@ -83,6 +85,7 @@ namespace SAB
                 UpdateHealthBar(true);
                 UpdateItems(true);
                 UpdateBuildings(true);
+				UpdateWeapons(true);
                 UpdateInventorySelection();
                 displayedPlayerAlive = isPlayerAlive;
             }
@@ -148,6 +151,35 @@ namespace SAB
             bool buildingBuildable = (IsPlayerAlive() && (activeBuilding && activeBuilding.IsPayable()));
 
             activeBuildingImage.color = buildingBuildable ? activatedColorTint : deactivatedColorTint;
+        }
+
+		void UpdateWeapons(bool forceUpdateAll = false)
+        {
+            WeaponData activeWeapon = assignedPlayerMenu.activeWeapon;
+
+            bool weaponChanged = (displayedActiveWeapon != activeWeapon);
+            if (forceUpdateAll || weaponChanged)
+            {
+                // Update Active item Type
+                displayedActiveWeapon = activeWeapon;
+
+				if (activeWeapon)
+				{
+					ItemType itemType = activeWeapon.weaponID;
+
+					ItemData weaponItemInfos = ItemManager.instance.GetItemInfos(itemType);
+
+					activeWeaponImage.overrideSprite = weaponItemInfos.icon;
+				}
+				else
+				{
+					activeWeaponImage.overrideSprite = null;
+				}
+            }
+
+            bool weaponUsable = (IsPlayerAlive() && (activeWeapon.Cooldown < 0.1f));
+
+            activeWeaponImage.color = weaponUsable ? activatedColorTint : deactivatedColorTint;
         }
 
         void UpdateItems(bool forceUpdateAll = false)

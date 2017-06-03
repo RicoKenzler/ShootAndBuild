@@ -618,13 +618,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   killingSpreeDefinitions:
-  - KillCount: 8
+  - KillCount: 20
     Title: Killing Spree
     AudioMessage: {fileID: 11400000, guid: 8900b7fb7edd01a40ac29f7fad9f3336, type: 2}
-  - KillCount: 20
+  - KillCount: 40
     Title: M-M-M-Monsterkill
     AudioMessage: {fileID: 11400000, guid: 5a4d414bed0ab074893797c352b0e85f, type: 2}
-  killingSpreeInterval: 1
+  killingSpreeInterval: 2
 --- !u!4 &441971553
 Transform:
   m_ObjectHideFlags: 0
@@ -2307,6 +2307,11 @@ Prefab:
   m_Modification:
     m_TransformParent: {fileID: 1827884807}
     m_Modifications:
+    - target: {fileID: 114228026391726690, guid: 21a0b0feffc32c34cb2f9a680ea5bbc2,
+        type: 2}
+      propertyPath: allItemDatas.Array.size
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 4697077200177286, guid: 21a0b0feffc32c34cb2f9a680ea5bbc2, type: 2}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -2339,6 +2344,18 @@ Prefab:
       propertyPath: m_RootOrder
       value: 5
       objectReference: {fileID: 0}
+    - target: {fileID: 114228026391726690, guid: 21a0b0feffc32c34cb2f9a680ea5bbc2,
+        type: 2}
+      propertyPath: allItemDatas.Array.data[6]
+      value: 
+      objectReference: {fileID: 11400000, guid: 9ba4eb90b31418a45ab3669ddb1fd6ac,
+        type: 2}
+    - target: {fileID: 114228026391726690, guid: 21a0b0feffc32c34cb2f9a680ea5bbc2,
+        type: 2}
+      propertyPath: allItemDatas.Array.data[7]
+      value: 
+      objectReference: {fileID: 11400000, guid: 07d81f19e12cd824a82bac5cdbdcbf70,
+        type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 21a0b0feffc32c34cb2f9a680ea5bbc2, type: 2}
   m_IsPrefabParent: 0

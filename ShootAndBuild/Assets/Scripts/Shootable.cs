@@ -13,17 +13,21 @@ namespace SAB
         private List<WeaponData> arsenal = new List<WeaponData>();
 
         int currentWeaponIndex = 0;
-        private WeaponData currentWeapon = null;
-
+        
         //----------------------------------------------------------------------
+
+		public WeaponData CurrentWeapon
+		{
+			get; private set;
+		}
 
         public float Cooldown
         {
             get
             {
-                if (currentWeapon != null)
+                if (CurrentWeapon != null)
                 {
-                    return currentWeapon.Cooldown;
+                    return CurrentWeapon.Cooldown;
                 }
 
                 return float.MaxValue;
@@ -49,7 +53,7 @@ namespace SAB
         void Update()
         {
             //TODO move to physics timestep to be more precise
-            currentWeapon.OnUpdate();
+            CurrentWeapon.OnUpdate();
         }
 
         //----------------------------------------------------------------------
@@ -57,7 +61,7 @@ namespace SAB
         public void Shoot(Quaternion? projectileDirection = null)
         {
 
-            currentWeapon.Shoot(this, transform.position, projectileDirection.HasValue ? projectileDirection.Value : this.transform.rotation);
+            CurrentWeapon.Shoot(this, transform.position, projectileDirection.HasValue ? projectileDirection.Value : this.transform.rotation);
 
         }
 
@@ -76,7 +80,7 @@ namespace SAB
 
                 if (setAsCurrent)
                 {
-                    this.currentWeapon = arsenal.Last();
+                    this.CurrentWeapon = arsenal.Last();
                 }
 
             } else
@@ -104,7 +108,7 @@ namespace SAB
                     currentWeaponIndex = arsenal.Count - 1;
                 }
 
-                this.currentWeapon = arsenal[currentWeaponIndex];
+                this.CurrentWeapon = arsenal[currentWeaponIndex];
 
                 return true;        
             }

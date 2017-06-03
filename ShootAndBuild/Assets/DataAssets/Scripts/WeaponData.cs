@@ -32,7 +32,6 @@ namespace SAB
     [CreateAssetMenu(menuName = "Custom/WeaponData", fileName = "WeaponData")]
     public class WeaponData : ScriptableObject
     {
-
         static int layerMask;
 
         public ItemType weaponID;
