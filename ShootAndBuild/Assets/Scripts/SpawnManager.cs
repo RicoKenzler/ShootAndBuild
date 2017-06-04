@@ -163,7 +163,7 @@ namespace SAB.Spawn
 			if (isEmptyWave)
 			{
 				AudioManager.instance.PlayAudio(finishedWaveSound);
-				NotificationManager.instance.ShowNotification(new Notification("Wave ended", NotificationType.NeutralNews));
+				NotificationManager.instance.ShowNotification(new Notification("Wave End", NotificationType.NeutralNews));
 			}
 			else
 			{
