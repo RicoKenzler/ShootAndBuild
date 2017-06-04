@@ -72,6 +72,9 @@ namespace SAB.Spawn
         //TODO write editor and match with enemy type enum
         public EnemyBehaviour[] enemyTemplates;
 
+		public AudioData newWaveSound;
+		public AudioData finishedWaveSound;
+
         //----------------------------------------------------------------------
 
         void Awake()
@@ -159,10 +162,12 @@ namespace SAB.Spawn
 
 			if (isEmptyWave)
 			{
+				AudioManager.instance.PlayAudio(finishedWaveSound);
 				NotificationManager.instance.ShowNotification(new Notification("Wave ended", NotificationType.NeutralNews));
 			}
 			else
 			{
+				AudioManager.instance.PlayAudio(newWaveSound);
 				NotificationManager.instance.ShowNotification(new Notification("Wave " + currentWaveIndex, NotificationType.BadNews));
 			}
         }
