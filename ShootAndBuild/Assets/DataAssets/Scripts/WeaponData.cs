@@ -187,6 +187,9 @@ namespace SAB
                                 if (attackable != null)
                                 {
                                     damageToDeal -= attackable.DealDamage(damageToDeal, owner.gameObject, owner.gameObject);
+
+									// je: I find it more appropriate, when damage is not consumed
+									damageToDeal = damage;
                                 }
 
                                 if (damageToDeal <= 0)
