@@ -20,7 +20,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4158796414557706}
   - component: {fileID: 108575493981977318}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Point light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -37,7 +37,7 @@ GameObject:
   - component: {fileID: 4212906896892240}
   - component: {fileID: 114140572432853140}
   - component: {fileID: 95446123389513524}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: ExtraLife
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -54,7 +54,7 @@ GameObject:
   - component: {fileID: 4862065741729012}
   - component: {fileID: 33437398563307858}
   - component: {fileID: 23481692866333780}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Coin
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -206,3 +206,4 @@ MonoBehaviour:
   collectSound: {fileID: 11400000, guid: f515851f01f1bca4284c321a79191a6b, type: 2}
   dropSound: {fileID: 11400000, guid: 49cb3cc0b04d68745ab158b62b577d1e, type: 2}
   itemType: 3
+  vanishesAfterTimeout: 1

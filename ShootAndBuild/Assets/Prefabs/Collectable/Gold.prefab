@@ -22,7 +22,7 @@ GameObject:
   - component: {fileID: 33651833337898342}
   - component: {fileID: 23521322532003990}
   - component: {fileID: 111094340360766864}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: goldCoins
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -38,7 +38,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4408363481786548}
   - component: {fileID: 114107007437215872}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Gold
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -139,4 +139,4 @@ MonoBehaviour:
   collectSound: {fileID: 11400000, guid: 5e41880d7756853449f6dd27a99bd4f8, type: 2}
   dropSound: {fileID: 11400000, guid: b4879671e825ce74b814ee795b059858, type: 2}
   itemType: 1
-  amount: 1
+  vanishesAfterTimeout: 1

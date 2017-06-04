@@ -20,7 +20,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4526142304942214}
   - component: {fileID: 114835953615146736}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: CheeseItem
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -38,7 +38,7 @@ GameObject:
   - component: {fileID: 33574648194252324}
   - component: {fileID: 23918393827853870}
   - component: {fileID: 111303605387084808}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Cheese
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -139,3 +139,4 @@ MonoBehaviour:
   collectSound: {fileID: 11400000, guid: b35351aebb33cc447b1b02379939f236, type: 2}
   dropSound: {fileID: 11400000, guid: 46aaf3514a49b5349909f91809e902a3, type: 2}
   itemType: 4
+  vanishesAfterTimeout: 1

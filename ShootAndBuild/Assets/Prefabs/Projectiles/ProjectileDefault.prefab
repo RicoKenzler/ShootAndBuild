@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4755371875949796}
   - component: {fileID: 33925190594553464}
   - component: {fileID: 23060540079414866}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: 7,62x39
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -39,7 +39,7 @@ GameObject:
   - component: {fileID: 23650547386082162}
   - component: {fileID: 114259247775670896}
   - component: {fileID: 65478314486929644}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: ProjectileDefault
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -166,3 +166,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 12
+  range: 0
+  ricochetEffect: {fileID: 0}

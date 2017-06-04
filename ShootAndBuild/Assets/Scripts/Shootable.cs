@@ -38,7 +38,10 @@ namespace SAB
         
         void Awake()
         {
-            AddWeapon(defaultWeapon, true);
+			if (defaultWeapon)
+			{
+				AddWeapon(defaultWeapon, true);
+			}
         }
 
         //----------------------------------------------------------------------
@@ -53,25 +56,25 @@ namespace SAB
         void Update()
         {
             //TODO move to physics timestep to be more precise
-            CurrentWeapon.OnUpdate();
+			if (CurrentWeapon)
+			{
+				CurrentWeapon.OnUpdate();
+			}
         }
 
         //----------------------------------------------------------------------
 
         public void Shoot(Quaternion? projectileDirection = null)
         {
-
-            CurrentWeapon.Shoot(this, transform.position, projectileDirection.HasValue ? projectileDirection.Value : this.transform.rotation);
-
+            CurrentWeapon.TryShoot(this, transform.position, projectileDirection.HasValue ? projectileDirection.Value : this.transform.rotation);
         }
 
         //----------------------------------------------------------------------
 
         public void AddWeapon(WeaponData _newWeapon, bool setAsCurrent = false)
         {
-
-            if ( !arsenal.Any(w => w.weaponID == _newWeapon.weaponID) ) {
-
+            if ( !arsenal.Any(w => w.weaponID == _newWeapon.weaponID) )
+			{
                 //Debug.Log("picked up " + _newWeapon.weaponID.ToString());
                 //weapon is not contained -> add
                 WeaponData weapon = UnityEngine.Object.Instantiate(_newWeapon);
@@ -97,7 +100,6 @@ namespace SAB
         {
             if (arsenal.Count > 1)
             {
-
                 currentWeaponIndex += positiveOrder ? 1 : -1;
 
                 if (currentWeaponIndex >= arsenal.Count)

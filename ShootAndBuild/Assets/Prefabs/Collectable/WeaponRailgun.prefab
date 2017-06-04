@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4691030472803068}
   - component: {fileID: 33465719442526028}
   - component: {fileID: 23040122027790258}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: gun
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -37,7 +37,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4408363481786548}
   - component: {fileID: 114107007437215872}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: WeaponRailgun
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -107,18 +107,15 @@ namespace SAB
 
         //----------------------------------------------------------------------
 
-        public void Shoot(Shootable _owner, Vector3 _origin, Quaternion _direction)
+        public void TryShoot(Shootable _owner, Vector3 _origin, Quaternion _direction)
         {
             if (cooldown > 0.0f)
             {
                 return;
             }
-
-          
-
+			
             Vector3 shootHeightOffset = new Vector3(0.0f, 0.5f, 0.0f);
             _origin += shootHeightOffset;
-
 
             if (type == WeaponType.Projectile)
             {

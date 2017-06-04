@@ -22,7 +22,7 @@ GameObject:
   - component: {fileID: 33182469964813642}
   - component: {fileID: 23646038340864124}
   - component: {fileID: 65141987322290324}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: F1_grenade
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -39,7 +39,7 @@ GameObject:
   - component: {fileID: 4446281569131110}
   - component: {fileID: 54128840915540010}
   - component: {fileID: 114986494976677032}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Grenade
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -156,3 +156,4 @@ MonoBehaviour:
   maxForce: 50
   radius: 4
   explosionSound: {fileID: 11400000, guid: bac2341babaf07a4dad54ac5b1651053, type: 2}
+  owner: {fileID: 0}

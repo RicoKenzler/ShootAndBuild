@@ -76,7 +76,6 @@ namespace SAB.Spawn
 
         void Awake()
         {
-
             Instance = this;
 
             if (spawners == null || spawners.Length == 0)
@@ -107,12 +106,13 @@ namespace SAB.Spawn
         void Update()
         {
             if (GameManager.Instance.Status == GameStatus.Running)
-
+			{
                 if (this.waves == null || this.waves.Count == 0)
                 {
                     Debug.LogError("no waves setup");
                     return;
                 }
+			}
 
 
             waveTimer += Time.deltaTime;
@@ -134,26 +134,37 @@ namespace SAB.Spawn
             {
                 currentWaveIndex = 0;
                 Debug.LogWarning("reached end of waves. starting over.");
+				NotificationManager.instance.ShowNotification(new Notification("Restarting Waves", NotificationType.NeutralNews));
             }
 
-            Debug.Log("Wave " + this.currentWaveIndex);
-
             this.InitWave();
-
         }
 
         //----------------------------------------------------------------------
 
         private void InitWave()
         {
-
             waveTimer = 0;
+
+			bool isEmptyWave = true;
 
             EnemyWave currentWave = this.waves[currentWaveIndex];
             for (int s = 0; s < this.spawners.Length; s++)
             {
                 this.spawners[s].SetSpawnRate(currentWave.spawnPropability[s]);
+				isEmptyWave &= (currentWave.spawnPropability[s].enemies.Count == 0);
             }
+
+			Debug.Log("Wave " + this.currentWaveIndex);
+
+			if (isEmptyWave)
+			{
+				NotificationManager.instance.ShowNotification(new Notification("Wave ended", NotificationType.NeutralNews));
+			}
+			else
+			{
+				NotificationManager.instance.ShowNotification(new Notification("Wave " + currentWaveIndex, NotificationType.BadNews));
+			}
         }
 
         //----------------------------------------------------------------------

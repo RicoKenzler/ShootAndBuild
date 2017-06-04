@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4691030472803068}
   - component: {fileID: 33465719442526028}
   - component: {fileID: 23040122027790258}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: F1_grenade
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -37,7 +37,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4408363481786548}
   - component: {fileID: 114107007437215872}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: GrenadeItem
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -124,3 +124,4 @@ MonoBehaviour:
   collectSound: {fileID: 11400000, guid: ba000a55b418c464bb5a83b3e7d47396, type: 2}
   dropSound: {fileID: 11400000, guid: cf0da9089932c9b4982f9e95cbad1ab9, type: 2}
   itemType: 2
+  vanishesAfterTimeout: 1

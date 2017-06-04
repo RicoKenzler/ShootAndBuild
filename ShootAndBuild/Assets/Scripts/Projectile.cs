@@ -37,19 +37,19 @@ namespace SAB
                 return;
             }
 
-            if (other.gameObject.layer == 0)
-            {
-                //might work better in oncollision enter with collision normal
-                ParticleManager.instance.SpawnParticle(ricochetEffect, ParticleManager.instance.gameObject, this.transform.position,
-                                            Quaternion.LookRotation(this.transform.forward * -1f, Vector3.up), false, 2.0f, false, false);
-            }
-
             Attackable targetAttackable = other.GetComponent<Attackable>();
 
             if (targetAttackable && (targetAttackable.faction == ownerFaction))
             {
                 // no friendly fire
                 return;
+            }
+
+			if (other.gameObject.layer == 0)
+            {
+                //might work better in oncollision enter with collision normal
+                ParticleManager.instance.SpawnParticle(ricochetEffect, ParticleManager.instance.gameObject, this.transform.position,
+                                            Quaternion.LookRotation(this.transform.forward * -1f, Vector3.up), false, 2.0f, false, false);
             }
 
             Destroy(gameObject);

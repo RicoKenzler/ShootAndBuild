@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4247208432202770}
   - component: {fileID: 33025475505029242}
   - component: {fileID: 23695402911674536}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: 9x18
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -39,7 +39,7 @@ GameObject:
   - component: {fileID: 23650547386082162}
   - component: {fileID: 114259247775670896}
   - component: {fileID: 65896528533239966}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: ProjectileTower
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -166,3 +166,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 8
+  range: 0
+  ricochetEffect: {fileID: 0}
