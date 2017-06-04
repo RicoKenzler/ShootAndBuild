@@ -72,6 +72,7 @@ namespace SAB
 				float alphaWithoutSin = (1.0f - fadeoutAmount);
 
 				float alpha = Mathf.Lerp(alphaWithoutSin * 0.5f, alphaWithoutSin, cosAlpha);
+				alpha = Mathf.Lerp(0, alphaWithoutSin, cosAlpha);
 
 				Color newColor = defaultColor;
 				newColor.a = Mathf.Lerp(0.0f, defaultColor.a, alpha);
