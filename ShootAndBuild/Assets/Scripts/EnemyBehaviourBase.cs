@@ -206,9 +206,9 @@ namespace SAB
 
 		// ------------------------------------------------
 
-		protected float GetDistanceTo(GameObject target, out Vector3 direction)
+		protected float GetDistanceAndDirectionTo(Vector3 target, out Vector3 direction)
 		{
-			direction = (target.transform.position - transform.position);
+			direction = (target - transform.position);
             float distance = direction.magnitude;
 
             if (distance == 0.0f)
@@ -226,32 +226,19 @@ namespace SAB
 
         // ------------------------------------------------
 
-        protected Vector3 EstimateFutureDirection(GameObject towardsTarget, float timeIntoFuture)
+        protected Vector3 EstimateFuturePosition(GameObject target, float timeIntoFuture)
         {
-            Rigidbody targetRigidbody = towardsTarget.GetComponent<Rigidbody>();
+            Rigidbody targetRigidbody = target.GetComponent<Rigidbody>();
 
             if (!targetRigidbody)
             {
-                return towardsTarget.transform.position;
+                return target.transform.position;
             }
            
             Vector3 estimatedOffset = targetRigidbody.velocity * timeIntoFuture;
-            Vector3 estimatedPosition = towardsTarget.transform.position + estimatedOffset;
+            Vector3 estimatedPosition = target.transform.position + estimatedOffset;
 
-            Vector3 estimatedDirection = estimatedPosition - transform.position;
-
-            float estimatedDistance = estimatedDirection.magnitude;
-
-            if (estimatedDistance < 0.001)
-            {
-                estimatedDirection = new Vector3(1,0,0);
-            }
-            else
-            {
-                estimatedDirection /= estimatedDistance;
-            }
-
-            return estimatedDirection;
+            return estimatedPosition;
         }
    
 		// ------------------------------------------------

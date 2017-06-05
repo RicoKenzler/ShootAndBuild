@@ -128,9 +128,9 @@ namespace SAB
 			{
 				Spawn.EnemySpawner[] allSpawners = FindObjectsOfType<Spawn.EnemySpawner>();
 			
-				foreach (Spawn.EnemySpawner spawner in allSpawners)
+				if (allSpawners.Length > 0)
 				{
-					spawner.ForceImmediateSpawn();
+					allSpawners[0].ForceImmediateSpawn();
 				}
 			}
 
