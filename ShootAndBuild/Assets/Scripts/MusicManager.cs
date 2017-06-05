@@ -40,6 +40,13 @@ namespace SAB
 
 		private AudioMixerGroup soundGroup;
 
+		public float LastCombatTime
+		{
+			get
+			{
+				return lastCombatTime;
+			}
+		}
 		//-------------------------------------------------
 
 		void Awake()

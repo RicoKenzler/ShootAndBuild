@@ -26,29 +26,49 @@ namespace SAB
 
         public EnemyType type;
 
+		protected string idleAnimName		= "idle";
+		protected string walkAnimName		= "walk";
+		protected string attackAnimName		= "attack";
+
+		// ------------------------------------------------
+
+		protected void TryStartAnim(string animName, float speed = 1.0f, bool suppressedByAttack = true)
+		{
+            if (suppressedByAttack && animationController.IsPlaying(attackAnimName))
+            {
+				return;
+			}
+
+			animationController[animName].speed = speed;
+			animationController.Play(animName);
+		}
+
+		// ------------------------------------------------
+
+		protected virtual void Awake()
+		{
+			animationController = GetComponentInChildren<Animation>();
+			movable = GetComponent<Movable>();
+		}
+
+		// ------------------------------------------------
+
         protected virtual void Start()
         {
-            animationController = GetComponentInChildren<Animation>();
-            if (animationController == null)
-            {
-                Debug.LogWarning("no animation found on enemy");
-            }
-            else
-            {
-                animationController["idle"].speed = 1;
-                animationController.Play();
-            }
-
-            movable = GetComponent<Movable>();
-
+            TryStartAnim(idleAnimName);
+			
             EnemyManager.instance.RegisterEnemy(this, false);
             transform.SetParent(EnemyManager.instance.transform);
         }
+
+		// ------------------------------------------------
 
         void OnDisable()
         {
             EnemyManager.instance.RegisterEnemy(this, true);
         }
+
+		// ------------------------------------------------
 
         protected GameObject GetNearestPlayer(out float distSq)
         {
@@ -72,6 +92,8 @@ namespace SAB
             return bestPlayer;
         }
 
+		// ------------------------------------------------
+
         protected GameObject GetNearestBuilding(out float distSq)
         {
             Vector3 selfPos = transform.position;
@@ -94,44 +116,44 @@ namespace SAB
             return bestBuilding;
         }
 
+		// ------------------------------------------------
+
         void Update()
         {
+			// 0) Is Forzen...?
             if (CheatManager.instance.freezeEnemies)
             {
+				// ... stop update
                 GetComponent<Movable>().moveForce = new Vector3(0.0f, 0.0f, 0.0f);
                 return;
             }
 
+			// 1) Attack Cooldown
             if (currentAttackCooldown > 0)
             {
                 currentAttackCooldown = Mathf.Max(currentAttackCooldown - Time.deltaTime, 0);
             }
 
-			float playerDistanceSq;
-            GetNearestPlayer(out playerDistanceSq);
-
-			const float PLAYER_DISTANCE_COMBAT_STATE = 15.0f;
-			if (playerDistanceSq < (PLAYER_DISTANCE_COMBAT_STATE * PLAYER_DISTANCE_COMBAT_STATE))
+			// 2) Trigger Combat music
+			if (MusicManager.instance.LastCombatTime != Time.time)
 			{
-				MusicManager.instance.SignalIsInCombat();
-			}
+				float playerDistanceSq;
+				GetNearestPlayer(out playerDistanceSq);
 
+				const float PLAYER_DISTANCE_COMBAT_STATE = 15.0f;
+				if (playerDistanceSq < (PLAYER_DISTANCE_COMBAT_STATE * PLAYER_DISTANCE_COMBAT_STATE))
+				{
+					MusicManager.instance.SignalIsInCombat();
+				}
+			}
+			
+			// 3) Main Update of Sub-Class
 			OnUpdate();
             
-            /////////////////////////////////////////
-            // Animation
-            /////////////////////////////////////////
-            if (animationController != null)
-            {
-                float movementSpeed = 1.0f;
-
-                if (!animationController.IsPlaying("attack"))
-                {
-                    animationController["walk"].speed = movementSpeed;
-                    animationController.Play("walk");
-                }
-            }
+			TryStartAnim(walkAnimName);
         }
+
+		// ------------------------------------------------
 
 		protected abstract void OnUpdate();
     }

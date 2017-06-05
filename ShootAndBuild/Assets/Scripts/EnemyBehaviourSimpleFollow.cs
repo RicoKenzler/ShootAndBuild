@@ -5,7 +5,7 @@ namespace SAB
 {
     public class EnemyBehaviourSimpleFollow : EnemyBehaviourBase
     {
-        void Start()
+        protected override void Start()
         {
 			base.Start();
         }
@@ -21,10 +21,7 @@ namespace SAB
 
             if (!nearestTarget)
             {
-                if (!animationController.IsPlaying("attack"))
-                {
-                    animationController.Play("idle");
-                }
+                TryStartAnim(idleAnimName);
 
                 movable.moveForce = Vector2.zero;
                 return;
@@ -58,12 +55,8 @@ namespace SAB
                     currentAttackCooldown = attackCooldown;
                     nearestTarget.GetComponent<Attackable>().DealDamage(damage, gameObject, gameObject);
 
-                    if (animationController)
-                    {
-                        animationController["attack"].speed = 4.0f;
-                        animationController.Play("attack");
-                    }
-
+					TryStartAnim(attackAnimName, 4.0f, false);
+					
                     AudioManager.instance.PlayAudio(hitSound, transform.position);
                 }
             }
