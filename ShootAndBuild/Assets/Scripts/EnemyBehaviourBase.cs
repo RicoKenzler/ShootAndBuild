@@ -11,6 +11,75 @@ namespace SAB
         Slime = 3,
     }
 
+    [System.Serializable]
+    public struct RestingInfo
+    {
+        public float restDuration;
+        public float restCooldown;
+
+        private bool    isResting;
+        private float   timeUntilNextStatusChange;
+
+        public bool UsesResting()
+        {
+            return restDuration > 0.0f;
+        }
+
+        public bool IsResting
+        {
+            get
+            {
+                return isResting;
+            }
+        }
+
+        private void StartResting()
+        {
+            isResting = true;
+            timeUntilNextStatusChange = restDuration * Random.Range(0.8f, 1.3f);
+        }
+
+        private void EndResting()
+        {
+            isResting = false;
+            timeUntilNextStatusChange = restCooldown * Random.Range(0.8f, 1.3f);
+        }
+
+        public void Init(bool startResting)
+        {
+            if (startResting)
+            {
+                StartResting();
+            }
+            else
+            {
+                EndResting();
+            }
+        }
+
+        public void Tick()
+        {
+            if (!UsesResting())
+            {
+                return;
+            }
+
+            timeUntilNextStatusChange -= Time.deltaTime;
+
+            if (timeUntilNextStatusChange <= 0.0f)
+            {
+                if (isResting)
+                {
+                    EndResting();
+                }
+                else
+                {
+                    StartResting();
+                }
+            }
+        }
+    }
+
     public abstract class EnemyBehaviourBase : MonoBehaviour
     {
         public float speed			= 10;
@@ -18,6 +87,8 @@ namespace SAB
         public float attackCooldown = 1;
         public int damage			= 1;
         public AudioData hitSound;
+
+        public RestingInfo restingInfo;
 
         protected float currentAttackCooldown = 0;
 
@@ -55,6 +126,8 @@ namespace SAB
 
         protected virtual void Start()
         {
+            restingInfo.Init(false);
+
             TryStartAnim(idleAnimName);
 			
             EnemyManager.instance.RegisterEnemy(this, false);
@@ -198,6 +271,9 @@ namespace SAB
 				}
 			}
 			
+            // 3) Tick Resting
+            restingInfo.Tick();
+
 			// 3) Main Update of Sub-Class
 			OnUpdate();
             

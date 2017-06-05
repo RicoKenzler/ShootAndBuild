@@ -1435,6 +1435,9 @@ MonoBehaviour:
   attackCooldown: 1
   damage: 10
   hitSound: {fileID: 11400000, guid: a374d04cfd1eb6e449f64b7d14d4340f, type: 2}
+  restingInfo:
+    restDuration: 0
+    restCooldown: 0
   type: 1
 --- !u!114 &114636872527280056
 MonoBehaviour:

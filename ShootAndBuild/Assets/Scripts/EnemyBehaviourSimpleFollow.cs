@@ -29,7 +29,17 @@ namespace SAB
 
             if (distToTarget > attackDistance)
             {
-                movable.moveForce = directionTowardsTarget * speed;
+                Vector3 desiredForce = directionTowardsTarget * speed;
+
+                if (restingInfo.IsResting)
+                {
+                    TryStartAnim(idleAnimName);
+                    movable.moveForce = movable.moveForce * 0.8f;
+                }
+                else
+                {
+                    movable.moveForce = desiredForce; 
+                }
             }
             else
             {

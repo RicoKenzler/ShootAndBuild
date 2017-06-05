@@ -850,11 +850,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c18305f3b3e5be54ebea7f0ce9e3a69d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 4
+  speed: 5
   attackDistance: 2
   attackCooldown: 1
   damage: 50
   hitSound: {fileID: 11400000, guid: 8f2d936bac126a341b741ab44e392604, type: 2}
+  restingInfo:
+    restDuration: 2
+    restCooldown: 5
   type: 2
 --- !u!114 &114441391789738886
 MonoBehaviour:
