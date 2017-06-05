@@ -12,12 +12,7 @@ namespace SAB
 
 		protected override void OnUpdate()
 		{
-            float playerDistanceSq;
-            float buildingDistanceSq;
-            GameObject nearestPlayer = GetNearestPlayer(out playerDistanceSq);
-            GameObject nearestBuilding = GetNearestBuilding(out buildingDistanceSq);
-			
-            GameObject nearestTarget = playerDistanceSq < buildingDistanceSq ? nearestPlayer : nearestBuilding;
+            GameObject nearestTarget = FindNearestTarget();
 
             if (!nearestTarget)
             {
@@ -26,39 +21,21 @@ namespace SAB
                 movable.moveForce = Vector2.zero;
                 return;
             }
-
-            Vector3 direction = (nearestTarget.transform.position - transform.position);
-            float distToPlayer = direction.magnitude;
-
-            if (distToPlayer == 0.0f)
-            {
-                direction = new Vector3(1.0f, 0.0f, 0.0f);
-                distToPlayer = 1.0f;
-            }
-            else
-            {
-                direction /= distToPlayer;
-            }
+			
+            Vector3 directionTowardsTarget;
+			float distToTarget = GetDistanceTo(nearestTarget, out directionTowardsTarget);
 
             transform.LookAt(nearestTarget.transform);
 
-            if (distToPlayer > attackDistance)
+            if (distToTarget > attackDistance)
             {
-                movable.moveForce = direction * speed;
+                movable.moveForce = directionTowardsTarget * speed;
             }
             else
             {
-                movable.moveForce = Vector2.zero;
+				movable.moveForce = Vector2.zero;
 
-                if (currentAttackCooldown == 0)
-                {
-                    currentAttackCooldown = attackCooldown;
-                    nearestTarget.GetComponent<Attackable>().DealDamage(damage, gameObject, gameObject);
-
-					TryStartAnim(attackAnimName, 4.0f, false);
-					
-                    AudioManager.instance.PlayAudio(hitSound, transform.position);
-                }
+                TryAttack(nearestTarget);
             }
         }
     }

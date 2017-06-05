@@ -118,6 +118,57 @@ namespace SAB
 
 		// ------------------------------------------------
 
+		protected GameObject FindNearestTarget()
+		{
+			float playerDistanceSq;
+            float buildingDistanceSq;
+            GameObject nearestPlayer = GetNearestPlayer(out playerDistanceSq);
+            GameObject nearestBuilding = GetNearestBuilding(out buildingDistanceSq);
+			
+            GameObject nearestTarget = playerDistanceSq < buildingDistanceSq ? nearestPlayer : nearestBuilding;
+
+			return nearestTarget;
+		}
+
+		// ------------------------------------------------
+
+		protected float GetDistanceTo(GameObject target, out Vector3 direction)
+		{
+			direction = (target.transform.position - transform.position);
+            float distance = direction.magnitude;
+
+            if (distance == 0.0f)
+            {
+                direction = new Vector3(1.0f, 0.0f, 0.0f);
+                distance  = 1.0f;
+            }
+            else
+            {
+                direction /= distance;
+            }
+
+			return distance;
+		}
+
+		// ------------------------------------------------
+
+		protected void TryAttack(GameObject target)
+		{
+            if (currentAttackCooldown > 0)
+            {
+				return;
+			}
+
+            currentAttackCooldown = attackCooldown;
+            target.GetComponent<Attackable>().DealDamage(damage, gameObject, gameObject);
+
+			TryStartAnim(attackAnimName, 4.0f, false);
+					
+            AudioManager.instance.PlayAudio(hitSound, transform.position);
+		}
+
+		// ------------------------------------------------
+
         void Update()
         {
 			// 0) Is Forzen...?
