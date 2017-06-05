@@ -9,6 +9,9 @@ namespace SAB
         public  float zigZagAngle        = 90.0f;
         private int   zigZagID           = 0;
 
+        [Range (0.0f, 1.0f)]
+        public float estimateFuturePosition     = 0.0f;
+
         protected override void Start()
         {
 			base.Start();
@@ -46,6 +49,9 @@ namespace SAB
 			
             Vector3 directionTowardsTarget;
 			float distToTarget = GetDistanceTo(nearestTarget, out directionTowardsTarget);
+
+            float timeIntoFuture = Math.Min(3.0f, distToTarget * 0.2f * estimateFuturePosition);
+            directionTowardsTarget = EstimateFutureDirection(nearestTarget, timeIntoFuture);
 
             directionTowardsTarget = ApplyZigZagAmount(directionTowardsTarget);
 

@@ -1430,6 +1430,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c18305f3b3e5be54ebea7f0ce9e3a69d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  type: 1
   speed: 6
   attackDistance: 2
   attackCooldown: 1
@@ -1438,7 +1439,9 @@ MonoBehaviour:
   restingInfo:
     restDuration: 0
     restCooldown: 0
-  type: 1
+  zigZagFrequency: 1
+  zigZagAngle: 90
+  estimateFuturePosition: 0.5
 --- !u!114 &114636872527280056
 MonoBehaviour:
   m_ObjectHideFlags: 1

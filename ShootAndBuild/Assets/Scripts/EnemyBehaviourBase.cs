@@ -82,6 +82,8 @@ namespace SAB
 
     public abstract class EnemyBehaviourBase : MonoBehaviour
     {
+        public EnemyType type;
+
         public float speed			= 10;
         public float attackDistance = 1;
         public float attackCooldown = 1;
@@ -95,7 +97,6 @@ namespace SAB
         protected Animation animationController;
         protected Movable movable;
 
-        public EnemyType type;
 
 		protected string idleAnimName		= "idle";
 		protected string walkAnimName		= "walk";
@@ -223,6 +224,36 @@ namespace SAB
 			return distance;
 		}
 
+        // ------------------------------------------------
+
+        protected Vector3 EstimateFutureDirection(GameObject towardsTarget, float timeIntoFuture)
+        {
+            Rigidbody targetRigidbody = towardsTarget.GetComponent<Rigidbody>();
+
+            if (!targetRigidbody)
+            {
+                return towardsTarget.transform.position;
+            }
+           
+            Vector3 estimatedOffset = targetRigidbody.velocity * timeIntoFuture;
+            Vector3 estimatedPosition = towardsTarget.transform.position + estimatedOffset;
+
+            Vector3 estimatedDirection = estimatedPosition - transform.position;
+
+            float estimatedDistance = estimatedDirection.magnitude;
+
+            if (estimatedDistance < 0.001)
+            {
+                estimatedDirection = new Vector3(1,0,0);
+            }
+            else
+            {
+                estimatedDirection /= estimatedDistance;
+            }
+
+            return estimatedDirection;
+        }
+   
 		// ------------------------------------------------
 
 		protected void TryPerformInstantAttack(GameObject target)
