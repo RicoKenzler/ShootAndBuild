@@ -28,7 +28,7 @@ namespace SAB
 
             if (editorTarget.enemyTemplates.Length != enemyNames.Length)
             {
-                GameObject[] oldEnemyTemplates = new GameObject[editorTarget.enemyTemplates.Length];
+                EnemyBehaviourBase[] oldEnemyTemplates = new EnemyBehaviourBase[editorTarget.enemyTemplates.Length];
                 Array.Copy(editorTarget.enemyTemplates, oldEnemyTemplates, editorTarget.enemyTemplates.Length);
 
                 editorTarget.enemyTemplates = new EnemyBehaviourBase[enemyNames.Length];

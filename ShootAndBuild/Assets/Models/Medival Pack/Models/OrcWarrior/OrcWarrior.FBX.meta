@@ -73,11 +73,12 @@ ModelImporter:
     4300002: Shield
     4300004: Axe
     4300006: Blood
-    7400000: OrcWarrior_Idle
-    7400002: OrcWarrior_Walk
-    7400004: OrcWarrior_Attack
-    7400006: OrcWarrior_Death
+    7400000: idle
+    7400002: walk
+    7400004: attack
+    7400006: die
     9500000: //RootNode
+    11100000: //RootNode
     13700000: Orc
   materials:
     importMaterials: 0
@@ -101,7 +102,7 @@ ModelImporter:
     extraExposedTransformPaths: []
     clipAnimations:
     - serializedVersion: 16
-      name: OrcWarrior_Idle
+      name: idle
       takeName: Take 001
       firstFrame: 0
       lastFrame: 100
@@ -201,7 +202,7 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 0
     - serializedVersion: 16
-      name: OrcWarrior_Walk
+      name: walk
       takeName: Take 001
       firstFrame: 101
       lastFrame: 129
@@ -301,7 +302,7 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 0
     - serializedVersion: 16
-      name: OrcWarrior_Attack
+      name: attack
       takeName: Take 001
       firstFrame: 130
       lastFrame: 168
@@ -401,7 +402,7 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 0
     - serializedVersion: 16
-      name: OrcWarrior_Death
+      name: die
       takeName: Take 001
       firstFrame: 169
       lastFrame: 254
@@ -525,6 +526,7 @@ ModelImporter:
   importAnimation: 1
   copyAvatar: 0
   humanDescription:
+    serializedVersion: 2
     human: []
     skeleton: []
     armTwist: 0.5
@@ -535,9 +537,12 @@ ModelImporter:
     legStretch: 0.05
     feetSpacing: 0
     rootMotionBoneName: 
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
     hasTranslationDoF: 0
+    hasExtraRoot: 1
+    skeletonHasParents: 0
   lastHumanDescriptionAvatarSource: {instanceID: 0}
-  animationType: 2
+  animationType: 1
   humanoidOversampling: 1
   additionalBone: 0
   userData: 

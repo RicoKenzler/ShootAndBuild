@@ -76,7 +76,7 @@ Material:
       second: 1
     - first:
         name: _Cutoff
-      second: 0.3
+      second: 0.266
     - first:
         name: _DetailNormalMapScale
       second: 1
@@ -85,7 +85,7 @@ Material:
       second: 0
     - first:
         name: _GlossMapScale
-      second: 0.43
+      second: 0.475
     - first:
         name: _Glossiness
       second: 0.5
@@ -100,7 +100,7 @@ Material:
       second: 1
     - first:
         name: _OcclusionStrength
-      second: 0.11
+      second: 0.777
     - first:
         name: _Parallax
       second: 0.02
@@ -122,7 +122,7 @@ Material:
     m_Colors:
     - first:
         name: _Color
-      second: {r: 1, g: 1, b: 1, a: 1}
+      second: {r: 0.8896552, g: 1, b: 0.7647059, a: 1}
     - first:
         name: _EmissionColor
       second: {r: 0, g: 0, b: 0, a: 1}

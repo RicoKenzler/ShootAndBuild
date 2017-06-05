@@ -9,6 +9,7 @@ namespace SAB
         Bat = 1,
         Rabbit = 2,
         Slime = 3,
+        Orc = 4,
     }
 
     [System.Serializable]
@@ -111,8 +112,16 @@ namespace SAB
 				return;
 			}
 
-			animationController[animName].speed = speed;
-			animationController.Play(animName);
+            AnimationState animationState = animationController[animName];
+            if (animationState)
+            {
+                animationState.speed = speed;
+			    animationController.Play(animName);
+            }
+            else
+            {
+                Debug.Log(gameObject + "does not have animation " + animName);
+            }
 		}
 
 		// ------------------------------------------------

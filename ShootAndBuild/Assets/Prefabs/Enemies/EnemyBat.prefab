@@ -1442,7 +1442,7 @@ MonoBehaviour:
   zigZagFrequency: 1
   zigZagAngle: 90
   estimateFuturePosition: 0.7
-  estimateFuturePositionSmoothness: 0.9
+  estimateFuturePositionSmoothness: 0.95
 --- !u!114 &114636872527280056
 MonoBehaviour:
   m_ObjectHideFlags: 1

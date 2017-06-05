@@ -37,7 +37,7 @@ RenderSettings:
   m_ReflectionIntensity: 0.043
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 886024144}
-  m_IndirectSpecularColor: {r: 0.010077285, g: 0.00852815, b: 0.02759779, a: 0.043}
+  m_IndirectSpecularColor: {r: 0.010083243, g: 0.008521583, b: 0.027594082, a: 0.043}
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -766,22 +766,6 @@ Prefab:
       propertyPath: m_RootOrder
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: 1474136936694926, guid: 9d7788180427d3d4dab6c38d92c581b9, type: 2}
-      propertyPath: m_Name
-      value: SpawnManager
-      objectReference: {fileID: 0}
-    - target: {fileID: 114554427420127092, guid: 9d7788180427d3d4dab6c38d92c581b9,
-        type: 2}
-      propertyPath: finishedWaveSound
-      value: 
-      objectReference: {fileID: 11400000, guid: 5203e19e79ed7b64ba445cd84d0256b6,
-        type: 2}
-    - target: {fileID: 114554427420127092, guid: 9d7788180427d3d4dab6c38d92c581b9,
-        type: 2}
-      propertyPath: newWaveSound
-      value: 
-      objectReference: {fileID: 11400000, guid: 258d2559b47d2cb4ca0194814e87ea8a,
-        type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 9d7788180427d3d4dab6c38d92c581b9, type: 2}
   m_IsPrefabParent: 0
