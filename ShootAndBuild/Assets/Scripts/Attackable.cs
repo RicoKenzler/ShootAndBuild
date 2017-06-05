@@ -97,7 +97,7 @@ namespace SAB
 			}
 
 			// Player Counter
-			EnemyBehaviour enemy = GetComponent<EnemyBehaviour>();
+			EnemyBehaviourBase enemy = GetComponent<EnemyBehaviourBase>();
 
 			if (enemy)
 			{
@@ -267,7 +267,7 @@ namespace SAB
 			if (currentHealth <= 0)
 			{
 				if ((CheatManager.instance.invinciblePlayers && inputController)
-				|| (CheatManager.instance.invincibleEnemies && GetComponent<EnemyBehaviour>())
+				|| (CheatManager.instance.invincibleEnemies && GetComponent<EnemyBehaviourBase>())
 				|| (CheatManager.instance.invincibleBuildings && GetComponent<Building>()))
 				{
 					currentHealth = 1;

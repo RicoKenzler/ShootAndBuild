@@ -11,21 +11,22 @@ namespace SAB
         Slime = 3,
     }
 
-    public class EnemyBehaviour : MonoBehaviour
+    public abstract class EnemyBehaviourBase : MonoBehaviour
     {
-        public float speed = 10;
+        public float speed			= 10;
         public float attackDistance = 1;
         public float attackCooldown = 1;
-        public int damage = 1;
+        public int damage			= 1;
         public AudioData hitSound;
 
-        private float currentAttackCooldown = 0;
-        private Animation animationController;
-        private Movable movable;
+        protected float currentAttackCooldown = 0;
+
+        protected Animation animationController;
+        protected Movable movable;
 
         public EnemyType type;
 
-        void Start()
+        protected virtual void Start()
         {
             animationController = GetComponentInChildren<Animation>();
             if (animationController == null)
@@ -49,7 +50,7 @@ namespace SAB
             EnemyManager.instance.RegisterEnemy(this, true);
         }
 
-        GameObject GetNearestPlayer(out float distSq)
+        protected GameObject GetNearestPlayer(out float distSq)
         {
             Vector3 selfPos = transform.position;
 
@@ -71,7 +72,7 @@ namespace SAB
             return bestPlayer;
         }
 
-        GameObject GetNearestBuilding(out float distSq)
+        protected GameObject GetNearestBuilding(out float distSq)
         {
             Vector3 selfPos = transform.position;
 
@@ -106,10 +107,8 @@ namespace SAB
                 currentAttackCooldown = Mathf.Max(currentAttackCooldown - Time.deltaTime, 0);
             }
 
-            float playerDistanceSq;
-            float buildingDistanceSq;
-            GameObject nearestPlayer = GetNearestPlayer(out playerDistanceSq);
-            GameObject nearestBuilding = GetNearestBuilding(out buildingDistanceSq);
+			float playerDistanceSq;
+            GetNearestPlayer(out playerDistanceSq);
 
 			const float PLAYER_DISTANCE_COMBAT_STATE = 15.0f;
 			if (playerDistanceSq < (PLAYER_DISTANCE_COMBAT_STATE * PLAYER_DISTANCE_COMBAT_STATE))
@@ -117,57 +116,8 @@ namespace SAB
 				MusicManager.instance.SignalIsInCombat();
 			}
 
-            GameObject nearestTarget = playerDistanceSq < buildingDistanceSq ? nearestPlayer : nearestBuilding;
-
-            if (!nearestTarget)
-            {
-                if (!animationController.IsPlaying("attack"))
-                {
-                    animationController.Play("idle");
-                }
-
-                movable.moveForce = Vector2.zero;
-                return;
-            }
-
-            Vector3 direction = (nearestTarget.transform.position - transform.position);
-            float distToPlayer = direction.magnitude;
-
-            if (distToPlayer == 0.0f)
-            {
-                direction = new Vector3(1.0f, 0.0f, 0.0f);
-                distToPlayer = 1.0f;
-            }
-            else
-            {
-                direction /= distToPlayer;
-            }
-
-            transform.LookAt(nearestTarget.transform);
-
-            if (distToPlayer > attackDistance)
-            {
-                movable.moveForce = direction * speed;
-            }
-            else
-            {
-                movable.moveForce = Vector2.zero;
-
-                if (currentAttackCooldown == 0)
-                {
-                    currentAttackCooldown = attackCooldown;
-                    nearestTarget.GetComponent<Attackable>().DealDamage(damage, gameObject, gameObject);
-
-                    if (animationController)
-                    {
-                        animationController["attack"].speed = 4.0f;
-                        animationController.Play("attack");
-                    }
-
-                    AudioManager.instance.PlayAudio(hitSound, transform.position);
-                }
-            }
-
+			OnUpdate();
+            
             /////////////////////////////////////////
             // Animation
             /////////////////////////////////////////
@@ -182,5 +132,8 @@ namespace SAB
                 }
             }
         }
+
+		protected abstract void OnUpdate();
     }
+
 }

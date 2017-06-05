@@ -70,7 +70,7 @@ namespace SAB.Spawn
         public EnemySpawner[] spawners;
 
         //TODO write editor and match with enemy type enum
-        public EnemyBehaviour[] enemyTemplates;
+        public EnemyBehaviourBase[] enemyTemplates;
 
 		public AudioData newWaveSound;
 		public AudioData finishedWaveSound;

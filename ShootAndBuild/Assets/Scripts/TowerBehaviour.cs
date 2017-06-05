@@ -41,11 +41,11 @@ namespace SAB
 
         private GameObject GetNearestEnemy()
         {
-            EnemyBehaviour[] enemies = FindObjectsOfType<EnemyBehaviour>();
+            EnemyBehaviourBase[] enemies = FindObjectsOfType<EnemyBehaviourBase>();
             GameObject bestEnemy = null;
             float bestDistanceSq = float.MaxValue;
 
-            foreach (EnemyBehaviour enemy in enemies)
+            foreach (EnemyBehaviourBase enemy in enemies)
             {
                 float distanceSq = (enemy.transform.position - transform.position).sqrMagnitude;
 

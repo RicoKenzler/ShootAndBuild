@@ -23,7 +23,7 @@ namespace SAB
 
             if (editorTarget.enemyTemplates == null)
             {
-                editorTarget.enemyTemplates = new EnemyBehaviour[enemyNames.Length];
+                editorTarget.enemyTemplates = new EnemyBehaviourBase[enemyNames.Length];
             }
 
             if (editorTarget.enemyTemplates.Length != enemyNames.Length)
@@ -31,7 +31,7 @@ namespace SAB
                 GameObject[] oldEnemyTemplates = new GameObject[editorTarget.enemyTemplates.Length];
                 Array.Copy(editorTarget.enemyTemplates, oldEnemyTemplates, editorTarget.enemyTemplates.Length);
 
-                editorTarget.enemyTemplates = new EnemyBehaviour[enemyNames.Length];
+                editorTarget.enemyTemplates = new EnemyBehaviourBase[enemyNames.Length];
 
                 Array.Copy(oldEnemyTemplates, editorTarget.enemyTemplates, Math.Min(editorTarget.enemyTemplates.Length, oldEnemyTemplates.Length));
             }
@@ -48,7 +48,7 @@ namespace SAB
                 {
 
                     EditorGUILayout.LabelField(enemyNames[i]);
-                    editorTarget.enemyTemplates[i] = (EnemyBehaviour)EditorGUILayout.ObjectField(editorTarget.enemyTemplates[i], typeof(EnemyBehaviour), false);
+                    editorTarget.enemyTemplates[i] = (EnemyBehaviourBase)EditorGUILayout.ObjectField(editorTarget.enemyTemplates[i], typeof(EnemyBehaviourBase), false);
                 }
                 EditorGUILayout.EndHorizontal();
             }

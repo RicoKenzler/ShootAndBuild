@@ -9,7 +9,7 @@ namespace SAB
         void Awake()
         {
             instance = this;
-            allEnemies = new List<EnemyBehaviour>();
+            allEnemies = new List<EnemyBehaviourBase>();
         }
 
         // Use this for initialization
@@ -24,7 +24,7 @@ namespace SAB
 
         }
 
-        public void RegisterEnemy(EnemyBehaviour behaviour, bool unregister)
+        public void RegisterEnemy(EnemyBehaviourBase behaviour, bool unregister)
         {
             if (unregister)
             {
@@ -42,7 +42,7 @@ namespace SAB
             get; private set;
         }
 
-        public List<EnemyBehaviour> allEnemies
+        public List<EnemyBehaviourBase> allEnemies
         {
             get; private set;
         }

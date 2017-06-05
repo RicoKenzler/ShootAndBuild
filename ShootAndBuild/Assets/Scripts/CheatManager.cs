@@ -69,7 +69,7 @@ namespace SAB
 			GUILayout.Label("Kill", EditorStyles.boldLabel);
 			if (GUILayout.Button("Kill all Enemies"))
 			{
-				foreach (EnemyBehaviour enemy in EnemyManager.instance.allEnemies)
+				foreach (EnemyBehaviourBase enemy in EnemyManager.instance.allEnemies)
 				{
 					attackablesToKill.Add(enemy.GetComponent<Attackable>());
 				}
