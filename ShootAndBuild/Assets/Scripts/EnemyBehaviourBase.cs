@@ -152,7 +152,7 @@ namespace SAB
 
 		// ------------------------------------------------
 
-		protected void TryAttack(GameObject target)
+		protected void TryPerformInstantAttack(GameObject target)
 		{
             if (currentAttackCooldown > 0)
             {

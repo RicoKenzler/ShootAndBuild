@@ -35,7 +35,7 @@ namespace SAB
             {
 				movable.moveForce = Vector2.zero;
 
-                TryAttack(nearestTarget);
+                TryPerformInstantAttack(nearestTarget);
             }
         }
     }
