@@ -132,8 +132,6 @@ namespace SAB
                 {
                     AudioManager.instance.PlayAudio(definition.AudioMessage);
                 }
-
-                Debug.Log(playerID + " Spree: " + definition.Title + " (" + killsThisInterval + ")");
             }
         }
     }

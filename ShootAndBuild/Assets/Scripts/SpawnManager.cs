@@ -136,7 +136,6 @@ namespace SAB.Spawn
             if (currentWaveIndex >= this.waves.Count)
             {
                 currentWaveIndex = 0;
-                Debug.LogWarning("reached end of waves. starting over.");
 				NotificationManager.instance.ShowNotification(new Notification("Restarting Waves", NotificationType.NeutralNews));
             }
 
@@ -157,8 +156,6 @@ namespace SAB.Spawn
                 this.spawners[s].SetSpawnRate(currentWave.spawnPropability[s]);
 				isEmptyWave &= (currentWave.spawnPropability[s].enemies.Count == 0);
             }
-
-			Debug.Log("Wave " + this.currentWaveIndex);
 
 			if (isEmptyWave)
 			{
