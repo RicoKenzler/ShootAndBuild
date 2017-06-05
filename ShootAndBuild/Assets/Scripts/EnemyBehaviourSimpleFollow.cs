@@ -80,9 +80,10 @@ namespace SAB
             Vector3 smoothTargetToTargetFuturePositionOffset = Vector3.Lerp(targetToTargetFuturePositionOffset, lastTargetToTargetFutureOffset, estimateFuturePositionSmoothness);
             Vector3 smoothFuturePosition = exactTargetPos + smoothTargetToTargetFuturePositionOffset;
 
-            Debug.DrawLine(transform.position, exactTargetPos,          Color.green,    0.0166f);
-            Debug.DrawLine(transform.position, futureTargetPos,         Color.red,      0.0166f);
-            Debug.DrawLine(transform.position, smoothFuturePosition,    Color.magenta,  0.0166f);
+            // Debug future position:
+            //Debug.DrawLine(transform.position, exactTargetPos,          Color.green,    0.0166f);
+            //Debug.DrawLine(transform.position, futureTargetPos,         Color.red,      0.0166f);
+            //Debug.DrawLine(transform.position, smoothFuturePosition,    Color.magenta,  0.0166f);
 
             Vector3 modifiedDirectionTowardsTarget;
             GetDistanceAndDirectionTo(smoothFuturePosition, out modifiedDirectionTowardsTarget);
