@@ -22,7 +22,7 @@ GameObject:
   - component: {fileID: 33182469964813642}
   - component: {fileID: 23646038340864124}
   - component: {fileID: 65141987322290324}
-  m_Layer: 10
+  m_Layer: 11
   m_Name: F1_grenade
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -39,7 +39,7 @@ GameObject:
   - component: {fileID: 4446281569131110}
   - component: {fileID: 54128840915540010}
   - component: {fileID: 114986494976677032}
-  m_Layer: 10
+  m_Layer: 11
   m_Name: Grenade
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -149,7 +149,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6cc4ff242c16b1746800c26284056fec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  timeToExplode: 1.5
+  timeToExplode: 0.8
   explosionParticles: {fileID: 198000012777718758, guid: acf39d9f4addf294d93fa56fa373961b,
     type: 2}
   maxDamage: 50

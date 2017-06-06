@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f472d17afb08304ab3773c852bf3637, type: 3}
+  m_Name: OrcHit
+  m_EditorClassIdentifier: 
+  audioClips:
+  - {fileID: 8300000, guid: ceaaf6019ae5f6f40b5bf6ee01a90680, type: 3}
+  - {fileID: 8300000, guid: d48bceeeee8b07e40a4c49234c0a861e, type: 3}
+  - {fileID: 8300000, guid: facb684adb8f07d42a962a528facb3cb, type: 3}
+  - {fileID: 8300000, guid: 35a298f82cbd8df468ec22e8733b1db5, type: 3}
+  - {fileID: 8300000, guid: 89735373fd3e74847a8795b87a9d99b1, type: 3}
+  volume: 1
+  rndMusicalPitch: 0
+  pitchOffsetSemitones: -1
+  pitchRangeSemitones: 1
+  isUISound: 0
+  suppressDoppler: 0
+  amount3D: 1

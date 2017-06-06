@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f472d17afb08304ab3773c852bf3637, type: 3}
+  m_Name: OrcDie
+  m_EditorClassIdentifier: 
+  audioClips:
+  - {fileID: 8300000, guid: 86a15d96636d94b489ef7757516a986c, type: 3}
+  - {fileID: 8300000, guid: 511cc1447cf00f545984fe038705d923, type: 3}
+  - {fileID: 8300000, guid: c28f7d4528d313c428e542d25421373d, type: 3}
+  - {fileID: 8300000, guid: b6d42225e43263f40952a597d51a5d3e, type: 3}
+  volume: 1
+  rndMusicalPitch: 0
+  pitchOffsetSemitones: 0
+  pitchRangeSemitones: 2
+  isUISound: 0
+  suppressDoppler: 0
+  amount3D: 1
