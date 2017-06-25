@@ -34,8 +34,8 @@ namespace SAB
 			switch (GameManager.Instance.winCondition)
             {
                 case WinCondition.MoneyTotal:
-                    finalString += "Gather Money:\n";
-                    finalString += GameManager.Instance.GetCurrentWinConditionContext() + " / " + GameManager.Instance.winConditionContextValue;
+                    finalString += "Gather Money\n";
+                    finalString += GameManager.Instance.GetCurrentWinConditionContext() + " / " + GameManager.Instance.winConditionContextValue + "\n\n";
                     break;
             }
 
@@ -43,6 +43,19 @@ namespace SAB
             {
                 case LoseCondition.Default:
                     // nothing special to draw
+                    break;
+                case LoseCondition.DestroyObject:
+                    if (GameManager.Instance.loseConditionContextObject)
+                    {
+                        Attackable attackable = GameManager.Instance.loseConditionContextObject.GetComponent<Attackable>();
+
+                        finalString += GameManager.Instance.loseConditionContextObject.name + "\n";
+                        finalString += attackable.Health + " / " + attackable.maxHealth + " HP";
+                    }
+                    else
+                    {
+                        finalString += "OBJECT DESTROYED";
+                    }
                     break;
             }
 

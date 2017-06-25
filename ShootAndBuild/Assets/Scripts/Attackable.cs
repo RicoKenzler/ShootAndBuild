@@ -33,7 +33,7 @@ namespace SAB
 		private int currentHealth = 0;
 		private InputController inputController;
 
-		void Start()
+        void Start()
 		{
 			Heal();
 
@@ -48,7 +48,7 @@ namespace SAB
 			currentHealth = Mathf.Min(currentHealth, maxHealth);
 		}
 
-		void OnEnable()
+        void OnEnable()
 		{
 			RegisterHealthBar();
 			AttackableManager.instance.RegisterAttackable(this, false);

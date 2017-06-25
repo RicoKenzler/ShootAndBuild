@@ -20,13 +20,14 @@ namespace SAB
 
     public enum LoseCondition
     {
-        Default             // lose all lifes
+        Default,             // lose all lifes
+        DestroyObject,
     };
 
     public class GameManager : MonoBehaviour
     {
         public WinCondition winCondition    = WinCondition.MoneyTotal;
-        public LoseCondition loseCondition  = LoseCondition.Default;
+        public LoseCondition loseCondition  = LoseCondition.DestroyObject;
 
         public int winConditionContextValue = 1000;
         public GameObject winConditionContextObject = null;
@@ -113,6 +114,17 @@ namespace SAB
             {
                 case LoseCondition.Default:
                     return -1;
+
+                case LoseCondition.DestroyObject:
+                    if (loseConditionContextObject)
+                    {
+                        Attackable loseConditionAttackable = loseConditionContextObject.GetComponent<Attackable>();
+                        return loseConditionAttackable.Health;
+                    }
+                    else
+                    {
+                        return 0;
+                    }
             }
 
             return -1;
@@ -122,19 +134,38 @@ namespace SAB
         {
             Debug.Assert(gameStatus == GameStatus.Running);
 
+            bool lostGame = false;
+
             switch (loseCondition)
             {
                 case LoseCondition.Default:
                 // we need to check this special condition anyways for all lose conditions
                 break;
+
+                case LoseCondition.DestroyObject:
+                int context = GetCurrentLoseConditionContext();
+                if (context <= 0)
+                {
+                    lostGame = true;
+                }
+                break;
             }
 
-            if (Inventory.sharedInventoryInstance.GetItemCount(ItemType.ExtraLifes) <= 0)
+            // Default lose condition
+            if (!lostGame)
             {
-                if (PlayerManager.instance.allAlivePlayers.Count == 0)
+                if (Inventory.sharedInventoryInstance.GetItemCount(ItemType.ExtraLifes) <= 0)
                 {
-                    LoseGame();
+                    if (PlayerManager.instance.allAlivePlayers.Count == 0)
+                    {
+                        lostGame = true;
+                    }
                 }
+            }
+            
+            if (lostGame)
+            {
+                LoseGame();
             }
         }
 
