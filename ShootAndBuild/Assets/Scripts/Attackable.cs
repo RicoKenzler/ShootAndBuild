@@ -62,7 +62,7 @@ namespace SAB
 
 		public void RegisterHealthBar(bool unregister = false)
 		{
-			if (!showHealthBar || GetComponent<Building>())
+			if (!showHealthBar)
 			{
 				return;
 			}

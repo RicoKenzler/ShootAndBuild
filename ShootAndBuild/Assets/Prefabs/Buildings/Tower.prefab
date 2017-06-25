@@ -158,8 +158,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 100
-  showHealthBar: 1
-  faction: 1
+  showHealthBar: 0
+  faction: 0
   itemDrops: []
   dieSound: {fileID: 11400000, guid: 32b0cf4a8e09f644db0b3b517ea03634, type: 2}
   spawnSound: {fileID: 0}
