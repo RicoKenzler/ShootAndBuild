@@ -204,11 +204,12 @@ MonoBehaviour:
       spawnRate:
       - 0.5
       - 0.2
-    - enemies: 010000000200000004000000
+    - enemies: 01000000020000000400000005000000
       spawnRate:
       - 0.4
       - 0.2
       - 0.25
+      - 0.1
     - enemies: 0100000002000000
       spawnRate:
       - 0.5
@@ -251,7 +252,7 @@ MonoBehaviour:
       - 1
       - 1
       - 0.2
-    - enemies: 020000000200000002000000
+    - enemies: 020000000200000005000000
       spawnRate:
       - 1
       - 1
@@ -274,10 +275,11 @@ MonoBehaviour:
   - {fileID: 114500221820644298}
   - {fileID: 114552701511615204}
   enemyTemplates:
-  - {fileID: 0}
+  - {fileID: 114903628286852534, guid: 9c279ebdb7245324dba9067ca144d265, type: 2}
   - {fileID: 114278665344766292, guid: 3c52e5d3f7f36844085688653d9c73b8, type: 2}
   - {fileID: 114065223908063668, guid: 9ce0e76df95a9ea47a55b4c329d11a4c, type: 2}
   - {fileID: 114065223908063668, guid: 708f9debb04499c49b893c3ca3f07cfb, type: 2}
   - {fileID: 114950192231060640, guid: 666aba011db19844e8ef004e0fe2ce0a, type: 2}
+  - {fileID: 114903628286852534, guid: 9c279ebdb7245324dba9067ca144d265, type: 2}
   newWaveSound: {fileID: 11400000, guid: 258d2559b47d2cb4ca0194814e87ea8a, type: 2}
   finishedWaveSound: {fileID: 11400000, guid: 5203e19e79ed7b64ba445cd84d0256b6, type: 2}

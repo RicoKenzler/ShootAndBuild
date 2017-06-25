@@ -10,6 +10,7 @@ namespace SAB
         Rabbit = 2,
         Slime = 3,
         Orc = 4,
+        Knight = 5,
     }
 
     public enum TargetPreference
