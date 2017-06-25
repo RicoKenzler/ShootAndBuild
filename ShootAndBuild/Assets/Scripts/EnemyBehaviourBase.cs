@@ -12,6 +12,14 @@ namespace SAB
         Orc = 4,
     }
 
+    public enum TargetPreference
+    {
+        Human,
+        Buildings,
+        QuestBuilding,
+        None,
+    }
+
     [System.Serializable]
     public struct RestingInfo
     {
@@ -90,6 +98,8 @@ namespace SAB
         public float attackCooldown = 1;
         public int damage			= 1;
         public AudioData hitSound;
+
+        public TargetPreference targetPreference = TargetPreference.None;
 
         public RestingInfo restingInfo;
 
@@ -201,16 +211,51 @@ namespace SAB
 
 		// ------------------------------------------------
 
-		protected GameObject FindNearestTarget()
+		protected GameObject FindNextTarget()
 		{
 			float playerDistanceSq;
             float buildingDistanceSq;
             GameObject nearestPlayer = GetNearestPlayer(out playerDistanceSq);
             GameObject nearestBuilding = GetNearestBuilding(out buildingDistanceSq);
-			
             GameObject nearestTarget = playerDistanceSq < buildingDistanceSq ? nearestPlayer : nearestBuilding;
+            float nearestDistanceSq = Mathf.Min(playerDistanceSq, buildingDistanceSq);
 
-			return nearestTarget;
+            GameObject bestTarget = null;
+            
+            switch (targetPreference)
+            {
+                case TargetPreference.Buildings:
+                    bestTarget = nearestBuilding ? nearestBuilding : nearestPlayer;
+                    break;
+
+                case TargetPreference.Human:
+                    bestTarget = nearestPlayer ? nearestPlayer : nearestBuilding;
+                    break;
+
+                case TargetPreference.QuestBuilding:
+                    if (GameManager.Instance.loseCondition == LoseCondition.DestroyObject)
+                    {
+                        bestTarget = GameManager.Instance.loseConditionContextObject;
+                    }
+                    break;
+
+                case TargetPreference.None:
+                    break;
+            }
+
+            if (nearestTarget && nearestDistanceSq <= (attackDistance * attackDistance))
+            {
+                // even if we have a preference, we should attack proximite targets
+                bestTarget = nearestTarget;
+            }
+
+            if (!bestTarget)
+            {
+                // nearest target as fallback
+                bestTarget = nearestTarget;
+            }
+
+			return bestTarget;
 		}
 
 		// ------------------------------------------------
@@ -271,7 +316,7 @@ namespace SAB
 
         void Update()
         {
-			// 0) Is Forzen...?
+			// 0) Is Frozen...?
             if (CheatManager.instance.freezeEnemies)
             {
 				// ... stop update

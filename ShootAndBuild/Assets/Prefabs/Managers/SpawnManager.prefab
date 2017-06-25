@@ -98,7 +98,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1236907863792116}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 14.97, y: 0, z: 9.71}
+  m_LocalPosition: {x: 20.32, y: 0, z: 22.27}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4088430342554304}
@@ -111,7 +111,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1782630021365796}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -15.6, y: 0, z: 8.9}
+  m_LocalPosition: {x: -19.19, y: 0, z: 24.35}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4088430342554304}
@@ -124,7 +124,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1102659810414132}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -24.16}
+  m_LocalPosition: {x: 0.26, y: 0, z: 14.59}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4088430342554304}
@@ -182,15 +182,60 @@ MonoBehaviour:
     spawnPropability:
     - enemies: 01000000
       spawnRate:
-      - 5
-    - enemies: 010000000200000004000000
+      - 2
+    - enemies: 0100000004000000
       spawnRate:
-      - 5
-      - 1
+      - 2
       - 0.2
     - enemies: 01000000
       spawnRate:
-      - 5
+      - 2
+  - duration: 30
+    spawnPropability:
+    - enemies: 
+      spawnRate: []
+    - enemies: 
+      spawnRate: []
+    - enemies: 
+      spawnRate: []
+  - duration: 10
+    spawnPropability:
+    - enemies: 0100000002000000
+      spawnRate:
+      - 0.5
+      - 0.2
+    - enemies: 010000000200000004000000
+      spawnRate:
+      - 0.4
+      - 0.2
+      - 0.25
+    - enemies: 0100000002000000
+      spawnRate:
+      - 0.5
+      - 0.2
+  - duration: 30
+    spawnPropability:
+    - enemies: 
+      spawnRate: []
+    - enemies: 
+      spawnRate: []
+    - enemies: 
+      spawnRate: []
+  - duration: 2
+    spawnPropability:
+    - enemies: 0300000001000000
+      spawnRate:
+      - 0.5
+      - 1
+    - enemies: 030000000100000004000000
+      spawnRate:
+      - 0.5
+      - 1
+      - 0.5
+    - enemies: 0300000002000000
+      spawnRate:
+      - 0.5
+      - 0.5
   - duration: 30
     spawnPropability:
     - enemies: 
@@ -201,67 +246,21 @@ MonoBehaviour:
       spawnRate: []
   - duration: 5
     spawnPropability:
-    - enemies: 0100000002000000
-      spawnRate:
-      - 2
-      - 0.4
-    - enemies: 010000000200000004000000
-      spawnRate:
-      - 2
-      - 0.4
-      - 1
-    - enemies: 0100000002000000
-      spawnRate:
-      - 2
-      - 0.4
-  - duration: 30
-    spawnPropability:
-    - enemies: 
-      spawnRate: []
-    - enemies: 
-      spawnRate: []
-    - enemies: 
-      spawnRate: []
-  - duration: 30
-    spawnPropability:
-    - enemies: 0300000001000000
-      spawnRate:
-      - 0.1
-      - 1
-    - enemies: 030000000100000004000000
-      spawnRate:
-      - 0.1
-      - 1
-      - 1
-    - enemies: 0300000002000000
-      spawnRate:
-      - 0.1
-      - 0.5
-  - duration: 30
-    spawnPropability:
-    - enemies: 
-      spawnRate: []
-    - enemies: 
-      spawnRate: []
-    - enemies: 
-      spawnRate: []
-  - duration: 30
-    spawnPropability:
     - enemies: 010000000200000003000000
       spawnRate:
-      - 0.5
-      - 0.3
-      - 0.3
+      - 1
+      - 1
+      - 0.2
     - enemies: 020000000200000002000000
       spawnRate:
-      - 0.5
+      - 1
       - 1
       - 0.5
-    - enemies: 030000000100000003000000
+    - enemies: 030000000100000004000000
       spawnRate:
-      - 0.5
+      - 0.2
       - 1
-      - 0.5
+      - 2
   - duration: 300
     spawnPropability:
     - enemies: 

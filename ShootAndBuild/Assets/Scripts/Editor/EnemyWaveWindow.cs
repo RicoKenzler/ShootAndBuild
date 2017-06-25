@@ -158,7 +158,7 @@ namespace SAB
                         //TODO have fixed rect for this
                         EditorGUILayout.BeginHorizontal(GUILayout.Width(80));
                         {
-                            currentSpb.enemies[e] = (EnemyType)EditorGUILayout.EnumPopup("", currentSpb.enemies[e], GUILayout.Width(60));
+                            currentSpb.enemies[e]   = (EnemyType)EditorGUILayout.EnumPopup("", currentSpb.enemies[e], GUILayout.Width(60));
                             currentSpb.spawnRate[e] = EditorGUILayout.FloatField("", currentSpb.spawnRate[e], GUILayout.Width(40));
 
                             //remove entry

@@ -1101,11 +1101,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 4
-  speed: 10
+  speed: 6
   attackDistance: 2
   attackCooldown: 1
   damage: 10
   hitSound: {fileID: 11400000, guid: dc67b61173b4ba74c9264512b3c649ec, type: 2}
+  targetPreference: 2
   restingInfo:
     restDuration: 1
     restCooldown: 1

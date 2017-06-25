@@ -646,12 +646,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c18305f3b3e5be54ebea7f0ce9e3a69d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 7
+  type: 3
+  speed: 3
   attackDistance: 2
   attackCooldown: 1
   damage: 100
   hitSound: {fileID: 11400000, guid: 05acd00bacedcbb46b95e13c68b4a7d2, type: 2}
-  type: 3
+  targetPreference: 1
+  restingInfo:
+    restDuration: 0
+    restCooldown: 0
+  zigZagFrequency: 0
+  zigZagAngle: 90
+  estimateFuturePosition: 0
+  estimateFuturePositionSmoothness: 0.9
 --- !u!114 &114454388468075342
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -851,17 +851,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 2
-  speed: 5
+  speed: 3
   attackDistance: 2
   attackCooldown: 1
   damage: 50
   hitSound: {fileID: 11400000, guid: 8f2d936bac126a341b741ab44e392604, type: 2}
+  targetPreference: 3
   restingInfo:
     restDuration: 2
     restCooldown: 5
   zigZagFrequency: 1
   zigZagAngle: 90
   estimateFuturePosition: 0
+  estimateFuturePositionSmoothness: 0.9
 --- !u!114 &114441391789738886
 MonoBehaviour:
   m_ObjectHideFlags: 1

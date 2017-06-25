@@ -43,7 +43,7 @@ namespace SAB
 
 		protected override void OnUpdate()
 		{
-            GameObject nearestTarget = FindNearestTarget();
+            GameObject nearestTarget = FindNextTarget();
 
             if (!nearestTarget)
             {
