@@ -12,9 +12,26 @@ namespace SAB
         Lost,
         Won
     }
+    
+    public enum WinCondition
+    {
+        MoneyTotal          // gain X money
+    };
+
+    public enum LoseCondition
+    {
+        Default             // lose all lifes
+    };
 
     public class GameManager : MonoBehaviour
     {
+        public WinCondition winCondition    = WinCondition.MoneyTotal;
+        public LoseCondition loseCondition  = LoseCondition.Default;
+
+        public int winConditionContextValue = 1000;
+        public GameObject winConditionContextObject = null;
+        public int loseConditionContextValue = 0;
+        public GameObject loseConditionContextObject = null;
 
         public RectTransform winText;
         public RectTransform loseText;
@@ -35,7 +52,6 @@ namespace SAB
         {
             get; private set;
         }
-
 
         // Use this for initialization
         void Awake()
@@ -69,15 +85,49 @@ namespace SAB
         {
             Debug.Assert(gameStatus == GameStatus.Running);
 
-            if (Inventory.sharedInventoryInstance.GetItemCount(ItemType.Gold) >= 1000)
+            switch (winCondition)
             {
-                WinGame();
+                case WinCondition.MoneyTotal:
+                    if (GetCurrentWinConditionContext() >= winConditionContextValue)
+                    {
+                        WinGame();
+                    }
+                    break;
             }
+        }
+
+        public int GetCurrentWinConditionContext()
+        {
+            switch (winCondition)
+            {
+                case WinCondition.MoneyTotal:
+                    return Inventory.sharedInventoryInstance.GetItemCount(ItemType.Gold);
+            }
+
+            return -1;
+        }
+
+        public int GetCurrentLoseConditionContext()
+        {
+            switch (loseCondition)
+            {
+                case LoseCondition.Default:
+                    return -1;
+            }
+
+            return -1;
         }
 
         void CheckLoseConditions()
         {
             Debug.Assert(gameStatus == GameStatus.Running);
+
+            switch (loseCondition)
+            {
+                case LoseCondition.Default:
+                // we need to check this special condition anyways for all lose conditions
+                break;
+            }
 
             if (Inventory.sharedInventoryInstance.GetItemCount(ItemType.ExtraLifes) <= 0)
             {
@@ -129,6 +179,7 @@ namespace SAB
             Instantiate(loseText.gameObject, canvas.transform, false);
             gameStatus = GameStatus.Lost;
         }
+
     }
 
 }
