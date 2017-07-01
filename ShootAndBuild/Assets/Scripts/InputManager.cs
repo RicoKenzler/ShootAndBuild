@@ -275,7 +275,7 @@ namespace SAB
                     return;
                 }
 
-                if (Time.unscaledTime > vibrateUntil)
+                if (CheatManager.instance.disableVibration || (Time.unscaledTime > vibrateUntil))
                 {
                     // We vibrated long enough
                     vibrationAmountL = 0.0f;
