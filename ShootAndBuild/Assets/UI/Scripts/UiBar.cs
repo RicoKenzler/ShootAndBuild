@@ -3,8 +3,6 @@ using UnityEngine.UI;
 
 namespace SAB
 {
-
-    [ExecuteInEditMode]
     public class UiBar : MonoBehaviour
     {
         public Image BarFillingImage;
