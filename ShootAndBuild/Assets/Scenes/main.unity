@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 0.043
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 886024144}
-  m_IndirectSpecularColor: {r: 0.010083243, g: 0.008521583, b: 0.027594082, a: 0.043}
+  m_IndirectSpecularColor: {r: 0.010077285, g: 0.00852815, b: 0.02759779, a: 0.043}
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -161,7 +161,7 @@ MonoBehaviour:
   ultraHighDamage: 0
   disableAudio: 0
   disableMusic: 1
-  disableVibration: 0
+  disableVibration: 1
 --- !u!1 &79263609
 GameObject:
   m_ObjectHideFlags: 0
@@ -2514,6 +2514,16 @@ Prefab:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 224424425302130604, guid: 9b4347d9bcf825642a729d8de42dc67d,
+        type: 2}
+      propertyPath: m_AnchorMin.x
+      value: -0.40040737
+      objectReference: {fileID: 0}
+    - target: {fileID: 224424425302130604, guid: 9b4347d9bcf825642a729d8de42dc67d,
+        type: 2}
+      propertyPath: m_AnchorMax.x
+      value: 0.5995926
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 9b4347d9bcf825642a729d8de42dc67d, type: 2}
   m_IsPrefabParent: 0
@@ -3580,9 +3590,9 @@ MonoBehaviour:
   MusicGroupVolumeDefault: 0
   audioMixer: {fileID: 24100000, guid: 4bbc8c941e664a1458add2f014bede89, type: 2}
   musicTrack:
-    BaseTrack: {fileID: 8300000, guid: e24ea562dcf144c48a989e6eb3746e28, type: 3}
-    CalmTrack: {fileID: 8300000, guid: 96b223f705909c94d93bdfc57624babd, type: 3}
-    CombatTrack: {fileID: 8300000, guid: e4a5a5e4be843a84098525df630bf858, type: 3}
+    BaseTrack: {fileID: 8300000, guid: fd799c9c44c1e0b4ba18cd6e38882cce, type: 3}
+    CalmTrack: {fileID: 8300000, guid: dd30fe1be545d7745af3a9de23401ffc, type: 3}
+    CombatTrack: {fileID: 8300000, guid: e0fb73cd1b61b1b4e80e18c05e32b219, type: 3}
   keepCombatStateDuration: 1
   combatFadeInDuration: 2
   combatFadeOutDuration: 4
@@ -3735,7 +3745,7 @@ AudioSource:
       tangentMode: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
-    m_RotationOrder: 4
+    m_RotationOrder: 0
   reverbZoneMixCustomCurve:
     serializedVersion: 2
     m_Curve:
@@ -3816,7 +3826,7 @@ AudioSource:
       tangentMode: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
-    m_RotationOrder: 4
+    m_RotationOrder: 0
   reverbZoneMixCustomCurve:
     serializedVersion: 2
     m_Curve:

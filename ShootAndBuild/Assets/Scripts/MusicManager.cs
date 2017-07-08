@@ -112,6 +112,19 @@ namespace SAB
 
 		//-------------------------------------------------
 
+		float LinearToLogarithmic(float t)
+		{
+			// we want a logarithmic function that maps 0 to 0 and 1 to 1
+			double c = 0.07f;
+
+			double nominator	= System.Math.Log(c / (c + (double)t));
+			double denominator	= System.Math.Log(c / (c + 1));
+
+			return (float) (nominator / denominator);
+		}
+
+		//-------------------------------------------------
+
 		private void TickMoodFades()
 		{
 			if (isInCombat)
@@ -135,8 +148,8 @@ namespace SAB
 
 			combatAmount = Mathf.Clamp(combatAmount, 0.0f, 1.0f);
 
-			calmSource.volume	= 1.0f - combatAmount;
-			combatSource.volume = combatAmount;
+			calmSource.volume	= LinearToLogarithmic(1.0f - combatAmount);
+			combatSource.volume = LinearToLogarithmic(combatAmount);
 		}
 
 		//-------------------------------------------------
