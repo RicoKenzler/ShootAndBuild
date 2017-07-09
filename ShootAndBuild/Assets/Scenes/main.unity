@@ -4326,3 +4326,66 @@ MonoBehaviour:
   shaderFXAAPreset3: {fileID: 4800000, guid: c182fa94a5a0a4c02870641efcd38cd5, type: 3}
   shaderFXAAII: {fileID: 4800000, guid: cd5b323dcc592457790ff18b528f5e67, type: 3}
   shaderFXAAIII: {fileID: 4800000, guid: c547503fff0e8482ea5793727057041c, type: 3}
+--- !u!1 &2145780007
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 2145780008}
+  - component: {fileID: 2145780009}
+  m_Layer: 0
+  m_Name: TerrainGenerator
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2145780008
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2145780007}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 10
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2145780009
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2145780007}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a724cdfe6b159bb42b57ab3917c6486d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Resolution: 129
+  UseTimeAsSeed: 0
+  Seed: 10
+  TransformParams:
+    TerrainCenter: {x: 0, y: 0}
+    TerrainSizeWS: {x: 128, y: 128}
+    HeightMax: 15
+    HeightMin: 0
+  HeightParams:
+    PerlinFrequencyCoarse: 0.0167
+    PerlinFrequencyFine: 0.1
+    PerlinWeightCoarse: 0.5
+    PerlinWeightFine: 0.153
+    DebugHeightRange: 0
+  TextureParams:
+    GrassAlbedo: {fileID: 2800000, guid: 8436acd77d5b60948bfc146c5031540d, type: 3}
+    GrassNormal: {fileID: 2800000, guid: 15bfb750701d7b9439c808e6f5815893, type: 3}
+    RockAlbedo: {fileID: 2800000, guid: d6971144598309840aa5627e0797e545, type: 3}
+    RockNormal: {fileID: 2800000, guid: e6b70229308faa64880eac4945d59f5e, type: 3}
+    GrassTiling: 4
+    RockTiling: 7.8
+    BlendingSharpness: 14.2
+    RockSteepnessAngle: 57.4
