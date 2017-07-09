@@ -80,7 +80,7 @@ namespace SAB
 		// Use this for initialization
 		void Start ()
 		{
-			RegenerateAll();
+			
 		}
 
 		public void DeleteTerrain()
