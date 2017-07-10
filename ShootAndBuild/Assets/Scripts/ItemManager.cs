@@ -83,11 +83,6 @@ namespace SAB
             }
         }
 
-        void Update()
-        {
-
-        }
-
         void Awake()
         {
             instance = this;

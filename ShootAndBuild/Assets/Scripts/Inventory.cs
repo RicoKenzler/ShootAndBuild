@@ -29,6 +29,7 @@ namespace SAB
         private InputController inputController;
         private Attackable attackable;
         private PlayerMenu playerMenu;
+		private Buffable buffable;
 
         // ReadOnly Dictionaries are not supported before .Net 4.5
         public Dictionary<ItemType, int> GetItemsReadOnly()
@@ -42,6 +43,7 @@ namespace SAB
             attackable = GetComponent<Attackable>();
             playerMenu = GetComponent<PlayerMenu>();
             throwable = GetComponent<Throwable>();
+			buffable = GetComponent<Buffable>();
 
             if (inputController)
             {
@@ -62,18 +64,6 @@ namespace SAB
             {
                 sharedInventoryInstance = this;
             }
-        }
-
-        // Use this for initialization
-        void Start()
-        {
-
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-
         }
 
         public void TriggerNotEnoughItemsSound()
@@ -152,6 +142,8 @@ namespace SAB
                     Debug.LogWarning("Missing case statement for " + itemInfos.itemType);
                     break;
             }
+
+			buffable.AddBuffs(itemInfos.buffs);
 
             // Player Counter
             PlayerID? user = inputController ? (PlayerID?)inputController.playerID : null;

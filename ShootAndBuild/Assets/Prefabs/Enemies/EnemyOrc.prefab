@@ -133,6 +133,7 @@ GameObject:
   - component: {fileID: 54647186864734004}
   - component: {fileID: 114155619270350656}
   - component: {fileID: 114421009662657060}
+  - component: {fileID: 114636089955443950}
   m_Layer: 9
   m_Name: EnemyOrc
   m_TagString: Untagged
@@ -895,6 +896,7 @@ MeshRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
+  m_SortingLayer: 0
   m_SortingOrder: 0
 --- !u!23 &23700385632749322
 MeshRenderer:
@@ -926,6 +928,7 @@ MeshRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
+  m_SortingLayer: 0
   m_SortingOrder: 0
 --- !u!23 &23862398321085714
 MeshRenderer:
@@ -957,6 +960,7 @@ MeshRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
+  m_SortingLayer: 0
   m_SortingOrder: 0
 --- !u!33 &33049210473499634
 MeshFilter:
@@ -1089,6 +1093,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4035f8777ce03bf4880575e81bf5954d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &114636089955443950
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1200185571721126}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c013f17642867e0498d53b3a52d14f12, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114950192231060640
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1144,6 +1159,7 @@ SkinnedMeshRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
+  m_SortingLayer: 0
   m_SortingOrder: 0
   serializedVersion: 2
   m_Quality: 0

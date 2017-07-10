@@ -19,13 +19,7 @@ namespace SAB
         {
             inputController = GetComponent<InputController>();
         }
-
-        // Update is called once per frame
-        void Update()
-        {
-
-        }
-
+		
         public void PlayTaunt()
         {
             PlayerID playerID = inputController.playerID;

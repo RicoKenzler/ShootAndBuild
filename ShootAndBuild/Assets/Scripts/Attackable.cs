@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace SAB
 {
@@ -33,12 +34,15 @@ namespace SAB
 		private int currentHealth = 0;
 		private InputController inputController;
 
+		private Buffable buffable;
+
         void Start()
 		{
 			Heal();
 
 			PlaySpawnSound();
 
+			buffable = GetComponent<Buffable>();
 			inputController = GetComponent<InputController>();
 		}
 
@@ -188,7 +192,7 @@ namespace SAB
         /// <param name="damageDealerMedium"></param>
         /// <param name="damageDealerActor"></param>
         /// <returns>the damage actually dealt</returns>
-		public int DealDamage(int damage, GameObject damageDealerMedium, GameObject damageDealerActor)
+		public int DealDamage(int damage, GameObject damageDealerMedium, GameObject damageDealerActor, List<BuffData> buffs = null)
 		{
             int damageDealt = 0;
 
@@ -199,6 +203,17 @@ namespace SAB
 				damage = maxHealth + 100000;
 			}
 
+			Buffable buffableActor = damageDealerActor.GetComponent<Buffable>();
+			if (buffableActor)
+			{
+				damage = (int)(damage * buffableActor.GetDamageMultiplier());
+            }
+
+			if (buffs != null && buffable != null)
+			{
+				buffable.AddBuffs(buffs);
+			}
+			
             int lastHealth = currentHealth;
 
             currentHealth -= damage;

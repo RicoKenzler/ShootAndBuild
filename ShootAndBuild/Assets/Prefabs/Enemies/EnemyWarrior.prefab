@@ -348,6 +348,7 @@ GameObject:
   - component: {fileID: 54258772685511420}
   - component: {fileID: 114013159662561902}
   - component: {fileID: 114105667849283770}
+  - component: {fileID: 114809636006164370}
   m_Layer: 9
   m_Name: EnemyWarrior
   m_TagString: Untagged
@@ -895,6 +896,7 @@ MeshRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
+  m_SortingLayer: 0
   m_SortingOrder: 0
 --- !u!23 &23102344541869456
 MeshRenderer:
@@ -926,6 +928,7 @@ MeshRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
+  m_SortingLayer: 0
   m_SortingOrder: 0
 --- !u!23 &23861000350780630
 MeshRenderer:
@@ -957,6 +960,7 @@ MeshRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
+  m_SortingLayer: 0
   m_SortingOrder: 0
 --- !u!33 &33450844007816710
 MeshFilter:
@@ -1089,6 +1093,17 @@ MonoBehaviour:
     type: 2}
   bloodDecal: {fileID: 114453302406263870, guid: 64a24b6f7f4c34f4b9910eebd9adb72c,
     type: 2}
+--- !u!114 &114809636006164370
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1884886964741938}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c013f17642867e0498d53b3a52d14f12, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114903628286852534
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1144,6 +1159,7 @@ SkinnedMeshRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
+  m_SortingLayer: 0
   m_SortingOrder: 0
   serializedVersion: 2
   m_Quality: 0

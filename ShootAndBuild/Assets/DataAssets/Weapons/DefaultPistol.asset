@@ -31,3 +31,5 @@ MonoBehaviour:
   areaDamage: 0
   areaRadius: 0
   recoilForce: 0
+  buffs:
+  - {fileID: 11400000, guid: df79d31f188e3c6429883393e916c45d, type: 2}

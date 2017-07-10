@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
 namespace SAB
 {
 
-    public class Shootable : MonoBehaviour
+	public class Shootable : MonoBehaviour
     {
         public WeaponData defaultWeapon;
 
@@ -21,7 +20,9 @@ namespace SAB
 			get; private set;
 		}
 
-        public float Cooldown
+		//----------------------------------------------------------------------
+
+		public float Cooldown
         {
             get
             {
@@ -45,14 +46,7 @@ namespace SAB
         }
 
         //----------------------------------------------------------------------
-
-        void Start()
-        {
-
-        }
-
-        //----------------------------------------------------------------------
-
+		
         void Update()
         {
             //TODO move to physics timestep to be more precise
@@ -77,7 +71,7 @@ namespace SAB
 			{
                 //Debug.Log("picked up " + _newWeapon.weaponID.ToString());
                 //weapon is not contained -> add
-                WeaponData weapon = UnityEngine.Object.Instantiate(_newWeapon);
+                WeaponData weapon = Instantiate(_newWeapon);
                 weapon.Init(this);
                 arsenal.Add(weapon);
 
@@ -110,7 +104,7 @@ namespace SAB
                     currentWeaponIndex = arsenal.Count - 1;
                 }
 
-                this.CurrentWeapon = arsenal[currentWeaponIndex];
+                CurrentWeapon = arsenal[currentWeaponIndex];
 
                 return true;        
             }

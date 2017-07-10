@@ -302,6 +302,7 @@ GameObject:
   - component: {fileID: 114569976537219696}
   - component: {fileID: 114573611399926386}
   - component: {fileID: 114270027438886738}
+  - component: {fileID: 114395315457523264}
   m_Layer: 8
   m_Name: Player
   m_TagString: Untagged
@@ -2095,7 +2096,7 @@ Light:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1969812851606530}
   m_Enabled: 1
-  serializedVersion: 7
+  serializedVersion: 8
   m_Type: 2
   m_Color: {r: 1, g: 0.95537525, b: 0.83823526, a: 1}
   m_Intensity: 0.26
@@ -2120,6 +2121,8 @@ Light:
   m_Lightmapping: 4
   m_AreaSize: {x: 1, y: 1}
   m_BounceIntensity: 1
+  m_ColorTemperature: 6570
+  m_UseColorTemperature: 0
   m_ShadowRadius: 0
   m_ShadowAngle: 0
 --- !u!111 &111402087984344820
@@ -2218,6 +2221,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4035f8777ce03bf4880575e81bf5954d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &114395315457523264
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1229075479329374}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c013f17642867e0498d53b3a52d14f12, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114401709228175904
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2247,6 +2261,7 @@ MonoBehaviour:
   projectilePrefab: {fileID: 1996455648613418, guid: 02f11bb25c102a64bbb91a3b977a0668,
     type: 2}
   throwSound: {fileID: 11400000, guid: 1bed37748b4451249a60bf6322d827d8, type: 2}
+  throwStrength: 10
 --- !u!114 &114573611399926386
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2335,6 +2350,7 @@ SkinnedMeshRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
+  m_SortingLayer: 0
   m_SortingOrder: 0
   serializedVersion: 2
   m_Quality: 0

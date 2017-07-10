@@ -1,6 +1,7 @@
-﻿using UnityEngine;
-using UnityEditor;
+﻿using System.Collections.Generic;
 using System.Linq;
+using UnityEditor;
+using UnityEngine;
 
 namespace SAB
 {
@@ -12,7 +13,6 @@ namespace SAB
         Projectile = 2,
         Hitscan = 3,
         Trowable = 4, // grenades??
-           
     }
 
     public enum DamageType
@@ -78,6 +78,8 @@ namespace SAB
 
         public float recoilForce = 0;
 
+		public List<BuffData> buffs;
+
         private float cooldown = 0f;
 
         private RaycastHit[] hits = new RaycastHit[20];
@@ -135,6 +137,7 @@ namespace SAB
                     proj.speed = projectileSpeed + Random.Range(-projectileSpeed * projectileRandomSpeed, projectileSpeed * projectileRandomSpeed);
                     proj.range = range;
                     proj.ricochetEffect = ricochetEffect;
+					proj.buffs.AddRange(buffs);
                     //TODO range of projectile
                     //TODO damage type to projectile
                 }
@@ -186,7 +189,7 @@ namespace SAB
                                 attackable = hits[h].rigidbody.GetComponent<Attackable>();
                                 if (attackable != null)
                                 {
-                                    damageToDeal -= attackable.DealDamage(damageToDeal, owner.gameObject, owner.gameObject);
+                                    damageToDeal -= attackable.DealDamage(damageToDeal, owner.gameObject, owner.gameObject, buffs);
 
 									// je: I find it more appropriate, when damage is not consumed
 									damageToDeal = damage;

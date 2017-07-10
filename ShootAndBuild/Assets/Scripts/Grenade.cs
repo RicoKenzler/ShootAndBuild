@@ -13,6 +13,7 @@ namespace SAB
         public float radius = 8.0f;
         public AudioData explosionSound;
         public Throwable owner;
+		public List<BuffData> buffs;
 
         private float explodeTimer = 0.0f;
         private float radiusSquared = 0.0f;
@@ -87,7 +88,7 @@ namespace SAB
                     movable.impulseForce = damage.impulse;
                 }
 
-                damage.attackable.DealDamage(damage.damage, gameObject, owner.gameObject);
+                damage.attackable.DealDamage(damage.damage, gameObject, owner.gameObject, buffs);
             }
 
             ParticleManager.instance.SpawnParticle(explosionParticles.gameObject, gameObject, transform.position, null, false, 10.0f, false, false);
