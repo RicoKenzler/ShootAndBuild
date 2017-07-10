@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 0.043
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 886024144}
-  m_IndirectSpecularColor: {r: 0.010083243, g: 0.008521583, b: 0.027594082, a: 0.043}
+  m_IndirectSpecularColor: {r: 0.010077285, g: 0.00852815, b: 0.02759779, a: 0.043}
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -4366,9 +4366,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a724cdfe6b159bb42b57ab3917c6486d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Resolution: 129
-  UseTimeAsSeed: 0
-  Seed: 527
+  Resolution: 257
+  UseTimeAsSeed: 1
+  Seed: 178
   TransformParams:
     TerrainCenter: {x: 0, y: 0}
     TerrainSizeWS: {x: 128, y: 128}
@@ -4376,16 +4376,41 @@ MonoBehaviour:
     HeightMin: 0
   HeightParams:
     PerlinFrequencyCoarse: 0.0167
-    PerlinFrequencyFine: 0.1
+    PerlinFrequencyFine: 0.045
     PerlinWeightCoarse: 0.5
-    PerlinWeightFine: 0.153
+    PerlinWeightFine: 0.15
     DebugHeightRange: 0
   TextureParams:
-    GrassAlbedo: {fileID: 2800000, guid: 828f0a47062a04a419ee7f0b9ac71a80, type: 3}
-    GrassNormal: {fileID: 2800000, guid: fb2e496d80ee9984fb7bd13cae1fbff6, type: 3}
-    RockAlbedo: {fileID: 2800000, guid: 0792cf1cfbc940c4b8de943ae0339215, type: 3}
-    RockNormal: {fileID: 2800000, guid: e406fb94630c597488051be3be773b21, type: 3}
-    GrassTiling: 15
-    RockTiling: 7.8
-    BlendingSharpness: 14.2
-    RockSteepnessAngle: 57.4
+    TexturePlaneA:
+      Albedo1: {fileID: 2800000, guid: b9952167c89dde64eb4b60cbdb3c58ae, type: 3}
+      Albedo2: {fileID: 2800000, guid: 6576c9656b3ae8f40a0eff44255f9f65, type: 3}
+      Normal1: {fileID: 2800000, guid: cc9577aaef6035f439ece19e0601af5b, type: 3}
+      Normal2: {fileID: 2800000, guid: c4a65871851fa404c8529adc25497aa4, type: 3}
+      Tiling1: 8.8
+      Tiling2: 16.6
+      BlendingSharpness12: 1
+      PerlinFrequency12: 0.071
+      Share2ndTexture: 0.24
+    TexturePlaneB:
+      Albedo1: {fileID: 2800000, guid: 89819e660ca23d144b068f6f3eea7d6d, type: 3}
+      Albedo2: {fileID: 2800000, guid: 46a97506c5fd02048bdcc6ff1d783d73, type: 3}
+      Normal1: {fileID: 2800000, guid: cf75bb8f01dc75d4e91380badc1e93da, type: 3}
+      Normal2: {fileID: 2800000, guid: cf75bb8f01dc75d4e91380badc1e93da, type: 3}
+      Tiling1: 7.3
+      Tiling2: 11.5
+      BlendingSharpness12: 16.5
+      PerlinFrequency12: 0.475
+      Share2ndTexture: 0.369
+    TextureRock:
+      Albedo1: {fileID: 2800000, guid: 36629e1efde4f9c45b97ca7d9dd1e4da, type: 3}
+      Albedo2: {fileID: 2800000, guid: 7f45f0ef0d00c0f40b7ea0ce568a150a, type: 3}
+      Normal1: {fileID: 0}
+      Normal2: {fileID: 0}
+      Tiling1: 9.6
+      Tiling2: 8.9
+      BlendingSharpness12: 20
+      PerlinFrequency12: 0.468
+      Share2ndTexture: 0.491
+    RockBlendingSharpness: 4.3
+    PlaneBShare: 0.4
+    RockSteepnessAngle: 69.7
