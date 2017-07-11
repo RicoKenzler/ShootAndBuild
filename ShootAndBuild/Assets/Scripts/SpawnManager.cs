@@ -58,7 +58,7 @@ namespace SAB.Spawn
         //----------------------------------------------------------------------
 
         private float waveTimer = 0;
-        private int currentWaveIndex = 0;
+        private int currentWaveIndex = -1;
 
         //----------------------------------------------------------------------
 
@@ -92,15 +92,7 @@ namespace SAB.Spawn
         // Use this for initialization
         void Start()
         {
-
-            if (this.waves == null || this.waves.Count == 0)
-            {
-                Debug.LogError("no waves setup");
-                return;
-            }
-
-            this.InitWave();
-
+			
         }
 
         //----------------------------------------------------------------------
@@ -108,6 +100,12 @@ namespace SAB.Spawn
         // Update is called once per frame
         void Update()
         {
+			if (!PlayerManager.instance.HasPlayerJoined(PlayerID.Player1))
+			{
+				// No Waves until player is ready
+				return;
+			}
+
             if (GameManager.Instance.Status == GameStatus.Running)
 			{
                 if (this.waves == null || this.waves.Count == 0)
@@ -117,11 +115,10 @@ namespace SAB.Spawn
                 }
 			}
 
-
             waveTimer += Time.deltaTime;
 
             //next wave
-            if (waveTimer > this.waves[currentWaveIndex].duration)
+            if (currentWaveIndex == -1 || waveTimer > this.waves[currentWaveIndex].duration)
             {
                 this.NextWave();
             }

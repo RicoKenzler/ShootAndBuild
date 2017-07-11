@@ -5,12 +5,9 @@ namespace SAB
 {
 	public class Buffable : MonoBehaviour
 	{
-		private List<GameObject> buffVisuals;
-
 		void Awake()
 		{
 			buffs = new List<BuffData>();
-			buffVisuals = new List<GameObject>();
 		}
 
 		//----------------------------------------------------------------------
