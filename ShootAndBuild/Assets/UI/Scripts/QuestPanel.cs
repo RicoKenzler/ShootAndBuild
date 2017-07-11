@@ -8,14 +8,17 @@ namespace SAB
 
 	public class QuestPanel : MonoBehaviour 
 	{
-        public Text questTextPanel;
-        public Animator questTextAnimator;
+        public Text winTextPanel;
+		public Text loseTextPanel;
+        Animator winTextAnimator;
+		Animator loseTextAnimator;
 
 		//-------------------------------------------------
 
 		void Awake()
 		{
-			questTextAnimator = questTextPanel.GetComponent<Animator>();
+			winTextAnimator		= winTextPanel.GetComponent<Animator>();
+			loseTextAnimator	= loseTextPanel.GetComponent<Animator>();
 		}
 
 		//-------------------------------------------------
@@ -29,15 +32,17 @@ namespace SAB
 		
 		void Update() 
 		{
-            string finalString = "";
+            string winString = "";
 
 			switch (GameManager.Instance.winCondition)
             {
                 case WinCondition.MoneyTotal:
-                    finalString += "Gather Money\n";
-                    finalString += GameManager.Instance.GetCurrentWinConditionContext() + " / " + GameManager.Instance.winConditionContextValue + "\n\n";
+                    winString += "Gather Money\n";
+                    winString += GameManager.Instance.GetCurrentWinConditionContext() + " / " + GameManager.Instance.winConditionContextValue + "\n\n";
                     break;
             }
+
+			string loseString = "";
 
             switch (GameManager.Instance.loseCondition)
             {
@@ -49,27 +54,28 @@ namespace SAB
                     {
                         Attackable attackable = GameManager.Instance.loseConditionContextObject.GetComponent<Attackable>();
 
-                        finalString += GameManager.Instance.loseConditionContextObject.name + "\n";
-                        finalString += attackable.Health + " / " + attackable.maxHealth + " HP";
+                        loseString += GameManager.Instance.loseConditionContextObject.name + "\n";
+                        loseString += attackable.Health + " / " + attackable.maxHealth + " HP";
                     }
                     else
                     {
-                        finalString += "OBJECT DESTROYED";
+                        loseString += "OBJECT DESTROYED";
                     }
                     break;
             }
 
-            if (questTextPanel.text != finalString)
+            if (winTextPanel.text != winString)
             {
-                questTextPanel.text = finalString;
-                HighlightQuest();
+                winTextPanel.text = winString;
+                winTextAnimator.SetTrigger("Grow");
+            }
+
+			if (loseTextPanel.text != loseString)
+            {
+                loseTextPanel.text = loseString;
+                loseTextAnimator.SetTrigger("Grow");
             }
 		}
-
-        public void HighlightQuest()
-        {
-            questTextAnimator.SetTrigger("Grow");
-        }
 	}
 
 }

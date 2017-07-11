@@ -18,6 +18,7 @@ namespace SAB
             GameObject instance = Instantiate(projectilePrefab, projectileContainer.transform);
             instance.transform.position = transform.position + transform.forward * 0.5f;
             instance.GetComponent<Grenade>().owner = this;
+			instance.GetComponent<Grenade>().ownerFaction = GetComponent<Attackable>().faction;
 
             Rigidbody body = instance.GetComponent<Rigidbody>();
             body.velocity = transform.forward * throwStrength;

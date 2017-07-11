@@ -12,8 +12,14 @@ namespace SAB
         public float maxForce = 10.0f;
         public float radius = 8.0f;
         public AudioData explosionSound;
+		public bool doFriendlyFire = false;
+
+		[HideInInspector]
         public Throwable owner;
 		public List<BuffData> buffs;
+
+		[HideInInspector]
+		public Faction ownerFaction;
 
         private float explodeTimer = 0.0f;
         private float radiusSquared = 0.0f;
@@ -61,6 +67,14 @@ namespace SAB
 
             foreach (Attackable attackable in AttackableManager.instance.allAttackables)
             {
+				if (!doFriendlyFire)
+				{
+					if (attackable.faction == ownerFaction)
+					{
+						continue;
+					}
+				}
+
                 float distanceSq = (attackable.transform.position - selfPos).sqrMagnitude;
 
                 if (distanceSq < radiusSquared)
