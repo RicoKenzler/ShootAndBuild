@@ -3632,7 +3632,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 19173e34b7906a542a67cef8c8f8ece7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MusicGroupVolumeDefault: 0
+  MusicGroupVolumeDefault: -4.8
   audioMixer: {fileID: 24100000, guid: 4bbc8c941e664a1458add2f014bede89, type: 2}
   musicTrack:
     BaseTrack: {fileID: 8300000, guid: fd799c9c44c1e0b4ba18cd6e38882cce, type: 3}
