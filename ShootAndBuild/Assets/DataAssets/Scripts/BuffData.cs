@@ -51,10 +51,20 @@ namespace SAB
 
 		//----------------------------------------------------------------------
 
+		bool IsPositiveBuff()
+		{
+			return (damageMultiplier > 0 || speedMultiplier > 0);
+		}
+
 		public void OnAdd(GameObject parent)
 		{
 			visualInstance = Instantiate(visual, parent.transform);
 			visualInstance.transform.localPosition = Vector3.zero;
+
+			if (parent.GetComponent<InputController>())
+			{
+				MusicManager.instance.OnAddPlayerBuffCount(1, IsPositiveBuff());
+			}
 		}
 
 		//----------------------------------------------------------------------
@@ -62,6 +72,11 @@ namespace SAB
 		public void OnRemove(GameObject parent)
 		{
 			Destroy(visualInstance);
+
+			if (parent.GetComponent<InputController>())
+			{
+				MusicManager.instance.OnAddPlayerBuffCount(-1, IsPositiveBuff());
+			}
 		}
 
 		//----------------------------------------------------------------------
