@@ -136,6 +136,11 @@ namespace SAB
 				}
 			}
 
+			if (GUILayout.Button("Next Wave"))
+			{
+				SAB.Spawn.SpawnManager.instance.NextWave();
+			}
+
 			GUI.enabled = true;		
 
 			if (!freezeEnemyOld && cheatManager.freezeEnemies)

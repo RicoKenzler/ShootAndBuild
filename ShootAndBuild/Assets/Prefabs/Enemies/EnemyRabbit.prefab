@@ -862,6 +862,8 @@ MonoBehaviour:
   restingInfo:
     restDuration: 2
     restCooldown: 5
+  buffOnAttack: {fileID: 11400000, guid: df79d31f188e3c6429883393e916c45d, type: 2}
+  buffOnAttackProbability: 1
   zigZagFrequency: 1
   zigZagAngle: 90
   estimateFuturePosition: 0

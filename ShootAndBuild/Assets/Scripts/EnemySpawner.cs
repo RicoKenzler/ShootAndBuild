@@ -70,7 +70,7 @@ namespace SAB.Spawn
 
         void Spawn(EnemyType _enemy)
         {
-            GameObject enemyPrefab = SpawnManager.Instance.GetEnemyTemplate(_enemy);
+            GameObject enemyPrefab = SpawnManager.instance.GetEnemyTemplate(_enemy);
 
             if (enemyPrefab != null)
             {

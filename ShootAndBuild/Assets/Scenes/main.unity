@@ -160,7 +160,7 @@ MonoBehaviour:
   noResourceCosts: 1
   ultraHighDamage: 0
   disableAudio: 0
-  disableMusic: 1
+  disableMusic: 0
   disableVibration: 0
 --- !u!1 &79263609
 GameObject:

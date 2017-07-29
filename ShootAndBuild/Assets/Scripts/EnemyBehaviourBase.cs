@@ -104,6 +104,9 @@ namespace SAB
 
         public RestingInfo restingInfo;
 
+		public BuffData buffOnAttack;
+		public float buffOnAttackProbability = 0.2f;
+
         protected float currentAttackCooldown = 0;
 
         protected Animation animationController;
@@ -311,6 +314,16 @@ namespace SAB
 			TryStartAnim(attackAnimName, 4.0f, false);
 					
             AudioManager.instance.PlayAudio(hitSound, transform.position);
+
+			if (buffOnAttack && Random.Range(0.0001f, 1.0f) <= buffOnAttackProbability)
+			{
+				Buffable targetBuffable = target.GetComponent<Buffable>();
+
+				if (targetBuffable)
+				{
+					targetBuffable.AddBuff(buffOnAttack);
+				}
+			}
 		}
 
 		// ------------------------------------------------

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 namespace SAB.Spawn
@@ -50,7 +51,7 @@ namespace SAB.Spawn
     public class SpawnManager : MonoBehaviour
     {
 
-        public static SpawnManager Instance
+        public static SpawnManager instance
         {
             get; private set;
         }
@@ -79,7 +80,7 @@ namespace SAB.Spawn
 
         void Awake()
         {
-            Instance = this;
+            instance = this;
 
             if (spawners == null || spawners.Length == 0)
             {
@@ -127,7 +128,7 @@ namespace SAB.Spawn
 
         //----------------------------------------------------------------------
 
-        private void NextWave()
+        public void NextWave()
         {
             currentWaveIndex++;
             if (currentWaveIndex >= this.waves.Count)
@@ -172,7 +173,5 @@ namespace SAB.Spawn
         {
             return this.enemyTemplates[(int)_type].gameObject;
         }
-
-
     }
 }
