@@ -213,6 +213,11 @@ namespace SAB
 			{
 				buffable.AddBuffs(buffs);
 			}
+
+			if (GameManager.Instance.loseCondition == LoseCondition.DestroyObject && GameManager.Instance.loseConditionContextObject == gameObject)
+			{
+				MusicManager.instance.SignalIsDanger();
+			}
 			
             int lastHealth = currentHealth;
 

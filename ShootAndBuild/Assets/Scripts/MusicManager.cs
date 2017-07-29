@@ -15,6 +15,7 @@ namespace SAB
 
 		public AudioClip PositiveBuffLoop;
 		public AudioClip NegativeBuffLoop;
+		public AudioClip DangerLoop;
 
 		public float BPM;
 	}
@@ -36,7 +37,7 @@ namespace SAB
 		// Mixer & Tracks
 		//-------------------------------------------------	
 		public AudioMixer		audioMixer;
-		public ModularTrack		musicTrack;
+		public ModularTrack[]	musicTracks;
 		private AudioMixerGroup soundGroup;
 
 		//-------------------------------------------------	
@@ -45,6 +46,13 @@ namespace SAB
 		public float keepCombatStateDuration = 1.0f;
 		public float combatFadeInDuration    = 2.0f;
 		public float combatFadeOutDuration   = 3.0f;
+		
+		//-------------------------------------------------	
+		// Danger Parameter
+		//-------------------------------------------------	
+		public float keepDangerDuration		 = 3.0f;
+		public float dangerFadeInDuration    = 0.3f;
+		public float dangerFadeOutDuration   = 3.0f;
 
 		//-------------------------------------------------	
 		// Sources for Music Tracks
@@ -55,6 +63,7 @@ namespace SAB
 
 		private AudioSource positiveBuffLoopSource;
 		private AudioSource negativeBuffLoopSource;
+		private AudioSource dangerLoopSource;
 
 		//-------------------------------------------------	
 		// Combat State
@@ -64,12 +73,22 @@ namespace SAB
 		private float	combatAmount	= 0.001f;
 
 		//-------------------------------------------------	
+		// Danger State
+		//-------------------------------------------------	
+		private float lastDangerTime	= 0.0f;
+		private bool  isInDanger		= false;
+		private float dangerAmount		= 0.001f;
+
+		//-------------------------------------------------	
 		// Buff-Music State
 		//-------------------------------------------------	
 		private int playerPositiveBuffCount = 0;
 		private int playerNegativeBuffCount = 0;
 
-		public float TEST_BUFF_LOOP_OFFSET = 0.00f;
+		//-------------------------------------------------	
+		// Playlist
+		//-------------------------------------------------	
+		int currentTrackIndex = -1;
 
 		public float LastCombatTime
 		{
@@ -78,6 +97,7 @@ namespace SAB
 				return lastCombatTime;
 			}
 		}
+
 		//-------------------------------------------------
 
 		void Awake()
@@ -89,7 +109,7 @@ namespace SAB
 
 		void Start() 
 		{
-			const int sourceCount = 5;
+			const int sourceCount = 6;
 			AudioSource[] audioSources = new AudioSource[sourceCount];
 
 			for (int i = 0; i < sourceCount; ++i)
@@ -104,12 +124,14 @@ namespace SAB
 			combatSource			= audioSources[2];
 			positiveBuffLoopSource	= audioSources[3];
 			negativeBuffLoopSource	= audioSources[4];
+			dangerLoopSource		= audioSources[5];
 
-			baseTrackSource.outputAudioMixerGroup		= soundGroup;
-			calmSource.outputAudioMixerGroup			= soundGroup;
-			combatSource.outputAudioMixerGroup			= soundGroup;
-			positiveBuffLoopSource.outputAudioMixerGroup = soundGroup;
-			negativeBuffLoopSource.outputAudioMixerGroup = soundGroup;
+			baseTrackSource.outputAudioMixerGroup			= soundGroup;
+			calmSource.outputAudioMixerGroup				= soundGroup;
+			combatSource.outputAudioMixerGroup				= soundGroup;
+			positiveBuffLoopSource.outputAudioMixerGroup	= soundGroup;
+			negativeBuffLoopSource.outputAudioMixerGroup	= soundGroup;
+			dangerLoopSource.outputAudioMixerGroup			= soundGroup;
 			
 			NextTrack();
 		}
@@ -120,6 +142,14 @@ namespace SAB
 		{
 			lastCombatTime = Time.time;
 			isInCombat = true;
+		}
+
+		//-------------------------------------------------
+
+		public void SignalIsDanger()
+		{
+			lastDangerTime = Time.time;
+			isInDanger = true;
 		}
 
 		//-------------------------------------------------
@@ -142,6 +172,18 @@ namespace SAB
 
 			TickCombatState();
 			TickMoodFades();
+
+			TickDangerState();
+			TickDangerVolume();
+
+			UpdateAllLoops();
+		}
+
+		//-------------------------------------------------
+
+		ModularTrack GetCurrentTrack()
+		{
+			return musicTracks[currentTrackIndex];
 		}
 
 		//-------------------------------------------------
@@ -153,12 +195,18 @@ namespace SAB
 			combatSource.Stop();
 			positiveBuffLoopSource.Stop();
 			negativeBuffLoopSource.Stop();
+			dangerLoopSource.Stop();
 
-			baseTrackSource.clip		= musicTrack.BaseTrack;
-			calmSource.clip				= musicTrack.CalmTrack;
-			combatSource.clip			= musicTrack.CombatTrack;
-			positiveBuffLoopSource.clip	= musicTrack.PositiveBuffLoop;
-			negativeBuffLoopSource.clip	= musicTrack.NegativeBuffLoop;
+			currentTrackIndex = (currentTrackIndex + 1) % musicTracks.Length;
+
+			ModularTrack currentTrack = GetCurrentTrack();
+
+			baseTrackSource.clip		= currentTrack.BaseTrack;
+			calmSource.clip				= currentTrack.CalmTrack;
+			combatSource.clip			= currentTrack.CombatTrack;
+			positiveBuffLoopSource.clip	= currentTrack.PositiveBuffLoop;
+			negativeBuffLoopSource.clip	= currentTrack.NegativeBuffLoop;
+			dangerLoopSource.clip		= currentTrack.DangerLoop;
 
 			baseTrackSource.loop		= false;
 			calmSource.loop				= false;
@@ -166,16 +214,15 @@ namespace SAB
 			positiveBuffLoopSource.loop	= true;
 			negativeBuffLoopSource.loop	= true;
 
-			if (musicTrack.BaseTrack.length != musicTrack.CalmTrack.length || musicTrack.BaseTrack.length != musicTrack.CombatTrack.length)
+			if (currentTrack.BaseTrack.length != currentTrack.CalmTrack.length 
+			 || currentTrack.BaseTrack.length != currentTrack.CombatTrack.length)
 			{
-				Debug.Log("Music Tracks do not have the same length: " + musicTrack.BaseTrack.length + " " + musicTrack.CalmTrack.length + " " + musicTrack.CombatTrack.length);
+				Debug.Log("Music Tracks do not have the same length: " + currentTrack.BaseTrack.length + " " + currentTrack.CalmTrack.length + " " + currentTrack.CombatTrack.length);
 			}
 
 			baseTrackSource.Play();
 			calmSource.Play();
 			combatSource.Play();
-
-			UpdateBuffLoops();
 		}
 
 		//-------------------------------------------------
@@ -222,18 +269,44 @@ namespace SAB
 
 		//-------------------------------------------------
 
+		private void TickDangerVolume()
+		{
+			if (isInDanger)
+			{
+				if (dangerAmount == 1.0f)
+				{
+					return;
+				}
+
+				dangerAmount += Time.deltaTime * (1.0f / (dangerFadeInDuration + float.Epsilon));
+			}
+			else
+			{
+				if (dangerAmount == 0.0f)
+				{
+					return;
+				}
+
+				dangerAmount -= Time.deltaTime * (1.0f / (dangerFadeOutDuration + float.Epsilon));
+			}
+
+			dangerAmount = Mathf.Clamp(dangerAmount, 0.0f, 1.0f);
+
+			dangerLoopSource.volume	= dangerAmount;
+		}
+
+		//-------------------------------------------------
+
 		void StartAdditionalLoop(AudioSource additionalLoop)
 		{
 			additionalLoop.Stop();
 		
 			double currentPositionWithinTrack = (double) baseTrackSource.time;
-			double beatsPassed = currentPositionWithinTrack * ((double) musicTrack.BPM / 60.0);
+			double beatsPassed = currentPositionWithinTrack * ((double) GetCurrentTrack().BPM / 60.0);
 
 			// all 8 beats the loop may start
 			double neededOffsetBeats = beatsPassed % 8.0;
-			double neededOffsetSeconds = neededOffsetBeats / ((double) musicTrack.BPM / 60.0);
-
-			neededOffsetSeconds += TEST_BUFF_LOOP_OFFSET;
+			double neededOffsetSeconds = neededOffsetBeats / ((double) GetCurrentTrack().BPM / 60.0);
 
 			additionalLoop.time = (float) neededOffsetSeconds;
 			additionalLoop.Play();		
@@ -254,13 +327,14 @@ namespace SAB
 				Debug.Assert(playerNegativeBuffCount >= 0);
 			}
 		
-			UpdateBuffLoops();
+			UpdateAllLoops();
 		}
 
 		//-------------------------------------------------
 
-		void UpdateBuffLoops()
+		void UpdateAllLoops()
 		{
+			// Positive Buffs
 			if (playerPositiveBuffCount > 0 && !positiveBuffLoopSource.isPlaying)
 			{
 				StartAdditionalLoop(positiveBuffLoopSource);
@@ -270,6 +344,7 @@ namespace SAB
 				positiveBuffLoopSource.Stop();
 			}
 
+			// Negative Buffs
 			if (playerNegativeBuffCount > 0 && !negativeBuffLoopSource.isPlaying)
 			{
 				StartAdditionalLoop(negativeBuffLoopSource);
@@ -277,6 +352,16 @@ namespace SAB
 			else if (playerNegativeBuffCount == 0)
 			{
 				negativeBuffLoopSource.Stop();
+			}
+
+			// Danger
+			if (dangerAmount > 0.0f && !dangerLoopSource.isPlaying)
+            {
+				StartAdditionalLoop(dangerLoopSource);
+			}
+			else if (dangerAmount == 0.0f)
+			{
+				dangerLoopSource.Stop();
 			}
 		}
 
@@ -292,6 +377,22 @@ namespace SAB
 			if (Time.time > lastCombatTime + keepCombatStateDuration)
 			{
 				isInCombat = false;
+			}
+		}
+
+		//-------------------------------------------------
+
+		void TickDangerState()
+		{
+			if (!isInDanger)
+			{
+				return;
+			} 
+
+			if (Time.time > lastDangerTime + keepDangerDuration)
+			{
+				isInDanger = false;
+				UpdateAllLoops();
 			}
 		}
 
@@ -330,6 +431,16 @@ namespace SAB
 				musicManager.OnAddPlayerBuffCount(delta, false);
 
 				negativeBuffTriggered = !negativeBuffTriggered;
+			}
+
+			if (GUILayout.Button("Combat"))
+			{
+				musicManager.SignalIsInCombat();
+			}
+
+			if (GUILayout.Button("Danger"))
+			{
+				musicManager.SignalIsDanger();
 			}
 
 			if (GUILayout.Button("Next Track"))

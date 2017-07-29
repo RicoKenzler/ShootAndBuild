@@ -160,7 +160,7 @@ MonoBehaviour:
   noResourceCosts: 1
   ultraHighDamage: 0
   disableAudio: 0
-  disableMusic: 0
+  disableMusic: 1
   disableVibration: 0
 --- !u!1 &79263609
 GameObject:
@@ -3631,17 +3631,27 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MusicGroupVolumeDefault: -4.8
   audioMixer: {fileID: 24100000, guid: 4bbc8c941e664a1458add2f014bede89, type: 2}
-  musicTrack:
-    BaseTrack: {fileID: 8300000, guid: 3ea9f148670af0a4ca6a84ad27a14763, type: 3}
+  musicTracks:
+  - BaseTrack: {fileID: 8300000, guid: 3ea9f148670af0a4ca6a84ad27a14763, type: 3}
     CalmTrack: {fileID: 8300000, guid: 6a96682ff588ed64e9fe2d04490420c3, type: 3}
     CombatTrack: {fileID: 8300000, guid: bdae79ea04c5d3d4da90c3e63bd590a9, type: 3}
     PositiveBuffLoop: {fileID: 8300000, guid: c9dd16fe679581f42b09c2fb1c0d907b, type: 3}
     NegativeBuffLoop: {fileID: 8300000, guid: 5655b77c7180dce4687b5923763860f3, type: 3}
+    DangerLoop: {fileID: 8300000, guid: a48be70226a1ec04cb70b8d492cc36a9, type: 3}
+    BPM: 110
+  - BaseTrack: {fileID: 8300000, guid: fbc839fe8e0d8494aafd76561498a00e, type: 3}
+    CalmTrack: {fileID: 8300000, guid: 1a00df96a1932ed49afb3f47941861e8, type: 3}
+    CombatTrack: {fileID: 8300000, guid: c147fd85a16870d46b8c66fd5bf6d508, type: 3}
+    PositiveBuffLoop: {fileID: 8300000, guid: c9dd16fe679581f42b09c2fb1c0d907b, type: 3}
+    NegativeBuffLoop: {fileID: 8300000, guid: 5655b77c7180dce4687b5923763860f3, type: 3}
+    DangerLoop: {fileID: 8300000, guid: a48be70226a1ec04cb70b8d492cc36a9, type: 3}
     BPM: 110
   keepCombatStateDuration: 1
   combatFadeInDuration: 2
   combatFadeOutDuration: 4
-  TEST_BUFF_LOOP_OFFSET: 0
+  keepDangerDuration: 1
+  dangerFadeInDuration: 0.3
+  dangerFadeOutDuration: 3
 --- !u!4 &1930156936 stripped
 Transform:
   m_PrefabParentObject: {fileID: 4860705358351190, guid: 186166c00133e8e4f83a20e048e278a6,
