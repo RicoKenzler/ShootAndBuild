@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Name: AttackBoost
   m_EditorClassIdentifier: 
   type: 1
-  duration: 3
+  duration: 4
   damageMultiplier: 3
   speedMultiplier: 0
   visual: {fileID: 100016, guid: 94f5722d0263cf946a95e30b8272c978, type: 2}

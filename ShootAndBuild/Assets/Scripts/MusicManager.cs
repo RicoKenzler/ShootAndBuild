@@ -410,6 +410,7 @@ namespace SAB
 		private bool positiveBuffTriggered = false;
 		private bool negativeBuffTriggered = false;
 
+
 		public override void OnInspectorGUI()
 		{
 			MusicManager musicManager = (MusicManager)target;
@@ -433,12 +434,12 @@ namespace SAB
 				negativeBuffTriggered = !negativeBuffTriggered;
 			}
 
-			if (GUILayout.Button("Combat"))
+			if (GUILayout.Button("Signal Combat"))
 			{
 				musicManager.SignalIsInCombat();
 			}
 
-			if (GUILayout.Button("Danger"))
+			if (GUILayout.Button("Signal Danger"))
 			{
 				musicManager.SignalIsDanger();
 			}

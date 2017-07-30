@@ -3635,15 +3635,15 @@ MonoBehaviour:
   - BaseTrack: {fileID: 8300000, guid: 3ea9f148670af0a4ca6a84ad27a14763, type: 3}
     CalmTrack: {fileID: 8300000, guid: 6a96682ff588ed64e9fe2d04490420c3, type: 3}
     CombatTrack: {fileID: 8300000, guid: bdae79ea04c5d3d4da90c3e63bd590a9, type: 3}
-    PositiveBuffLoop: {fileID: 8300000, guid: c9dd16fe679581f42b09c2fb1c0d907b, type: 3}
-    NegativeBuffLoop: {fileID: 8300000, guid: 5655b77c7180dce4687b5923763860f3, type: 3}
+    PositiveBuffLoop: {fileID: 8300000, guid: 5655b77c7180dce4687b5923763860f3, type: 3}
+    NegativeBuffLoop: {fileID: 8300000, guid: c9dd16fe679581f42b09c2fb1c0d907b, type: 3}
     DangerLoop: {fileID: 8300000, guid: a48be70226a1ec04cb70b8d492cc36a9, type: 3}
     BPM: 110
   - BaseTrack: {fileID: 8300000, guid: fbc839fe8e0d8494aafd76561498a00e, type: 3}
     CalmTrack: {fileID: 8300000, guid: 1a00df96a1932ed49afb3f47941861e8, type: 3}
     CombatTrack: {fileID: 8300000, guid: c147fd85a16870d46b8c66fd5bf6d508, type: 3}
-    PositiveBuffLoop: {fileID: 8300000, guid: c9dd16fe679581f42b09c2fb1c0d907b, type: 3}
-    NegativeBuffLoop: {fileID: 8300000, guid: 5655b77c7180dce4687b5923763860f3, type: 3}
+    PositiveBuffLoop: {fileID: 8300000, guid: 5655b77c7180dce4687b5923763860f3, type: 3}
+    NegativeBuffLoop: {fileID: 8300000, guid: c9dd16fe679581f42b09c2fb1c0d907b, type: 3}
     DangerLoop: {fileID: 8300000, guid: a48be70226a1ec04cb70b8d492cc36a9, type: 3}
     BPM: 110
   keepCombatStateDuration: 1

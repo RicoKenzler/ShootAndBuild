@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Name: Slow
   m_EditorClassIdentifier: 
   type: 0
-  duration: 5
+  duration: 4
   damageMultiplier: 0
   speedMultiplier: -0.5
   visual: {fileID: 100016, guid: 29af8d70388777e4484c46eb0c38b74c, type: 2}
