@@ -358,6 +358,13 @@ namespace SAB
 			{
 				terrainGenerator.RegenerateAll();
 			}
+
+			GUILayout.Label("Test", EditorStyles.boldLabel);
+			if (GUILayout.Button("GenerateDelauney"))
+			{
+				VoronoiDiagram testDiagram = new VoronoiDiagram();
+				testDiagram.GenerateDelauney(1,2);
+			}
 		}
 	}
 }

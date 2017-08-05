@@ -27,6 +27,7 @@ namespace SAB
         UseItem,
         Shoot,
         Start,
+		Restart,
 
         Unused,
     }
@@ -419,6 +420,8 @@ namespace SAB
                     return "Shoot";
                 case ButtonType.Start:
                     return "Start";
+				case ButtonType.Restart:
+                    return "Restart";
             }
 
             return "InvalidButton";

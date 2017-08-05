@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace SAB
 { 
@@ -80,6 +81,12 @@ namespace SAB
                     TogglePause();
                 }
             }
+
+			if (InputManager.instance.DidAnyPlayerJustPress(ButtonType.Restart))
+			{
+				Time.timeScale = 1.0f;
+				SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+			}
         }
 
         void CheckWinConditions()
