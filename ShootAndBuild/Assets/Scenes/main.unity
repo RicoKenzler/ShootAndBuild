@@ -38,11 +38,11 @@ RenderSettings:
   m_ReflectionIntensity: 0.043
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 886024144}
-  m_IndirectSpecularColor: {r: 0.010083243, g: 0.008521583, b: 0.027594082, a: 0.043}
+  m_IndirectSpecularColor: {r: 0.010077285, g: 0.00852815, b: 0.02759779, a: 0.043}
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
-  serializedVersion: 9
+  serializedVersion: 11
   m_GIWorkflowMode: 0
   m_GISettings:
     serializedVersion: 2
@@ -54,7 +54,7 @@ LightmapSettings:
     m_EnableBakedLightmaps: 1
     m_EnableRealtimeLightmaps: 1
   m_LightmapEditorSettings:
-    serializedVersion: 8
+    serializedVersion: 9
     m_Resolution: 2
     m_BakeResolution: 40
     m_TextureWidth: 512
@@ -88,7 +88,7 @@ LightmapSettings:
     m_PVRFilteringAtrousNormalSigma: 1
     m_PVRFilteringAtrousPositionSigma: 1
   m_LightingDataAsset: {fileID: 0}
-  m_ShadowMaskMode: 2
+  m_UseShadowmask: 1
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -216,6 +216,7 @@ MonoBehaviour:
   m_PreferredHeight: -1
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
+  m_LayoutPriority: 1
 --- !u!222 &79263613
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1354,6 +1355,7 @@ MonoBehaviour:
   m_PreferredHeight: -1
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
+  m_LayoutPriority: 1
 --- !u!114 &837907491
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1463,6 +1465,20 @@ Light:
   m_Lightmapping: 4
   m_AreaSize: {x: 1, y: 1}
   m_BounceIntensity: 3
+  m_FalloffTable:
+    m_Table[0]: 0
+    m_Table[1]: 0
+    m_Table[2]: 0
+    m_Table[3]: 0
+    m_Table[4]: 0
+    m_Table[5]: 0
+    m_Table[6]: 0
+    m_Table[7]: 0
+    m_Table[8]: 0
+    m_Table[9]: 0
+    m_Table[10]: 0
+    m_Table[11]: 0
+    m_Table[12]: 0
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
   m_ShadowRadius: 0
@@ -3105,6 +3121,7 @@ MonoBehaviour:
   m_PreferredHeight: -1
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
+  m_LayoutPriority: 1
 --- !u!114 &1650187687
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3414,6 +3431,7 @@ MonoBehaviour:
   m_PreferredHeight: -1
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
+  m_LayoutPriority: 1
 --- !u!114 &1790642170
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4135,8 +4153,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Resolution: 257
-  UseTimeAsSeed: 1
-  Seed: 22884
+  UseTimeAsSeed: 0
+  Seed: 27875
   TransformParams:
     TerrainCenter: {x: 0, y: 0}
     TerrainSizeWS: {x: 10, y: 10}
@@ -4183,7 +4201,9 @@ MonoBehaviour:
     PlaneBShare: 0.4
     RockSteepnessAngle: 69.7
   VoronoiParams:
-    VoronoiPointCount: 512
-    DebugDrawDelauney: 1
+    VoronoiPointCount: 544
+    DebugDrawDelauney: 0
+    DebugDrawVoronoi: 1
+    DebugDrawOffset: 0
     DebugSteps: 0
-    ShuffleSeed: 98
+    ShuffleSeed: 2

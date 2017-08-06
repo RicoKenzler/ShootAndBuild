@@ -21,6 +21,11 @@ namespace SAB
 		public int VoronoiPointCount = 100;
 
 		public bool DebugDrawDelauney = false;
+		public bool DebugDrawVoronoi  = false;
+
+		[Range(0, 6)]
+		public float DebugDrawOffset  = 0.0f;
+
 		public int  DebugSteps		  = 0;
 		public int  ShuffleSeed		  = 0;
 	}

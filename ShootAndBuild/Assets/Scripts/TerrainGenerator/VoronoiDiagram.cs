@@ -35,6 +35,11 @@ namespace SAB
 
 		public Circle CircumscribedCircle;
 
+		public Vector2 GetCentroid(List<Vector2> pointList)
+		{
+			return (pointList[IndexP1] + pointList[IndexP2] + pointList[IndexP3]) / 3.0f;
+		}
+
 		public bool SharesEdge(Edge edge)
 		{
 			return (((edge.IndexP1 == IndexP1) || (edge.IndexP1 == IndexP2) || (edge.IndexP1 == IndexP3)) && 
@@ -65,6 +70,24 @@ namespace SAB
 			Vector2 p3 = pointList[IndexP3];
 
 			return VoronoiDiagram.FindCircumscribedCircle(p1,p2,p3, out CircumscribedCircle);
+		}
+	}
+
+	public class VoronoiCell
+	{
+		public List<Vector2> HullPointsSorted = new List<Vector2>();
+		public Vector2 Centroid = new Vector2(0.0f, 0.0f);
+
+		public void CalculateCentroid()
+		{
+			Centroid = new Vector2(0.0f, 0.0f);
+
+			foreach (Vector2 hullPoint in HullPointsSorted)
+			{
+				Centroid += hullPoint;
+			}
+
+			Centroid /= (float) HullPointsSorted.Count;
 		}
 	}
 
@@ -291,8 +314,8 @@ namespace SAB
 				{
 					Triangle currentTriangle = outTriangles[t];
 
-					float height = (float) t / (float) outTriangles.Count;
-					height = 1.0f;
+					float height = 1.0f + (t / (float)outTriangles.Count) * voronoiParams.DebugDrawOffset;
+
 					Vector3 p1 = new Vector3(inputPointList[currentTriangle.IndexP1].x, height, inputPointList[currentTriangle.IndexP1].y);
 					Vector3 p2 = new Vector3(inputPointList[currentTriangle.IndexP2].x, height, inputPointList[currentTriangle.IndexP2].y);
 					Vector3 p3 = new Vector3(inputPointList[currentTriangle.IndexP3].x, height, inputPointList[currentTriangle.IndexP3].y);
@@ -304,8 +327,83 @@ namespace SAB
 				}
 			}
 
+			// Remove super-triangle vertices
+			inputPointList.RemoveAt(SUPER_TRIANGLE_INDEX_P3);
+			inputPointList.RemoveAt(SUPER_TRIANGLE_INDEX_P2);
+			inputPointList.RemoveAt(SUPER_TRIANGLE_INDEX_P1);
+
+			bool voronoiSuccess = DelauneyToVoronoi(inputPointList, outTriangles, voronoiParams);
+
+			return voronoiSuccess;
+		}
+	
+		// -------------------------------------------------------------------
+
+		public bool DelauneyToVoronoi(List<Vector2> inputPointList, List<Triangle> delauneyTriangles, VoronoiParameters voronoiParams)
+		{
+			List<VoronoiCell> allCells = new List<VoronoiCell>();
+			allCells.Capacity = inputPointList.Count;
+
+			for (int p = 0; p < inputPointList.Count; ++p)
+			{
+				allCells.Add(new VoronoiCell());
+			} 
+
+			for (int t = 0; t < delauneyTriangles.Count; ++t)
+			{
+				// Tell every VoronoiCell (DelauneyVertex), which HullVertices it has
+				Triangle currentTriangle = delauneyTriangles[t];
+
+				// Note: We do not use circle center (as for a usual "Voronoi" Diagram, but the centroid, thus getting the barycentric dual mesh)
+				// See http://www.redblobgames.com/x/1721-voronoi-alternative/
+				Vector2 center = currentTriangle.GetCentroid(inputPointList);
+				//center = currentTriangle.CircumscribedCircle.Center;
+
+				allCells[currentTriangle.IndexP1].HullPointsSorted.Add(center);
+				allCells[currentTriangle.IndexP2].HullPointsSorted.Add(center);
+				allCells[currentTriangle.IndexP3].HullPointsSorted.Add(center);
+			}
+
+			for (int c = 0; c < allCells.Count; ++c)
+			{
+				VoronoiCell currentCell = allCells[c];
+				currentCell.CalculateCentroid();
+
+				Debug.Assert(allCells.Count >= 3);
+
+				currentCell.HullPointsSorted.Sort(delegate(Vector2 left, Vector2 right)
+				{
+					Vector2 centroidToLeft = left - currentCell.Centroid;
+					float angleLeft = Vector2.SignedAngle(centroidToLeft, Vector2.right);
+					
+					Vector2 centroidToRight = right - currentCell.Centroid;
+					float angleRight = Vector2.SignedAngle(centroidToRight, Vector2.right);
+
+					if (angleLeft < angleRight) { return -1; }
+					return 1;
+				});
+
+				if (voronoiParams.DebugDrawVoronoi)
+				{
+					Color col = new Color(c * 0.123f % 1.0f, c * 0.311f % 1.0f, c * 0.76f % 1.0f);
+
+					float height = 1.0f + (c / (float)allCells.Count) * voronoiParams.DebugDrawOffset;
+
+					for (int p = 0; p < currentCell.HullPointsSorted.Count; ++p)
+					{
+						Vector2 point = currentCell.HullPointsSorted[p];
+						Vector2 nextPoint = currentCell.HullPointsSorted[(p + 1) % currentCell.HullPointsSorted.Count];
+						
+						Debug.DrawLine(new Vector3(point.x, height, point.y), new Vector3(nextPoint.x, height, nextPoint.y),						col, 3.0f);
+						Debug.DrawLine(new Vector3(point.x, height, point.y), new Vector3(currentCell.Centroid.x, height, currentCell.Centroid.y),	col, 3.0f);
+					}
+				}
+			}
+
 			return true;
 		}
+
+		// -------------------------------------------------------------------
 
 		static public bool FindCircumscribedCircle(Vector2 r, Vector2 s, Vector2 t, out Circle circle)
 		{
