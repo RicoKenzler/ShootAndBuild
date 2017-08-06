@@ -15,6 +15,17 @@ namespace SAB
 	};
 
 	[System.Serializable]
+	public class VoronoiParameters
+	{
+		[Range(20, 1000)]
+		public int VoronoiPointCount = 100;
+
+		public bool DebugDrawDelauney = false;
+		public int  DebugSteps		  = 0;
+		public int  ShuffleSeed		  = 0;
+	}
+
+	[System.Serializable]
 	public class TransformParameters
 	{
 		public Vector2 TerrainCenter = new Vector2(0.0f, 0.0f);
@@ -119,8 +130,10 @@ namespace SAB
 		public TransformParameters			TransformParams;
 		public HeightGenerationParameters	HeightParams;
 		public TextureParameters			TextureParams;
+		public VoronoiParameters			VoronoiParams;
 		
 		GameObject TerrainObject;
+		public VoronoiDiagram VoronoiDiagram = new VoronoiDiagram();
 
 		// -----------------------------------------------------------------
 
@@ -158,8 +171,12 @@ namespace SAB
 		{
 			if (UseTimeAsSeed)
 			{
-				Seed = System.DateTime.Now.Millisecond % 100000;
+				Seed = (System.DateTime.Now.Millisecond + System.DateTime.Now.Second * 1000) % 100000;
 			}
+
+			VoronoiDiagram.GenerateDelauney(Seed, VoronoiParams, TransformParams.TerrainCenter, TransformParams.TerrainSizeWS);
+
+			return;
 
 			DeleteTerrain();
 
@@ -357,13 +374,6 @@ namespace SAB
 			if (GUILayout.Button("Regenerate"))
 			{
 				terrainGenerator.RegenerateAll();
-			}
-
-			GUILayout.Label("Test", EditorStyles.boldLabel);
-			if (GUILayout.Button("GenerateDelauney"))
-			{
-				VoronoiDiagram testDiagram = new VoronoiDiagram();
-				testDiagram.GenerateDelauney(1,2);
 			}
 		}
 	}

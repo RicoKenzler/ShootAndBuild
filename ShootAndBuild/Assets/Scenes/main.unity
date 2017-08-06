@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 0.043
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 886024144}
-  m_IndirectSpecularColor: {r: 0.010077285, g: 0.00852815, b: 0.02759779, a: 0.043}
+  m_IndirectSpecularColor: {r: 0.010083243, g: 0.008521583, b: 0.027594082, a: 0.043}
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -4136,10 +4136,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Resolution: 257
   UseTimeAsSeed: 1
-  Seed: 192
+  Seed: 22884
   TransformParams:
     TerrainCenter: {x: 0, y: 0}
-    TerrainSizeWS: {x: 128, y: 128}
+    TerrainSizeWS: {x: 10, y: 10}
     HeightMax: 15
     HeightMin: 0
   HeightParams:
@@ -4182,3 +4182,8 @@ MonoBehaviour:
     RockBlendingSharpness: 4.3
     PlaneBShare: 0.4
     RockSteepnessAngle: 69.7
+  VoronoiParams:
+    VoronoiPointCount: 512
+    DebugDrawDelauney: 1
+    DebugSteps: 0
+    ShuffleSeed: 98
