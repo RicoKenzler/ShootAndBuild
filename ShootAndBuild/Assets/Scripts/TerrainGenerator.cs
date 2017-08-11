@@ -17,16 +17,27 @@ namespace SAB
 	[System.Serializable]
 	public class VoronoiParameters
 	{
-		[Range(20, 1000)]
+		[Range(3, 1000)]
 		public int VoronoiPointCount = 100;
 
-		public bool DebugDrawDelauney = false;
-		public bool DebugDrawVoronoi  = false;
+		public bool ShowDelauney		= false;
+		public bool ShowVoronoi			= false;
+		public bool ShowPoints			= false;
+		public bool ShowIndices			= false;
+		public bool ShowBorder			= false;
+		public bool ShowVorArea			= false;
+		public bool ShowVorOrigentation = false;
 
-		[Range(0, 6)]
-		public float DebugDrawOffset  = 0.0f;
+		[Range(-1, 50)]
+		public int DebugDrawOnlyVertexIndex		= -1;
 
-		public int  DebugSteps		  = 0;
+		[Range(-1, 50)]
+		public int DebugDrawOnlyTriangleIndex	= -1;
+		
+		public bool SuppressClamping		= false;
+		public bool SuppressNewBorderEdges	= false;
+		public bool RealVoronoi				= false;
+
 		public int  ShuffleSeed		  = 0;
 	}
 
@@ -170,6 +181,13 @@ namespace SAB
 			}
 		}
 		
+		// -----------------------------------------------------------------
+
+		public void OnDrawGizmosSelected()
+		{
+			VoronoiDiagram.DebugDraw(VoronoiParams);
+		}
+
 		// -----------------------------------------------------------------
 
 		public void RegenerateAll()

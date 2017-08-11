@@ -2,6 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+using EdgeKey	= System.Int64;
+using PointIndex	= System.Int32;
+using TriIndex  = System.Int32;
+
 namespace SAB
 {
 	public struct Circle
@@ -15,49 +19,128 @@ namespace SAB
 		}
 	}
 
-	public struct Edge
+	public struct EdgeIndices
 	{
-		public int IndexP1;
-		public int IndexP2;
+		public PointIndex IndexP1;
+		public PointIndex IndexP2;
 
-		public Edge(int indexP1, int indexP2)
+		public EdgeIndices(PointIndex indexP1, PointIndex indexP2)
 		{
 			IndexP1 = indexP1;
 			IndexP2 = indexP2;
+		}
+
+		public EdgeKey ComputeKey()
+		{
+			PointIndex smallerIndex	= IndexP1 < IndexP2 ? IndexP1 : IndexP2;
+			PointIndex biggerIndex	= IndexP1 > IndexP2 ? IndexP1 : IndexP2;
+
+			return biggerIndex * 1000*1000*1000 + smallerIndex;
+		}
+
+		public Vector2 GetCenter(List<Vector2> pointList)
+		{
+			return (pointList[IndexP1] + pointList[IndexP2]) * 0.5f;
+		}
+	}
+
+	public struct TwoTriangleIndices
+	{
+		public TriIndex T1;
+		public TriIndex T2;
+
+		public TriIndex GetIndexUnequalTo(TriIndex T)
+		{
+			return (T1 == T) ? T2 : T1;
 		}
 	}
 
 	public struct Triangle
 	{
-		public int IndexP1;
-		public int IndexP2;
-		public int IndexP3;
+		public PointIndex IndexP0;
+		public PointIndex IndexP1;
+		public PointIndex IndexP2;
+
+		public PointIndex GetIndex(int i)
+		{
+			switch (i)
+			{
+				case 0: return IndexP0;
+				case 1: return IndexP1;
+			}
+
+			return IndexP2;
+		}
+
+		public bool HasAsVertex(PointIndex vertex)
+		{
+			return (IndexP0 == vertex || IndexP1 == vertex || IndexP2 == vertex);
+		}
+
+		public PointIndex GetIndexOppositeTo(EdgeIndices edgeIndices)
+		{
+			bool shared01 =	((edgeIndices.IndexP1 == IndexP0 && edgeIndices.IndexP2 == IndexP1) || (edgeIndices.IndexP1 == IndexP1 && edgeIndices.IndexP2 == IndexP0));
+			bool shared12 = ((edgeIndices.IndexP1 == IndexP1 && edgeIndices.IndexP2 == IndexP2) || (edgeIndices.IndexP1 == IndexP2 && edgeIndices.IndexP2 == IndexP1));
+			bool shared02 = ((edgeIndices.IndexP1 == IndexP0 && edgeIndices.IndexP2 == IndexP2) || (edgeIndices.IndexP1 == IndexP2 && edgeIndices.IndexP2 == IndexP0));
+			
+			if (shared01)
+			{
+				return IndexP2;
+			}
+			else if (shared12)
+			{
+				return IndexP0;
+			}
+			else if (shared02)
+			{
+				return IndexP1;
+			}
+
+			Debug.Assert(false);
+			return -1;
+		}
+
+		public EdgeIndices GetEdgeOppositeTo(int i)
+		{
+			return new EdgeIndices(GetIndex((i + 1) % 3), GetIndex((i + 2) % 3));
+		}
 
 		public Circle CircumscribedCircle;
 
 		public Vector2 GetCentroid(List<Vector2> pointList)
 		{
-			return (pointList[IndexP1] + pointList[IndexP2] + pointList[IndexP3]) / 3.0f;
+			return (pointList[IndexP0] + pointList[IndexP1] + pointList[IndexP2]) / 3.0f;
 		}
 
-		public bool SharesEdge(Edge edge)
+		public bool SharesEdge(EdgeIndices edge)
 		{
-			return (((edge.IndexP1 == IndexP1) || (edge.IndexP1 == IndexP2) || (edge.IndexP1 == IndexP3)) && 
-					((edge.IndexP2 == IndexP1) || (edge.IndexP2 == IndexP2) || (edge.IndexP2 == IndexP3)));
+			return (((edge.IndexP1 == IndexP0) || (edge.IndexP1 == IndexP1) || (edge.IndexP1 == IndexP2)) && 
+					((edge.IndexP2 == IndexP0) || (edge.IndexP2 == IndexP1) || (edge.IndexP2 == IndexP2)));
 		}
 
 		public bool SharesPointWith(Triangle other)
 		{
-			return (((IndexP1 == other.IndexP1) || (IndexP2 == other.IndexP1) || (IndexP3 == other.IndexP1)) ||
-					((IndexP1 == other.IndexP2) || (IndexP2 == other.IndexP2) || (IndexP3 == other.IndexP2)) ||
-					((IndexP1 == other.IndexP3) || (IndexP2 == other.IndexP3) || (IndexP3 == other.IndexP3)));
+			bool ownP0Shared = ((IndexP0 == other.IndexP0) || (IndexP0 == other.IndexP1) || (IndexP0 == other.IndexP2));
+			bool ownP1Shared = ((IndexP1 == other.IndexP0) || (IndexP1 == other.IndexP1) || (IndexP1 == other.IndexP2));
+			bool ownP2Shared = ((IndexP2 == other.IndexP0) || (IndexP2 == other.IndexP1) || (IndexP2 == other.IndexP2));
+
+			return ownP0Shared || ownP1Shared || ownP2Shared;
 		}
 
-		public bool TryInit(int indexP1, int indexP2, int indexP3, List<Vector2> pointList)
+		public int SharedPointCount(Triangle other, out bool ownP0Shared, out bool ownP1Shared, out bool ownP2Shared)
 		{
+			ownP0Shared = ((IndexP0 == other.IndexP0) || (IndexP0 == other.IndexP1) || (IndexP0 == other.IndexP2));
+			ownP1Shared = ((IndexP1 == other.IndexP0) || (IndexP1 == other.IndexP1) || (IndexP1 == other.IndexP2));
+			ownP2Shared = ((IndexP2 == other.IndexP0) || (IndexP2 == other.IndexP1) || (IndexP2 == other.IndexP2));
+		
+			return (ownP0Shared ? 1 : 0) + (ownP1Shared ? 1 : 0) + (ownP2Shared ? 1 : 0);
+		}
+
+		public bool TryInit(PointIndex indexP0, PointIndex indexP1, PointIndex indexP2, List<Vector2> pointList)
+		{
+			IndexP0 = indexP0;
 			IndexP1 = indexP1;
 			IndexP2 = indexP2;
-			IndexP3 = indexP3;
 
 			bool success = CalculateCircumscribedCircle(pointList);
 			return success;
@@ -65,69 +148,321 @@ namespace SAB
 
 		bool CalculateCircumscribedCircle(List<Vector2> pointList)
 		{
+			Vector2 p0 = pointList[IndexP0];
 			Vector2 p1 = pointList[IndexP1];
 			Vector2 p2 = pointList[IndexP2];
-			Vector2 p3 = pointList[IndexP3];
 
-			return VoronoiDiagram.FindCircumscribedCircle(p1,p2,p3, out CircumscribedCircle);
+			return VoronoiDiagram.FindCircumscribedCircle(p0,p1,p2, out CircumscribedCircle);
+		}
+	}
+
+	public struct Edge
+	{
+		public Vector2 Start;
+		public Vector2 End;
+
+		public Edge(Vector2 start, Vector2 end)
+		{
+			Start = start;
+			End = end;
+		}
+
+		public Vector2 GetCenter()
+		{
+			return (Start + End) * 0.5f;
+		}
+
+		public void MakeDirectionUnique()
+		{
+			// Make start smaller than end
+			Vector2 intermediate;
+
+			if (Start.x < End.x)
+			{
+				intermediate = Start;
+				Start = End;
+				End = intermediate;
+				return;
+			}
+			else if (Start.x == End.x)
+			{
+				if (Start.y < End.y)
+				{
+					intermediate = Start;
+					Start = End;
+					End = intermediate;
+					return;
+				}
+			}
+		}
+	}
+
+	public struct VoronoiNeighbor
+	{
+		public PointIndex	NeighborIndex;
+		public Edge			EdgeToNeighbor;
+		public bool			WasClamped;
+
+		public VoronoiNeighbor(PointIndex neighborIndex, Edge edge)
+		{
+			EdgeToNeighbor				= edge;
+			NeighborIndex				= neighborIndex;
+			WasClamped					= false;
 		}
 	}
 
 	public class VoronoiCell
 	{
-		public List<Vector2> HullPointsSorted = new List<Vector2>();
+		public List<VoronoiNeighbor> NeighborCells = new List<VoronoiNeighbor>();
 		public Vector2 Centroid = new Vector2(0.0f, 0.0f);
 
 		public void CalculateCentroid()
 		{
 			Centroid = new Vector2(0.0f, 0.0f);
 
-			foreach (Vector2 hullPoint in HullPointsSorted)
+			foreach (VoronoiNeighbor neighbor in NeighborCells)
 			{
-				Centroid += hullPoint;
+				Centroid += neighbor.EdgeToNeighbor.GetCenter();
 			}
 
-			Centroid /= (float) HullPointsSorted.Count;
+			Centroid /= (float) NeighborCells.Count;
 		}
+
+		public void SortEdgesCCW(bool forceEdgesDirection)
+		{
+			CalculateCentroid();
+
+			NeighborCells.Sort(delegate(VoronoiNeighbor left, VoronoiNeighbor right)
+			{
+				Vector2 centroidToLeft = left.EdgeToNeighbor.GetCenter() - Centroid;
+				float angleLeft = Vector2.SignedAngle(centroidToLeft, Vector2.right);
+					
+				Vector2 centroidToRight = right.EdgeToNeighbor.GetCenter() - Centroid;
+				float angleRight = Vector2.SignedAngle(centroidToRight, Vector2.right);
+
+				if (angleLeft > angleRight)
+				{
+					return -1;
+				}
+				else if (angleLeft < angleRight)
+				{
+					return 1;
+				}
+
+				return 0;
+			});
+
+			if (forceEdgesDirection)
+			{
+				for (int n = 0; n < NeighborCells.Count; n+=1)
+				{
+					int nextIndex = (n+1) % NeighborCells.Count;
+
+					VoronoiNeighbor neighborCellCopy		= NeighborCells[n];
+					VoronoiNeighbor nextNeighborCellCopy	= NeighborCells[nextIndex];
+
+					Edge currentEdge = neighborCellCopy.EdgeToNeighbor;
+					Edge nextEdge = NeighborCells[nextIndex].EdgeToNeighbor;
+
+					bool startConnects		= false;
+					bool nextEndConnects	= false;
+
+					if (currentEdge.Start == nextEdge.Start)
+					{
+						startConnects		= true;
+					}
+					else if (currentEdge.Start == nextEdge.End)
+					{
+						startConnects		= true;
+						nextEndConnects		= true;
+					}
+					else if (currentEdge.End == nextEdge.Start)
+					{
+
+					}
+					else if (currentEdge.End == nextEdge.End)
+					{
+						nextEndConnects		= true;
+					}
+					else
+					{
+						Debug.Assert(neighborCellCopy.WasClamped || nextNeighborCellCopy.WasClamped, "Invalid Polygon");
+					}
+
+					Vector2 intermediate;
+
+					if (startConnects)
+					{
+						intermediate		= currentEdge.Start;
+						currentEdge.Start	= currentEdge.End;
+						currentEdge.End		= intermediate;
+
+						neighborCellCopy.EdgeToNeighbor = currentEdge;
+						NeighborCells[n] = neighborCellCopy;
+					}
+
+					if (nextEndConnects)
+					{
+						intermediate		= nextEdge.Start;
+						nextEdge.Start		= nextEdge.End;
+						nextEdge.End		= intermediate;
+
+						nextNeighborCellCopy.EdgeToNeighbor = nextEdge;
+						NeighborCells[nextIndex] = nextNeighborCellCopy;
+					}
+				}
+			}
+		}
+
+		public void AddClampRectEdgesToFillOpenPolygon(Vector2 MIN_COORDS, Vector2 MAX_COORDS)
+		{
+			int oldCount = NeighborCells.Count;
+
+			for (int n = 0; n < NeighborCells.Count; n++)
+			{
+				int nextIndex = (n+1) % NeighborCells.Count;
+
+				VoronoiNeighbor neighborCellCopy		= NeighborCells[n];
+				VoronoiNeighbor nextNeighborCellCopy	= NeighborCells[nextIndex];
+
+				if (neighborCellCopy.WasClamped && nextNeighborCellCopy.WasClamped)
+				{
+					Edge currentEdge	= neighborCellCopy.EdgeToNeighbor;
+					Edge nextEdge		= NeighborCells[nextIndex].EdgeToNeighbor;
+
+					if (currentEdge.End.x == nextEdge.Start.x || currentEdge.End.y == nextEdge.Start.y)
+					{
+						VoronoiNeighbor newVoronoiNeighbor;
+						newVoronoiNeighbor.NeighborIndex = -1;
+						newVoronoiNeighbor.WasClamped    = true;
+
+						// add simple edge
+						newVoronoiNeighbor.EdgeToNeighbor = new Edge(currentEdge.End, nextEdge.Start);
+						NeighborCells.Add(newVoronoiNeighbor);
+					}
+					else 
+					{
+						float verticalBorder;
+						float horizontalBorder;
+
+						if (currentEdge.End.x == MIN_COORDS.x || nextEdge.Start.x == MIN_COORDS.x)
+						{
+							horizontalBorder = MIN_COORDS.x;
+						}
+						else if (currentEdge.End.x == MAX_COORDS.x || nextEdge.Start.x == MAX_COORDS.x)
+						{
+							horizontalBorder = MAX_COORDS.x;
+						}
+						else
+						{
+							Debug.Assert(false, "Unexpected case on BorderRect Corner");
+							break;
+						}
+
+						if (currentEdge.End.y == MIN_COORDS.y || nextEdge.Start.y == MIN_COORDS.y)
+						{
+							verticalBorder = MIN_COORDS.y;
+						}
+						else if (currentEdge.End.y == MAX_COORDS.y || nextEdge.Start.y == MAX_COORDS.y)
+						{
+							verticalBorder = MAX_COORDS.y;
+						}
+						else
+						{
+							Debug.Assert(false, "Unexpected case on BorderRect Corner");
+							break;
+						}
+
+						Vector2 corner = new Vector2(horizontalBorder, verticalBorder);
+						Edge newEdge1 = new Edge(currentEdge.End, corner);
+						Edge newEdge2 = new Edge(corner, nextEdge.Start);
+
+						VoronoiNeighbor newVoronoiNeighbor1;
+						newVoronoiNeighbor1.NeighborIndex = -1;
+						newVoronoiNeighbor1.WasClamped    = true;
+						newVoronoiNeighbor1.EdgeToNeighbor = newEdge1;
+
+						VoronoiNeighbor newVoronoiNeighbor2;
+						newVoronoiNeighbor2.NeighborIndex = -1;
+						newVoronoiNeighbor2.WasClamped    = true;
+						newVoronoiNeighbor2.EdgeToNeighbor = newEdge2;
+
+						NeighborCells.Add(newVoronoiNeighbor1);
+						NeighborCells.Add(newVoronoiNeighbor2);
+					}
+
+					break;
+				} //< if
+			} // < for all cells
+
+			if (oldCount != NeighborCells.Count)
+			{
+				// Before adding the border edges, the polygon could have consisted of only two edges, meaning there is no real direction before
+				SortEdgesCCW(true);
+			}
+
+		} // < end addClampEdge method
+
 	}
 
 	public class VoronoiDiagram 
 	{
+		private List<Vector2> InputVerticesIncludingSuperTriangle;		
+		private List<Triangle> DelauneyTrianglesIncludingSuperTriangle;
+		private List<VoronoiCell> VoronoiCells;
+		private int		POINT_COUNT_WITHOUT_SUPER_TRIANGLE;
+		private Vector2 MIN_COORDS;
+		private Vector2 MAX_COORDS;
+		private Vector2 DIMENSIONS;
+		private Triangle SuperTriangle;
+		private VoronoiParameters VoronoiParams;
+		private bool WasRunAtLeastOnce = false;
+
 		// Bowyer-Watson Algorithm for Delauny-Triangulation
 		public bool GenerateDelauney(int seedPoints, VoronoiParameters voronoiParams, Vector2 gridCenterWS, Vector2 gridSizeWS)
 		{
-			// TODO: Am Ende (nach relaxation) Sanity check (z.b. dass keine points aufeinander liegen)
+			// TODO: Am anfang alle input point überlappungen verhindern
+			// TODO: Relaxation
+			// TODO: Alle Early outs (inkl. Exceptions) abfangen und neugenerierung anstossen
+			// TODO: Am Ende (nach relaxation) Sanity check
 
-			Vector2 c = new Vector2(13,-18);
-			Vector2 d1 = new Vector2(2, 2); d1.Normalize();
-			Vector2 d2 = new Vector2(2, 3); d2.Normalize();
-			Vector2 d3 = new Vector2(2, 4); d3.Normalize();
+			WasRunAtLeastOnce = true;
 
-			List <Vector2> testList = new List<Vector2>();
-			testList.Add(c + d1);
-			testList.Add(c + d2);
-			testList.Add(c + d3);
-			
-			Triangle t1 = new Triangle();
-			t1.TryInit(0,1,2, testList);
+			InputVerticesIncludingSuperTriangle		= new List<Vector2>();
+			DelauneyTrianglesIncludingSuperTriangle = new List<Triangle>();
+			VoronoiCells							= new List<VoronoiCell>();
 
+			VoronoiParams = voronoiParams;
 
 			// 1) Get Random Point List.
-			List<Vector2> inputPointList = new List<Vector2>();
 			Random.InitState(seedPoints);
 
-			Vector2 MIN_COORDS = gridCenterWS - gridSizeWS;
-			Vector2 MAX_COORDS = gridCenterWS + gridSizeWS;
-			Vector2 DIMENSIONS = MAX_COORDS - MIN_COORDS;
+			MIN_COORDS = gridCenterWS - gridSizeWS;
+			MAX_COORDS = gridCenterWS + gridSizeWS;
+			DIMENSIONS = MAX_COORDS - MIN_COORDS;
 
 			// Distribute ~2/3 of the points p to a regular grid of size y,x
 			// x   *   y = p/2
 			// r*y *   y = p/2		(r = x/y)
 			// y = sqrt(p/(2*r))
 			// x = h*y;
-			int POINT_COUNT = voronoiParams.VoronoiPointCount;
+			POINT_COUNT_WITHOUT_SUPER_TRIANGLE = voronoiParams.VoronoiPointCount;
+
+
+
+			bool useHardcodedPoints = false;
+
+			if (useHardcodedPoints)
+			{
+				InputVerticesIncludingSuperTriangle.Add( new Vector2(-2.2f, 7.9f)		)	;
+				InputVerticesIncludingSuperTriangle.Add( new Vector2(-7.5f, -4.2f)		)	;
+				InputVerticesIncludingSuperTriangle.Add( new Vector2(0.8f, 3.3f)		)	;
+				POINT_COUNT_WITHOUT_SUPER_TRIANGLE = InputVerticesIncludingSuperTriangle.Count;
+			}
+
+
 			float ratioXbyY = DIMENSIONS.x / DIMENSIONS.y;
-			float pseudoRandomGridDimensionY_F = Mathf.Sqrt((POINT_COUNT * 2 / 3));
+			float pseudoRandomGridDimensionY_F = Mathf.Sqrt((POINT_COUNT_WITHOUT_SUPER_TRIANGLE * 2 / 3));
 			float pseudoRandomGridDimensionX_F = pseudoRandomGridDimensionY_F * ratioXbyY;
 			int pseudoRandomGridDimensionX = (int) Mathf.Max(pseudoRandomGridDimensionX_F, 1);
 			int pseudoRandomGridDimensionY = (int) Mathf.Max(pseudoRandomGridDimensionY_F, 1);
@@ -136,8 +471,13 @@ namespace SAB
 
 			Vector2 PSEUDO_RANDOM_GRID_CELL_SIZE = new Vector2(DIMENSIONS.x / (float)pseudoRandomGridDimensionX, DIMENSIONS.y / (float)pseudoRandomGridDimensionY);
 
-			for (int i = 0; i < POINT_COUNT; ++i)
+			for (int i = 0; i < POINT_COUNT_WITHOUT_SUPER_TRIANGLE; ++i)
 			{
+				if (useHardcodedPoints)
+				{
+					break;
+				}
+
 				float x;
 				float y;
 
@@ -159,18 +499,18 @@ namespace SAB
 
 				x = Mathf.Clamp(x, MIN_COORDS.x + 0.02f * DIMENSIONS.x, MAX_COORDS.x - 0.02f * DIMENSIONS.x);
 				y = Mathf.Clamp(y, MIN_COORDS.y + 0.02f * DIMENSIONS.y, MAX_COORDS.y - 0.02f * DIMENSIONS.y);
-				inputPointList.Add(new Vector2(x,y));
+				InputVerticesIncludingSuperTriangle.Add(new Vector2(x,y));
 			}
 
 			// Randomly shuffle points to test algorithm if its really delauny triangulation (independent of input point order)
 			Random.InitState(voronoiParams.ShuffleSeed);
 
-			for (int i = 0; i < POINT_COUNT; ++i)
+			for (PointIndex i = 0; i < POINT_COUNT_WITHOUT_SUPER_TRIANGLE; ++i)
 			{
-				int swapWithIndex = Random.Range(0, POINT_COUNT);
-				Vector2 oldPoint = inputPointList[i];
-				inputPointList[i] = inputPointList[swapWithIndex];
-				inputPointList[swapWithIndex] = oldPoint;
+				PointIndex swapWithIndex = Random.Range(0, POINT_COUNT_WITHOUT_SUPER_TRIANGLE);
+				Vector2 oldPoint = InputVerticesIncludingSuperTriangle[i];
+				InputVerticesIncludingSuperTriangle[i] = InputVerticesIncludingSuperTriangle[swapWithIndex];
+				InputVerticesIncludingSuperTriangle[swapWithIndex] = oldPoint;
 			}
 
 			// 2) Get Super Triangle
@@ -179,17 +519,15 @@ namespace SAB
 			Vector2 superTriangleP2 = superTriangleP1 + new Vector2(0, maxDimension * 5);
 			Vector2 superTriangleP3 = superTriangleP1 + new Vector2(maxDimension * 5, 0);
 				
-			int SUPER_TRIANGLE_INDEX_P1 = POINT_COUNT;
-			int SUPER_TRIANGLE_INDEX_P2 = POINT_COUNT + 1;
-			int SUPER_TRIANGLE_INDEX_P3 = POINT_COUNT + 2;
-			inputPointList.Add(superTriangleP1);
-			inputPointList.Add(superTriangleP2);
-			inputPointList.Add(superTriangleP3);
+			PointIndex SUPER_TRIANGLE_INDEX_P1 = POINT_COUNT_WITHOUT_SUPER_TRIANGLE;
+			PointIndex SUPER_TRIANGLE_INDEX_P2 = POINT_COUNT_WITHOUT_SUPER_TRIANGLE + 1;
+			PointIndex SUPER_TRIANGLE_INDEX_P3 = POINT_COUNT_WITHOUT_SUPER_TRIANGLE + 2;
+			InputVerticesIncludingSuperTriangle.Add(superTriangleP1);
+			InputVerticesIncludingSuperTriangle.Add(superTriangleP2);
+			InputVerticesIncludingSuperTriangle.Add(superTriangleP3);
 
-			// 3) Start algorithm. (Our input list looks like this: [i1, i2, i3, i4, ... s1, s2, s3]
-			List<Triangle> outTriangles = new List<Triangle>();
-			Triangle superTriangle = new Triangle();
-			bool superTriangleValid = superTriangle.TryInit(SUPER_TRIANGLE_INDEX_P1, SUPER_TRIANGLE_INDEX_P2, SUPER_TRIANGLE_INDEX_P3, inputPointList);
+			// 3) Start algorithm. (Our input list looks like this: [i1, i2, i3, i4, ... s1, s2, s3]		
+			bool superTriangleValid = SuperTriangle.TryInit(SUPER_TRIANGLE_INDEX_P1, SUPER_TRIANGLE_INDEX_P2, SUPER_TRIANGLE_INDEX_P3, InputVerticesIncludingSuperTriangle);
 
 			if (!superTriangleValid)
 			{
@@ -197,24 +535,18 @@ namespace SAB
 				return false;
 			}
 
-			outTriangles.Add(superTriangle);
-
-			int pointsToAddCount = POINT_COUNT;
-			if (voronoiParams.DebugDrawDelauney && voronoiParams.DebugSteps > 0)
+			DelauneyTrianglesIncludingSuperTriangle.Add(SuperTriangle);
+			
+			for (int p = 0; p < POINT_COUNT_WITHOUT_SUPER_TRIANGLE; ++p) 
 			{
-				pointsToAddCount = Mathf.Max(pointsToAddCount, voronoiParams.DebugSteps);
-			}
+				Vector2 currentPoint = InputVerticesIncludingSuperTriangle[p];
 
-			for (int p = 0; p < POINT_COUNT; ++p)
-			{
-				Vector2 currentPoint = inputPointList[p];
-
-				List<int> deleteTrianglesSorted = new List<int>();
+				List<TriIndex> deleteTrianglesSorted = new List<TriIndex>();
 
 				// Find all Traingles, in which circle we lie
-				for (int t = 0; t < outTriangles.Count; ++t)
+				for (TriIndex t = 0; t < DelauneyTrianglesIncludingSuperTriangle.Count; ++t)
 				{
-					Triangle currentTriangle = outTriangles[t];
+					Triangle currentTriangle = DelauneyTrianglesIncludingSuperTriangle[t];
 
 					if (currentTriangle.CircumscribedCircle.IsPointInside(currentPoint))
 					{
@@ -222,16 +554,16 @@ namespace SAB
 					}
 				}
 
-				List<Edge> edgesForNewTriangles = new List<Edge>();
+				List<EdgeIndices> edgesForNewTriangles = new List<EdgeIndices>();
 
 				// Find all Edges that are not shared between badies
 				for (int dT = 0; dT < deleteTrianglesSorted.Count; ++dT)
 				{
-					Triangle currentTriangle = outTriangles[deleteTrianglesSorted[dT]];
+					Triangle currentTriangle = DelauneyTrianglesIncludingSuperTriangle[deleteTrianglesSorted[dT]];
 
-					Edge edge1 = new Edge(currentTriangle.IndexP1, currentTriangle.IndexP2);
-					Edge edge2 = new Edge(currentTriangle.IndexP2, currentTriangle.IndexP3);
-					Edge edge3 = new Edge(currentTriangle.IndexP1, currentTriangle.IndexP3);
+					EdgeIndices edge1 = new EdgeIndices(currentTriangle.IndexP0, currentTriangle.IndexP1);
+					EdgeIndices edge2 = new EdgeIndices(currentTriangle.IndexP1, currentTriangle.IndexP2);
+					EdgeIndices edge3 = new EdgeIndices(currentTriangle.IndexP0, currentTriangle.IndexP2);
 
 					bool edge1Shared = false;
 					bool edge2Shared = false;
@@ -244,7 +576,7 @@ namespace SAB
 							continue;
 						}
 
-						Triangle otherTriangle = outTriangles[deleteTrianglesSorted[dT2]];
+						Triangle otherTriangle = DelauneyTrianglesIncludingSuperTriangle[deleteTrianglesSorted[dT2]];
 
 						if (!edge1Shared && otherTriangle.SharesEdge(edge1))
 						{
@@ -278,15 +610,15 @@ namespace SAB
 				for (int dt = deleteTrianglesSorted.Count - 1; dt >= 0; --dt)
 				{
 					int indexToDelete = deleteTrianglesSorted[dt];
-					outTriangles.RemoveAt(indexToDelete);
+					DelauneyTrianglesIncludingSuperTriangle.RemoveAt(indexToDelete);
 				}
 
 				// Add new triangles for given edges
 				for (int e = 0; e < edgesForNewTriangles.Count; ++e)
 				{
-					Edge currentEdge = edgesForNewTriangles[e];
+					EdgeIndices currentEdge = edgesForNewTriangles[e];
 					Triangle newTriangle = new Triangle();
-					bool initSuccessfull = newTriangle.TryInit(currentEdge.IndexP1, currentEdge.IndexP2, p, inputPointList);
+					bool initSuccessfull = newTriangle.TryInit(currentEdge.IndexP1, currentEdge.IndexP2, p, InputVerticesIncludingSuperTriangle);
 
 					if (!initSuccessfull)
 					{
@@ -294,9 +626,11 @@ namespace SAB
 						return false;
 					}
 
-					outTriangles.Add(newTriangle);
+					DelauneyTrianglesIncludingSuperTriangle.Add(newTriangle);
 				}
 			}
+
+			/*
 
 			// Remove all triangles that share a vertex with super triangle	
 			for (int t = outTriangles.Count - 1; t >= 0; --t)
@@ -307,97 +641,357 @@ namespace SAB
 				}
 			}
 
-			if (voronoiParams.DebugDrawDelauney)
-			{
-				// Draw all Triangles:
-				for (int t = 0; t < outTriangles.Count; ++t)
-				{
-					Triangle currentTriangle = outTriangles[t];
-
-					float height = 1.0f + (t / (float)outTriangles.Count) * voronoiParams.DebugDrawOffset;
-
-					Vector3 p1 = new Vector3(inputPointList[currentTriangle.IndexP1].x, height, inputPointList[currentTriangle.IndexP1].y);
-					Vector3 p2 = new Vector3(inputPointList[currentTriangle.IndexP2].x, height, inputPointList[currentTriangle.IndexP2].y);
-					Vector3 p3 = new Vector3(inputPointList[currentTriangle.IndexP3].x, height, inputPointList[currentTriangle.IndexP3].y);
-
-					Color col = new Color(t * 0.123f % 1.0f, t * 0.311f % 1.0f, t * 0.76f % 1.0f);
-					Debug.DrawLine(p1, p2, col, 3.0f);
-					Debug.DrawLine(p1, p3, col, 3.0f);
-					Debug.DrawLine(p2, p3, col, 3.0f);
-				}
-			}
-
 			// Remove super-triangle vertices
 			inputPointList.RemoveAt(SUPER_TRIANGLE_INDEX_P3);
 			inputPointList.RemoveAt(SUPER_TRIANGLE_INDEX_P2);
-			inputPointList.RemoveAt(SUPER_TRIANGLE_INDEX_P1);
+			inputPointList.RemoveAt(SUPER_TRIANGLE_INDEX_P1);*/
 
-			bool voronoiSuccess = DelauneyToVoronoi(inputPointList, outTriangles, voronoiParams);
+			bool voronoiSuccess = DelauneyToVoronoi();
 
 			return voronoiSuccess;
 		}
 	
 		// -------------------------------------------------------------------
 
-		public bool DelauneyToVoronoi(List<Vector2> inputPointList, List<Triangle> delauneyTriangles, VoronoiParameters voronoiParams)
+		public bool IsOutsideClampRect(Vector2 point)
 		{
-			List<VoronoiCell> allCells = new List<VoronoiCell>();
-			allCells.Capacity = inputPointList.Count;
+			return (point.x < MIN_COORDS.x) || (point.y < MIN_COORDS.y) || (point.x > MAX_COORDS.x) || (point.y > MAX_COORDS.y);
+		}
 
-			for (int p = 0; p < inputPointList.Count; ++p)
+		// -------------------------------------------------------------------
+
+		Vector2 ClampToBorder(Vector2 startPoint, Vector2 dirNorm, Vector2 clampRectMin, Vector2 clampRectMax)
+		{
+			Vector2 maxDeltasPos = (clampRectMax - startPoint);
+			Vector2 minDeltasNeg = (clampRectMin - startPoint);
+
+			float maxFactorX = float.MaxValue;
+			float maxFactorY = float.MaxValue;
+
+			float EPSILON = 0.001f;
+
+			if (dirNorm.x > EPSILON)
 			{
-				allCells.Add(new VoronoiCell());
+				maxFactorX = maxDeltasPos.x / dirNorm.x;
+			}
+			else if (dirNorm.x < -EPSILON)
+			{
+				maxFactorX = minDeltasNeg.x / dirNorm.x;
+			}
+			
+			if (dirNorm.y > EPSILON)
+			{
+				maxFactorY = maxDeltasPos.y / dirNorm.y;
+			}
+			else if (dirNorm.y < -EPSILON)
+			{
+				maxFactorY = minDeltasNeg.y / dirNorm.y;
+			}
+
+			Debug.Assert(maxFactorX != float.MaxValue || maxFactorY != float.MaxValue);
+
+			float factor = Mathf.Min(maxFactorX, maxFactorY);
+
+			Vector2 newPoint = startPoint + factor * dirNorm;
+			
+		/*	newPoint.x = Mathf.Max(newPoint.x, clampRectMin.x);
+			newPoint.x = Mathf.Min(newPoint.x, clampRectMax.x);
+			newPoint.y = Mathf.Max(newPoint.y, clampRectMin.y);
+			newPoint.y = Mathf.Min(newPoint.y, clampRectMax.y);*/
+
+			return newPoint;
+		}
+
+		// -------------------------------------------------------------------
+
+		Vector2 MoveEdgeCenterToOuterBorder(EdgeIndices sharedEdge, Vector2 pointInMoveDirection, Vector2 clampRectMin, Vector2 clampRectMax, List<Vector2> delauneyVerticesIncludingSuperTriangle)
+		{
+			Vector2 edgeP1 = delauneyVerticesIncludingSuperTriangle[sharedEdge.IndexP1];
+			Vector2 edgeP2 = delauneyVerticesIncludingSuperTriangle[sharedEdge.IndexP2];
+			Vector2 edgeCenter = ((edgeP1 + edgeP2) * 0.5f);
+
+			Vector2 awayFromEdge = pointInMoveDirection - edgeCenter;
+			Vector2 edgeDirection = edgeP2 - edgeP1;
+			Vector2 moveDirection = new Vector2(edgeDirection.y, -edgeDirection.x);
+			if (Vector2.Dot(moveDirection, awayFromEdge) < 0.0f)
+			{
+				moveDirection = -moveDirection;
+			}
+
+			float moveDirectionLength = moveDirection.magnitude;
+			
+			if (moveDirectionLength == 0.0f)
+			{
+				Debug.Assert(false, "Degenerated Triangle");
+				return pointInMoveDirection;
+			}
+
+			moveDirection.x /= moveDirectionLength;
+			moveDirection.y /= moveDirectionLength;
+
+			return ClampToBorder(edgeCenter, moveDirection, clampRectMin, clampRectMax);
+		}
+
+		// -------------------------------------------------
+
+		public Edge ComputeElongatedVoronoiNeighbor(TriIndex innerTriIndex, TriIndex outerTriIndex, List<Vector2> triCenters, Vector2 MIN_COORDS, Vector2 MAX_COORDS)
+		{
+			Vector2 innerCenter = triCenters[innerTriIndex];
+			Vector2 outerCenter = triCenters[outerTriIndex];
+
+			Vector2 edgeDirection = outerCenter - innerCenter;
+
+			float edgeDirectionLength = edgeDirection.magnitude;
+			
+			if (edgeDirectionLength == 0.0f)
+			{
+				Debug.Assert(false, "Degenerated Edge");
+				return new Edge(new Vector2(0,0), new Vector2(0,0));
+			}
+
+			edgeDirection.x /= edgeDirectionLength;
+			edgeDirection.y /= edgeDirectionLength;
+
+			Vector2 newEdgeEnd = ClampToBorder(innerCenter, edgeDirection, MIN_COORDS, MAX_COORDS);
+
+			return new Edge(innerCenter, newEdgeEnd);
+		}
+
+		// -------------------------------------------------
+
+		public Edge ComputeElongatedVoronoiNeighbor(Vector2 newEdgeStartPos, EdgeIndices perpendicularEdge, Vector2 innerPoint, List<Vector2> delauneyVerticesIncludingSuperTriangle, Vector2 MIN_COORDS, Vector2 MAX_COORDS)
+		{
+			Vector2 edgeP1 = delauneyVerticesIncludingSuperTriangle[perpendicularEdge.IndexP1];
+			Vector2 edgeP2 = delauneyVerticesIncludingSuperTriangle[perpendicularEdge.IndexP2];
+			Vector2 edgeCenter = ((edgeP1 + edgeP2) * 0.5f);
+
+			Vector2 awayFromEdge = edgeCenter - innerPoint;
+
+			Vector2 edgeDirection = edgeP2 - edgeP1;
+			Vector2 moveDirection = new Vector2(edgeDirection.y, -edgeDirection.x);
+
+			if (Vector2.Dot(moveDirection, awayFromEdge) < 0.0f)
+			{
+				moveDirection = -moveDirection;
+			}
+
+			float moveDirectionLength = moveDirection.magnitude;
+			
+			if (moveDirectionLength == 0.0f)
+			{
+				Debug.Assert(false, "Degenerated Triangle");
+				return new Edge(edgeCenter, edgeCenter);
+			}
+
+			moveDirection.x /= moveDirectionLength;
+			moveDirection.y /= moveDirectionLength;
+
+			Vector2 newEdgeEnd = ClampToBorder(newEdgeStartPos, moveDirection, MIN_COORDS, MAX_COORDS);
+			return new Edge(newEdgeStartPos, newEdgeEnd);
+		}
+
+		// -------------------------------------------------
+
+		public Vector2 ComputeClampedEdgeEnd(Vector2 insideEdgeStart, Vector2 outsideEdgeEnd)
+		{
+			Vector2 moveDirection = outsideEdgeEnd - insideEdgeStart;
+			float moveDirectionLength = moveDirection.magnitude;
+			
+			if (moveDirectionLength == 0.0f)
+			{
+				Debug.Assert(false, "Degenerated Edge");
+				return insideEdgeStart;
+			}
+
+			moveDirection.x /= moveDirectionLength;
+			moveDirection.y /= moveDirectionLength;
+
+			return ClampToBorder(insideEdgeStart, moveDirection, MIN_COORDS, MAX_COORDS);
+		}
+
+		// -------------------------------------------------
+
+		public bool DelauneyToVoronoi()
+		{
+			int pointCountWithoutSuperTriangle = InputVerticesIncludingSuperTriangle.Count - 3;
+
+			VoronoiCells.Capacity = pointCountWithoutSuperTriangle;
+
+			for (PointIndex p = 0; p < pointCountWithoutSuperTriangle; ++p)
+			{
+				VoronoiCells.Add(new VoronoiCell());
 			} 
 
-			for (int t = 0; t < delauneyTriangles.Count; ++t)
+			// Register All Edges & Centers
+			Dictionary<EdgeKey, TwoTriangleIndices> edgesToTriangleIndices = new Dictionary<long, TwoTriangleIndices>();
+			List<Vector2> triangleVoronoiCenters = new List<Vector2>();
+			triangleVoronoiCenters.Capacity = DelauneyTrianglesIncludingSuperTriangle.Count;
+
+			for (TriIndex t = 0; t < DelauneyTrianglesIncludingSuperTriangle.Count; ++t)
 			{
-				// Tell every VoronoiCell (DelauneyVertex), which HullVertices it has
-				Triangle currentTriangle = delauneyTriangles[t];
+				Triangle currentTriangle = DelauneyTrianglesIncludingSuperTriangle[t];
 
 				// Note: We do not use circle center (as for a usual "Voronoi" Diagram, but the centroid, thus getting the barycentric dual mesh)
 				// See http://www.redblobgames.com/x/1721-voronoi-alternative/
-				Vector2 center = currentTriangle.GetCentroid(inputPointList);
-				//center = currentTriangle.CircumscribedCircle.Center;
+				Vector2 center = VoronoiParams.RealVoronoi ? currentTriangle.CircumscribedCircle.Center : currentTriangle.GetCentroid(InputVerticesIncludingSuperTriangle);	
+				triangleVoronoiCenters.Add(center);
 
-				allCells[currentTriangle.IndexP1].HullPointsSorted.Add(center);
-				allCells[currentTriangle.IndexP2].HullPointsSorted.Add(center);
-				allCells[currentTriangle.IndexP3].HullPointsSorted.Add(center);
+				for (int side = 0; side < 3; ++side)
+				{
+					EdgeIndices edge = currentTriangle.GetEdgeOppositeTo(side);
+
+					EdgeKey edgeKey = edge.ComputeKey();
+					
+					if (edgesToTriangleIndices.ContainsKey(edgeKey))
+					{
+						TwoTriangleIndices twoIndicesOld = edgesToTriangleIndices[edgeKey];
+						Debug.Assert(twoIndicesOld.T2 == -1);
+						twoIndicesOld.T2 = t;
+						edgesToTriangleIndices[edgeKey] = twoIndicesOld;
+					}
+					else
+					{
+						TwoTriangleIndices twoTriangles;
+						twoTriangles.T1 = t;
+						twoTriangles.T2 = -1;
+						edgesToTriangleIndices[edgeKey] = twoTriangles;
+					}
+				}	
 			}
 
-			for (int c = 0; c < allCells.Count; ++c)
+			// Add All Edges
+			for (TriIndex t = 0; t < DelauneyTrianglesIncludingSuperTriangle.Count; ++t)
 			{
-				VoronoiCell currentCell = allCells[c];
-				currentCell.CalculateCentroid();
+				// Tell every VoronoiCell (DelauneyVertex), which HullVertices it has
+				Triangle currentTriangle = DelauneyTrianglesIncludingSuperTriangle[t];
 
-				Debug.Assert(allCells.Count >= 3);
+				bool currentTriangleContainsSuperVertex = currentTriangle.SharesPointWith(SuperTriangle);
+				Vector2 currentTriangleCenter = triangleVoronoiCenters[t];
 
-				currentCell.HullPointsSorted.Sort(delegate(Vector2 left, Vector2 right)
+				for (int side = 0; side < 3; ++side)
 				{
-					Vector2 centroidToLeft = left - currentCell.Centroid;
-					float angleLeft = Vector2.SignedAngle(centroidToLeft, Vector2.right);
-					
-					Vector2 centroidToRight = right - currentCell.Centroid;
-					float angleRight = Vector2.SignedAngle(centroidToRight, Vector2.right);
+					EdgeIndices curEdgeIndices = currentTriangle.GetEdgeOppositeTo(side);
+					Vector2  curOppositeVertex = InputVerticesIncludingSuperTriangle[currentTriangle.GetIndex(side)];
 
-					if (angleLeft < angleRight) { return -1; }
-					return 1;
-				});
+					TwoTriangleIndices neighborTriangles = edgesToTriangleIndices[curEdgeIndices.ComputeKey()];
 
-				if (voronoiParams.DebugDrawVoronoi)
-				{
-					Color col = new Color(c * 0.123f % 1.0f, c * 0.311f % 1.0f, c * 0.76f % 1.0f);
+					TriIndex otherTriangleIndex = neighborTriangles.GetIndexUnequalTo(t);
 
-					float height = 1.0f + (c / (float)allCells.Count) * voronoiParams.DebugDrawOffset;
-
-					for (int p = 0; p < currentCell.HullPointsSorted.Count; ++p)
+					if (otherTriangleIndex < t)
 					{
-						Vector2 point = currentCell.HullPointsSorted[p];
-						Vector2 nextPoint = currentCell.HullPointsSorted[(p + 1) % currentCell.HullPointsSorted.Count];
-						
-						Debug.DrawLine(new Vector3(point.x, height, point.y), new Vector3(nextPoint.x, height, nextPoint.y),						col, 3.0f);
-						Debug.DrawLine(new Vector3(point.x, height, point.y), new Vector3(currentCell.Centroid.x, height, currentCell.Centroid.y),	col, 3.0f);
+						// already processed this pair
+						continue;
 					}
+
+					Triangle otherTriangle = DelauneyTrianglesIncludingSuperTriangle[otherTriangleIndex];
+
+					bool otherTriangleContainsSuperVertex = otherTriangle.SharesPointWith(SuperTriangle);
+					Vector2 otherTriangleCenter = triangleVoronoiCenters[otherTriangleIndex];
+
+					Edge edgeForNeighbors = new Edge(currentTriangleCenter, otherTriangleCenter);
+						
+					if (curEdgeIndices.IndexP1 < VoronoiCells.Count)
+					{
+						VoronoiNeighbor neighbor1 = new VoronoiNeighbor(curEdgeIndices.IndexP2, edgeForNeighbors);
+						VoronoiCells[curEdgeIndices.IndexP1].NeighborCells.Add(neighbor1);
+					}
+					if (curEdgeIndices.IndexP2 < VoronoiCells.Count)
+					{
+						VoronoiNeighbor neighbor2 = new VoronoiNeighbor(curEdgeIndices.IndexP1, edgeForNeighbors);
+						VoronoiCells[curEdgeIndices.IndexP2].NeighborCells.Add(neighbor2);	
+					}
+
 				}
+			}
+
+			List<int> indicesToRemove = new List<int>();
+
+			// Remove and Clamp edges
+			for (PointIndex c = 0; c < VoronoiCells.Count; ++c)
+			{
+				if (VoronoiParams.SuppressClamping)
+				{
+					break;
+				}
+
+				indicesToRemove.Clear();
+				VoronoiCell currentCell = VoronoiCells[c];
+				for (int n = 0; n < currentCell.NeighborCells.Count; ++n)
+				{
+					VoronoiNeighbor neighborCopy = currentCell.NeighborCells[n];
+
+					bool edgeStartOutside	= IsOutsideClampRect(neighborCopy.EdgeToNeighbor.Start);
+					bool edgeEndOutside		= IsOutsideClampRect(neighborCopy.EdgeToNeighbor.End);
+
+					if (edgeStartOutside && edgeEndOutside)
+					{
+						// both outside: does not matter
+						indicesToRemove.Add(n);
+						continue;
+					}
+					else if (!edgeStartOutside && !edgeEndOutside)
+					{
+						// regular inner edge
+						continue;
+					}
+					else 
+					{
+						// One inside, one outside: Clamp
+
+						if (edgeStartOutside)
+						{
+							// Clamp start
+							neighborCopy.EdgeToNeighbor.Start = ComputeClampedEdgeEnd(neighborCopy.EdgeToNeighbor.End, neighborCopy.EdgeToNeighbor.Start);
+						}
+						else
+						{
+							// Clamp end
+							neighborCopy.EdgeToNeighbor.End = ComputeClampedEdgeEnd(neighborCopy.EdgeToNeighbor.Start, neighborCopy.EdgeToNeighbor.End); 
+						}
+
+						neighborCopy.WasClamped = true;
+						currentCell.NeighborCells[n] = neighborCopy;
+					}	
+				}
+
+				for (int r = indicesToRemove.Count - 1; r >= 0; --r)
+				{
+					currentCell.NeighborCells.RemoveAt(indicesToRemove[r]);
+				}
+
+				if (indicesToRemove.Count > 0)
+				{
+					currentCell.CalculateCentroid();
+				}
+			}
+
+			// Sort CCW and force edge directions
+			for (PointIndex c = 0; c < VoronoiCells.Count; ++c)
+			{
+				VoronoiCell currentCell = VoronoiCells[c];
+				Debug.Assert(VoronoiCells.Count >= 3);
+				
+				currentCell.SortEdgesCCW(true);
+			}
+
+			// Add Edges at clamp rect
+			for (PointIndex c = 0; c < VoronoiCells.Count; ++c)
+			{
+				VoronoiCell currentCell = VoronoiCells[c];
+				
+				if (VoronoiParams.SuppressNewBorderEdges)
+				{
+					break;
+				}
+
+				currentCell.AddClampRectEdgesToFillOpenPolygon(MIN_COORDS, MAX_COORDS);
+			}
+
+			// Calculate Centroid
+			for (PointIndex c = 0; c < VoronoiCells.Count; ++c)
+			{
+				VoronoiCell currentCell = VoronoiCells[c];
+				currentCell.CalculateCentroid();
 			}
 
 			return true;
@@ -436,5 +1030,204 @@ namespace SAB
 			circle.Radius = Vector2.Distance(r, circle.Center);
 			return true;
 		}
+
+		public void DebugDraw(VoronoiParameters voronoiParams)
+		{
+			if (!WasRunAtLeastOnce)
+			{
+				return; 
+			} 
+
+			float debugDrawHeight = 1.0f;
+
+			float triangleOffsetLength = 0.05f * ((DIMENSIONS.x + DIMENSIONS.y) / POINT_COUNT_WITHOUT_SUPER_TRIANGLE);
+			triangleOffsetLength = Mathf.Lerp(triangleOffsetLength, 0.1f, 0.9f);
+
+			if (voronoiParams.ShowDelauney)
+			{
+				// Draw all Triangles:
+				for (TriIndex t = 0; t < DelauneyTrianglesIncludingSuperTriangle.Count; ++t)
+				{
+					Triangle currentTriangle = DelauneyTrianglesIncludingSuperTriangle[t];
+
+					if (voronoiParams.DebugDrawOnlyVertexIndex != -1 && !currentTriangle.HasAsVertex(voronoiParams.DebugDrawOnlyVertexIndex))
+					{
+						continue;
+					}
+
+					if (voronoiParams.DebugDrawOnlyTriangleIndex != -1 && t != voronoiParams.DebugDrawOnlyTriangleIndex)
+					{
+						continue;
+					}
+
+					Vector3 p1 = new Vector3(InputVerticesIncludingSuperTriangle[currentTriangle.IndexP0].x, debugDrawHeight, InputVerticesIncludingSuperTriangle[currentTriangle.IndexP0].y);
+					Vector3 p2 = new Vector3(InputVerticesIncludingSuperTriangle[currentTriangle.IndexP1].x, debugDrawHeight, InputVerticesIncludingSuperTriangle[currentTriangle.IndexP1].y);
+					Vector3 p3 = new Vector3(InputVerticesIncludingSuperTriangle[currentTriangle.IndexP2].x, debugDrawHeight, InputVerticesIncludingSuperTriangle[currentTriangle.IndexP2].y);
+
+					Vector3 centroid = (p1 + p2 + p3) / 3.0f;
+
+					Vector3 epsilonOffsetP1 = (centroid - p1); epsilonOffsetP1.Normalize();
+					Vector3 epsilonOffsetP2 = (centroid - p2); epsilonOffsetP2.Normalize();
+					Vector3 epsilonOffsetP3 = (centroid - p3); epsilonOffsetP3.Normalize();
+					p1 += epsilonOffsetP1 * triangleOffsetLength;
+					p2 += epsilonOffsetP2 * triangleOffsetLength;
+					p3 += epsilonOffsetP3 * triangleOffsetLength;
+
+					Color col = new Color(t * 0.123f % 1.0f, t * 0.311f % 1.0f, t * 0.76f % 1.0f);
+					float minCol = Mathf.Min(col.r, col.g, col.b);
+
+					if (minCol < 0.2f)
+					{
+						col.r = Mathf.Min(col.r * 2.0f, 1.0f);
+						col.g = Mathf.Min(col.r * 2.0f, 1.0f);
+						col.b = Mathf.Min(col.r * 2.0f, 1.0f);
+					}
+
+					col = Color.Lerp(Color.green, col, 0.6f);
+
+					bool a1; bool a2; bool a3;
+					int sharedPointCount = currentTriangle.SharedPointCount(SuperTriangle, out a1, out a2, out a3);
+					if (sharedPointCount == 1)
+					{
+						col = new Color(0.0f, 0.0f, 0.0f);
+					}
+					else if (sharedPointCount >= 2)
+                    {
+						col = new Color(0.2f, 0.2f, 0.2f);
+					}
+
+					Gizmos.color = col;
+					Gizmos.DrawLine(p1, p2);
+					Gizmos.DrawLine(p1, p3);
+					Gizmos.DrawLine(p2, p3);
+
+					if (voronoiParams.ShowIndices)
+					{
+						DrawText(centroid, col, t.ToString());
+					}	
+				}
+			}
+
+			if (voronoiParams.ShowVoronoi)
+			{
+				for (PointIndex c = 0; c < VoronoiCells.Count; ++c)
+				{
+					if (voronoiParams.DebugDrawOnlyVertexIndex != -1 && c != voronoiParams.DebugDrawOnlyVertexIndex)
+					{
+						continue;
+					}
+
+					VoronoiCell currentCell = VoronoiCells[c];
+					Color cellBaseColor = new Color(c * 0.123f % 1.0f, c * 0.311f % 1.0f, c * 0.76f % 1.0f);
+
+					for (int p = 0; p < currentCell.NeighborCells.Count; ++p)
+					{
+						VoronoiNeighbor neighbor = currentCell.NeighborCells[p];
+
+						if (voronoiParams.DebugDrawOnlyTriangleIndex != -1)
+						{
+							EdgeIndices currentEdgeIndices = new EdgeIndices(c, neighbor.NeighborIndex);
+							Triangle focusTriangle = DelauneyTrianglesIncludingSuperTriangle[voronoiParams.DebugDrawOnlyTriangleIndex];
+							if (!focusTriangle.SharesEdge(currentEdgeIndices))
+							{
+								continue;
+							}
+						}
+
+
+						Vector2 start		= neighbor.EdgeToNeighbor.Start;
+						Vector2 end	= neighbor.EdgeToNeighbor.End;
+
+						Vector2 epsilonOffsetP1 = (currentCell.Centroid - start);		epsilonOffsetP1.Normalize();
+						Vector2 epsilonOffsetP2 = (currentCell.Centroid - end);	epsilonOffsetP2.Normalize();
+
+						start		+= epsilonOffsetP1 * triangleOffsetLength;
+						end	+= epsilonOffsetP2 * triangleOffsetLength;
+
+						Color col = neighbor.WasClamped ? Color.Lerp(Color.blue, cellBaseColor, 0.4f) : Color.Lerp(Color.red, cellBaseColor, 0.4f);
+						Color colWeak = Color.Lerp(col, Color.black, 0.5f);
+						
+						Gizmos.color = col;
+						Gizmos.DrawLine(new Vector3(start.x, debugDrawHeight, start.y), new Vector3(end.x, debugDrawHeight, end.y));
+
+						if (voronoiParams.DebugDrawOnlyTriangleIndex == -1 && voronoiParams.ShowVorArea)
+						{
+							Gizmos.color = colWeak;
+							Gizmos.DrawLine(new Vector3(start.x, debugDrawHeight, start.y), new Vector3(currentCell.Centroid.x, debugDrawHeight, currentCell.Centroid.y));
+							Gizmos.DrawLine(new Vector3(end.x, debugDrawHeight, end.y), new Vector3(currentCell.Centroid.x, debugDrawHeight, currentCell.Centroid.y));
+						}
+
+						if (voronoiParams.ShowVorOrigentation)
+						{
+							Vector2 startPointOffsetted = Vector2.Lerp(start, end, 0.1f);
+							DrawText(startPointOffsetted, debugDrawHeight, col, p.ToString());
+						}
+					}
+
+					if (voronoiParams.ShowIndices)
+					{
+						DrawText(currentCell.Centroid, debugDrawHeight, cellBaseColor, c.ToString());
+					}	
+				}
+			}
+
+			if (voronoiParams.ShowBorder)
+			{
+				Color col = new Color(0,0, 0.2f);
+
+				Gizmos.color = col;
+
+				Gizmos.DrawLine(new Vector3(MIN_COORDS.x, debugDrawHeight, MIN_COORDS.y), new Vector3(MIN_COORDS.x, debugDrawHeight, MAX_COORDS.y));
+				Gizmos.DrawLine(new Vector3(MIN_COORDS.x, debugDrawHeight, MAX_COORDS.y), new Vector3(MAX_COORDS.x, debugDrawHeight, MAX_COORDS.y));
+				Gizmos.DrawLine(new Vector3(MAX_COORDS.x, debugDrawHeight, MAX_COORDS.y), new Vector3(MAX_COORDS.x, debugDrawHeight, MIN_COORDS.y));
+				Gizmos.DrawLine(new Vector3(MAX_COORDS.x, debugDrawHeight, MIN_COORDS.y), new Vector3(MIN_COORDS.x, debugDrawHeight, MIN_COORDS.y));
+			}
+
+			if (voronoiParams.ShowPoints)
+			{
+				Color col = new Color(1.0f, 1.0f, 0.0f);
+				Gizmos.color = new Color(col.r, col.g, col.b, 0.5f);
+
+				for (int p = 0; p < InputVerticesIncludingSuperTriangle.Count; ++p)
+				{
+					if (voronoiParams.DebugDrawOnlyVertexIndex != -1 && p != voronoiParams.DebugDrawOnlyVertexIndex)
+					{
+						continue;
+					}
+
+					if (voronoiParams.DebugDrawOnlyTriangleIndex != -1)
+					{
+						Triangle focusTriangle = DelauneyTrianglesIncludingSuperTriangle[voronoiParams.DebugDrawOnlyTriangleIndex];
+						if (!focusTriangle.HasAsVertex(p))
+						{
+							continue;
+						}
+					}
+
+
+					Vector2 pos = InputVerticesIncludingSuperTriangle[p];
+
+					Gizmos.DrawSphere(new Vector3(pos.x, debugDrawHeight, pos.y), triangleOffsetLength * 2.0f);
+
+					if (voronoiParams.ShowIndices)
+					{
+						DrawText(pos, debugDrawHeight, col, p.ToString());
+					}	
+				}
+			}
+		}
+
+		static void DrawText(Vector2 pos2, float height, Color col, string text)
+		{
+			DrawText(new Vector3(pos2.x, height, pos2.y), col, text);
+		}
+
+		static void DrawText(Vector3 pos3, Color col, string text)
+		{
+			GUIStyle style = new GUIStyle();
+			style.normal.textColor = col;
+			UnityEditor.Handles.Label (pos3, text, style);
+		}
 	}
+
 }
