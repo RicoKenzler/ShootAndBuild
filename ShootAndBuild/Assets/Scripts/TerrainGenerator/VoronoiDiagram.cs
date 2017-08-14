@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-using EdgeKey	= System.Int64;
+using EdgeKey		= System.Int64;
 using PointIndex	= System.Int32;
-using TriIndex  = System.Int32;
+using TriIndex		= System.Int32;
 
 namespace SAB
 {
@@ -460,7 +460,6 @@ namespace SAB
 				POINT_COUNT_WITHOUT_SUPER_TRIANGLE = InputVerticesIncludingSuperTriangle.Count;
 			}
 
-
 			float ratioXbyY = DIMENSIONS.x / DIMENSIONS.y;
 			float pseudoRandomGridDimensionY_F = Mathf.Sqrt((POINT_COUNT_WITHOUT_SUPER_TRIANGLE * 2 / 3));
 			float pseudoRandomGridDimensionX_F = pseudoRandomGridDimensionY_F * ratioXbyY;
@@ -499,6 +498,27 @@ namespace SAB
 
 				x = Mathf.Clamp(x, MIN_COORDS.x + 0.02f * DIMENSIONS.x, MAX_COORDS.x - 0.02f * DIMENSIONS.x);
 				y = Mathf.Clamp(y, MIN_COORDS.y + 0.02f * DIMENSIONS.y, MAX_COORDS.y - 0.02f * DIMENSIONS.y);
+
+				bool validPoint = true;
+
+				for (int j = 0; j < InputVerticesIncludingSuperTriangle.Count; ++j)
+				{
+					float dx = InputVerticesIncludingSuperTriangle[j].x - x;
+					float dy = InputVerticesIncludingSuperTriangle[j].y - y;
+
+					if (Mathf.Abs(dx) < 0.001f && Mathf.Abs(dy) < 0.001f)
+					{
+						validPoint = false;;
+						break;
+					}
+				}
+
+				if (!validPoint)
+				{
+					--i;
+					continue;
+				}
+
 				InputVerticesIncludingSuperTriangle.Add(new Vector2(x,y));
 			}
 
@@ -694,10 +714,34 @@ namespace SAB
 
 			Vector2 newPoint = startPoint + factor * dirNorm;
 			
-		/*	newPoint.x = Mathf.Max(newPoint.x, clampRectMin.x);
+			newPoint.x = Mathf.Max(newPoint.x, clampRectMin.x);
 			newPoint.x = Mathf.Min(newPoint.x, clampRectMax.x);
 			newPoint.y = Mathf.Max(newPoint.y, clampRectMin.y);
-			newPoint.y = Mathf.Min(newPoint.y, clampRectMax.y);*/
+			newPoint.y = Mathf.Min(newPoint.y, clampRectMax.y);
+
+			// floatingPointPrecision could make -10 to -9.99999
+			if (maxFactorX < maxFactorY)
+			{
+				if (dirNorm.x < 0.0f)
+				{
+					newPoint.x = MIN_COORDS.x;
+				}
+				else
+				{
+					newPoint.x = MAX_COORDS.x;
+				}
+			}
+			else
+			{
+				if (dirNorm.y < 0.0f)
+				{
+					newPoint.y = MIN_COORDS.y;
+				}
+				else
+				{
+					newPoint.y = MAX_COORDS.y;
+				}
+			}
 
 			return newPoint;
 		}
