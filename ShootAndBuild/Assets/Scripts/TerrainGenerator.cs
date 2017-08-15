@@ -36,9 +36,6 @@ namespace SAB
 		
 		public bool SuppressClamping		= false;
 		public bool SuppressNewBorderEdges	= false;
-		public bool RealVoronoi				= false;
-
-		public int  ShuffleSeed		  = 0;
 	}
 
 	[System.Serializable]
@@ -149,7 +146,7 @@ namespace SAB
 		public VoronoiParameters			VoronoiParams;
 		
 		GameObject TerrainObject;
-		public VoronoiDiagram VoronoiDiagram = new VoronoiDiagram();
+		public VoronoiCreator VoronoiGenerator = new VoronoiCreator();
 
 		// -----------------------------------------------------------------
 
@@ -185,7 +182,7 @@ namespace SAB
 
 		public void OnDrawGizmosSelected()
 		{
-			VoronoiDiagram.DebugDraw(VoronoiParams);
+			VoronoiGenerator.DebugDraw(VoronoiParams);
 		}
 
 		// -----------------------------------------------------------------
@@ -197,10 +194,10 @@ namespace SAB
 				Seed = (System.DateTime.Now.Millisecond + System.DateTime.Now.Second * 1000) % 100000;
 			}
 
-			VoronoiDiagram.GenerateDelauney(Seed, VoronoiParams, TransformParams.TerrainCenter, TransformParams.TerrainSizeWS);
+			VoronoiGenerator.GenerateVoronoi(Seed, VoronoiParams, TransformParams.TerrainCenter, TransformParams.TerrainSizeWS);
 
 			return;
-
+/*
 			DeleteTerrain();
 
 			TerrainData TerrainData = new TerrainData();
@@ -238,7 +235,7 @@ namespace SAB
 
 			TerrainObject.GetComponent<Terrain>().Flush();
 
-			TerrainObject.transform.parent = this.transform;
+			TerrainObject.transform.parent = this.transform;*/
 		}
 
 		// -----------------------------------------------------------------

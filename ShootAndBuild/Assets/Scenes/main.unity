@@ -4154,7 +4154,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Resolution: 257
   UseTimeAsSeed: 1
-  Seed: 440
+  Seed: 1589
   TransformParams:
     TerrainCenter: {x: 0, y: 0}
     TerrainSizeWS: {x: 10, y: 10}
@@ -4201,7 +4201,7 @@ MonoBehaviour:
     PlaneBShare: 0.4
     RockSteepnessAngle: 69.7
   VoronoiParams:
-    VoronoiPointCount: 68
+    VoronoiPointCount: 1000
     ShowDelauney: 0
     ShowVoronoi: 1
     ShowPoints: 0
