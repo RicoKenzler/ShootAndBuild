@@ -17,9 +17,14 @@ namespace SAB
 	[System.Serializable]
 	public class VoronoiParameters
 	{
+		[Header("Generation")]
 		[Range(3, 1000)]
-		public int VoronoiPointCount = 100;
+		public int VoronoiPointCount = 600;
 
+		[Range(0.0f, 4.0f)]
+		public float RelaxationAmount = 4.0f;
+
+		[Header("Debug")]
 		public bool ShowDelauney		= false;
 		public bool ShowVoronoi			= false;
 		public bool ShowPoints			= false;
@@ -394,6 +399,7 @@ namespace SAB
 			if (GUILayout.Button("Regenerate"))
 			{
 				terrainGenerator.RegenerateAll();
+				EditorUtility.SetDirty(terrainGenerator);
 			}
 		}
 	}

@@ -188,7 +188,12 @@ namespace SAB
 					break;
 				}
 
-				currentCell.AddClampRectEdgesToFillOpenPolygon(State.MIN_COORDS, State.MAX_COORDS);
+				bool success = currentCell.AddClampRectEdgesToFillOpenPolygon(State.MIN_COORDS, State.MAX_COORDS);
+				
+				if (!success)
+				{
+					return false;
+				}
 			}
 
 			// Calculate Centroid

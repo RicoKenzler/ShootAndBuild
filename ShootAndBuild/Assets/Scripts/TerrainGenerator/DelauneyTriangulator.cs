@@ -12,6 +12,7 @@ namespace SAB
 	{
 		VoronoiCreationState State;
 
+		// Bowyer-Watson Algorithm for Delauny-Triangulation
 		public bool GetDelauneyTriangluation(VoronoiCreationState creationState)
 		{
 			State = creationState;

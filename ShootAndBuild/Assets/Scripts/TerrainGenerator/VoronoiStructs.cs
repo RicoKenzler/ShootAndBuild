@@ -310,9 +310,10 @@ namespace SAB
 			}
 		}
 
-		public void AddClampRectEdgesToFillOpenPolygon(Vector2 MIN_COORDS, Vector2 MAX_COORDS)
+		public bool AddClampRectEdgesToFillOpenPolygon(Vector2 MIN_COORDS, Vector2 MAX_COORDS)
 		{
 			int oldCount = NeighborCells.Count;
+			bool errorHappened = false;
 
 			for (int n = 0; n < NeighborCells.Count; n++)
 			{
@@ -352,6 +353,7 @@ namespace SAB
 						else
 						{
 							Debug.Assert(false, "Unexpected case on BorderRect Corner");
+							errorHappened = true;
 							break;
 						}
 
@@ -366,6 +368,7 @@ namespace SAB
 						else
 						{
 							Debug.Assert(false, "Unexpected case on BorderRect Corner");
+							errorHappened = true;
 							break;
 						}
 
@@ -397,6 +400,7 @@ namespace SAB
 				SortEdgesCCW(true);
 			}
 
+			return !errorHappened;
 		} // < end addClampEdge method
 
 	}

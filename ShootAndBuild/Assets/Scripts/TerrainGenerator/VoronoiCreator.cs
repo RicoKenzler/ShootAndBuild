@@ -10,24 +10,39 @@ namespace SAB
 {
 	public class VoronoiCreator
 	{
-		VoronoiCreationState State		= new VoronoiCreationState();
+		VoronoiCreationState State				= new VoronoiCreationState();
 
 		VoronoiPointGenerator PointGenerator	= new VoronoiPointGenerator();
 		DelauneyTriangulator Triangulator		= new DelauneyTriangulator();
 		VoronoiConverter Converter				= new VoronoiConverter();
 
 		private bool WasRunAtLeastOnce			= false;
+		int			 InvalidTries				= 0;
+		float		 RelaxationAmountLeft		= 0.0f;
 
-		// Bowyer-Watson Algorithm for Delauny-Triangulation
-		public bool GenerateVoronoi(int seed, VoronoiParameters voronoiParams, Vector2 gridCenterWS, Vector2 gridSizeWS)
+		public bool GenerateVoronoi(int seed, VoronoiParameters voronoiParams, Vector2 gridCenterWS, Vector2 gridSizeWS, bool afterInvalidRun = false)
 		{
-			// TODO: Am anfang alle input point überlappungen verhindern
 			// TODO: Relaxation
 			// TODO: Alle Early outs (inkl. Exceptions) abfangen und neugenerierung anstossen
 			// TODO: Am Ende (nach relaxation) Sanity check
 
-			WasRunAtLeastOnce = true;
+			// 0) Only allow n invalid runs
+			if (afterInvalidRun)
+			{
+				InvalidTries++;
 
+				if (InvalidTries > 3)
+				{
+					Debug.Log("Too many invalid tries in a row. Aborting");
+					return false;
+				}
+			}
+			else
+			{
+				InvalidTries = 0;
+			}
+
+			// 0) Init
 			State = new VoronoiCreationState();
 			State.VoronoiParams = voronoiParams;
 			State.MIN_COORDS = gridCenterWS - gridSizeWS;
@@ -35,23 +50,64 @@ namespace SAB
 			State.DIMENSIONS = State.MAX_COORDS - State.MIN_COORDS;
 			State.POINT_COUNT_WITHOUT_SUPER_TRIANGLE = State.VoronoiParams.VoronoiPointCount;
 
+			WasRunAtLeastOnce = true;
+			RelaxationAmountLeft = State.VoronoiParams.RelaxationAmount;
+
+			// 1) Create Random Points
 			PointGenerator.CreateRandomPoints(State, seed);
 
-			bool delauneySuccess = Triangulator.GetDelauneyTriangluation(State);
-
-			if (!delauneySuccess)
+			do
 			{
-				return false;
+				// 2) Delauney
+				bool delauneySuccess = Triangulator.GetDelauneyTriangluation(State);
+
+				if (!delauneySuccess)
+				{
+					Debug.Log("Error happened during DelauneyTriangulation. Retrying...");
+					return GenerateVoronoi(seed + 1, voronoiParams, gridCenterWS, gridSizeWS, true);
+				}
+
+				// 3) Voronoi
+				bool voronoiSuccess = Converter.DelauneyToVoronoi(State);
+
+				if (!voronoiSuccess)
+				{
+					Debug.Log("Error happened during DelauneyToVoronoi. Retrying...");
+					return GenerateVoronoi(seed + 1, voronoiParams, gridCenterWS, gridSizeWS, true);
+				}
+
+				if (RelaxationAmountLeft <= 0.0f)
+				{
+					return true;
+				}
+				else
+				{
+					DoLloydRelaxation(State, Mathf.Min(RelaxationAmountLeft, 1.0f));
+
+					RelaxationAmountLeft -= 1.0f;
+
+					// Remove all temporary structs and super triangle (will be re-evaluated in next try)
+					State.InputVerticesIncludingSuperTriangle.RemoveRange(voronoiParams.VoronoiPointCount, State.InputVerticesIncludingSuperTriangle.Count - voronoiParams.VoronoiPointCount);
+					State.DelauneyTrianglesIncludingSuperTriangle	= new List<Triangle>();
+					State.VoronoiCells								= new List<VoronoiCell>();
+				}
 			}
+			while (true);
+		}
 
-			bool voronoiSuccess = Converter.DelauneyToVoronoi(State);
+		// -------------------------------------------------------------------
 
-			if (!voronoiSuccess)
+		void DoLloydRelaxation(VoronoiCreationState state, float relaxationAmount)
+		{
+			Debug.Assert(relaxationAmount > 0.0f && relaxationAmount <= 1.0f);
+
+			for (int c = 0; c < state.VoronoiCells.Count; ++c)
 			{
-				return false;
-			}
+				VoronoiCell currentCell = state.VoronoiCells[c];
+				currentCell.CalculateCentroid();
 
-			return voronoiSuccess;
+				state.InputVerticesIncludingSuperTriangle[c] = Vector2.Lerp(state.InputVerticesIncludingSuperTriangle[c], currentCell.Centroid, relaxationAmount);
+			}
 		}
 
 		// -------------------------------------------------------------------
