@@ -20,7 +20,7 @@ namespace SAB
 		int			 InvalidTries				= 0;
 		float		 RelaxationAmountLeft		= 0.0f;
 
-		public bool GenerateVoronoi(int seed, VoronoiParameters voronoiParams, Vector2 gridCenterWS, Vector2 gridSizeWS, bool afterInvalidRun = false)
+		public List<VoronoiCell> GenerateVoronoi(int seed, VoronoiParameters voronoiParams, Vector2 gridCenterWS, Vector2 gridSizeWS, bool afterInvalidRun = false)
 		{
 			// TODO: Relaxation
 			// TODO: Alle Early outs (inkl. Exceptions) abfangen und neugenerierung anstossen
@@ -34,7 +34,7 @@ namespace SAB
 				if (InvalidTries > 3)
 				{
 					Debug.Log("Too many invalid tries in a row. Aborting");
-					return false;
+					return null;
 				}
 			}
 			else
@@ -78,7 +78,7 @@ namespace SAB
 
 				if (RelaxationAmountLeft <= 0.0f)
 				{
-					return true;
+					return State.VoronoiCells;
 				}
 				else
 				{
@@ -101,10 +101,9 @@ namespace SAB
 		{
 			Debug.Assert(relaxationAmount > 0.0f && relaxationAmount <= 1.0f);
 
-			for (int c = 0; c < state.VoronoiCells.Count; ++c)
+			for (PointIndex c = 0; c < state.VoronoiCells.Count; ++c)
 			{
 				VoronoiCell currentCell = state.VoronoiCells[c];
-				currentCell.CalculateCentroid();
 
 				state.InputVerticesIncludingSuperTriangle[c] = Vector2.Lerp(state.InputVerticesIncludingSuperTriangle[c], currentCell.Centroid, relaxationAmount);
 			}
@@ -184,7 +183,7 @@ namespace SAB
 
 					if (voronoiParams.ShowIndices)
 					{
-						DrawText(centroid, col, t.ToString());
+						DebugHelper.DrawText(centroid, col, t.ToString());
 					}	
 				}
 			}
@@ -216,14 +215,14 @@ namespace SAB
 						}
 
 
-						Vector2 start		= neighbor.EdgeToNeighbor.Start;
-						Vector2 end	= neighbor.EdgeToNeighbor.End;
+						Vector2 start	= neighbor.EdgeToNeighbor.Start;
+						Vector2 end		= neighbor.EdgeToNeighbor.End;
 
 						Vector2 epsilonOffsetP1 = (currentCell.Centroid - start);		epsilonOffsetP1.Normalize();
 						Vector2 epsilonOffsetP2 = (currentCell.Centroid - end);	epsilonOffsetP2.Normalize();
 
-						start		+= epsilonOffsetP1 * triangleOffsetLength;
-						end	+= epsilonOffsetP2 * triangleOffsetLength;
+						start	+= epsilonOffsetP1 * triangleOffsetLength;
+						end		+= epsilonOffsetP2 * triangleOffsetLength;
 
 						Color col = neighbor.WasClamped ? Color.Lerp(Color.blue, cellBaseColor, 0.4f) : Color.Lerp(Color.red, cellBaseColor, 0.4f);
 						Color colWeak = Color.Lerp(col, Color.black, 0.5f);
@@ -241,13 +240,13 @@ namespace SAB
 						if (voronoiParams.ShowVorOrigentation)
 						{
 							Vector2 startPointOffsetted = Vector2.Lerp(start, end, 0.1f);
-							DrawText(startPointOffsetted, debugDrawHeight, col, p.ToString());
+							DebugHelper.DrawText(startPointOffsetted, debugDrawHeight, col, p.ToString());
 						}
 					}
 
 					if (voronoiParams.ShowIndices)
 					{
-						DrawText(currentCell.Centroid, debugDrawHeight, cellBaseColor, c.ToString());
+						DebugHelper.DrawText(currentCell.Centroid, debugDrawHeight, cellBaseColor, c.ToString());
 					}	
 				}
 			}
@@ -292,26 +291,10 @@ namespace SAB
 
 					if (voronoiParams.ShowIndices)
 					{
-						DrawText(pos, debugDrawHeight, col, p.ToString());
+						DebugHelper.DrawText(pos, debugDrawHeight, col, p.ToString());
 					}	
 				}
 			}
-		}
-
-		// -------------------------------------------------------------------
-
-		static void DrawText(Vector2 pos2, float height, Color col, string text)
-		{
-			DrawText(new Vector3(pos2.x, height, pos2.y), col, text);
-		}
-
-		// -------------------------------------------------------------------
-
-		static void DrawText(Vector3 pos3, Color col, string text)
-		{
-			GUIStyle style = new GUIStyle();
-			style.normal.textColor = col;
-			UnityEditor.Handles.Label (pos3, text, style);
 		}
 
 	} //< end class

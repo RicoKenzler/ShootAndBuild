@@ -44,6 +44,17 @@ namespace SAB
 	}
 
 	[System.Serializable]
+	public class RegionParameters
+	{
+		[Header("Generation")]
+		public bool Test				= true;
+
+		[Header("Debug")]
+		public bool ShowRegions	= false;
+		public bool ShowIndices	= false;
+	}
+
+	[System.Serializable]
 	public class TransformParameters
 	{
 		public Vector2 TerrainCenter = new Vector2(0.0f, 0.0f);
@@ -143,15 +154,20 @@ namespace SAB
 		public int Resolution = 129;
 
 		public bool UseTimeAsSeed = true;
-		public int  Seed = 1000;
+
+		public int TerrainSeed = 1000;
+		public int VoronoiSeed = 1000;
+		public int RegionSeed  = 1000;
 
 		public TransformParameters			TransformParams;
 		public HeightGenerationParameters	HeightParams;
 		public TextureParameters			TextureParams;
 		public VoronoiParameters			VoronoiParams;
-		
+		public RegionParameters				RegionParams;
+
 		GameObject TerrainObject;
-		public VoronoiCreator VoronoiGenerator = new VoronoiCreator();
+		public VoronoiCreator VoronoiGenerator		= new VoronoiCreator();
+		public RegionMapGenerator RegionGenerator	= new RegionMapGenerator();
 
 		// -----------------------------------------------------------------
 
@@ -188,6 +204,7 @@ namespace SAB
 		public void OnDrawGizmosSelected()
 		{
 			VoronoiGenerator.DebugDraw(VoronoiParams);
+			RegionGenerator.DebugDraw();
 		}
 
 		// -----------------------------------------------------------------
@@ -196,10 +213,20 @@ namespace SAB
 		{
 			if (UseTimeAsSeed)
 			{
-				Seed = (System.DateTime.Now.Millisecond + System.DateTime.Now.Second * 1000) % 100000;
+				int timeSeed = (System.DateTime.Now.Millisecond + System.DateTime.Now.Second * 1000) % 100000;
+				TerrainSeed = timeSeed;
+				VoronoiSeed = timeSeed;
+				RegionSeed  = timeSeed;
 			}
 
-			VoronoiGenerator.GenerateVoronoi(Seed, VoronoiParams, TransformParams.TerrainCenter, TransformParams.TerrainSizeWS);
+			List<VoronoiCell> voronoiCells = VoronoiGenerator.GenerateVoronoi(VoronoiSeed, VoronoiParams, TransformParams.TerrainCenter, TransformParams.TerrainSizeWS);
+
+			if (voronoiCells == null)
+			{
+				return;
+			}
+
+			RegionGenerator.GenerateRegions(voronoiCells, RegionParams);
 
 			return;
 /*
@@ -312,7 +339,7 @@ namespace SAB
 		public float GetAmountPlaneA(int x, int z)
 		{
 			// We later want to get this from District Map
-			float plane2Amount = Mathf.PerlinNoise(Seed + 21 + x * 0.01f, Seed + 21 + z * 0.01f);
+			float plane2Amount = Mathf.PerlinNoise(TerrainSeed + 21 + x * 0.01f, TerrainSeed + 21 + z * 0.01f);
 
 			plane2Amount = RedistributeBlendFactor(plane2Amount, TextureParams.PlaneBShare);
 
@@ -339,7 +366,7 @@ namespace SAB
 
 					float rockAmount = ApplySharpness(steepness, TextureParams.RockBlendingSharpness);
 
-					float blend12 = TextureParams.TextureRock.GetBlendValue12(Seed + 10, x, z);
+					float blend12 = TextureParams.TextureRock.GetBlendValue12(TerrainSeed + 10, x, z);
 					textureMaps[z, x, TexturePairToSplatIndex(TerrainTexturePairs.Rock, false)]	= rockAmount * (1.0f - blend12);
 					textureMaps[z, x, TexturePairToSplatIndex(TerrainTexturePairs.Rock, true)]	= rockAmount * blend12;
 
@@ -348,11 +375,11 @@ namespace SAB
 					float planeAAmount = planeAmount * GetAmountPlaneA(x, z);
 					float planeBAmount = planeAmount - planeAAmount;
 
-					blend12 = TextureParams.TexturePlaneA.GetBlendValue12(Seed + 20, x, z);
+					blend12 = TextureParams.TexturePlaneA.GetBlendValue12(TerrainSeed + 20, x, z);
 					textureMaps[z, x, TexturePairToSplatIndex(TerrainTexturePairs.PlaneA, false)]	= planeAAmount * (1.0f - blend12);
 					textureMaps[z, x, TexturePairToSplatIndex(TerrainTexturePairs.PlaneA, true)]	= planeAAmount * blend12;
 
-					blend12 = TextureParams.TexturePlaneB.GetBlendValue12(Seed + 20, x, z);
+					blend12 = TextureParams.TexturePlaneB.GetBlendValue12(TerrainSeed + 20, x, z);
 					textureMaps[z, x, TexturePairToSplatIndex(TerrainTexturePairs.PlaneB, false)]	= planeBAmount * (1.0f - blend12);
 					textureMaps[z, x, TexturePairToSplatIndex(TerrainTexturePairs.PlaneB, true)]	= planeBAmount * blend12;
 
@@ -373,8 +400,8 @@ namespace SAB
 
 		public float GetNormalizedHeight(float x, float z)
 		{
-			float perlinCoarse = Mathf.PerlinNoise(Seed + x * HeightParams.PerlinFrequencyCoarse,	Seed + z * HeightParams.PerlinFrequencyCoarse);
-			float perlinFine   = Mathf.PerlinNoise(Seed + x * HeightParams.PerlinFrequencyFine,		Seed + z * HeightParams.PerlinFrequencyFine);
+			float perlinCoarse = Mathf.PerlinNoise(TerrainSeed + x * HeightParams.PerlinFrequencyCoarse,	TerrainSeed + z * HeightParams.PerlinFrequencyCoarse);
+			float perlinFine   = Mathf.PerlinNoise(TerrainSeed + x * HeightParams.PerlinFrequencyFine,		TerrainSeed + z * HeightParams.PerlinFrequencyFine);
 			
 			float noiseTotal = perlinCoarse * HeightParams.PerlinWeightCoarse + perlinFine * HeightParams.PerlinWeightFine;
 			noiseTotal /= (HeightParams.PerlinWeightFine + HeightParams.PerlinWeightCoarse);
