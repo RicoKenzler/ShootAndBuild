@@ -22,6 +22,12 @@ namespace SAB
 
 		public List<VoronoiCell> GenerateVoronoi(int seed, VoronoiParameters voronoiParams, Vector2 gridCenterWS, Vector2 gridSizeWS, bool afterInvalidRun = false)
 		{
+			// Return Cached Voronoi
+			if (voronoiParams.NoRecomputation && State.VoronoiCells.Count == voronoiParams.VoronoiPointCount)
+			{
+				return State.VoronoiCells;
+			}
+
 			// TODO: Relaxation
 			// TODO: Alle Early outs (inkl. Exceptions) abfangen und neugenerierung anstossen
 			// TODO: Am Ende (nach relaxation) Sanity check
@@ -45,8 +51,8 @@ namespace SAB
 			// 0) Init
 			State = new VoronoiCreationState();
 			State.VoronoiParams = voronoiParams;
-			State.MIN_COORDS = gridCenterWS - gridSizeWS;
-			State.MAX_COORDS = gridCenterWS + gridSizeWS;
+			State.MIN_COORDS = gridCenterWS - gridSizeWS * 0.5f;
+			State.MAX_COORDS = gridCenterWS + gridSizeWS * 0.5f;
 			State.DIMENSIONS = State.MAX_COORDS - State.MIN_COORDS;
 			State.POINT_COUNT_WITHOUT_SUPER_TRIANGLE = State.VoronoiParams.VoronoiPointCount;
 
@@ -206,7 +212,7 @@ namespace SAB
 
 						if (voronoiParams.DebugDrawOnlyTriangleIndex != -1)
 						{
-							EdgeIndices currentEdgeIndices = new EdgeIndices(c, neighbor.NeighborIndex);
+							EdgeIndices currentEdgeIndices = new EdgeIndices(c, neighbor.NeighborIndexIfValid);
 							Triangle focusTriangle = State.DelauneyTrianglesIncludingSuperTriangle[voronoiParams.DebugDrawOnlyTriangleIndex];
 							if (!focusTriangle.SharesEdge(currentEdgeIndices))
 							{

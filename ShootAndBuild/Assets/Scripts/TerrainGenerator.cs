@@ -32,6 +32,7 @@ namespace SAB
 		public bool ShowBorder			= false;
 		public bool ShowVorArea			= false;
 		public bool ShowVorOrigentation = false;
+		public bool NoRecomputation		= false;
 
 		[Range(-1, 50)]
 		public int DebugDrawOnlyVertexIndex		= -1;
@@ -47,11 +48,19 @@ namespace SAB
 	public class RegionParameters
 	{
 		[Header("Generation")]
-		public bool Test				= true;
+		[Range(0, 20)]
+		public int WaterCircles			= 4;
+
+		[Range(0, 0.4f)]
+		public float WaterCircleSize	= 0.2f;
+
+		[Range(0, 1.0f)]
+		public float BeachSize			= 0.14f;
 
 		[Header("Debug")]
-		public bool ShowRegions	= false;
-		public bool ShowIndices	= false;
+		public bool ShowRegions			= false;
+		public bool ShowIndices			= false;
+		public bool ShowWaterDistance	= false;
 	}
 
 	[System.Serializable]
@@ -226,7 +235,7 @@ namespace SAB
 				return;
 			}
 
-			RegionGenerator.GenerateRegions(voronoiCells, RegionParams);
+			RegionGenerator.GenerateRegions(RegionSeed, voronoiCells, RegionParams, TransformParams.TerrainCenter, TransformParams.TerrainSizeWS);
 
 			return;
 /*

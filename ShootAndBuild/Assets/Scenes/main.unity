@@ -4153,13 +4153,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Resolution: 257
-  UseTimeAsSeed: 0
-  TerrainSeed: 2856
-  VoronoiSeed: 2856
-  RegionSeed: 2856
+  UseTimeAsSeed: 1
+  TerrainSeed: 28104
+  VoronoiSeed: 28104
+  RegionSeed: 28104
   TransformParams:
     TerrainCenter: {x: 0, y: 0}
-    TerrainSizeWS: {x: 10, y: 10}
+    TerrainSizeWS: {x: 20, y: 20}
     HeightMax: 15
     HeightMin: 0
   HeightParams:
@@ -4203,7 +4203,7 @@ MonoBehaviour:
     PlaneBShare: 0.4
     RockSteepnessAngle: 69.7
   VoronoiParams:
-    VoronoiPointCount: 250
+    VoronoiPointCount: 658
     RelaxationAmount: 4
     ShowDelauney: 0
     ShowVoronoi: 0
@@ -4212,11 +4212,15 @@ MonoBehaviour:
     ShowBorder: 0
     ShowVorArea: 0
     ShowVorOrigentation: 0
+    NoRecomputation: 1
     DebugDrawOnlyVertexIndex: -1
     DebugDrawOnlyTriangleIndex: -1
     SuppressClamping: 0
     SuppressNewBorderEdges: 0
   RegionParams:
-    Test: 0
+    WaterCircles: 6
+    WaterCircleSize: 0.273
+    BeachSize: 0.111
     ShowRegions: 1
     ShowIndices: 0
+    ShowWaterDistance: 0

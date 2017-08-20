@@ -195,14 +195,14 @@ namespace SAB
 
 	public struct VoronoiNeighbor
 	{
-		public PointIndex	NeighborIndex;
+		public PointIndex	NeighborIndexIfValid;
 		public Edge			EdgeToNeighbor;
 		public bool			WasClamped;
 
 		public VoronoiNeighbor(PointIndex neighborIndex, Edge edge)
 		{
 			EdgeToNeighbor				= edge;
-			NeighborIndex				= neighborIndex;
+			NeighborIndexIfValid				= neighborIndex;
 			WasClamped					= false;
 		}
 	}
@@ -330,7 +330,7 @@ namespace SAB
 					if (currentEdge.End.x == nextEdge.Start.x || currentEdge.End.y == nextEdge.Start.y)
 					{
 						VoronoiNeighbor newVoronoiNeighbor;
-						newVoronoiNeighbor.NeighborIndex = -1;
+						newVoronoiNeighbor.NeighborIndexIfValid = -1;
 						newVoronoiNeighbor.WasClamped    = true;
 
 						// add simple edge
@@ -377,12 +377,12 @@ namespace SAB
 						Edge newEdge2 = new Edge(corner, nextEdge.Start);
 
 						VoronoiNeighbor newVoronoiNeighbor1;
-						newVoronoiNeighbor1.NeighborIndex = -1;
+						newVoronoiNeighbor1.NeighborIndexIfValid = -1;
 						newVoronoiNeighbor1.WasClamped    = true;
 						newVoronoiNeighbor1.EdgeToNeighbor = newEdge1;
 
 						VoronoiNeighbor newVoronoiNeighbor2;
-						newVoronoiNeighbor2.NeighborIndex = -1;
+						newVoronoiNeighbor2.NeighborIndexIfValid = -1;
 						newVoronoiNeighbor2.WasClamped    = true;
 						newVoronoiNeighbor2.EdgeToNeighbor = newEdge2;
 
