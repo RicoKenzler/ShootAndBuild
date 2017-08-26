@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 0.043
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 886024144}
-  m_IndirectSpecularColor: {r: 0.010083243, g: 0.008521583, b: 0.027594082, a: 0.043}
+  m_IndirectSpecularColor: {r: 0.010077285, g: 0.00852815, b: 0.02759779, a: 0.043}
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -3664,6 +3664,13 @@ MonoBehaviour:
     NegativeBuffLoop: {fileID: 8300000, guid: c9dd16fe679581f42b09c2fb1c0d907b, type: 3}
     DangerLoop: {fileID: 8300000, guid: a48be70226a1ec04cb70b8d492cc36a9, type: 3}
     BPM: 110
+  - BaseTrack: {fileID: 8300000, guid: 892197f1e36c6d74fadc128484dbdf29, type: 3}
+    CalmTrack: {fileID: 8300000, guid: 0bd0668966b01df4da43c337f5087b6c, type: 3}
+    CombatTrack: {fileID: 8300000, guid: 99a71c9c172b4f44394495a34b7af159, type: 3}
+    PositiveBuffLoop: {fileID: 8300000, guid: 5655b77c7180dce4687b5923763860f3, type: 3}
+    NegativeBuffLoop: {fileID: 8300000, guid: c9dd16fe679581f42b09c2fb1c0d907b, type: 3}
+    DangerLoop: {fileID: 8300000, guid: a48be70226a1ec04cb70b8d492cc36a9, type: 3}
+    BPM: 110
   keepCombatStateDuration: 1
   combatFadeInDuration: 2
   combatFadeOutDuration: 4
@@ -4154,9 +4161,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Resolution: 257
   UseTimeAsSeed: 1
-  TerrainSeed: 28104
-  VoronoiSeed: 28104
-  RegionSeed: 28104
+  TerrainSeed: 2626
+  VoronoiSeed: 2626
+  RegionSeed: 2626
   TransformParams:
     TerrainCenter: {x: 0, y: 0}
     TerrainSizeWS: {x: 20, y: 20}
@@ -4203,7 +4210,7 @@ MonoBehaviour:
     PlaneBShare: 0.4
     RockSteepnessAngle: 69.7
   VoronoiParams:
-    VoronoiPointCount: 658
+    VoronoiPointCount: 640
     RelaxationAmount: 4
     ShowDelauney: 0
     ShowVoronoi: 0
@@ -4212,7 +4219,7 @@ MonoBehaviour:
     ShowBorder: 0
     ShowVorArea: 0
     ShowVorOrigentation: 0
-    NoRecomputation: 1
+    NoRecomputation: 0
     DebugDrawOnlyVertexIndex: -1
     DebugDrawOnlyTriangleIndex: -1
     SuppressClamping: 0
