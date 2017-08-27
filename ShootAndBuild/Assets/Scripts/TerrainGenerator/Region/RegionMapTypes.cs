@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace SAB
+namespace SAB.Terrain
 {
 	public enum RegionType
 	{

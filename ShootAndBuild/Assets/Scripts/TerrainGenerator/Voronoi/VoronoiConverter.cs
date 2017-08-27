@@ -6,7 +6,7 @@ using EdgeKey		= System.Int64;
 using PointIndex	= System.Int32;
 using TriIndex		= System.Int32;
 
-namespace SAB
+namespace SAB.Terrain
 {
 	public class VoronoiConverter
 	{

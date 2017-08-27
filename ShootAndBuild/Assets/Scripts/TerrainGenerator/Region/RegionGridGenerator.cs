@@ -4,7 +4,7 @@ using UnityEngine;
 
 using CellIndex = System.Int32;
 
-namespace SAB
+namespace SAB.Terrain
 {
 	public class RegionTile
 	{

@@ -2,20 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace SAB
+namespace SAB.Terrain
 {
-
-	// --------------------------------------------------------
-
-	public enum TerrainTexturePairs
-	{
-		PlaneA,
-		PlaneB,
-		Rock,
-
-		Count
-	};
-
 	// --------------------------------------------------------
 
 	[System.Serializable]
@@ -146,9 +134,9 @@ namespace SAB
 		{
 			float perlinCoarse = Mathf.PerlinNoise(seed + x * PerlinFrequency12, seed + z * PerlinFrequency12);
 			
-			float amount2nd = TerrainGenerationManager.RedistributeBlendFactor(perlinCoarse, Share2ndTexture);
+			float amount2nd = TerrainTextureTypes.RedistributeBlendFactor(perlinCoarse, Share2ndTexture);
 
-			return TerrainGenerationManager.ApplySharpness(amount2nd, BlendingSharpness12);
+			return TerrainTextureTypes.ApplySharpness(amount2nd, BlendingSharpness12);
 		}
 	}
 
@@ -173,9 +161,5 @@ namespace SAB
 
 	// --------------------------------------------------------
 
-	public class TerrainGenerationTypes
-	{
-		
-	}
-
 }
+
