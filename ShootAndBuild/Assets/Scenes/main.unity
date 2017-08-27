@@ -4159,16 +4159,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a724cdfe6b159bb42b57ab3917c6486d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Resolution: 257
+  Resolution: 20
   UseTimeAsSeed: 1
-  TerrainSeed: 2626
-  VoronoiSeed: 2626
-  RegionSeed: 2626
+  TerrainSeed: 36636
+  VoronoiSeed: 36636
+  RegionSeed: 36636
   TransformParams:
     TerrainCenter: {x: 0, y: 0}
-    TerrainSizeWS: {x: 20, y: 20}
-    HeightMax: 15
-    HeightMin: 0
+    TerrainSizeWS: {x: 128, y: 128}
+    HeightMax: 1
+    HeightMin: 1
   HeightParams:
     PerlinFrequencyCoarse: 0.0167
     PerlinFrequencyFine: 0.045
@@ -4228,6 +4228,7 @@ MonoBehaviour:
     WaterCircles: 6
     WaterCircleSize: 0.273
     BeachSize: 0.111
-    ShowRegions: 1
+    ShowRegions: 0
     ShowIndices: 0
     ShowWaterDistance: 0
+    ShowRegionGrid: 1

@@ -10,6 +10,24 @@ namespace SAB
 		public static List<int>		BufferedTrianglesIndices	= new List<int>();
 		public static List<Color>	BufferedTriangleColors		= new List<Color>();
 
+		public static void BufferQuad(Vector3 quadMin, Vector3 quadMax, Color col)
+		{
+			float halfHeight = (quadMin.y + quadMax.y) * 0.5f;
+
+			Vector3 p1 = new Vector3(quadMin.x, quadMin.y,	quadMin.z);
+			Vector3 p2 = new Vector3(quadMax.x, halfHeight,	quadMin.z);
+			Vector3 p3 = new Vector3(quadMax.x, quadMin.y,	quadMax.z);
+			Vector3 p4 = new Vector3(quadMin.x, halfHeight,	quadMax.z);
+
+			BufferQuad(p1, p2, p3, p4, col);
+		}
+
+		public static void BufferQuad(Vector3 p1, Vector3 p2, Vector3 p3, Vector3 p4, Color col)
+		{
+			BufferTriangle(p1, p2, p3, col);
+			BufferTriangle(p1, p3, p4, col);
+		}
+
 		public static void BufferTriangle(Vector3 p1, Vector3 p2, Vector3 p3, Color col)
 		{
 			if (BufferedTrianglesVertices.Count > 100000)

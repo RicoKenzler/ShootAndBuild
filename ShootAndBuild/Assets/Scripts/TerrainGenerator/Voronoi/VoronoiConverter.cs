@@ -97,12 +97,12 @@ namespace SAB
 					if (curEdgeIndices.IndexP1 < State.VoronoiCells.Count)
 					{
 						VoronoiNeighbor neighbor1 = new VoronoiNeighbor(curEdgeIndices.IndexP2, edgeForNeighbors);
-						State.VoronoiCells[curEdgeIndices.IndexP1].NeighborCells.Add(neighbor1);
+						State.VoronoiCells[curEdgeIndices.IndexP1].NeighborCellsCCW.Add(neighbor1);
 					}
 					if (curEdgeIndices.IndexP2 < State.VoronoiCells.Count)
 					{
 						VoronoiNeighbor neighbor2 = new VoronoiNeighbor(curEdgeIndices.IndexP1, edgeForNeighbors);
-						State.VoronoiCells[curEdgeIndices.IndexP2].NeighborCells.Add(neighbor2);	
+						State.VoronoiCells[curEdgeIndices.IndexP2].NeighborCellsCCW.Add(neighbor2);	
 					}
 
 				}
@@ -120,9 +120,9 @@ namespace SAB
 
 				indicesToRemove.Clear();
 				VoronoiCell currentCell = State.VoronoiCells[c];
-				for (int n = 0; n < currentCell.NeighborCells.Count; ++n)
+				for (int n = 0; n < currentCell.NeighborCellsCCW.Count; ++n)
 				{
-					VoronoiNeighbor neighborCopy = currentCell.NeighborCells[n];
+					VoronoiNeighbor neighborCopy = currentCell.NeighborCellsCCW[n];
 
 					bool edgeStartOutside	= IsOutsideClampRect(neighborCopy.EdgeToNeighbor.Start);
 					bool edgeEndOutside		= IsOutsideClampRect(neighborCopy.EdgeToNeighbor.End);
@@ -154,13 +154,13 @@ namespace SAB
 						}
 
 						neighborCopy.WasClamped = true;
-						currentCell.NeighborCells[n] = neighborCopy;
+						currentCell.NeighborCellsCCW[n] = neighborCopy;
 					}	
 				}
 
 				for (int r = indicesToRemove.Count - 1; r >= 0; --r)
 				{
-					currentCell.NeighborCells.RemoveAt(indicesToRemove[r]);
+					currentCell.NeighborCellsCCW.RemoveAt(indicesToRemove[r]);
 				}
 
 				if (indicesToRemove.Count > 0)
@@ -201,6 +201,12 @@ namespace SAB
 			{
 				VoronoiCell currentCell = State.VoronoiCells[c];
 				currentCell.CalculateCentroid();
+
+				if (currentCell.NeighborCellsCCW.Count == 0)
+				{
+					Debug.LogWarning("Degenerated Cell found");
+					return false;
+				}
 			}
 
 			return true;

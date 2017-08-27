@@ -9,45 +9,20 @@ namespace SAB
 {
 	public class RegionMapGenerator 
 	{
-		List<RegionCell> RegionMap		= new List<RegionCell>();
-		RegionParameters RegionParams	= new RegionParameters();
+		public List<RegionCell> RegionMap		= new List<RegionCell>();
+		RegionParameters RegionParams			= new RegionParameters();
+		RegionMapTransformation RegionMapTransformation;
 
-		Vector2 CoordsMin;
-		Vector2 CoordsMax;
-		Vector2 Dimensions;
-
-		public float GetNormalizedDistance(float distance)
-		{
-			return distance / (0.5f * (Dimensions.x + Dimensions.y));
-		}
-
-		public float NormalizedDistanceToWS(float distance)
-		{
-			return distance * (0.5f * (Dimensions.x + Dimensions.y));
-		}
-
-		public Vector2 NormalizedCoordinateToWS(Vector2 normalizedCoordinate)
-		{
-			Vector2 posWS = normalizedCoordinate;
-			posWS.x *= Dimensions.x;
-			posWS.y *= Dimensions.y;
-			posWS += CoordsMin;
-
-			return posWS;
-		}
-
-		public void GenerateRegions(int regionSeed, List<VoronoiCell> voronoiCells, RegionParameters regionParams, Vector2 mapCenter, Vector2 mapSize)
+		public void GenerateRegions(int regionSeed, List<VoronoiCell> voronoiCells, RegionParameters regionParams, RegionMapTransformation regionMapTransformation)
 		{
 			// 0) Init
 			RegionParams = regionParams;
 			RegionMap.Clear();
-			RegionMap.Capacity = voronoiCells.Count;
+			RegionMap.Capacity = voronoiCells.Count; 
+
+			RegionMapTransformation = regionMapTransformation;
 
 			Random.InitState(regionSeed);
-
-			CoordsMin = mapCenter - mapSize * 0.5f;
-			CoordsMax = mapCenter + mapSize * 0.5f;
-			Dimensions = CoordsMax - CoordsMin;
 
 			for (CellIndex c = 0; c < voronoiCells.Count; ++c)
 			{
@@ -57,6 +32,7 @@ namespace SAB
 			InitWaterCells();
 			PropagateWaterDistances();
 			InitBeachAreas();
+			InitInlandAreas();
 		}
 
 		// -----------------------------------------
@@ -70,9 +46,9 @@ namespace SAB
 				
 				bool isOuterCell = false;
 
-				for (int n = 0; n < cell.VoronoiCell.NeighborCells.Count; ++n)
+				for (int n = 0; n < cell.VoronoiCell.NeighborCellsCCW.Count; ++n)
 				{
-					if (cell.VoronoiCell.NeighborCells[n].WasClamped)
+					if (cell.VoronoiCell.NeighborCellsCCW[n].WasClamped)
 					{
 						isOuterCell = true;
 						break;
@@ -98,8 +74,8 @@ namespace SAB
 				Vector2 circleCenterNorm = horizontalBorder ? randomPosOnBorder : new Vector2(randomPosOnBorder.y, randomPosOnBorder.x);
 				float circleRadiusNorm = Random.Range(RegionParams.WaterCircleSize * 0.33f, RegionParams.WaterCircleSize);
 
-				Vector2 circleCenterWS = NormalizedCoordinateToWS(circleCenterNorm);
-				float circleRadiusWS = NormalizedDistanceToWS(circleRadiusNorm);
+				Vector2 circleCenterWS	= RegionMapTransformation.NormalizedCoordinateToWS(circleCenterNorm);
+				float circleRadiusWS	= RegionMapTransformation.NormalizedDistanceToWS(circleRadiusNorm);
 
 				// Make outer cells Water
 				for (CellIndex c = 0; c < RegionMap.Count; ++c)
@@ -151,9 +127,9 @@ namespace SAB
 
 				RegionCell cell = RegionMap[c];
 
-				for (int n = 0; n < cell.VoronoiCell.NeighborCells.Count; ++n)
+				for (int n = 0; n < cell.VoronoiCell.NeighborCellsCCW.Count; ++n)
 				{
-					CellIndex neighborIndex = cell.VoronoiCell.NeighborCells[n].NeighborIndexIfValid;
+					CellIndex neighborIndex = cell.VoronoiCell.NeighborCellsCCW[n].NeighborIndexIfValid;
 
 					if (neighborIndex == -1)
 					{
@@ -164,7 +140,7 @@ namespace SAB
 
 					float distanceToNeighbor = Vector2.Distance(cell.VoronoiCell.Centroid, neighborCell.VoronoiCell.Centroid);
 
-					float newDistance = cell.NormalizedDistanceToWater + GetNormalizedDistance(distanceToNeighbor);
+					float newDistance = cell.NormalizedDistanceToWater + RegionMapTransformation.GetNormalizedDistance(distanceToNeighbor);
 
 					if (newDistance >= neighborCell.NormalizedDistanceToWater)
 					{
@@ -201,14 +177,30 @@ namespace SAB
 
 				if (currentCell.NormalizedDistanceToWater == 0.0f)
 				{
-					for (int n = 0; n < currentCell.VoronoiCell.NeighborCells.Count; ++n)
+					for (int n = 0; n < currentCell.VoronoiCell.NeighborCellsCCW.Count; ++n)
 					{
-						CellIndex neighborIndex = currentCell.VoronoiCell.NeighborCells[n].NeighborIndexIfValid;
+						CellIndex neighborIndex = currentCell.VoronoiCell.NeighborCellsCCW[n].NeighborIndexIfValid;
 						if (neighborIndex != -1 && RegionMap[neighborIndex].NormalizedDistanceToWater != 0.0f)
 						{
 							RegionMap[neighborIndex].RegionType = RegionType.Beach;
 						}
 					}
+				}
+			}
+		}
+
+		// -----------------------------------------
+
+		void InitInlandAreas()
+		{
+			// Set Beaches in proximity to water
+			for (CellIndex c = 0; c < RegionMap.Count; ++c)
+			{
+				RegionCell currentCell = RegionMap[c];
+
+				if (currentCell.RegionType == RegionType.Uninitialized)
+				{
+					currentCell.RegionType = RegionType.Inland;
 				}
 			}
 		}
@@ -230,9 +222,9 @@ namespace SAB
 
 					Vector3 centroid3D = new Vector3(currentCell.Centroid.x, debugDrawHeight, currentCell.Centroid.y);
 
-					for (int p = 0; p < currentCell.NeighborCells.Count; ++p)
+					for (int p = 0; p < currentCell.NeighborCellsCCW.Count; ++p)
 					{
-						VoronoiNeighbor neighbor = currentCell.NeighborCells[p];
+						VoronoiNeighbor neighbor = currentCell.NeighborCellsCCW[p];
 
 						Vector2 start	= neighbor.EdgeToNeighbor.Start;
 						Vector2 end		= neighbor.EdgeToNeighbor.End;

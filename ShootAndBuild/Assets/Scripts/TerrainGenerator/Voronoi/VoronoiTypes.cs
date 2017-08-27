@@ -202,33 +202,33 @@ namespace SAB
 		public VoronoiNeighbor(PointIndex neighborIndex, Edge edge)
 		{
 			EdgeToNeighbor				= edge;
-			NeighborIndexIfValid				= neighborIndex;
+			NeighborIndexIfValid		= neighborIndex;
 			WasClamped					= false;
 		}
 	}
 
 	public class VoronoiCell
 	{
-		public List<VoronoiNeighbor> NeighborCells = new List<VoronoiNeighbor>();
+		public List<VoronoiNeighbor> NeighborCellsCCW = new List<VoronoiNeighbor>();
 		public Vector2 Centroid = new Vector2(0.0f, 0.0f);
 
 		public void CalculateCentroid()
 		{
 			Centroid = new Vector2(0.0f, 0.0f);
 
-			foreach (VoronoiNeighbor neighbor in NeighborCells)
+			foreach (VoronoiNeighbor neighbor in NeighborCellsCCW)
 			{
 				Centroid += neighbor.EdgeToNeighbor.GetCenter();
 			}
 
-			Centroid /= (float) NeighborCells.Count;
+			Centroid /= (float) NeighborCellsCCW.Count;
 		}
 
 		public void SortEdgesCCW(bool forceEdgesDirection)
 		{
 			CalculateCentroid();
 
-			NeighborCells.Sort(delegate(VoronoiNeighbor left, VoronoiNeighbor right)
+			NeighborCellsCCW.Sort(delegate(VoronoiNeighbor left, VoronoiNeighbor right)
 			{
 				Vector2 centroidToLeft = left.EdgeToNeighbor.GetCenter() - Centroid;
 				float angleLeft = Vector2.SignedAngle(centroidToLeft, Vector2.right);
@@ -250,15 +250,15 @@ namespace SAB
 
 			if (forceEdgesDirection)
 			{
-				for (int n = 0; n < NeighborCells.Count; n+=1)
+				for (int n = 0; n < NeighborCellsCCW.Count; n+=1)
 				{
-					int nextIndex = (n+1) % NeighborCells.Count;
+					int nextIndex = (n+1) % NeighborCellsCCW.Count;
 
-					VoronoiNeighbor neighborCellCopy		= NeighborCells[n];
-					VoronoiNeighbor nextNeighborCellCopy	= NeighborCells[nextIndex];
+					VoronoiNeighbor neighborCellCopy		= NeighborCellsCCW[n];
+					VoronoiNeighbor nextNeighborCellCopy	= NeighborCellsCCW[nextIndex];
 
 					Edge currentEdge = neighborCellCopy.EdgeToNeighbor;
-					Edge nextEdge = NeighborCells[nextIndex].EdgeToNeighbor;
+					Edge nextEdge = NeighborCellsCCW[nextIndex].EdgeToNeighbor;
 
 					bool startConnects		= false;
 					bool nextEndConnects	= false;
@@ -294,7 +294,7 @@ namespace SAB
 						currentEdge.End		= intermediate;
 
 						neighborCellCopy.EdgeToNeighbor = currentEdge;
-						NeighborCells[n] = neighborCellCopy;
+						NeighborCellsCCW[n] = neighborCellCopy;
 					}
 
 					if (nextEndConnects)
@@ -304,7 +304,7 @@ namespace SAB
 						nextEdge.End		= intermediate;
 
 						nextNeighborCellCopy.EdgeToNeighbor = nextEdge;
-						NeighborCells[nextIndex] = nextNeighborCellCopy;
+						NeighborCellsCCW[nextIndex] = nextNeighborCellCopy;
 					}
 				}
 			}
@@ -312,20 +312,20 @@ namespace SAB
 
 		public bool AddClampRectEdgesToFillOpenPolygon(Vector2 MIN_COORDS, Vector2 MAX_COORDS)
 		{
-			int oldCount = NeighborCells.Count;
+			int oldCount = NeighborCellsCCW.Count;
 			bool errorHappened = false;
 
-			for (int n = 0; n < NeighborCells.Count; n++)
+			for (int n = 0; n < NeighborCellsCCW.Count; n++)
 			{
-				int nextIndex = (n+1) % NeighborCells.Count;
+				int nextIndex = (n+1) % NeighborCellsCCW.Count;
 
-				VoronoiNeighbor neighborCellCopy		= NeighborCells[n];
-				VoronoiNeighbor nextNeighborCellCopy	= NeighborCells[nextIndex];
+				VoronoiNeighbor neighborCellCopy		= NeighborCellsCCW[n];
+				VoronoiNeighbor nextNeighborCellCopy	= NeighborCellsCCW[nextIndex];
 
 				if (neighborCellCopy.WasClamped && nextNeighborCellCopy.WasClamped)
 				{
 					Edge currentEdge	= neighborCellCopy.EdgeToNeighbor;
-					Edge nextEdge		= NeighborCells[nextIndex].EdgeToNeighbor;
+					Edge nextEdge		= NeighborCellsCCW[nextIndex].EdgeToNeighbor;
 
 					if (currentEdge.End.x == nextEdge.Start.x || currentEdge.End.y == nextEdge.Start.y)
 					{
@@ -335,7 +335,7 @@ namespace SAB
 
 						// add simple edge
 						newVoronoiNeighbor.EdgeToNeighbor = new Edge(currentEdge.End, nextEdge.Start);
-						NeighborCells.Add(newVoronoiNeighbor);
+						NeighborCellsCCW.Add(newVoronoiNeighbor);
 					}
 					else 
 					{
@@ -386,15 +386,15 @@ namespace SAB
 						newVoronoiNeighbor2.WasClamped    = true;
 						newVoronoiNeighbor2.EdgeToNeighbor = newEdge2;
 
-						NeighborCells.Add(newVoronoiNeighbor1);
-						NeighborCells.Add(newVoronoiNeighbor2);
+						NeighborCellsCCW.Add(newVoronoiNeighbor1);
+						NeighborCellsCCW.Add(newVoronoiNeighbor2);
 					}
 
 					break;
 				} //< if
 			} // < for all cells
 
-			if (oldCount != NeighborCells.Count)
+			if (oldCount != NeighborCellsCCW.Count)
 			{
 				// Before adding the border edges, the polygon could have consisted of only two edges, meaning there is no real direction before
 				SortEdgesCCW(true);
@@ -403,5 +403,50 @@ namespace SAB
 			return !errorHappened;
 		} // < end addClampEdge method
 
-	}
+		// ---------------------------------------------
+
+		public Rect CalculateAABB()
+		{
+			Debug.Assert(NeighborCellsCCW.Count > 0);
+
+			Rect aabb = new Rect();
+			aabb.xMin = float.MaxValue;
+			aabb.yMin = float.MaxValue;
+			aabb.xMax = float.MinValue;
+			aabb.yMax = float.MinValue;
+
+			foreach (VoronoiNeighbor neighbor in NeighborCellsCCW)
+			{
+				aabb.xMin = Mathf.Min(neighbor.EdgeToNeighbor.Start.x, aabb.xMin);
+				aabb.yMin = Mathf.Min(neighbor.EdgeToNeighbor.Start.y, aabb.yMin);
+				aabb.xMax = Mathf.Max(neighbor.EdgeToNeighbor.Start.x, aabb.xMax);
+				aabb.yMax = Mathf.Max(neighbor.EdgeToNeighbor.Start.y, aabb.yMax);
+			}
+
+			return aabb;
+		}
+
+		// ---------------------------------------------
+
+		public bool IsInside(Vector2 samplePoint)
+		{
+			foreach (VoronoiNeighbor neighbor in NeighborCellsCCW)
+			{
+				Edge curEdge = neighbor.EdgeToNeighbor;
+				Vector2 startToEnd = curEdge.End - curEdge.Start;
+				Vector2 startToSample = samplePoint - curEdge.Start;
+				Vector2 startToInner = new Vector2(-startToEnd.y, startToEnd.x); // Edges are CCW, so left is inner
+
+				if (Vector2.Dot(startToInner, startToSample) < 0.0f)
+				{
+					return false;
+				}
+			}
+
+			return true;
+		}
+
+		// ---------------------------------------------
+
+	} //< End class Voronoi Cell
 }

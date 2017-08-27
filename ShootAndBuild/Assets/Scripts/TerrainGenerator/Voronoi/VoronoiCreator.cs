@@ -206,9 +206,9 @@ namespace SAB
 					VoronoiCell currentCell = State.VoronoiCells[c];
 					Color cellBaseColor = new Color(c * 0.123f % 1.0f, c * 0.311f % 1.0f, c * 0.76f % 1.0f);
 
-					for (int p = 0; p < currentCell.NeighborCells.Count; ++p)
+					for (int p = 0; p < currentCell.NeighborCellsCCW.Count; ++p)
 					{
-						VoronoiNeighbor neighbor = currentCell.NeighborCells[p];
+						VoronoiNeighbor neighbor = currentCell.NeighborCellsCCW[p];
 
 						if (voronoiParams.DebugDrawOnlyTriangleIndex != -1)
 						{
