@@ -3951,9 +3951,18 @@ MonoBehaviour:
     NegativeBuffLoop: {fileID: 8300000, guid: c9dd16fe679581f42b09c2fb1c0d907b, type: 3}
     DangerLoop: {fileID: 8300000, guid: a48be70226a1ec04cb70b8d492cc36a9, type: 3}
     BPM: 110
+  - BaseTrack: {fileID: 8300000, guid: b835c1e288bf13448928e7b7879f1dda, type: 3}
+    CalmTrack: {fileID: 8300000, guid: ebf22d5d3b8e53247a19861d11163ff5, type: 3}
+    CombatTrack: {fileID: 8300000, guid: ad84247da46f8d642a2dd1c6cd5dbcf3, type: 3}
+    PositiveBuffLoop: {fileID: 8300000, guid: 5655b77c7180dce4687b5923763860f3, type: 3}
+    NegativeBuffLoop: {fileID: 8300000, guid: c9dd16fe679581f42b09c2fb1c0d907b, type: 3}
+    DangerLoop: {fileID: 8300000, guid: a48be70226a1ec04cb70b8d492cc36a9, type: 3}
+    BPM: 110
   keepCombatStateDuration: 1
   combatFadeInDuration: 2
   combatFadeOutDuration: 4
+  pauseFadeInDuration: 3
+  pauseFadeOutDuration: 1
   keepDangerDuration: 1
   dangerFadeInDuration: 0.3
   dangerFadeOutDuration: 3

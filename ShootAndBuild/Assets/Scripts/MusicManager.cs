@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Audio;
@@ -46,6 +47,12 @@ namespace SAB
 		public float keepCombatStateDuration = 1.0f;
 		public float combatFadeInDuration    = 2.0f;
 		public float combatFadeOutDuration   = 3.0f;
+
+		//-------------------------------------------------	
+		// Pause Parameter
+		//-------------------------------------------------	
+		public float pauseFadeInDuration	 = 1.0f;
+		public float pauseFadeOutDuration	 = 0.5f;
 		
 		//-------------------------------------------------	
 		// Danger Parameter
@@ -73,6 +80,11 @@ namespace SAB
 		private float	combatAmount	= 0.001f;
 
 		//-------------------------------------------------	
+		// Pause State
+		//-------------------------------------------------	
+		private float pauseAmount = 0.0f;
+
+		//-------------------------------------------------	
 		// Danger State
 		//-------------------------------------------------	
 		private float lastDangerTime	= 0.0f;
@@ -88,7 +100,8 @@ namespace SAB
 		//-------------------------------------------------	
 		// Playlist
 		//-------------------------------------------------	
-		int currentTrackIndex = -1;
+		int			currentTrackIndex = -1;
+		List<int>	currentPlaylistIndices = new List<int>();
 
 		public float LastCombatTime
 		{
@@ -102,7 +115,7 @@ namespace SAB
 
 		void Awake()
 		{
-			instance = this; 
+			instance = this;  
 		}
 
 		//-------------------------------------------------
@@ -133,6 +146,8 @@ namespace SAB
 			negativeBuffLoopSource.outputAudioMixerGroup	= soundGroup;
 			dangerLoopSource.outputAudioMixerGroup			= soundGroup;
 			
+			currentPlaylistIndices = Enumerable.Range(0,musicTracks.Length).ToList();
+
 			NextTrack();
 		}
 	
@@ -171,6 +186,7 @@ namespace SAB
 			}
 
 			TickCombatState();
+			TickPauseState();
 			TickMoodFades();
 
 			TickDangerState();
@@ -181,9 +197,26 @@ namespace SAB
 
 		//-------------------------------------------------
 
+		private void TickPauseState()
+		{
+			if (GameManager.Instance.Status == GameStatus.Running)
+			{
+				pauseAmount -= Time.unscaledDeltaTime / (pauseFadeOutDuration + 0.001f);
+				pauseAmount = Mathf.Max(pauseAmount, 0.0f);
+			}
+			else
+			{
+				pauseAmount += Time.unscaledDeltaTime / (pauseFadeInDuration + 0.001f);
+				pauseAmount = Mathf.Min(pauseAmount, 1.0f);
+			}
+		}
+
+		//-------------------------------------------------
+
 		ModularTrack GetCurrentTrack()
 		{
-			return musicTracks[currentTrackIndex];
+			int realIndex = currentPlaylistIndices[currentTrackIndex];
+			return musicTracks[realIndex];
 		}
 
 		//-------------------------------------------------
@@ -197,7 +230,22 @@ namespace SAB
 			negativeBuffLoopSource.Stop();
 			dangerLoopSource.Stop();
 
+			int oldTrackIndex = currentTrackIndex;
 			currentTrackIndex = (currentTrackIndex + 1) % musicTracks.Length;
+
+			if (currentTrackIndex == 0)
+			{
+				// shuffle
+				currentPlaylistIndices = currentPlaylistIndices.OrderBy(a => Random.Range(0, 10000)).ToList();
+
+				// make sure we do not have the same song twice in a row
+				if (currentPlaylistIndices.Count >= 2 && currentPlaylistIndices[0] == oldTrackIndex)
+				{
+					int swapWithIndex = currentPlaylistIndices.Count - 1;
+					currentPlaylistIndices[0] = currentPlaylistIndices[swapWithIndex];
+					currentPlaylistIndices[swapWithIndex] = oldTrackIndex;
+				}
+			}
 
 			ModularTrack currentTrack = GetCurrentTrack();
 
@@ -244,27 +292,21 @@ namespace SAB
 		{
 			if (isInCombat)
 			{
-				if (combatAmount == 1.0f)
-				{
-					return;
-				}
-
-				combatAmount += Time.deltaTime * (1.0f / (combatFadeInDuration + float.Epsilon));
+				combatAmount += Time.unscaledDeltaTime * (1.0f / (combatFadeInDuration + float.Epsilon));
 			}
 			else
 			{
-				if (combatAmount == 0.0f)
-				{
-					return;
-				}
-
-				combatAmount -= Time.deltaTime * (1.0f / (combatFadeOutDuration + float.Epsilon));
+				combatAmount -= Time.unscaledDeltaTime * (1.0f / (combatFadeOutDuration + float.Epsilon));
 			}
 
 			combatAmount = Mathf.Clamp(combatAmount, 0.0f, 1.0f);
 
 			calmSource.volume	= LinearToLogarithmic(1.0f - combatAmount);
 			combatSource.volume = LinearToLogarithmic(combatAmount);
+
+			// pause will let calm/combat track fade out
+			calmSource.volume	*= (1.0f - pauseAmount);
+			combatSource.volume *= (1.0f - pauseAmount);
 		}
 
 		//-------------------------------------------------
@@ -278,7 +320,7 @@ namespace SAB
 					return;
 				}
 
-				dangerAmount += Time.deltaTime * (1.0f / (dangerFadeInDuration + float.Epsilon));
+				dangerAmount += Time.unscaledDeltaTime * (1.0f / (dangerFadeInDuration + float.Epsilon));
 			}
 			else
 			{
@@ -287,7 +329,7 @@ namespace SAB
 					return;
 				}
 
-				dangerAmount -= Time.deltaTime * (1.0f / (dangerFadeOutDuration + float.Epsilon));
+				dangerAmount -= Time.unscaledDeltaTime * (1.0f / (dangerFadeOutDuration + float.Epsilon));
 			}
 
 			dangerAmount = Mathf.Clamp(dangerAmount, 0.0f, 1.0f);
@@ -363,6 +405,10 @@ namespace SAB
 			{
 				dangerLoopSource.Stop();
 			}
+
+			positiveBuffLoopSource.volume	= 1.0f - pauseAmount;
+			negativeBuffLoopSource.volume	= 1.0f - pauseAmount;
+			dangerLoopSource.volume			= 1.0f - pauseAmount;
 		}
 
 		//-------------------------------------------------
