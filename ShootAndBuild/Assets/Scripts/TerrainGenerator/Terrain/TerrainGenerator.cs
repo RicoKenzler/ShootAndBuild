@@ -18,9 +18,10 @@ namespace SAB.Terrain
 		public TransformParameters			TransformParams;
 		public HeightGenerationParameters	HeightParams;
 		public TextureParameters			TextureParams;
+		public WaterParameters				WaterParams;
 		RegionMapTransformation				RegionTransformation;
 		
-		public GameObject GenerateTerrain(List<RegionCell> regionMap, RegionTile[,] regionGrid, RegionMapTransformation regionMapTransformation, TransformParameters transformParams, HeightGenerationParameters heightParams, TextureParameters textureParams, int resolution, int terrainSeed)
+		public GameObject GenerateTerrain(List<RegionCell> regionMap, RegionTile[,] regionGrid, RegionMapTransformation regionMapTransformation, TransformParameters transformParams, HeightGenerationParameters heightParams, TextureParameters textureParams, WaterParameters waterParams, int resolution, int terrainSeed)
 		{
 			// 0) Init Members
 			TerrainObject			= null;
@@ -29,6 +30,7 @@ namespace SAB.Terrain
 			TransformParams			= transformParams;
 			HeightParams			= heightParams;
 			TextureParams			= textureParams;
+			WaterParams				= waterParams;
 			RegionTransformation	= regionMapTransformation;
 
 			// 1) Init TerrainData
@@ -84,7 +86,22 @@ namespace SAB.Terrain
 			UnityEngine.TerrainCollider terrainCollider = TerrainObject.GetComponent<UnityEngine.TerrainCollider>();
 			terrainCollider.terrainData = terrainData; 
 
+			// 2) Create Water Plane
+			CreateWaterPlane(TerrainObject);
+
 			return TerrainObject;
+		}
+
+		// -----------------------------------------------------------------
+
+		public void CreateWaterPlane(GameObject terrainObject)
+		{
+			if (WaterParams.UseWater)
+			{
+				GameObject waterPlaneObject = MonoBehaviour.Instantiate(WaterParams.WaterPlanePrefab, terrainObject.transform);
+				waterPlaneObject.transform.localScale = new Vector3(TransformParams.TerrainSizeWS.x, TransformParams.TerrainSizeWS.y, 1.0f);
+				waterPlaneObject.transform.position = new Vector3(TransformParams.TerrainCenter.x, WaterParams.WaterHeight, TransformParams.TerrainCenter.y);		
+			}
 		}
 
 		// -----------------------------------------------------------------

@@ -61,6 +61,16 @@ namespace SAB.Terrain
 	// --------------------------------------------------------
 
 	[System.Serializable]
+	public class WaterParameters
+	{
+		public GameObject WaterPlanePrefab;
+		public bool UseWater		= true;
+		public float WaterHeight	= 0.0f;
+	}
+
+	// --------------------------------------------------------
+
+	[System.Serializable]
 	public class TransformParameters
 	{
 		public Vector2 TerrainCenter = new Vector2(0.0f, 0.0f);
