@@ -38,7 +38,7 @@ namespace SAB.Terrain
 
 			for (TriIndex t = 0; t < State.DelauneyTrianglesIncludingSuperTriangle.Count; ++t)
 			{
-				Triangle currentTriangle = State.DelauneyTrianglesIncludingSuperTriangle[t];
+				TriangleI currentTriangle = State.DelauneyTrianglesIncludingSuperTriangle[t];
 
 				Vector2 center = currentTriangle.CircumscribedCircle.Center;	
 				triangleVoronoiCenters.Add(center);
@@ -70,7 +70,7 @@ namespace SAB.Terrain
 			for (TriIndex t = 0; t < State.DelauneyTrianglesIncludingSuperTriangle.Count; ++t)
 			{
 				// Tell every VoronoiCell (DelauneyVertex), which HullVertices it has
-				Triangle currentTriangle = State.DelauneyTrianglesIncludingSuperTriangle[t];
+				TriangleI currentTriangle = State.DelauneyTrianglesIncludingSuperTriangle[t];
 
 				Vector2 currentTriangleCenter = triangleVoronoiCenters[t];
 
@@ -89,7 +89,7 @@ namespace SAB.Terrain
 						continue;
 					}
 
-					Triangle otherTriangle = State.DelauneyTrianglesIncludingSuperTriangle[otherTriangleIndex];
+					TriangleI otherTriangle = State.DelauneyTrianglesIncludingSuperTriangle[otherTriangleIndex];
 					Vector2 otherTriangleCenter = triangleVoronoiCenters[otherTriangleIndex];
 
 					Edge edgeForNeighbors = new Edge(currentTriangleCenter, otherTriangleCenter);

@@ -53,7 +53,7 @@ namespace SAB.Terrain
 				// Find all Traingles, in which circle we lie
 				for (TriIndex t = 0; t < State.DelauneyTrianglesIncludingSuperTriangle.Count; ++t)
 				{
-					Triangle currentTriangle = State.DelauneyTrianglesIncludingSuperTriangle[t];
+					TriangleI currentTriangle = State.DelauneyTrianglesIncludingSuperTriangle[t];
 
 					if (currentTriangle.CircumscribedCircle.IsPointInside(currentPoint))
 					{
@@ -66,7 +66,7 @@ namespace SAB.Terrain
 				// Find all Edges that are not shared between badies
 				for (int dT = 0; dT < deleteTrianglesSorted.Count; ++dT)
 				{
-					Triangle currentTriangle = State.DelauneyTrianglesIncludingSuperTriangle[deleteTrianglesSorted[dT]];
+					TriangleI currentTriangle = State.DelauneyTrianglesIncludingSuperTriangle[deleteTrianglesSorted[dT]];
 
 					EdgeIndices edge1 = new EdgeIndices(currentTriangle.IndexP0, currentTriangle.IndexP1);
 					EdgeIndices edge2 = new EdgeIndices(currentTriangle.IndexP1, currentTriangle.IndexP2);
@@ -83,7 +83,7 @@ namespace SAB.Terrain
 							continue;
 						}
 
-						Triangle otherTriangle = State.DelauneyTrianglesIncludingSuperTriangle[deleteTrianglesSorted[dT2]];
+						TriangleI otherTriangle = State.DelauneyTrianglesIncludingSuperTriangle[deleteTrianglesSorted[dT2]];
 
 						if (!edge1Shared && otherTriangle.SharesEdge(edge1))
 						{
@@ -124,7 +124,7 @@ namespace SAB.Terrain
 				for (int e = 0; e < edgesForNewTriangles.Count; ++e)
 				{
 					EdgeIndices currentEdge = edgesForNewTriangles[e];
-					Triangle newTriangle = new Triangle();
+					TriangleI newTriangle = new TriangleI();
 					bool initSuccessfull = newTriangle.TryInit(currentEdge.IndexP1, currentEdge.IndexP2, p, State.InputVerticesIncludingSuperTriangle);
 
 					if (!initSuccessfull)

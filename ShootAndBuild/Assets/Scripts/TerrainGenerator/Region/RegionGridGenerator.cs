@@ -75,10 +75,11 @@ namespace SAB.Terrain
 			{
 				for (int ix = 0; ix < RegionGrid.GetLength(0); ix++)
 				{
+					RegionTile tile = RegionGrid[ix, iy];
+
 					float amountSum = 0.0f;
 					for (int t = 0; t < (int) RegionType.Count; ++t)
 					{
-						RegionTile tile = RegionGrid[ix, iy];
 						amountSum += tile.Amounts[t];
 					}
 
@@ -87,6 +88,8 @@ namespace SAB.Terrain
 						Debug.Assert(false, "Inconsistent Region Grid");
 						break;
 					}
+
+					Debug.Assert(tile.Amounts[(int) RegionType.Uninitialized] == 0.0f);
 				}
 			}
 		}
@@ -129,23 +132,55 @@ namespace SAB.Terrain
 
 		public void AssignAmountsToTiles()
 		{
-			for (int iY = 0; iY < RegionGrid.GetLength(1); iY++)
-			{
-				for (int iX = 0; iX < RegionGrid.GetLength(0); iX++)
-				{
-					RegionTile curTile = RegionGrid[iX, iY];
+			// for all cells...
+			for (CellIndex c = 0; c < RegionCells.Count; ++c)
+            {
+				RegionCell curCell = RegionCells[c];
+				
+				List<VoronoiNeighbor> allNeighbors = curCell.VoronoiCell.NeighborCellsCCW;
 
-					if (curTile.Cell == -1)
+				// ... create triangles with consecutive neighbors
+				for (int n = 0; n < allNeighbors.Count; ++n)
+				{
+					int nextNeighborIndex = (n+1) % allNeighbors.Count;
+
+					VoronoiNeighbor curNeighbor		= allNeighbors[n];
+					VoronoiNeighbor nextNeighbor	= allNeighbors[nextNeighborIndex];
+
+					// cur, neigh, nextneigh
+					Triangle curTriangle = new Triangle(curCell.VoronoiCell.Centroid, curNeighbor.EdgeToNeighbor.Start, nextNeighbor.EdgeToNeighbor.Start);
+
+					Rect aabb = curTriangle.CalculateAABB();
+
+					int minX, minZ, maxX, maxZ;
+					MapTransformation.GetIndexRect(aabb, out minX, out minZ, out maxX, out maxZ);
+
+					// every cell within triangle
+					for (int iZ = minZ; iZ < maxZ; ++iZ)
 					{
-						Debug.Assert(false);
-						curTile.Cell = 0;
+						for (int iX = minX; iX < maxX; ++iX)
+						{
+							RegionTile curTile = RegionGrid[iX, iZ];
+
+							Vector2 tileCenter = MapTransformation.GetTileCenter(iX, iZ);
+
+							float tCur, tNeigh, tNextNeigh;
+							bool isInside = curTriangle.TryGetBarycentricCoordinates(tileCenter, out tCur, out tNeigh, out tNextNeigh);
+							
+							if (!isInside)
+							{
+								continue;
+							}
+
+							Debug.Assert(curTile.Amounts[(int) RegionType.Uninitialized] == 1.0f);
+							curTile.Amounts[(int) RegionType.Uninitialized] = 0.0f;
+							curTile.Amounts[(int) curCell.RegionType]		= 1.0f;
+						}
 					}
 
-					RegionCell curCell = RegionCells[curTile.Cell];
-
-					curTile.Amounts[(int) RegionType.Uninitialized] = 0.0f;
-					curTile.Amounts[(int) curCell.RegionType] = 1.0f;
 				}
+
+				
 			}
 		}
 

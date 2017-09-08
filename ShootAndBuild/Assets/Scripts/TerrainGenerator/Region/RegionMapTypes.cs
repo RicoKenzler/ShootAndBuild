@@ -15,6 +15,76 @@ namespace SAB.Terrain
 		Count,
 	}
 
+	public struct Triangle
+	{
+		Vector2 P0;
+		Vector2 P1;
+		Vector2 P2;
+
+		public Triangle(Vector2 p0, Vector2 p1, Vector2 p2)
+		{
+			P0 = p0;
+			P1 = p1;
+			P2 = p2;
+		}
+
+		public Rect CalculateAABB()
+		{
+			Rect aabb = new Rect();
+			aabb.xMin = Mathf.Min(P0.x, P1.x, P2.x);
+			aabb.yMin = Mathf.Min(P0.y, P1.y, P2.y);
+			aabb.xMax = Mathf.Max(P0.x, P1.x, P2.x);
+			aabb.yMax = Mathf.Max(P0.y, P1.y, P2.y);
+
+			return aabb;
+		}
+
+		public bool TryGetBarycentricCoordinates(Vector2 referencePoint, out float t0, out float t1, out float t2)
+		{
+			bool isInside1 = false;
+			bool isInside2 = false;
+
+			float t0_1, t0_2, t1_1, t1_2, t2_1, t2_2;
+
+			{
+				Vector2 v0 = P2 - P0;
+				Vector2 v1 = P1 - P0;
+				Vector2 v2 = referencePoint - P0;
+
+				float dot00 = Vector2.Dot(v0, v0);
+				float dot01 = Vector2.Dot(v0, v1);
+				float dot02 = Vector2.Dot(v0, v2);
+				float dot11 = Vector2.Dot(v1, v1);
+				float dot12 = Vector2.Dot(v1, v2);
+
+				float invDenom = 1 / (dot00 * dot11 - dot01 * dot01);
+				t0_1 = (dot11 * dot02 - dot01 * dot12) * invDenom;
+				t1_1 = (dot00 * dot12 - dot01 * dot02) * invDenom;
+				t2_1 = 1.0f - t0_1 - t1_1;
+				 
+				isInside1 = (t0_1 >= 0) && (t1_1 >= 0) && (t2_1 >= 0);
+			}
+			{
+				Vector2 v0	= P1 - P0;
+				Vector2 v1	= P2 - P0;
+				Vector2 v2	= referencePoint - P0;
+
+				float rDenominator = 1.0f / (v0.x * v1.y - v1.x * v0.y);
+				t0_2 = (v2.x * v1.y - v1.x * v2.y) * rDenominator;
+				t1_2 = (v0.x * v2.y - v2.x * v0.y) * rDenominator;
+				t2_2 = 1.0f - t0_2 - t1_2;
+
+				isInside2 = (t0_2 >= 0.0f) && (t0_2 <= 1.0f) && (t1_2 >= 0.0f) && (t1_2 <= 1.0f) && (t2_2 >= 0.0f) && (t2_2 <= 1.0f);
+			}
+
+			t0 = t0_1;
+			t1 = t1_2;
+			t2 = t2_2;
+
+			return isInside1;
+		}
+	}
+
 	public class RegionCell
 	{
 		public const float UNINITIALIZED_DISTANCE = float.MaxValue;

@@ -94,7 +94,7 @@ namespace SAB.Terrain
 
 					// Remove all temporary structs and super triangle (will be re-evaluated in next try)
 					State.InputVerticesIncludingSuperTriangle.RemoveRange(voronoiParams.VoronoiPointCount, State.InputVerticesIncludingSuperTriangle.Count - voronoiParams.VoronoiPointCount);
-					State.DelauneyTrianglesIncludingSuperTriangle	= new List<Triangle>();
+					State.DelauneyTrianglesIncludingSuperTriangle	= new List<TriangleI>();
 					State.VoronoiCells								= new List<VoronoiCell>();
 				}
 			}
@@ -134,7 +134,7 @@ namespace SAB.Terrain
 				// Draw all Triangles:
 				for (TriIndex t = 0; t < State.DelauneyTrianglesIncludingSuperTriangle.Count; ++t)
 				{
-					Triangle currentTriangle = State.DelauneyTrianglesIncludingSuperTriangle[t];
+					TriangleI currentTriangle = State.DelauneyTrianglesIncludingSuperTriangle[t];
 
 					if (voronoiParams.DebugDrawOnlyVertexIndex != -1 && !currentTriangle.HasAsVertex(voronoiParams.DebugDrawOnlyVertexIndex))
 					{
@@ -213,7 +213,7 @@ namespace SAB.Terrain
 						if (voronoiParams.DebugDrawOnlyTriangleIndex != -1)
 						{
 							EdgeIndices currentEdgeIndices = new EdgeIndices(c, neighbor.NeighborIndexIfValid);
-							Triangle focusTriangle = State.DelauneyTrianglesIncludingSuperTriangle[voronoiParams.DebugDrawOnlyTriangleIndex];
+							TriangleI focusTriangle = State.DelauneyTrianglesIncludingSuperTriangle[voronoiParams.DebugDrawOnlyTriangleIndex];
 							if (!focusTriangle.SharesEdge(currentEdgeIndices))
 							{
 								continue;
@@ -283,7 +283,7 @@ namespace SAB.Terrain
 
 					if (voronoiParams.DebugDrawOnlyTriangleIndex != -1)
 					{
-						Triangle focusTriangle = State.DelauneyTrianglesIncludingSuperTriangle[voronoiParams.DebugDrawOnlyTriangleIndex];
+						TriangleI focusTriangle = State.DelauneyTrianglesIncludingSuperTriangle[voronoiParams.DebugDrawOnlyTriangleIndex];
 						if (!focusTriangle.HasAsVertex(p))
 						{
 							continue;
