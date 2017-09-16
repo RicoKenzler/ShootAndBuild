@@ -143,12 +143,14 @@ namespace SAB.Terrain
 				for (int n = 0; n < allNeighbors.Count; ++n)
 				{
 					int nextNeighborIndex = (n+1) % allNeighbors.Count;
+					int prevNeighborIndex = (n- 1 + allNeighbors.Count) % allNeighbors.Count;
 
-					VoronoiNeighbor curNeighbor		= allNeighbors[n];
-					VoronoiNeighbor nextNeighbor	= allNeighbors[nextNeighborIndex];
+					VoronoiNeighbor prevNeighbor		= allNeighbors[prevNeighborIndex];
+					VoronoiNeighbor curNeighbor			= allNeighbors[n];
+					VoronoiNeighbor nextNeighbor		= allNeighbors[nextNeighborIndex];
 
 					// cur, neigh, nextneigh
-					Triangle curTriangle = new Triangle(curCell.VoronoiCell.Centroid, curNeighbor.EdgeToNeighbor.Start, nextNeighbor.EdgeToNeighbor.Start);
+					Triangle curTriangle = new Triangle(curCell.VoronoiCell.Centroid, curNeighbor.EdgeToNeighbor.Start, curNeighbor.EdgeToNeighbor.End);
 
 					Rect aabb = curTriangle.CalculateAABB();
 
@@ -164,17 +166,57 @@ namespace SAB.Terrain
 
 							Vector2 tileCenter = MapTransformation.GetTileCenter(iX, iZ);
 
-							float tCur, tNeigh, tNextNeigh;
-							bool isInside = curTriangle.TryGetBarycentricCoordinates(tileCenter, out tCur, out tNeigh, out tNextNeigh);
+							float bCur, bPrevNeigh, bNextNeigh;
+							bool isInside = curTriangle.TryGetBarycentricCoordinates(tileCenter, out bCur, out bPrevNeigh, out bNextNeigh);
 							
 							if (!isInside)
 							{
 								continue;
 							}
 
+							// N1 = prevNeighbor
+							// N  = curNeighbor
+							// N2 = nextNeighbor
+							// C  = curCell
+							//
+							//  N2 /
+							//    n2    \
+							//   / \  N  \
+							//  / C \     \
+							// /     n1___/
+							// \    /    /
+							//  \__/ N1 /
+							// 
+							// f(c)  = 100% c
+							// f(n1) =  33% (C + N + N1)
+							// f(n2) =  33% (C + N + N2)
+
+							// f(x) = f(c) * b_c + f(n1) * b_n1 + f(n2) * b_n2
+							// = b_c*c + b_n1*0.33*(C+N+N1) + b_n2*0.33*(C+N+N2)
+							// = c*(b_c + b_n1*0.33 + b_n2*0.33) + N * 0.33 * (b_n1 + b_n2) + N1 * b_n1*0.33 + N2 * b_n2 * 0.33)
+							// = 0.33 * (c*(3*b_c + b_n1 + b_n2) + N * (b_n1 + b_n2) + N1 * (b_n1) + N2 * (b_n2))
+							// = c * (0.33 + 0.66*b_c) + N * 0.33 * (b_n1 + b_n2) + N1 * 0.33 * (b_n1) + N2 * 0.33 * (b_n2)
+
+							RegionCell cell_N  = curNeighbor.WasClamped  ? curCell : RegionCells[curNeighbor.NeighborIndexIfValid];
+							RegionCell cell_N1 = prevNeighbor.WasClamped ? curCell : RegionCells[prevNeighbor.NeighborIndexIfValid];
+							RegionCell cell_N2 = nextNeighbor.WasClamped ? curCell : RegionCells[nextNeighbor.NeighborIndexIfValid];
+
 							Debug.Assert(curTile.Amounts[(int) RegionType.Uninitialized] == 1.0f);
 							curTile.Amounts[(int) RegionType.Uninitialized] = 0.0f;
-							curTile.Amounts[(int) curCell.RegionType]		= 1.0f;
+
+							const float ONE_THIRD = (1.0f / 3.0f);
+
+							// c * (0.33 + 0.66*b_c)
+							curTile.Amounts[(int) curCell.RegionType]  += bCur * (2.0f * ONE_THIRD) + ONE_THIRD;
+
+							// N * (0.33* (b_n1 + b_n2))
+							curTile.Amounts[(int) cell_N.RegionType]   += ONE_THIRD * (bPrevNeigh + bNextNeigh);
+
+							// N1 * (0.33 * b_n1)
+							curTile.Amounts[(int) cell_N1.RegionType]  += ONE_THIRD * (bPrevNeigh);
+
+							// N2 * (0.33 * b_n2)
+							curTile.Amounts[(int) cell_N2.RegionType]  += ONE_THIRD * (bNextNeigh);
 						}
 					}
 

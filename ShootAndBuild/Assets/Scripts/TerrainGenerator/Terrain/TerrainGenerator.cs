@@ -38,7 +38,7 @@ namespace SAB.Terrain
 
 			//Set heights
 			terrainData.heightmapResolution = Resolution; 
-			terrainData.alphamapResolution = Resolution;
+			terrainData.alphamapResolution	= Resolution;
 
 			if (Resolution != terrainData.heightmapResolution)
 			{
