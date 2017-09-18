@@ -17,8 +17,7 @@ namespace SAB
 		public int RegionSeed  = 1000;
 
 		public TransformParameters			TransformParams;
-		public HeightGenerationParameters	HeightParams;
-		public TextureParameters			TextureParams;
+		public RegionDescParameters			RegionDescParams;
 		public WaterParameters				WaterParams;
 		public VoronoiParameters			VoronoiParams;
 		public RegionParameters				RegionParams;
@@ -92,7 +91,7 @@ namespace SAB
 
 			DeleteTerrain();
 
-			TerrainObject = TerrainGenerator.GenerateTerrain(RegionGenerator.RegionMap, RegionGridGenerator.RegionGrid, regionMapTransformation, TransformParams, HeightParams, TextureParams, WaterParams, Resolution, TerrainSeed);
+			TerrainObject = TerrainGenerator.GenerateTerrain(RegionGenerator.RegionMap, RegionGridGenerator.RegionGrid, regionMapTransformation, TransformParams, RegionGridGenerator.HeightRangeY, RegionDescParams, WaterParams, Resolution, TerrainSeed);
 
 			if (TerrainObject)
 			{

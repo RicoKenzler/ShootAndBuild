@@ -26,7 +26,7 @@ namespace SAB.Terrain
 
 			for (CellIndex c = 0; c < voronoiCells.Count; ++c)
 			{
-				RegionMap.Add(new RegionCell(voronoiCells[c], RegionType.Uninitialized));
+				RegionMap.Add(new RegionCell(voronoiCells[c], RegionType.Count));
 			}
 
 			InitWaterCells();
@@ -198,7 +198,7 @@ namespace SAB.Terrain
 			{
 				RegionCell currentCell = RegionMap[c];
 
-				if (currentCell.RegionType == RegionType.Uninitialized)
+				if (currentCell.RegionType == RegionType.Count)
 				{
 					currentCell.RegionType = RegionType.Inland;
 				}

@@ -16,22 +16,51 @@ namespace SAB.Terrain
 		public int TerrainSeed = 0;
 		
 		public TransformParameters			TransformParams;
-		public HeightGenerationParameters	HeightParams;
-		public TextureParameters			TextureParams;
+		public RegionDescParameters			RegionDescParams;
 		public WaterParameters				WaterParams;
 		RegionMapTransformation				RegionTransformation;
+		List<RegionCell>					RegionMap;
+		RegionTile[,]						RegionGrid;
+
+		public float MinY;
+		public float MaxY;
 		
-		public GameObject GenerateTerrain(List<RegionCell> regionMap, RegionTile[,] regionGrid, RegionMapTransformation regionMapTransformation, TransformParameters transformParams, HeightGenerationParameters heightParams, TextureParameters textureParams, WaterParameters waterParams, int resolution, int terrainSeed)
+		public GameObject GenerateTerrain(List<RegionCell> regionMap, RegionTile[,] regionGrid, RegionMapTransformation regionMapTransformation, TransformParameters transformParams, Vector2 cellHeightRangeY, RegionDescParameters regionDescParams, WaterParameters waterParams, int resolution, int terrainSeed)
 		{
 			// 0) Init Members
 			TerrainObject			= null;
 			Resolution				= resolution;
 			TerrainSeed				= terrainSeed;
 			TransformParams			= transformParams;
-			HeightParams			= heightParams;
-			TextureParams			= textureParams;
+			RegionDescParams		= regionDescParams;
 			WaterParams				= waterParams;
 			RegionTransformation	= regionMapTransformation;
+			RegionMap				= regionMap;
+			RegionGrid				= regionGrid;
+
+
+			if (RegionDescParams.RegionDescs.Length != (int) RegionType.Count)
+			{
+				Debug.LogWarning("You did not specify a RegionDesc for every RegionType " + "(" + RegionDescParams.RegionDescs.Length + " / " + RegionType.Count + ")");
+				return null;
+			} 
+
+			float maxAdditionalRandomHeight = 0.0f;
+
+			for (int r = 0; r < (int) RegionType.Count; ++r)
+			{
+				maxAdditionalRandomHeight = Mathf.Max(RegionDescParams.RegionDescs[r].HeightDesc.MaxAdditionalRandomAbsHeight, maxAdditionalRandomHeight);
+			}
+
+			MinY = RegionTransformation.CoordsMin.x; //< Hack: get rid of warning without tossing for-future-use-member
+
+			MinY = cellHeightRangeY.x;
+			MaxY = cellHeightRangeY.y + maxAdditionalRandomHeight;
+
+			if (MinY == MaxY)
+			{
+				MaxY = MinY + 0.001f;
+			}
 
 			// 1) Init TerrainData
 			TerrainData terrainData = new TerrainData();
@@ -49,25 +78,25 @@ namespace SAB.Terrain
 			terrainData.SetHeights(0, 0, GenerateHeightMap());
 			terrainData.size = new Vector3(
 				TransformParams.TerrainSizeWS.x, 
-				TransformParams.HeightMax - TransformParams.HeightMin, 
+				cellHeightRangeY.y - cellHeightRangeY.x, 
 				TransformParams.TerrainSizeWS.y);
 
 			//Set textures
-			terrainData.splatPrototypes = new SplatPrototype[] 
-			{
-				TextureParams.TexturePlaneA.CreateSplatPrototype(false),
-				TextureParams.TexturePlaneA.CreateSplatPrototype(true),
-				TextureParams.TexturePlaneB.CreateSplatPrototype(false),
-				TextureParams.TexturePlaneB.CreateSplatPrototype(true),
-				TextureParams.TextureRock.CreateSplatPrototype(false),
-				TextureParams.TextureRock.CreateSplatPrototype(true),
-			};
+			SplatPrototype[] splatPrototypes = new SplatPrototype[(int)RegionType.Count * 2];
 
+			for (int r = 0; r < (int) RegionType.Count; ++r)
+			{
+				splatPrototypes[TerrainTextureTypes.RegionTypeToSplatIndex((RegionType) r, false)]		= RegionDescParams.RegionDescs[r].TextureDesc.CreateSplatPrototype(false);
+				splatPrototypes[TerrainTextureTypes.RegionTypeToSplatIndex((RegionType) r, true)]		= RegionDescParams.RegionDescs[r].TextureDesc.CreateSplatPrototype(true);
+			}
+
+			terrainData.splatPrototypes = splatPrototypes;
+		
 			terrainData.RefreshPrototypes();
 			terrainData.SetAlphamaps(0, 0, GenerateTextureMaps(terrainData));
 
 			//Create terrain
-			if ((TransformParams.HeightMax - TransformParams.HeightMin) <= 0)
+			if ((MaxY - MinY) <= 0)
 			{
 				Debug.LogError("Min/Max heights not correctly set (Max has to be > Min, Collider can only be created by unity when HeightMax != HeightMin)");
 				return null;
@@ -77,7 +106,7 @@ namespace SAB.Terrain
 
 			TerrainObject.transform.position = new Vector3(
 				TransformParams.TerrainCenter.x - TransformParams.TerrainSizeWS.x * 0.5f, 
-				TransformParams.HeightMin, 
+				MinY, 
 				TransformParams.TerrainCenter.y - TransformParams.TerrainSizeWS.y * 0.5f);
 
 			UnityEngine.Terrain terrainComponent = TerrainObject.GetComponent<UnityEngine.Terrain>();
@@ -117,7 +146,7 @@ namespace SAB.Terrain
 			{
 				for (int z = 0; z < Resolution; z++)
 				{
-					float height = GetNormalizedHeight((float)x, (float)z);
+					float height = GetNormalizedHeight(x, z);
 					Heightmap[x, z] = height;
 
 					maxHeight = Mathf.Max(maxHeight, height);
@@ -125,87 +154,48 @@ namespace SAB.Terrain
 				}
 			}
 
-			float heightRange = (maxHeight - minHeight);
-			float rHeightRange = 1.0f / heightRange;
-
-			for (int x = 0; x < Resolution; x++)
-			{
-				for (int z = 0; z < Resolution; z++)
-				{
-					Heightmap[x,z] = rHeightRange * (Heightmap[x,z] - minHeight);
-
-					if (HeightParams.DebugHeightRange && x < 50)
-					{
-						Heightmap[x,z] = (z > 50 ? 1.0f : 0.0f);
-					}
-				}
-			}
+			Debug.Assert(minHeight >= 0.0f && maxHeight <= 1.0f);
 
 			return Heightmap;
 		}
 
 		// -----------------------------------------------------------------
 
-		public float GetAmountPlaneA(int x, int z)
-		{
-			// We later want to get this from District Map
-			float plane2Amount = Mathf.PerlinNoise(TerrainSeed + 21 + x * 0.01f, TerrainSeed + 21 + z * 0.01f);
-
-			plane2Amount = TerrainTextureTypes.RedistributeBlendFactor(plane2Amount, TextureParams.PlaneBShare);
-
-			plane2Amount = TerrainTextureTypes.ApplySharpness(plane2Amount, 9.0f);
-
-			return 1.0f - plane2Amount;
-		}
-
-		// -----------------------------------------------------------------
-
 		public float[,,] GenerateTextureMaps(TerrainData TerrainData)
 		{
-			float[,,] textureMaps = new float[Resolution, Resolution, (int) TerrainTexturePairs.Count * 2];
+			float[,,] textureMaps = new float[Resolution, Resolution, (int) RegionType.Count * 2];
 
 			for (int x = 0; x < Resolution; x++)
 			{
 				for (int z = 0; z < Resolution; z++)
 				{
-					float normalizedX = (float)x / ((float)Resolution - 1f);
-					float normalizedZ = (float)z / ((float)Resolution - 1f);
-
-					float steepness = (TextureParams.RockSteepnessAngle == 0.0f) ? 1.0f : TerrainData.GetSteepness(normalizedX, normalizedZ) / TextureParams.RockSteepnessAngle;
-					steepness = Mathf.Min(steepness, 1.0f);
-
-					float rockAmount = TerrainTextureTypes.ApplySharpness(steepness, TextureParams.RockBlendingSharpness);
-
-					float blend12 = TextureParams.TextureRock.GetBlendValue12(TerrainSeed + 10, x, z);
-
-					int splatIndexRock0 = TerrainTextureTypes.TexturePairToSplatIndex(TerrainTexturePairs.Rock, false);
-					int splatIndexRock1 = TerrainTextureTypes.TexturePairToSplatIndex(TerrainTexturePairs.Rock, true);
-
-					textureMaps[z, x, splatIndexRock0]	= rockAmount * (1.0f - blend12);
-					textureMaps[z, x, splatIndexRock1]	= rockAmount * blend12;
-
-					float planeAmount = 1.0f - rockAmount;
-
-					float planeAAmount = planeAmount * GetAmountPlaneA(x, z);
-					float planeBAmount = planeAmount - planeAAmount;
-
-					blend12 = TextureParams.TexturePlaneA.GetBlendValue12(TerrainSeed + 20, x, z);
-					int splatIndexPlaneA0 = TerrainTextureTypes.TexturePairToSplatIndex(TerrainTexturePairs.PlaneA, false);
-					int splatIndexPlaneA1 = TerrainTextureTypes.TexturePairToSplatIndex(TerrainTexturePairs.PlaneA, true);
-					textureMaps[z, x, splatIndexPlaneA0]	= planeAAmount * (1.0f - blend12);
-					textureMaps[z, x, splatIndexPlaneA1]	= planeAAmount * blend12;
-
-					blend12 = TextureParams.TexturePlaneB.GetBlendValue12(TerrainSeed + 20, x, z);
-					int splatIndexPlaneB0 = TerrainTextureTypes.TexturePairToSplatIndex(TerrainTexturePairs.PlaneB, false);
-					int splatIndexPlaneB1 = TerrainTextureTypes.TexturePairToSplatIndex(TerrainTexturePairs.PlaneB, true);
-					textureMaps[z, x, splatIndexPlaneB0]	= planeBAmount * (1.0f - blend12);
-					textureMaps[z, x, splatIndexPlaneB1]	= planeBAmount * blend12;
-
+					RegionTile curTile		 = RegionGrid[x,z];
+					RegionCell curCell		 = RegionMap[curTile.Cell];
+				
 					float weightSum = 0.0f;
 
-					for (int t = 0; t < (int) TerrainTexturePairs.Count * 2; ++t)
+					for (int region = 0; region < curTile.RegionAmounts.Count; ++region)
 					{
-						weightSum += textureMaps[z, x, t];
+						float curAmount = curTile.RegionAmounts[region];
+
+						if (curAmount == 0.0f)
+						{
+							continue;
+						}
+
+						RegionDesc curRegionDesc = RegionDescParams.RegionDescs[region];
+						RegionTextureDesc curTextureDesc = curRegionDesc.TextureDesc;
+
+						float blend12 = curTextureDesc.GetBlendValue12(TerrainSeed, x, z);
+						int splatIndex1 = TerrainTextureTypes.RegionTypeToSplatIndex((RegionType) region, false);
+						int splatIndex2 = TerrainTextureTypes.RegionTypeToSplatIndex((RegionType) region, true);
+
+						Debug.Assert(textureMaps[x, z, splatIndex1] == 0.0f && textureMaps[x, z, splatIndex2] == 0.0f);
+
+						textureMaps[x, z, splatIndex1] = curAmount * (1.0f - blend12);
+						textureMaps[x, z, splatIndex2] = curAmount * blend12;
+
+						weightSum += curAmount;
 					}
 
 					Debug.Assert(Mathf.Abs(weightSum - 1.0f) < 0.01f);
@@ -216,15 +206,20 @@ namespace SAB.Terrain
 
 		// -----------------------------------------------------------------
 
-		public float GetNormalizedHeight(float x, float z)
+		public float GetNormalizedHeight(int x, int z)
 		{
-			float perlinCoarse = Mathf.PerlinNoise(TerrainSeed + x * HeightParams.PerlinFrequencyCoarse,	TerrainSeed + z * HeightParams.PerlinFrequencyCoarse);
-			float perlinFine   = Mathf.PerlinNoise(TerrainSeed + x * HeightParams.PerlinFrequencyFine,		TerrainSeed + z * HeightParams.PerlinFrequencyFine);
-			
-			float noiseTotal = perlinCoarse * HeightParams.PerlinWeightCoarse + perlinFine * HeightParams.PerlinWeightFine;
-			noiseTotal /= (HeightParams.PerlinWeightFine + HeightParams.PerlinWeightCoarse);
+			RegionTile regionTile = RegionGrid[x,z];
+			RegionCell regionCell = RegionMap[regionTile.Cell];
 
-			return noiseTotal;
+			float baseHeight = regionTile.Height;
+
+			RegionDesc regionDesc = RegionDescParams.RegionDescs[(int) regionCell.RegionType];
+
+			float totalHeightAbs = baseHeight + regionDesc.HeightDesc.GenerateRandomAdditionalHeightAbs(TerrainSeed, x, z);
+
+			float totalHeightRel = (totalHeightAbs - MinY) / (MaxY - MinY);
+
+			return totalHeightRel;
 		}
 
 		// -----------------------------------------------------------------

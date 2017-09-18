@@ -7,22 +7,11 @@ namespace SAB.Terrain
 
 	// --------------------------------------------------------
 
-	public enum TerrainTexturePairs
-	{
-		PlaneA,
-		PlaneB,
-		Rock,
-
-		Count
-	};
-
-	// --------------------------------------------------------
-
 	public class TerrainTextureTypes
 	{
-		public static int TexturePairToSplatIndex(TerrainTexturePairs pair, bool second)
+		public static int RegionTypeToSplatIndex(RegionType regionType, bool second)
 		{
-			return ((int) pair) * 2 + (second ? 1 : 0);
+			return ((int) regionType) * 2 + (second ? 1 : 0);
 		}
 
 		// --------------------------------------------------------
