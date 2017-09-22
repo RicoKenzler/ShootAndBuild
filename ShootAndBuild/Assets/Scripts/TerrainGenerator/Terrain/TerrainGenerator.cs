@@ -78,7 +78,7 @@ namespace SAB.Terrain
 			terrainData.SetHeights(0, 0, GenerateHeightMap());
 			terrainData.size = new Vector3(
 				TransformParams.TerrainSizeWS.x, 
-				cellHeightRangeY.y - cellHeightRangeY.x, 
+				MaxY - MinY, 
 				TransformParams.TerrainSizeWS.y);
 
 			//Set textures
@@ -128,7 +128,7 @@ namespace SAB.Terrain
 			if (WaterParams.UseWater)
 			{
 				GameObject waterPlaneObject = MonoBehaviour.Instantiate(WaterParams.WaterPlanePrefab, terrainObject.transform);
-				waterPlaneObject.transform.localScale = new Vector3(TransformParams.TerrainSizeWS.x, TransformParams.TerrainSizeWS.y, 1.0f);
+				waterPlaneObject.transform.localScale = new Vector3(TransformParams.TerrainSizeWS.x, 1.0f, TransformParams.TerrainSizeWS.y);
 				waterPlaneObject.transform.position = new Vector3(TransformParams.TerrainCenter.x, WaterParams.WaterHeight, TransformParams.TerrainCenter.y);		
 			}
 		}
