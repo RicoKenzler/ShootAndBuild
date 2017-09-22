@@ -179,29 +179,30 @@ namespace SAB.Terrain
 							const float ONE_THIRD = (1.0f / 3.0f);
 
 							// c * (0.33 + 0.66*b_c)
-							curTile.RegionAmounts[(int) curCell.RegionType]  += bCur * (2.0f * ONE_THIRD) + ONE_THIRD;
+							float amountCur = bCur * (2.0f * ONE_THIRD) + ONE_THIRD;
+							curTile.RegionAmounts[(int) curCell.RegionType]  += amountCur;
 
 							// N * (0.33* (b_n1 + b_n2))
-							curTile.RegionAmounts[(int) cell_N.RegionType]   += ONE_THIRD * (bPrevNeigh + bNextNeigh);
+							float amountN = ONE_THIRD * (bPrevNeigh + bNextNeigh);
+							curTile.RegionAmounts[(int) cell_N.RegionType]   += amountN;
 
 							// N1 * (0.33 * b_n1)
-							curTile.RegionAmounts[(int) cell_N1.RegionType]  += ONE_THIRD * (bPrevNeigh);
+							float amountN1 = ONE_THIRD * (bPrevNeigh);
+							curTile.RegionAmounts[(int) cell_N1.RegionType]  += amountN1;
 
 							// N2 * (0.33 * b_n2)
-							curTile.RegionAmounts[(int) cell_N2.RegionType]  += ONE_THIRD * (bNextNeigh);
+							float amountN2 = ONE_THIRD * (bNextNeigh);
+							curTile.RegionAmounts[(int) cell_N2.RegionType]  += amountN2;
 
 							// Assign Cell
 							curTile.Cell = c;
 
 							// Assign Height (dependent on water distance)
-							if (curCell.NormalizedDistanceToWater == 0.0f)
-							{
-								curTile.Height = RegionParams.UnderwaterTerrainHeight;
-							}
-							else
-							{
-								curTile.Height = Mathf.Min(curCell.NormalizedDistanceToWater, 0.5f) * RegionParams.MaxWaterDistanceAscension;
-							}
+							curTile.Height	=	amountCur	* curCell.ComputeHeightDueToWaterDistance(RegionParams) + 
+												amountN		* cell_N.ComputeHeightDueToWaterDistance(RegionParams)  +
+												amountN1	* cell_N1.ComputeHeightDueToWaterDistance(RegionParams) +
+												amountN2	* cell_N2.ComputeHeightDueToWaterDistance(RegionParams);
+							
 						}
 					}
 

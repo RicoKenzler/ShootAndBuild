@@ -66,6 +66,18 @@ namespace SAB.Terrain
 			VoronoiCell = cell;
 			RegionType	= region;
 		}
+
+		public float ComputeHeightDueToWaterDistance(RegionParameters regionParams)
+		{
+			if (NormalizedDistanceToWater == 0.0f)
+			{
+				return regionParams.UnderwaterTerrainHeight;
+			}
+			else
+			{
+				return Mathf.Min(NormalizedDistanceToWater, 0.5f) * regionParams.MaxWaterDistanceAscension;
+			}
+		}
 	}
 
 	class RegionMapTypes
