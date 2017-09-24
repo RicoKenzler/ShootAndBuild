@@ -41,6 +41,9 @@ namespace SAB
 			lastPlayerSphereCenter = terrainCenter + new Vector3(0.0f, 10.0f, 0.0f);
 
             GetPlayerBoundingSphere(out lastPlayerSphereCenter, out lastPlayerSphereRadius);
+
+			// Init audio Listener
+			Update();
         }
 
         void GetPlayerBoundingSphere(out Vector3 center, out float radius)
@@ -88,7 +91,6 @@ namespace SAB
             transform.position = newCameraPos;
             transform.LookAt(playerSphereCenter);
 
-
             audioListener.transform.position = playerSphereCenter;
             audioListener.transform.rotation = Quaternion.AngleAxis(180.0f, new Vector3(0.0f, 1.0f, 0.0f)) * transform.rotation;
         }
@@ -100,7 +102,7 @@ namespace SAB
 
 		public float GetListenerWidth()
 		{
-			return lastPlayerSphereRadius;
+			return lastPlayerSphereRadius * 1.5f;
 		}
 
         public static CameraController Instance
