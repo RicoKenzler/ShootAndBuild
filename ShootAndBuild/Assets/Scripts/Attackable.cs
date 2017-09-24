@@ -203,7 +203,7 @@ namespace SAB
 				damage = maxHealth + 100000;
 			}
 
-			Buffable buffableActor = damageDealerActor.GetComponent<Buffable>();
+			Buffable buffableActor = damageDealerActor ? damageDealerActor.GetComponent<Buffable>() : null;
 			if (buffableActor)
 			{
 				damage = (int)(damage * buffableActor.GetDamageMultiplier());

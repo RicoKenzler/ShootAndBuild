@@ -12,18 +12,15 @@ namespace SAB
         private List<bool> grid = new List<bool>();
         private int width = 0;
         private int height = 0;
-        private Vector3 center = new Vector3();
-
 
         void Awake()
         {
             instance = this;
 
-            width = (int)(size / resolution);
-            height = (int)(size / resolution);
+            width  = (int) (size / resolution);
+            height = (int) (size / resolution);
             grid.Capacity = width * height;
 
-            center.Set(width / 2, 0, height / 2);
             halfTile = new Vector3(resolution * 0.5f, 0.0f, resolution * 0.5f);
 
             for (int i = 0; i < width * height; ++i)
@@ -39,8 +36,8 @@ namespace SAB
 
             for (int i = 0; i < grid.Count; ++i)
             {
-                float x = (i % w - w / 2.0f) * resolution;
-                float y = ((int)(i / h) - h / 2.0f) * resolution;
+                float x = (i % w) * resolution;
+                float y = ((int)(i / h)) * resolution;
                 Vector3 drawPos = new Vector3(x, 5.0f, y);
                 drawPos += halfTile;
 
@@ -113,8 +110,8 @@ namespace SAB
                 }
             }
 
-            Vector3 min = ToNextTile(position - extents) + center;
-            Vector3 max = ToNextTile(position + extents) + center;
+            Vector3 min = ToNextTile(position - extents);
+            Vector3 max = ToNextTile(position + extents);
 
             return new Rect(min.x, min.z, max.x - min.x, max.z - min.z);
         }

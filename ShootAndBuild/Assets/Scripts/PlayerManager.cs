@@ -153,7 +153,10 @@ namespace SAB
             newPlayerObject.name = playerID.ToString();
 
             float randRadius = 5.0f;
-            newPlayerObject.transform.position = new Vector3(Random.Range(-randRadius, randRadius), 0.0f, Random.Range(-randRadius, randRadius));
+			Vector2 spawnCircleCenter = TerrainManager.Instance.GetTerrainCenter2D();
+			Vector3 rndSpawnOffset = new Vector3(Random.Range(-randRadius, randRadius), 0.0f, Random.Range(-randRadius, randRadius));
+
+            newPlayerObject.transform.position = new Vector3(spawnCircleCenter.x, 0.0f, spawnCircleCenter.y) + rndSpawnOffset;
             newPlayerObject.GetComponent<InputController>().playerID = playerID;
             newPlayerObject.GetComponent<Attackable>().PlayerDies += OnPlayerDies;
 

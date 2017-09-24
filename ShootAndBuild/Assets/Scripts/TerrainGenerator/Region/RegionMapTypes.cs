@@ -98,51 +98,46 @@ namespace SAB.Terrain
 
 	public class RegionMapTransformation
 	{
-		public Vector2 CoordsMin;
-		public Vector2 CoordsMax;
-		public Vector2 Dimensions;
+		public Vector2 MapSizeWS;
 		public int Resolution;
 			
 		public Vector2 CellSize;
 
-		public RegionMapTransformation(Vector2 mapCenter, Vector2 mapSize, int resolution)
+		public RegionMapTransformation(Vector2 mapSizeWS, int resolution)
 		{
-			CoordsMin = mapCenter - mapSize * 0.5f;
-			CoordsMax = mapCenter + mapSize * 0.5f;
-			Dimensions = CoordsMax - CoordsMin;
-			Resolution = resolution;
+			MapSizeWS	= mapSizeWS;
+			Resolution	= resolution;
 
-			CellSize = Dimensions / (float) Resolution;
+			CellSize = mapSizeWS / (float) Resolution;
 		}
 
 		public float GetNormalizedDistance(float distance)
 		{
-			return distance / (0.5f * (Dimensions.x + Dimensions.y));
+			return distance / (0.5f * (MapSizeWS.x + MapSizeWS.y));
 		}
 
 		public float NormalizedDistanceToWS(float distance)
 		{
-			return distance * (0.5f * (Dimensions.x + Dimensions.y));
+			return distance * (0.5f * (MapSizeWS.x + MapSizeWS.y));
 		}
 
 		public Vector2 NormalizedCoordinateToWS(Vector2 normalizedCoordinate)
 		{
 			Vector2 posWS = normalizedCoordinate;
-			posWS.x *= Dimensions.x;
-			posWS.y *= Dimensions.y;
-			posWS += CoordsMin;
+			posWS.x *= MapSizeWS.x;
+			posWS.y *= MapSizeWS.y;
 
 			return posWS;
 		}
 
 		public Vector2 GetTileMin(int x, int z)
 		{
-			return CoordsMin + new Vector2(x * CellSize.x, z * CellSize.y);
+			return new Vector2(x * CellSize.x, z * CellSize.y);
 		}
 
 		public Vector2 GetTileCenter(int x, int z)
 		{
-			return CoordsMin + new Vector2((x + 0.5f) * CellSize.x, (z + 0.5f) * CellSize.y);
+			return new Vector2((x + 0.5f) * CellSize.x, (z + 0.5f) * CellSize.y);
 		}
 
 		public void GetIndexRect(Rect aabbWS, out int minX, out int minZ, out int maxXExcluded, out int maxZExcluded)
@@ -151,10 +146,10 @@ namespace SAB.Terrain
 
 			const float eps = 0.0001f;
 
-			minX			= (int) ((aabbWS.xMin - CoordsMin.x - eps) / CellSize.x);
-			minZ			= (int) ((aabbWS.yMin - CoordsMin.y - eps) / CellSize.y);
-			maxXExcluded	= (int) ((aabbWS.xMax - CoordsMin.x + eps) / CellSize.x) + 1;
-			maxZExcluded	= (int) ((aabbWS.yMax - CoordsMin.y + eps) / CellSize.y) + 1;
+			minX			= (int) ((aabbWS.xMin - eps) / CellSize.x);
+			minZ			= (int) ((aabbWS.yMin - eps) / CellSize.y);
+			maxXExcluded	= (int) ((aabbWS.xMax + eps) / CellSize.x) + 1;
+			maxZExcluded	= (int) ((aabbWS.yMax + eps) / CellSize.y) + 1;
 
 			minX			= Mathf.Max(minX,			0);
 			minZ			= Mathf.Max(minZ,			0);

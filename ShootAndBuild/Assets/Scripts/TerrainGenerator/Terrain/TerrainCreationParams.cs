@@ -76,7 +76,6 @@ namespace SAB.Terrain
 	[System.Serializable]
 	public class TransformParameters
 	{
-		public Vector2 TerrainCenter = new Vector2(0.0f, 0.0f);
 		public Vector2 TerrainSizeWS = new Vector2(64.0f, 64.0f);
 	}
 

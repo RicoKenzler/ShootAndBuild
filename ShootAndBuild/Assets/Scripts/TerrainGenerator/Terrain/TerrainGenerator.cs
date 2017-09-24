@@ -52,7 +52,7 @@ namespace SAB.Terrain
 				maxAdditionalRandomHeight = Mathf.Max(RegionDescParams.RegionDescs[r].HeightDesc.MaxAdditionalRandomAbsHeight, maxAdditionalRandomHeight);
 			}
 
-			MinY = RegionTransformation.CoordsMin.x; //< Hack: get rid of warning without tossing for-future-use-member
+			MinY = RegionTransformation.CellSize.x; //< Hack: get rid of warning without tossing for-future-use-member
 
 			MinY = cellHeightRangeY.x;
 			MaxY = cellHeightRangeY.y + maxAdditionalRandomHeight;
@@ -105,9 +105,9 @@ namespace SAB.Terrain
 			TerrainObject = UnityEngine.Terrain.CreateTerrainGameObject(terrainData);
 
 			TerrainObject.transform.position = new Vector3(
-				TransformParams.TerrainCenter.x - TransformParams.TerrainSizeWS.x * 0.5f, 
+				0.0f, 
 				MinY, 
-				TransformParams.TerrainCenter.y - TransformParams.TerrainSizeWS.y * 0.5f);
+				0.0f);
 
 			UnityEngine.Terrain terrainComponent = TerrainObject.GetComponent<UnityEngine.Terrain>();
 			terrainComponent.Flush();
@@ -128,8 +128,8 @@ namespace SAB.Terrain
 			if (WaterParams.UseWater)
 			{
 				GameObject waterPlaneObject = MonoBehaviour.Instantiate(WaterParams.WaterPlanePrefab, terrainObject.transform);
-				waterPlaneObject.transform.localScale = new Vector3(TransformParams.TerrainSizeWS.x, 1.0f, TransformParams.TerrainSizeWS.y);
-				waterPlaneObject.transform.position = new Vector3(TransformParams.TerrainCenter.x, WaterParams.WaterHeight, TransformParams.TerrainCenter.y);		
+				waterPlaneObject.transform.localScale	= new Vector3(TransformParams.TerrainSizeWS.x, 1.0f, TransformParams.TerrainSizeWS.y);
+				waterPlaneObject.transform.position		= new Vector3(TransformParams.TerrainSizeWS.x * 0.5f, WaterParams.WaterHeight, TransformParams.TerrainSizeWS.y * 0.5f);		
 			}
 		}
 

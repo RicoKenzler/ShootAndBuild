@@ -8,6 +8,12 @@ namespace SAB
 {
 	public class TerrainGenerationManager : MonoBehaviour
 	{
+		[SerializeField]
+		private TerrainManager		TerrainManager;
+
+		[SerializeField]
+		private AmbientSoundManager	AmbientSoundManager;
+
 		public int Resolution = 129;
 
 		public bool UseTimeAsSeed = true;
@@ -27,6 +33,7 @@ namespace SAB
 		public RegionMapGenerator RegionGenerator		= new RegionMapGenerator();
 		public RegionGridGenerator RegionGridGenerator	= new RegionGridGenerator();
 		public TerrainGenerator TerrainGenerator		= new TerrainGenerator();
+
 
 		// -----------------------------------------------------------------
 
@@ -53,6 +60,8 @@ namespace SAB
 					DestroyImmediate(TerrainObject);
 				}
 			}
+
+			TerrainManager.ReplaceTerrain(null, null, new Vector2(0.0f, 0.0f));
 		}
 		
 		// -----------------------------------------------------------------
@@ -77,14 +86,14 @@ namespace SAB
 				RegionSeed  = timeSeed;
 			}
 
-			List<VoronoiCell> voronoiCells = VoronoiGenerator.GenerateVoronoi(VoronoiSeed, VoronoiParams, TransformParams.TerrainCenter, TransformParams.TerrainSizeWS);
+			List<VoronoiCell> voronoiCells = VoronoiGenerator.GenerateVoronoi(VoronoiSeed, VoronoiParams, TransformParams.TerrainSizeWS);
 
 			if (voronoiCells == null)
 			{
 				return;
 			}
 
-			RegionMapTransformation regionMapTransformation = new RegionMapTransformation(TransformParams.TerrainCenter, TransformParams.TerrainSizeWS, Resolution);
+			RegionMapTransformation regionMapTransformation = new RegionMapTransformation(TransformParams.TerrainSizeWS, Resolution);
 			RegionGenerator.GenerateRegions(RegionSeed, voronoiCells, RegionParams, regionMapTransformation);
 
 			RegionGridGenerator.GenerateRegionGrid(RegionGenerator.RegionMap, regionMapTransformation, RegionParams);
@@ -97,6 +106,8 @@ namespace SAB
 			{
 				TerrainObject.transform.parent = this.transform;
 			}
+
+			TerrainManager.ReplaceTerrain(TerrainObject.GetComponent<UnityEngine.Terrain>(), RegionGridGenerator.RegionGrid, TransformParams.TerrainSizeWS);
 		}
 	}
 

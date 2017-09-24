@@ -14,9 +14,7 @@ namespace SAB.Terrain
 		public List<TriangleI> DelauneyTrianglesIncludingSuperTriangle	= new List<TriangleI>();
 		public List<VoronoiCell> VoronoiCells							= new List<VoronoiCell>();
 		
-		public int		POINT_COUNT_WITHOUT_SUPER_TRIANGLE				= -1;
-		public Vector2 MIN_COORDS										= new Vector2(0,0);
-		public Vector2 MAX_COORDS										= new Vector2(0,0);
+		public int	   POINT_COUNT_WITHOUT_SUPER_TRIANGLE				= -1;
 		public Vector2 DIMENSIONS										= new Vector2(0,0);
 		public TriangleI SuperTriangle									= new TriangleI();
 		public VoronoiParameters VoronoiParams							= new VoronoiParameters();

@@ -188,7 +188,7 @@ namespace SAB.Terrain
 					break;
 				}
 
-				bool success = currentCell.AddClampRectEdgesToFillOpenPolygon(State.MIN_COORDS, State.MAX_COORDS);
+				bool success = currentCell.AddClampRectEdgesToFillOpenPolygon(new Vector2(0.0f, 0.0f), State.DIMENSIONS);
 				
 				if (!success)
 				{
@@ -216,7 +216,7 @@ namespace SAB.Terrain
 
 		public bool IsOutsideClampRect(Vector2 point)
 		{
-			return (point.x < State.MIN_COORDS.x) || (point.y < State.MIN_COORDS.y) || (point.x > State.MAX_COORDS.x) || (point.y > State.MAX_COORDS.y);
+			return (point.x < 0.0f) || (point.y < 0.0f) || (point.x > State.DIMENSIONS.x) || (point.y > State.DIMENSIONS.y);
 		}
 
 		// -------------------------------------------------------------------
@@ -265,22 +265,22 @@ namespace SAB.Terrain
 			{
 				if (dirNorm.x < 0.0f)
 				{
-					newPoint.x = State.MIN_COORDS.x;
+					newPoint.x = 0.0f;
 				}
 				else
 				{
-					newPoint.x = State.MAX_COORDS.x;
+					newPoint.x = State.DIMENSIONS.x;
 				}
 			}
 			else
 			{
 				if (dirNorm.y < 0.0f)
 				{
-					newPoint.y = State.MIN_COORDS.y;
+					newPoint.y = 0.0f;
 				}
 				else
 				{
-					newPoint.y = State.MAX_COORDS.y;
+					newPoint.y = State.DIMENSIONS.y;
 				}
 			}
 
@@ -303,7 +303,7 @@ namespace SAB.Terrain
 			moveDirection.x /= moveDirectionLength;
 			moveDirection.y /= moveDirectionLength;
 
-			return ClampToBorder(insideEdgeStart, moveDirection, State.MIN_COORDS, State.MAX_COORDS);
+			return ClampToBorder(insideEdgeStart, moveDirection, new Vector2(0.0f, 0.0f), State.DIMENSIONS);
 		}
 
 

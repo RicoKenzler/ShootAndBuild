@@ -20,7 +20,7 @@ namespace SAB.Terrain
 		int			 InvalidTries				= 0;
 		float		 RelaxationAmountLeft		= 0.0f;
 
-		public List<VoronoiCell> GenerateVoronoi(int seed, VoronoiParameters voronoiParams, Vector2 gridCenterWS, Vector2 gridSizeWS, bool afterInvalidRun = false)
+		public List<VoronoiCell> GenerateVoronoi(int seed, VoronoiParameters voronoiParams, Vector2 gridSizeWS, bool afterInvalidRun = false)
 		{
 			// Return Cached Voronoi
 			if (voronoiParams.NoRecomputation && State.VoronoiCells.Count == voronoiParams.VoronoiPointCount)
@@ -51,9 +51,7 @@ namespace SAB.Terrain
 			// 0) Init
 			State = new VoronoiCreationState();
 			State.VoronoiParams = voronoiParams;
-			State.MIN_COORDS = gridCenterWS - gridSizeWS * 0.5f;
-			State.MAX_COORDS = gridCenterWS + gridSizeWS * 0.5f;
-			State.DIMENSIONS = State.MAX_COORDS - State.MIN_COORDS;
+			State.DIMENSIONS = gridSizeWS;
 			State.POINT_COUNT_WITHOUT_SUPER_TRIANGLE = State.VoronoiParams.VoronoiPointCount;
 
 			WasRunAtLeastOnce = true;
@@ -70,7 +68,7 @@ namespace SAB.Terrain
 				if (!delauneySuccess)
 				{
 					Debug.Log("Error happened during DelauneyTriangulation. Retrying...");
-					return GenerateVoronoi(seed + 1, voronoiParams, gridCenterWS, gridSizeWS, true);
+					return GenerateVoronoi(seed + 1, voronoiParams, gridSizeWS, true);
 				}
 
 				// 3) Voronoi
@@ -79,7 +77,7 @@ namespace SAB.Terrain
 				if (!voronoiSuccess)
 				{
 					Debug.Log("Error happened during DelauneyToVoronoi. Retrying...");
-					return GenerateVoronoi(seed + 1, voronoiParams, gridCenterWS, gridSizeWS, true);
+					return GenerateVoronoi(seed + 1, voronoiParams, gridSizeWS, true);
 				}
 
 				if (RelaxationAmountLeft <= 0.0f)
@@ -263,10 +261,10 @@ namespace SAB.Terrain
 
 				Gizmos.color = col;
 
-				Gizmos.DrawLine(new Vector3(State.MIN_COORDS.x, debugDrawHeight, State.MIN_COORDS.y), new Vector3(State.MIN_COORDS.x, debugDrawHeight, State.MAX_COORDS.y));
-				Gizmos.DrawLine(new Vector3(State.MIN_COORDS.x, debugDrawHeight, State.MAX_COORDS.y), new Vector3(State.MAX_COORDS.x, debugDrawHeight, State.MAX_COORDS.y));
-				Gizmos.DrawLine(new Vector3(State.MAX_COORDS.x, debugDrawHeight, State.MAX_COORDS.y), new Vector3(State.MAX_COORDS.x, debugDrawHeight, State.MIN_COORDS.y));
-				Gizmos.DrawLine(new Vector3(State.MAX_COORDS.x, debugDrawHeight, State.MIN_COORDS.y), new Vector3(State.MIN_COORDS.x, debugDrawHeight, State.MIN_COORDS.y));
+				Gizmos.DrawLine(new Vector3(0.0f,				debugDrawHeight, 0.0f),					new Vector3(0.0f,				debugDrawHeight, State.DIMENSIONS.y));
+				Gizmos.DrawLine(new Vector3(0.0f,				debugDrawHeight, State.DIMENSIONS.y),	new Vector3(State.DIMENSIONS.x, debugDrawHeight, State.DIMENSIONS.y));
+				Gizmos.DrawLine(new Vector3(State.DIMENSIONS.x, debugDrawHeight, State.DIMENSIONS.y),	new Vector3(State.DIMENSIONS.x, debugDrawHeight, 0.0f));
+				Gizmos.DrawLine(new Vector3(State.DIMENSIONS.x, debugDrawHeight, 0.0f),					new Vector3(0.0f,				debugDrawHeight, 0.0f));
 			}
 
 			if (voronoiParams.ShowPoints)

@@ -22,7 +22,7 @@ namespace SAB.Terrain
 
 			// 2) Get Super Triangle
 			float maxDimension = Mathf.Max(State.DIMENSIONS.x, State.DIMENSIONS.y);
-			Vector2 superTriangleP1 = new Vector2(State.MIN_COORDS.x - maxDimension, State.MIN_COORDS.y - maxDimension);
+			Vector2 superTriangleP1 = new Vector2(0.0f - maxDimension, 0.0f - maxDimension);
 			Vector2 superTriangleP2 = superTriangleP1 + new Vector2(0, maxDimension * 5);
 			Vector2 superTriangleP3 = superTriangleP1 + new Vector2(maxDimension * 5, 0);
 				
