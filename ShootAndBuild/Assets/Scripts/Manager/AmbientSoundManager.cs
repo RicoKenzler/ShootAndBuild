@@ -5,18 +5,21 @@ using UnityEngine.Audio;
 
 // ExtensionMethods-Helper to allow for syntax vector3.xz();
 // TODO: Put in separate file
-public static class Vector3Extensions
-{
-     public static Vector2 xz(this Vector3 vec3D)
-     {
-         return new Vector2(vec3D.x, vec3D.z);
-     }
 
-	 public static Vector3 To3D(this Vector2 vec2D, float y = 0.0f)
-     {
-         return new Vector3(vec2D.x, y, vec2D.y);
-     }
+public static class VectorExtensions
+{
+	public static Vector2 xz(this Vector3 vec3D)
+	{
+		return new Vector2(vec3D.x, vec3D.z);
+	}
+
+	public static Vector3 To3D(this Vector2 vec2D, float y)
+    {
+		return new Vector3(vec2D.x, y, vec2D.y);
+	}
 }
+
+// ------------------------------------------------------
 
 namespace SAB
 {
@@ -28,14 +31,21 @@ namespace SAB
 		Invalid
 	}
 
+	// ------------------------------------------------------
+
+	[System.Serializable]
 	struct AmbientSoundCell
 	{
 		public AmbientSoundType	SoundType;
+
+		// ------------------------------------------------------
 
 		public AmbientSoundCell(AmbientSoundType soundType)
 		{
 			SoundType = soundType;
 		}
+
+		// ------------------------------------------------------
 
 		public static Color GetDebugColor(AmbientSoundType soundType)
 		{
@@ -50,12 +60,15 @@ namespace SAB
 			return new Color(0.5f, 0.5f, 0.5f);
 		}
 
+		// ------------------------------------------------------
+
 		public Color GetDebugColor()
 		{
 			return GetDebugColor(SoundType);
 		}
 	}
 
+	// ------------------------------------------------------
 
 	public class AmbientSoundManager : MonoBehaviour 
 	{
@@ -65,12 +78,13 @@ namespace SAB
 		private const int AUDIO_SOURCE_COUNT = 2;
 		private AudioSource[]		AudioSources;
 		private AmbientSoundType[]	CurPlayingSoundTypes;
+		private float[]				SourceMaxVolume;
 
 		//-------------------------------------------------	
 		// Audio clips
 		//-------------------------------------------------	
-		public AudioClip	AudioLoopWater;
-		public AudioClip	AudioLoopGrass;
+		public AmbientSoundData	AudioLoopWater;
+		public AmbientSoundData	AudioLoopGrass;
 
 		//-------------------------------------------------	
 		// Mixer & Tracks
@@ -94,9 +108,14 @@ namespace SAB
 		// Ambient Grid
 		//-------------------------------------------------	
 		public	int	AmbientGridCellSize		= 16;
+
+		[SerializeField]
 		private int AmbientGridDimension	= 0;
 
-		AmbientSoundCell[,] AmbientGrid;
+		[SerializeField]
+		AmbientSoundCell[]	AmbientGrid;
+
+		[SerializeField] 
 		Vector2				TerrainSizeWS;
 
 		//-------------------------------------------------	
@@ -121,11 +140,15 @@ namespace SAB
 
 			AudioSources			= new AudioSource[AUDIO_SOURCE_COUNT];
 			CurPlayingSoundTypes	= new AmbientSoundType[AUDIO_SOURCE_COUNT];
+			SourceMaxVolume			= new float[AUDIO_SOURCE_COUNT];
 
 			for (int i = 0; i < AUDIO_SOURCE_COUNT; ++i)
 			{
-				AudioSources[i]			= gameObject.AddComponent<AudioSource>();
-				CurPlayingSoundTypes[i]	= AmbientSoundType.Invalid;
+				AudioSources[i]				= gameObject.AddComponent<AudioSource>();
+				CurPlayingSoundTypes[i]		= AmbientSoundType.Invalid;
+				SourceMaxVolume[i]			= 1.0f;
+
+				AudioSources[i].outputAudioMixerGroup = AmbientMixerGroup;
 			}
 		}
 		
@@ -140,7 +163,7 @@ namespace SAB
 			}
 
 			// 0) Mute / Adjust Volume?
-			if (CheatManager.instance.disableMusic)
+			if (CheatManager.instance.disableAudio)
 			{
 				AmbientMixerGroup.audioMixer.SetFloat("AmbientVolume", AmbientGroupVolumeMuted);
 			}
@@ -152,6 +175,8 @@ namespace SAB
 			// 1) Get sub-listener positions
 			Vector3 listenerPosition	= CameraController.Instance.GetListenerPosition();
 			float	listenerWidth		= CameraController.Instance.GetListenerWidth();
+
+			listenerWidth = Mathf.Max(listenerWidth, 10.0f);
 
 			int iBottomLeft		= 0;
 			int iBottomRight	= 1;
@@ -173,15 +198,23 @@ namespace SAB
 			{
 				AmbientSoundCell curCell = GetAmbientCellSafe(SubListenerPositions[i]);
 
+				// 2.1) Add new Types
 				for (int a = 0; a < 2; ++a)
 				{
-					if (soundType[a] == AmbientSoundType.Invalid)
+					if (soundType[a] == curCell.SoundType)
 					{
+						// not present yet
+						break;
+					}
+					else if (soundType[a] == AmbientSoundType.Invalid)
+					{
+						// not found until now: only invalids follow. so add.
 						soundType[a] = curCell.SoundType;
 						break;
 					}
 				}
 
+				// 2.2) Add up amounts
 				for (int a = 0; a < 2; ++a)
 				{
 					if (soundType[a] == curCell.SoundType)
@@ -221,7 +254,7 @@ namespace SAB
 
 		float GetPanoramaAmount(int amountLeft, int amountRight)
 		{
-			if (amountLeft <= 0 || amountRight <= 0)
+			if (amountLeft <= 0 && amountRight <= 0)
 			{
 				return 0.0f;
 			}
@@ -240,14 +273,14 @@ namespace SAB
 
 		void UpdateAudioSources(AmbientSoundType primaryType, float primaryPanorama, AmbientSoundType secondaryType, float secondaryPanorama)
 		{
-			bool primaryTypeAlreadyPlaying		= false;
-			bool secondaryTypeAlreadyPlaying	= false;
+			bool primaryTypeAlreadyPlaying		= (primaryType		== AmbientSoundType.Invalid);
+			bool secondaryTypeAlreadyPlaying	= (secondaryType	== AmbientSoundType.Invalid);
 
 			// 1) Fade out old sources
 			for (int s = 0; s < AUDIO_SOURCE_COUNT; ++s)
 			{
-				bool isPrimary		= (CurPlayingSoundTypes[s] == primaryType);
-				bool isSecondary	= (CurPlayingSoundTypes[s] == secondaryType);
+				bool isPrimary		= (CurPlayingSoundTypes[s] == primaryType)		&& (primaryType != AmbientSoundType.Invalid);
+				bool isSecondary	= (CurPlayingSoundTypes[s] == secondaryType)	&& (secondaryType != AmbientSoundType.Invalid);
 
 				if (isPrimary)
 				{
@@ -260,7 +293,7 @@ namespace SAB
 				else 
 				{
 					// slowly fade out sound
-					float newVolume = FadeAudioSource(AudioSources[s], true, null);
+					float newVolume = FadeAudioSource(AudioSources[s], false, null, SourceMaxVolume[s]);
 
 					if (newVolume == 0.0f)
 					{
@@ -276,7 +309,7 @@ namespace SAB
 				if (CurPlayingSoundTypes[s] == AmbientSoundType.Invalid)
 				{
 					bool startPrimaryNext	= !primaryTypeAlreadyPlaying;
-					bool startSecondaryNext = !startPrimaryNext && !secondaryTypeAlreadyPlaying;
+					bool startSecondaryNext = !startPrimaryNext && !secondaryTypeAlreadyPlaying ;
 
 					if (!startPrimaryNext && !startSecondaryNext)
 					{
@@ -299,7 +332,7 @@ namespace SAB
 						secondaryTypeAlreadyPlaying = true;
 					}
 
-					StartAudioSource(AudioSources[s], startType, startPanorama);
+					StartAudioSource(s, startType, startPanorama);
 				}
 			}
 
@@ -316,39 +349,53 @@ namespace SAB
 
 				if (isPrimary || isSecondary)
 				{
-					FadeAudioSource(AudioSources[s], true, isPrimary ? primaryPanorama : secondaryPanorama);
+					FadeAudioSource(AudioSources[s], true, isPrimary ? primaryPanorama : secondaryPanorama, SourceMaxVolume[s]);
 				}
 			}
 		}
 
 		//-------------------------------------------------	
 
-		void StartAudioSource(AudioSource audioSource, AmbientSoundType ambientType, float initPanorama)
+		void StartAudioSource(int audioSourceIndex, AmbientSoundType ambientType, float initPanorama)
 		{
-			AudioClip audioClip = null;
+			AudioSource audioSource = AudioSources[audioSourceIndex];
+
+			AmbientSoundData ambientSoundData;
 
 			switch (ambientType)
 			{
 				case AmbientSoundType.Water:
-					audioClip = AudioLoopWater;
+					ambientSoundData = AudioLoopWater;
 					break;
 				case AmbientSoundType.Grass:
-					audioClip = AudioLoopGrass;
+					ambientSoundData = AudioLoopGrass;
 					break;
 				default:
 					Debug.Assert(false);
-					break;
+					return;
 			}
+
+			if (ambientSoundData == null)
+			{
+				Debug.Assert(false, "not all ambient sounds set");
+				return;
+			}
+
+			AudioClip audioClip = ambientSoundData.audioClip;
 
 			audioSource.clip		= audioClip;
 			audioSource.loop		= true;
 			audioSource.panStereo	= initPanorama;
+			audioSource.volume		= 0.0f;
 			audioSource.Play();
+
+			CurPlayingSoundTypes[audioSourceIndex]	= ambientType;
+			SourceMaxVolume[audioSourceIndex]		= ambientSoundData.VolumeFactor;
 		}
 
 		//-------------------------------------------------	
 
-		float FadeAudioSource(AudioSource audioSource, bool fadeIn, float? newTargetPanorama)
+		float FadeAudioSource(AudioSource audioSource, bool fadeIn, float? newTargetPanorama, float maxVolume)
 		{
 			float fadeTime = fadeIn ? FadeInTime : FadeOutTime;
 			float fadePerSecond	= (1.0f / Mathf.Max(fadeTime, 0.001f)) * (fadeIn ? 1.0f : -1.0f);
@@ -357,7 +404,7 @@ namespace SAB
 			float fadePerTick = fadePerSecond * Time.unscaledDeltaTime;
 
 			float newVolume = audioSource.volume + fadePerTick;
-			newVolume = Mathf.Clamp01(newVolume);
+			newVolume = Mathf.Clamp(newVolume, 0.0f, maxVolume);
 
 			audioSource.volume = newVolume;
 			
@@ -392,7 +439,7 @@ namespace SAB
 			iX = Mathf.Clamp(iX, 0, AmbientGridDimension - 1);
 			iZ = Mathf.Clamp(iZ, 0, AmbientGridDimension - 1);
 
-			return AmbientGrid[iX, iZ];
+			return AmbientGrid[iX * AmbientGridDimension + iZ];
 		}
 
 		//-------------------------------------------------	
@@ -417,9 +464,10 @@ namespace SAB
 					Vector2 cellMinOffsetted = Vector2.Lerp(cellMin, cellMax, 0.05f);
 					Vector2 cellMaxOffsetted = Vector2.Lerp(cellMin, cellMax, 0.95f);
 
-					AmbientSoundCell curCell = AmbientGrid[iX, iZ];
+					AmbientSoundCell curCell = AmbientGrid[iX * AmbientGridDimension + iZ];
 
-					Color col = curCell.GetDebugColor();			
+					Color col = curCell.GetDebugColor();		
+					col.a = 0.5f;	
 
 					DebugHelper.BufferQuad(new Vector3(cellMinOffsetted.x, debugDrawHeight, cellMinOffsetted.y), new Vector3(cellMaxOffsetted.x, debugDrawHeight, cellMaxOffsetted.y), col);
 				}
@@ -462,7 +510,7 @@ namespace SAB
 			AmbientGridDimension = (int) Mathf.Ceil(Mathf.Max(terrainSizeWS.x, terrainSizeWS.y) / (float) AmbientGridCellSize);
 			AmbientGridDimension = Mathf.Max(AmbientGridDimension, 1);
 			
-			AmbientGrid = new AmbientSoundCell[AmbientGridDimension, AmbientGridDimension];
+			AmbientGrid = new AmbientSoundCell[AmbientGridDimension * AmbientGridDimension];
 
 			int regionDimensionX = regionTiles.GetLength(0);
 			int regionDimensionZ = regionTiles.GetLength(1);
@@ -493,7 +541,7 @@ namespace SAB
 							break;
 					}
 
-					AmbientGrid[ambientX, ambientZ] = curCell;
+					AmbientGrid[ambientX * AmbientGridDimension + ambientZ] = curCell;
 				}
 			}
 		}
