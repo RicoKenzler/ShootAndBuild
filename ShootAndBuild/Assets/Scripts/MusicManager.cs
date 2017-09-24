@@ -37,9 +37,9 @@ namespace SAB
 		//-------------------------------------------------	
 		// Mixer & Tracks
 		//-------------------------------------------------	
-		public AudioMixer		audioMixer;
-		public ModularTrack[]	musicTracks;
-		private AudioMixerGroup soundGroup;
+		public AudioMixer		AudioMixer;
+		public ModularTrack[]	MusicTracks;
+		private AudioMixerGroup MusicMixerGroup;
 
 		//-------------------------------------------------	
 		// Combat Mood Parameter
@@ -130,7 +130,7 @@ namespace SAB
 				audioSources[i] = gameObject.AddComponent<AudioSource>();
 			}
 
-			soundGroup = audioMixer.FindMatchingGroups("Music")[0];
+			MusicMixerGroup = AudioMixer.FindMatchingGroups("Music")[0];
 			
 			baseTrackSource			= audioSources[0];
 			calmSource				= audioSources[1];
@@ -139,14 +139,14 @@ namespace SAB
 			negativeBuffLoopSource	= audioSources[4];
 			dangerLoopSource		= audioSources[5];
 
-			baseTrackSource.outputAudioMixerGroup			= soundGroup;
-			calmSource.outputAudioMixerGroup				= soundGroup;
-			combatSource.outputAudioMixerGroup				= soundGroup;
-			positiveBuffLoopSource.outputAudioMixerGroup	= soundGroup;
-			negativeBuffLoopSource.outputAudioMixerGroup	= soundGroup;
-			dangerLoopSource.outputAudioMixerGroup			= soundGroup;
+			baseTrackSource.outputAudioMixerGroup			= MusicMixerGroup;
+			calmSource.outputAudioMixerGroup				= MusicMixerGroup;
+			combatSource.outputAudioMixerGroup				= MusicMixerGroup;
+			positiveBuffLoopSource.outputAudioMixerGroup	= MusicMixerGroup;
+			negativeBuffLoopSource.outputAudioMixerGroup	= MusicMixerGroup;
+			dangerLoopSource.outputAudioMixerGroup			= MusicMixerGroup;
 			
-			currentPlaylistIndices = Enumerable.Range(0,musicTracks.Length).ToList();
+			currentPlaylistIndices = Enumerable.Range(0,MusicTracks.Length).ToList();
 
 			NextTrack();
 		}
@@ -173,11 +173,11 @@ namespace SAB
 		{
 			if (CheatManager.instance.disableMusic)
 			{
-				soundGroup.audioMixer.SetFloat("MusicVolume", MusicGroupVolumeMuted);
+				MusicMixerGroup.audioMixer.SetFloat("MusicVolume", MusicGroupVolumeMuted);
 			}
 			else
 			{
-				soundGroup.audioMixer.SetFloat("MusicVolume", MusicGroupVolumeDefault);
+				MusicMixerGroup.audioMixer.SetFloat("MusicVolume", MusicGroupVolumeDefault);
 			}
 
 			if (!baseTrackSource.isPlaying)
@@ -216,7 +216,7 @@ namespace SAB
 		ModularTrack GetCurrentTrack()
 		{
 			int realIndex = currentPlaylistIndices[currentTrackIndex];
-			return musicTracks[realIndex];
+			return MusicTracks[realIndex];
 		}
 
 		//-------------------------------------------------
@@ -231,7 +231,7 @@ namespace SAB
 			dangerLoopSource.Stop();
 
 			int oldTrackIndex = currentTrackIndex;
-			currentTrackIndex = (currentTrackIndex + 1) % musicTracks.Length;
+			currentTrackIndex = (currentTrackIndex + 1) % MusicTracks.Length;
 
 			if (currentTrackIndex == 0)
 			{

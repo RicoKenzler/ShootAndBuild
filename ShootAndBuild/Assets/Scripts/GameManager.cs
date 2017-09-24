@@ -191,7 +191,7 @@ namespace SAB
                 gameStatus = GameStatus.Running;
             }
 
-            CameraController.instance.GetComponent<UnityStandardAssets.ImageEffects.Blur>().enabled = (gameStatus == GameStatus.Paused);
+            CameraController.Instance.GetComponent<UnityStandardAssets.ImageEffects.Blur>().enabled = (gameStatus == GameStatus.Paused);
         }
 
         void WinGame()

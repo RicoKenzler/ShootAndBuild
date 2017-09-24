@@ -147,7 +147,9 @@ namespace SAB.Terrain
 				for (int z = 0; z < Resolution; z++)
 				{
 					float height = GetNormalizedHeight(x, z);
-					Heightmap[x, z] = height;
+
+					// Terrain Generation interprets array[i,j] as array[x,z], UnityTerrain interprets it as [z, x]
+					Heightmap[z, x] = height;
 
 					maxHeight = Mathf.Max(maxHeight, height);
 					minHeight = Mathf.Min(minHeight, height);
@@ -190,10 +192,11 @@ namespace SAB.Terrain
 						int splatIndex1 = TerrainTextureTypes.RegionTypeToSplatIndex((RegionType) region, false);
 						int splatIndex2 = TerrainTextureTypes.RegionTypeToSplatIndex((RegionType) region, true);
 
-						Debug.Assert(textureMaps[x, z, splatIndex1] == 0.0f && textureMaps[x, z, splatIndex2] == 0.0f);
+						Debug.Assert(textureMaps[z, x, splatIndex1] == 0.0f && textureMaps[z, x, splatIndex2] == 0.0f);
 
-						textureMaps[x, z, splatIndex1] = curAmount * (1.0f - blend12);
-						textureMaps[x, z, splatIndex2] = curAmount * blend12;
+						// Terrain Generation interprets array[i,j] as array[x,z], UnityTerrain interprets it as [z, x]
+						textureMaps[z, x, splatIndex1] = curAmount * (1.0f - blend12);
+						textureMaps[z, x, splatIndex2] = curAmount * blend12;
 
 						weightSum += curAmount;
 					}

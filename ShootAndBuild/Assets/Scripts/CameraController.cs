@@ -31,7 +31,7 @@ namespace SAB
 
         void Awake()
         {
-            instance = this;
+            Instance = this;
         }
 
         void Start()
@@ -93,7 +93,17 @@ namespace SAB
             audioListener.transform.rotation = Quaternion.AngleAxis(180.0f, new Vector3(0.0f, 1.0f, 0.0f)) * transform.rotation;
         }
 
-        public static CameraController instance
+		public Vector3 GetListenerPosition()
+		{
+			return audioListener.transform.position;
+		}
+
+		public float GetListenerWidth()
+		{
+			return lastPlayerSphereRadius;
+		}
+
+        public static CameraController Instance
         {
             get; private set;
         }

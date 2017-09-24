@@ -62,6 +62,7 @@ namespace SAB
 			}
 
 			TerrainManager.ReplaceTerrain(null, null, new Vector2(0.0f, 0.0f));
+			AmbientSoundManager.GenerateAmbientGrid(null, null, new Vector2(0.0f, 0.0f));
 		}
 		
 		// -----------------------------------------------------------------
@@ -108,6 +109,7 @@ namespace SAB
 			}
 
 			TerrainManager.ReplaceTerrain(TerrainObject.GetComponent<UnityEngine.Terrain>(), RegionGridGenerator.RegionGrid, TransformParams.TerrainSizeWS);
+			AmbientSoundManager.GenerateAmbientGrid(RegionGridGenerator.RegionGrid, RegionGenerator.RegionMap, TransformParams.TerrainSizeWS);
 		}
 	}
 

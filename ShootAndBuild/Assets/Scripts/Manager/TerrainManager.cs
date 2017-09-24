@@ -55,6 +55,7 @@ namespace SAB
 
 			return 0.0f;
 
+			// TODO: swizzle X<->Z
 			// return Terrain.SampleHeight(new Vector3(xWS, 0.0f, zWS));
 		}
 
