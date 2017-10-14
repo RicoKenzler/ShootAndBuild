@@ -2007,8 +2007,8 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 894752790}
-  m_LocalRotation: {x: 0.71716076, y: 0.0104317255, z: 0.010738045, w: -0.696747}
-  m_LocalPosition: {x: 19.692284, y: -396.8891, z: 38.46725}
+  m_LocalRotation: {x: 0.5042063, y: 0.035181876, z: 0.020559948, w: -0.8626213}
+  m_LocalPosition: {x: 23.82973, y: -3924.0383, z: -35.288822}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2141130901}
@@ -5251,6 +5251,10 @@ MonoBehaviour:
   minimumRadius: 2
   rotZ: 0.1
   audioListener: {fileID: 197147373}
+  testShakeParams:
+    Strength: 1
+    Smoothness: 0.1
+    Duration: 0.5
 --- !u!114 &2128807613
 MonoBehaviour:
   m_ObjectHideFlags: 0

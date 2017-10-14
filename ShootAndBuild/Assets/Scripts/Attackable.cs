@@ -301,13 +301,12 @@ namespace SAB
             return damageDealt;
 		}
 
-		public void OnRespawn()
+		public void OnRespawn(Vector3 position)
 		{
 			// Prepare respawn
 			Heal();
 
-			float respawnRadius = 10.0f;
-			transform.position = new Vector3(Random.Range(-1.0f, 1.0f), 0.0f, Random.Range(-1.0f, 1.0f)) * respawnRadius;
+			transform.position = position;
 			transform.rotation = Quaternion.Euler(0.0f, Random.Range(0.0f, 360.0f), 0.0f);
 
 			RegisterHealthBar();

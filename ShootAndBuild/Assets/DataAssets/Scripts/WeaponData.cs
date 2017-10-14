@@ -60,6 +60,8 @@ namespace SAB
 
         public AudioData shootSound;
 
+		public CameraShakeParams shakeParams;
+
         public int damage = 10;
 
         public float projectileSpeed;
@@ -225,6 +227,7 @@ namespace SAB
 
             //sound
             AudioManager.instance.PlayAudio(shootSound, _origin);
+			CameraController.Instance.AddCameraShake(shakeParams);
 
             //muzzleflash
             if (muzzleFlashEffect != null)
