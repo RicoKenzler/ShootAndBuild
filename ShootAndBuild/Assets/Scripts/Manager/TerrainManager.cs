@@ -7,16 +7,19 @@ namespace SAB
 	public class TerrainManager : MonoBehaviour 
 	{
 		[Header("Auto Filled on Generation")]
-		public UnityEngine.Terrain		Terrain;
-		public Terrain.RegionTile[,]	RegionGrid;
+		public UnityEngine.Terrain				Terrain;
+		public Terrain.RegionTile[,]			RegionGrid;
+		public Terrain.RegionMapTransformation	RegionMapTransformation;
 
 		public Vector2					TerrainSizeWS;
-
 		public void ReplaceTerrain(UnityEngine.Terrain newTerrain, Terrain.RegionTile[,] regionGrid, Vector2 terrainSizeWS)
 		{
 			Terrain			= newTerrain;
 			RegionGrid		= regionGrid;
 			TerrainSizeWS	= terrainSizeWS;
+
+			int regionGridResolution = regionGrid == null ? 1 : regionGrid.GetLength(0);
+			RegionMapTransformation = new SAB.Terrain.RegionMapTransformation(terrainSizeWS, regionGridResolution);
 		}
 
 		public Vector2 GetTerrainCenter2D()
@@ -53,10 +56,10 @@ namespace SAB
 				return 0.0f;
 			}
 
-			return 0.0f;
+			float height = Terrain.SampleHeight(new Vector3(xWS, 0.5f, zWS));
+			height += Terrain.gameObject.transform.position.y;
 
-			// TODO: swizzle X<->Z
-			// return Terrain.SampleHeight(new Vector3(xWS, 0.0f, zWS));
+			return height;
 		}
 
 		public Terrain.RegionTile GetRegionAt(float xWS, float zWS)

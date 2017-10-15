@@ -9,7 +9,7 @@ namespace SAB
 	public class TerrainGenerationManager : MonoBehaviour
 	{
 		[SerializeField]
-		private TerrainManager		TerrainManager;
+		private TerrainManager TerrainManager;
 
 		[SerializeField]
 		private AmbientSoundManager	AmbientSoundManager;
@@ -110,6 +110,8 @@ namespace SAB
 
 			TerrainManager.ReplaceTerrain(TerrainObject.GetComponent<UnityEngine.Terrain>(), RegionGridGenerator.RegionGrid, TransformParams.TerrainSizeWS);
 			AmbientSoundManager.GenerateAmbientGrid(RegionGridGenerator.RegionGrid, RegionGenerator.RegionMap, TransformParams.TerrainSizeWS);
+
+
 		}
 	}
 

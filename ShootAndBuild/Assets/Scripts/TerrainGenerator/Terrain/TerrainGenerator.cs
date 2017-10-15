@@ -103,6 +103,7 @@ namespace SAB.Terrain
 			}
 
 			TerrainObject = UnityEngine.Terrain.CreateTerrainGameObject(terrainData);
+			TerrainObject.name = "Terrain (Generated)";
 
 			TerrainObject.transform.position = new Vector3(
 				0.0f, 
@@ -130,6 +131,7 @@ namespace SAB.Terrain
 				GameObject waterPlaneObject = MonoBehaviour.Instantiate(WaterParams.WaterPlanePrefab, terrainObject.transform);
 				waterPlaneObject.transform.localScale	= new Vector3(TransformParams.TerrainSizeWS.x, 1.0f, TransformParams.TerrainSizeWS.y);
 				waterPlaneObject.transform.position		= new Vector3(TransformParams.TerrainSizeWS.x * 0.5f, WaterParams.WaterHeight, TransformParams.TerrainSizeWS.y * 0.5f);		
+				waterPlaneObject.name = "WaterPlane";
 			}
 		}
 

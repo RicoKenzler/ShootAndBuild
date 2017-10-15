@@ -9,8 +9,9 @@ namespace SAB.Terrain
 	public class RegionTile
 	{
 		public List<float> RegionAmounts	= new List<float>((int)RegionType.Count + 1);
-		public float Height			= 0.0f;
-		public CellIndex Cell		= -1;
+		public float Height				= 0.0f;
+		public RegionType MainRegion	= RegionType.Count;
+		public CellIndex Cell			= -1;
 
 		public RegionTile()
 		{
@@ -18,6 +19,8 @@ namespace SAB.Terrain
 			{
 				RegionAmounts.Add(0.0f);
             }
+
+			MainRegion = RegionType.Count;
 
 			RegionAmounts[(int) RegionType.Count] = 1.0f;
 		}
@@ -145,6 +148,8 @@ namespace SAB.Terrain
 							{
 								continue;
 							}
+
+							curTile.MainRegion = curCell.RegionType;
 
 							// N1 = prevNeighbor
 							// N  = curNeighbor
