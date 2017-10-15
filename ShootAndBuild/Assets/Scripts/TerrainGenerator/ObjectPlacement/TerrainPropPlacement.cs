@@ -17,6 +17,9 @@ namespace SAB.Terrain
 		[Range(0.0f, 3.0f)]
 		public float		MaxSize				= 0.2f;
 
+		[Range(0.01f, 1.0f)]
+		public float		FlattenFactor		= 1.0f;
+
 		[Range(0.0f, 1000.0f)]
 		public float		RelativeProbability	= 100;
 	}
@@ -236,7 +239,7 @@ namespace SAB.Terrain
 
 				float rndRotY = Random.Range(0.0f, 360.0f);
 				float rndScaleX = Random.Range(prop.MinSize, prop.MaxSize);
-				float rndScaleY = Random.Range(prop.MinSize, prop.MaxSize);
+				float rndScaleY = Random.Range(prop.MinSize, prop.MaxSize) * prop.FlattenFactor;
 				float rndScaleZ = Random.Range(prop.MinSize, prop.MaxSize);
 				newObject.transform.rotation = Quaternion.AngleAxis(rndRotY, Vector3.up);
 				newObject.transform.localScale = new Vector3(rndScaleX, rndScaleY, rndScaleZ);
