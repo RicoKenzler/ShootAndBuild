@@ -154,6 +154,22 @@ namespace SAB
 		
 		//-------------------------------------------------	
 
+		struct SamplePosition
+		{
+			public SamplePosition(Vector2 pos, float priority, int leftAmount, int rightAmount)
+			{
+				Pos			= pos;
+				Priority	= priority;
+				LeftAmount	= leftAmount;
+				RightAmount = rightAmount;
+			}
+
+			public Vector2	Pos;
+			public float	Priority;
+			public int		LeftAmount;
+			public int		RightAmount;
+		}
+
 		void Update() 
 		{
 			if (AmbientGrid == null)
@@ -178,15 +194,13 @@ namespace SAB
 
 			listenerWidth = Mathf.Max(listenerWidth, 10.0f);
 
-			int iBottomLeft		= 0;
-			int iBottomRight	= 1;
-			int iTopLeft		= 2;
-			int iTopRight		= 3;
+			List<SamplePosition> samplePositionsByPriority = new List<SamplePosition>();
 
-			SubListenerPositions[iBottomLeft]	= listenerPosition.xz() + new Vector2(-1,-1) * listenerWidth;
-			SubListenerPositions[iBottomRight]	= listenerPosition.xz() + new Vector2( 1,-1) * listenerWidth;
-			SubListenerPositions[iTopLeft]		= listenerPosition.xz() + new Vector2(-1, 1) * listenerWidth;
-			SubListenerPositions[iTopRight]		= listenerPosition.xz() + new Vector2( 1, 1) * listenerWidth;
+			samplePositionsByPriority.Add(new SamplePosition(listenerPosition.xz()							           , 1.0f, 1, 1));
+			samplePositionsByPriority.Add(new SamplePosition(listenerPosition.xz() + new Vector2( 1,-1) * listenerWidth, 0.5f, 0, 1));
+			samplePositionsByPriority.Add(new SamplePosition(listenerPosition.xz() + new Vector2(-1,-1) * listenerWidth, 0.5f, 1, 0));
+			samplePositionsByPriority.Add(new SamplePosition(listenerPosition.xz() + new Vector2( 1, 1) * listenerWidth, 0.1f, 0, 1));
+			samplePositionsByPriority.Add(new SamplePosition(listenerPosition.xz() + new Vector2(-1, 1) * listenerWidth, 0.1f, 1, 0));
 
 			// 2) find out which 2 sound types dominate and whether they are l/r or balanced
 			AmbientSoundType[] soundType	= {AmbientSoundType.Invalid, AmbientSoundType.Invalid};
@@ -194,9 +208,9 @@ namespace SAB
 			int[] rightAmount				= {0, 0};
 			
 			// bottom left and bottom right have highest priority!
-			for (int i = 0; i < 4; ++i)
+			foreach (SamplePosition samplePosition in samplePositionsByPriority)
 			{
-				AmbientSoundCell curCell = GetAmbientCellSafe(SubListenerPositions[i]);
+				AmbientSoundCell curCell = GetAmbientCellSafe(samplePosition.Pos);
 
 				// 2.1) Add new Types
 				for (int a = 0; a < 2; ++a)
@@ -219,16 +233,8 @@ namespace SAB
 				{
 					if (soundType[a] == curCell.SoundType)
 					{
-						bool isLeft = (i == iBottomLeft) || (i == iTopLeft);
-
-						if (isLeft)
-						{
-							leftAmount[a]++;
-						}
-						else
-						{
-							rightAmount[a]++;
-						}
+						leftAmount[a]	+= samplePosition.LeftAmount;
+						rightAmount[a]	+= samplePosition.RightAmount;
 						break;
 					}
 				}
