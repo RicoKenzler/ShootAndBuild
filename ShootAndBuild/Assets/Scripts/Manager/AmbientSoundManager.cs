@@ -27,6 +27,7 @@ namespace SAB
 	{
 		Grass,
 		Water,
+		Ruins,
 
 		Invalid
 	}
@@ -52,12 +53,14 @@ namespace SAB
 			switch (soundType)
 			{
 				case AmbientSoundType.Water:
-					return new Color(0,0,1);
+					return Color.blue;
 				case AmbientSoundType.Grass:
-					return new Color(0,1,0);
+					return Color.green;
+				case AmbientSoundType.Ruins:
+					return Color.gray;
 			}
 
-			return new Color(0.5f, 0.5f, 0.5f);
+			return Color.white;
 		}
 
 		// ------------------------------------------------------
@@ -85,6 +88,7 @@ namespace SAB
 		//-------------------------------------------------	
 		public AmbientSoundData	AudioLoopWater;
 		public AmbientSoundData	AudioLoopGrass;
+		public AmbientSoundData AudioLoopRuins;
 
 		//-------------------------------------------------	
 		// Mixer & Tracks
@@ -196,11 +200,21 @@ namespace SAB
 
 			List<SamplePosition> samplePositionsByPriority = new List<SamplePosition>();
 
-			samplePositionsByPriority.Add(new SamplePosition(listenerPosition.xz()							           , 1.0f, 1, 1));
-			samplePositionsByPriority.Add(new SamplePosition(listenerPosition.xz() + new Vector2( 1,-1) * listenerWidth, 0.5f, 0, 1));
-			samplePositionsByPriority.Add(new SamplePosition(listenerPosition.xz() + new Vector2(-1,-1) * listenerWidth, 0.5f, 1, 0));
-			samplePositionsByPriority.Add(new SamplePosition(listenerPosition.xz() + new Vector2( 1, 1) * listenerWidth, 0.1f, 0, 1));
+			// upper
 			samplePositionsByPriority.Add(new SamplePosition(listenerPosition.xz() + new Vector2(-1, 1) * listenerWidth, 0.1f, 1, 0));
+			samplePositionsByPriority.Add(new SamplePosition(listenerPosition.xz() + new Vector2( 0, 1) * listenerWidth, 0.1f, 1, 1));
+			samplePositionsByPriority.Add(new SamplePosition(listenerPosition.xz() + new Vector2( 1, 1) * listenerWidth, 0.1f, 0, 1));
+
+			// middle
+			samplePositionsByPriority.Add(new SamplePosition(listenerPosition.xz() + new Vector2(-1, 0) * listenerWidth, 0.5f, 2, 0));
+			samplePositionsByPriority.Add(new SamplePosition(listenerPosition.xz()							           , 1.0f, 2, 2));
+			samplePositionsByPriority.Add(new SamplePosition(listenerPosition.xz() + new Vector2( 1, 0) * listenerWidth, 0.5f, 0, 2));
+
+			// lower
+			samplePositionsByPriority.Add(new SamplePosition(listenerPosition.xz() + new Vector2(-1,-1) * listenerWidth, 0.5f, 1, 0));
+			samplePositionsByPriority.Add(new SamplePosition(listenerPosition.xz() + new Vector2( 0,-1) * listenerWidth, 0.5f, 1, 1));
+			samplePositionsByPriority.Add(new SamplePosition(listenerPosition.xz() + new Vector2( 1,-1) * listenerWidth, 0.1f, 0, 1));
+			
 
 			// 2) find out which 2 sound types dominate and whether they are l/r or balanced
 			AmbientSoundType[] soundType	= {AmbientSoundType.Invalid, AmbientSoundType.Invalid};
@@ -240,20 +254,29 @@ namespace SAB
 				}
 			}
 
-			int[]   totalAmount = {0, 0};
-			float[] panoramas = {0.0f, 0.0f};
+			int[]   totalAmounts	= {0, 0};
+			float[] panoramas		= {0.0f, 0.0f};
+			float[] intensities		= {0.0f, 0.0f};
+			int		totalAmountSum	= 0;
 
 			for (int a = 0; a < 2; ++a)
 			{
-				totalAmount[a]	= leftAmount[a] + rightAmount[a];
+				totalAmounts[a]	= leftAmount[a] + rightAmount[a];
 				panoramas[a]	= GetPanoramaAmount(leftAmount[a], rightAmount[a]);
+				totalAmountSum += totalAmounts[a];
 			}
 
-			int primaryIndex	= (totalAmount[0] >= totalAmount[1]) ? 0 : 1;
-			int secondaryIndex	= (totalAmount[0] >= totalAmount[1]) ? 1 : 0;
+			for (int a = 0; a < 2; ++a)
+			{
+				float relativeAmount = (float) totalAmounts[a] / (float) totalAmountSum;
+				intensities[a] = Mathf.Pow(relativeAmount, 0.3f);
+			}
+
+			int primaryIndex	= (totalAmounts[0] >= totalAmounts[1]) ? 0 : 1;
+			int secondaryIndex	= (totalAmounts[0] >= totalAmounts[1]) ? 1 : 0;
 			
 			// 3) Update Audio Sources
-			UpdateAudioSources(soundType[primaryIndex], panoramas[primaryIndex], soundType[secondaryIndex], panoramas[secondaryIndex]);
+			UpdateAudioSources(soundType[primaryIndex], panoramas[primaryIndex], intensities[primaryIndex], soundType[secondaryIndex], panoramas[secondaryIndex], intensities[secondaryIndex]);
 		}
 
 		//-------------------------------------------------	
@@ -277,7 +300,7 @@ namespace SAB
 
 		//-------------------------------------------------	
 
-		void UpdateAudioSources(AmbientSoundType primaryType, float primaryPanorama, AmbientSoundType secondaryType, float secondaryPanorama)
+		void UpdateAudioSources(AmbientSoundType primaryType, float primaryPanorama, float primaryIntensity, AmbientSoundType secondaryType, float secondaryPanorama, float secondaryIntensity)
 		{
 			bool primaryTypeAlreadyPlaying		= (primaryType		== AmbientSoundType.Invalid);
 			bool secondaryTypeAlreadyPlaying	= (secondaryType	== AmbientSoundType.Invalid);
@@ -299,7 +322,7 @@ namespace SAB
 				else 
 				{
 					// slowly fade out sound
-					float newVolume = FadeAudioSource(AudioSources[s], false, null, SourceMaxVolume[s]);
+					float newVolume = FadeAudioSource(AudioSources[s], null, SourceMaxVolume[s], 0.0f);
 
 					if (newVolume == 0.0f)
 					{
@@ -355,7 +378,9 @@ namespace SAB
 
 				if (isPrimary || isSecondary)
 				{
-					FadeAudioSource(AudioSources[s], true, isPrimary ? primaryPanorama : secondaryPanorama, SourceMaxVolume[s]);
+					float intensity = isPrimary ? primaryIntensity : secondaryIntensity;
+
+					FadeAudioSource(AudioSources[s], isPrimary ? primaryPanorama : secondaryPanorama, SourceMaxVolume[s], SourceMaxVolume[s] * intensity);
 				}
 			}
 		}
@@ -375,6 +400,9 @@ namespace SAB
 					break;
 				case AmbientSoundType.Grass:
 					ambientSoundData = AudioLoopGrass;
+					break;
+				case AmbientSoundType.Ruins:
+					ambientSoundData = AudioLoopRuins;
 					break;
 				default:
 					Debug.Assert(false);
@@ -401,15 +429,28 @@ namespace SAB
 
 		//-------------------------------------------------	
 
-		float FadeAudioSource(AudioSource audioSource, bool fadeIn, float? newTargetPanorama, float maxVolume)
+		float FadeAudioSource(AudioSource audioSource, float? newTargetPanorama, float maxVolume, float targetVolume)
 		{
-			float fadeTime = fadeIn ? FadeInTime : FadeOutTime;
-			float fadePerSecond	= (1.0f / Mathf.Max(fadeTime, 0.001f)) * (fadeIn ? 1.0f : -1.0f);
+			float oldVolume = audioSource.volume;
+
+			bool isFadeIn = targetVolume > oldVolume;
+			float fadeTime = isFadeIn ? FadeInTime : FadeOutTime;
+			float fadePerSecond	= (1.0f / Mathf.Max(fadeTime, 0.001f)) * (isFadeIn ? 1.0f : -1.0f);
 
 			// (fade/second) * (second/tick) = fade/tick
 			float fadePerTick = fadePerSecond * Time.unscaledDeltaTime;
 
 			float newVolume = audioSource.volume + fadePerTick;
+
+			if (isFadeIn)
+			{
+				newVolume = Mathf.Min(newVolume, targetVolume);
+			}
+			else
+			{
+				newVolume = Mathf.Max(newVolume, targetVolume);
+			}
+
 			newVolume = Mathf.Clamp(newVolume, 0.0f, maxVolume);
 
 			audioSource.volume = newVolume;
@@ -541,6 +582,10 @@ namespace SAB
 
 					switch (regionType)
 					{
+						case Terrain.RegionType.Bricks:
+							curCell.SoundType = AmbientSoundType.Ruins;
+							break;
+
 						case Terrain.RegionType.Beach:
 						case Terrain.RegionType.Water:
 							curCell.SoundType = AmbientSoundType.Water;
