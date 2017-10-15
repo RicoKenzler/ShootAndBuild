@@ -210,11 +210,13 @@ namespace SAB.Terrain
 			// bring to [0.25, 0.75]
 			if (rnd < 0.25f)
 			{
-				rnd += 0.25f;
+				// 0.25 -> 0.25, 0.0 -> 0.5
+				rnd = 0.5f - rnd;
 			}
 			else if (rnd > 0.75)
 			{
-				rnd -= 0.25f;
+				// 0.75 -> 0.75, 1.0 -> 0.5
+				rnd = 1.5f - rnd;
 			}
 
 			// bring back to [0,1]
