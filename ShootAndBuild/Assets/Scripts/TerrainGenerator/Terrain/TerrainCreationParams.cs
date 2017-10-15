@@ -42,6 +42,13 @@ namespace SAB.Terrain
 	public class RegionParameters
 	{
 		[Header("Generation")]
+
+		[Range(0, 0.4f)]
+		public float BrickAreaSize		= 0.1f;
+
+		[Range(0, 10)]
+		public int BrickAreaCount		= 2;
+
 		[Range(0, 20)]
 		public int WaterCircles			= 4;
 
@@ -126,10 +133,10 @@ namespace SAB.Terrain
 		public Texture2D Normal1;
 		public Texture2D Normal2;
 
-		[Range(0.5f, 20.0f)]
+		[Range(0.5f, 40.0f)]
 		public float Tiling1 = 4.0f;
 		
-		[Range(0.5f, 20.0f)]
+		[Range(0.5f, 40.0f)]
 		public float Tiling2 = 3.0f;
 
 		[Range(1.0f, 20.0f)]

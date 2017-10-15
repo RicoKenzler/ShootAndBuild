@@ -9,6 +9,7 @@ namespace SAB.Terrain
 		Water,
 		Beach,
 		Inland,
+		Bricks,
 
 		Count,
 	}
@@ -86,10 +87,11 @@ namespace SAB.Terrain
 		{
 			switch(regionType)
 			{
-				case RegionType.Count:	return Color.gray;					
-				case RegionType.Water:			return Color.blue;					
-				case RegionType.Beach:			return Color.yellow;				
-				case RegionType.Inland:			return new Color(0.6f, 0.6f, 0.0f);	
+				case RegionType.Count:	return Color.white;
+				case RegionType.Bricks:	return new Color(0.8f, 0.4f, 0.2f);
+				case RegionType.Water:	return Color.blue;					
+				case RegionType.Beach:	return Color.yellow;				
+				case RegionType.Inland:	return new Color(0.6f, 0.6f, 0.0f);	
 			}
 
 			return Color.black;

@@ -31,8 +31,48 @@ namespace SAB.Terrain
 
 			InitWaterCells();
 			PropagateWaterDistances();
+			CreateBrickAreas();
 			InitBeachAreas();
 			InitInlandAreas();
+		}
+
+		// -----------------------------------------
+
+		void CreateBrickAreas()
+		{
+			for (int area = 0; area < RegionParams.BrickAreaCount; area++)
+			{
+				float randPosX = Random.Range(0.2f, 0.8f);
+				float randPosZ = Random.Range(0.2f, 0.8f);
+
+				if (area == 0)
+				{
+					randPosX = 0.5f;
+					randPosZ = 0.5f;
+				}
+
+				float rectExtentsNormZ = Random.Range(RegionParams.BrickAreaSize * 0.2f, RegionParams.BrickAreaSize);
+				float rectExtentsNormX = Random.Range(RegionParams.BrickAreaSize * 0.2f, RegionParams.BrickAreaSize);
+				Vector2 posNormMin = new UnityEngine.Vector2(randPosX - rectExtentsNormX, randPosZ - rectExtentsNormZ);
+				Vector2 posNormMax = new UnityEngine.Vector2(randPosX + rectExtentsNormX, randPosZ + rectExtentsNormZ);
+				
+				Vector2 posMinWS = RegionMapTransformation.NormalizedCoordinateToWS(posNormMin);
+				Vector2 posMaxWS = RegionMapTransformation.NormalizedCoordinateToWS(posNormMax);
+
+				for (CellIndex c = 0; c < RegionMap.Count; ++c)
+				{
+					RegionCell cell = RegionMap[c];
+
+					Vector2 center = cell.VoronoiCell.Centroid;
+					
+					if (center.x > posMaxWS.x || center.y > posMaxWS.y || center.x < posMinWS.x || center.y < posMinWS.y)
+					{
+						continue;
+					}
+
+					cell.RegionType = RegionType.Bricks;
+				}
+			}
 		}
 
 		// -----------------------------------------

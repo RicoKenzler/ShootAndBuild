@@ -171,6 +171,12 @@ namespace SAB.Terrain
 					}
 
 					RegionType regionType = regionGrid[x,z].MainRegion;
+
+					if (regionGrid[x,z].RegionAmounts[(int)regionType] < 0.95f)
+					{
+						continue;
+					}
+
 					bool isOfDesiredRegion = false;
 
 					foreach (RegionType containedType in propGroup.Regions)
