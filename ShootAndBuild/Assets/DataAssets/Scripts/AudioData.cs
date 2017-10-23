@@ -75,9 +75,12 @@ namespace SAB
             // Audio Manager only exist (and works) during play
             GUI.enabled = Application.isPlaying;
 
-            if (GUILayout.Button("Spawn Sound at (2,0,0)"))
+            if (GUILayout.Button("Play near LookAt"))
             {
-                Vector3 pos = new Vector3(2.0f, 0.0f, 0.0f);
+				Vector3 pos = CameraController.Instance.GetListenerPosition();
+				pos.y = TerrainManager.Instance.GetInterpolatedHeight(pos.x, pos.z);
+
+                pos += new Vector3(2.0f, 0.0f, 0.0f);
                 AudioManager.instance.PlayAudio(audioData, pos);
             }
 

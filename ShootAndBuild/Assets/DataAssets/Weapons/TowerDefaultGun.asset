@@ -9,31 +9,30 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 89f713af7e752454cab87fc5f167d697, type: 3}
-  m_Name: DefaultPistol
+  m_Name: TowerDefaultGun
   m_EditorClassIdentifier: 
-  weaponID: 100
+  weaponID: 102
   type: 2
   damageType: 0
-  spread: 10
-  coolDownTime: 0.5
+  spread: 30
+  coolDownTime: 2
   viewModel: {fileID: 0}
-  projectile: {fileID: 1756644795331426, guid: 29425370c5332a84ab4ba74f42d81d54, type: 2}
+  projectile: {fileID: 1756644795331426, guid: c1f7badcdf67c614184324fc7af75d91, type: 2}
   muzzleFlashEffect: {fileID: 1000010254994808, guid: 9defeac88977c0d448aa4541073ee9e4,
     type: 2}
   ricochetEffect: {fileID: 1000010844420130, guid: 4edabb1c0dde62743b137378c7d22980,
     type: 2}
-  shootSound: {fileID: 11400000, guid: f2de9e037aa408942a4895201c525bf7, type: 2}
+  shootSound: {fileID: 11400000, guid: 18ba650aa9e549c47b6306e46c4c71be, type: 2}
   shakeParams:
-    Strength: 0.01
+    Strength: 0
     Smoothness: 0
-    Duration: 0.01
-  damage: 20
-  projectileSpeed: 10
-  projectilesPerShot: 1
+    Duration: 0
+  damage: 10
+  projectileSpeed: 20
+  projectilesPerShot: 3
   projectileRandomSpeed: 0.1
   range: 50
   areaDamage: 0
   areaRadius: 0
   recoilForce: 0
-  buffs:
-  - {fileID: 11400000, guid: df79d31f188e3c6429883393e916c45d, type: 2}
+  buffs: []

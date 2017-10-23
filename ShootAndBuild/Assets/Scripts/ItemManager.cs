@@ -16,8 +16,9 @@ namespace SAB
         CheeseHeal = 4,
         AppleHeal = 5,
 
-        WeaponDefault = 100,
-        WeaponRailgun = 101,
+        WeaponDefault		= 100,
+        WeaponRailgun		= 101,
+		WeaponTowerDefault	= 102,
     }
 
     public enum ItemUsageCategory
