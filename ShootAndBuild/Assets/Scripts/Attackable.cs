@@ -115,7 +115,10 @@ namespace SAB
 				CounterManager.instance.AddToCounters(playerIDWhoKilledMe, CounterType.KilledEnemies, 1, enemy.type.ToString() );
 			}
 
-			OnAttackableDies(this);
+			if (OnAttackableDies != null)
+			{
+				OnAttackableDies(this);
+			}
 
 			// Execute Die
 			if (inputController)
