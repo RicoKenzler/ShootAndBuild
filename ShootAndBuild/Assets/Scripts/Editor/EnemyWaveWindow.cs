@@ -1,7 +1,9 @@
-﻿using UnityEngine;
-using UnityEditor;
+﻿using SAB.Spawn;
 using System.Collections.Generic;
-using SAB.Spawn;
+using UnityEditor;
+using UnityEditor.SceneManagement;
+using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace SAB
 {
@@ -119,8 +121,7 @@ namespace SAB
 
             }
             GUILayout.EndArea();
-
-        }
+		}
 
         //----------------------------------------------------------------------
 

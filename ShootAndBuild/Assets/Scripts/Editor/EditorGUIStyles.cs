@@ -11,7 +11,6 @@ namespace SAB {
         //constructor
         static SABEditorGUIStyles()
         {
-
             m_line = new GUIStyle("Box");
             m_line.border.top = m_line.border.bottom = 1;
             m_line.margin.top = m_line.margin.bottom = 1;

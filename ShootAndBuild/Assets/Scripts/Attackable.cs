@@ -31,6 +31,9 @@ namespace SAB
 		public delegate void ReceiveDmage();
 		public event ReceiveDmage OnDamage;
 
+		public delegate void AttackableDiesEvent(Attackable attackable);
+		public event AttackableDiesEvent OnAttackableDies;
+
 		private int currentHealth = 0;
 		private InputController inputController;
 
@@ -111,6 +114,8 @@ namespace SAB
 
 				CounterManager.instance.AddToCounters(playerIDWhoKilledMe, CounterType.KilledEnemies, 1, enemy.type.ToString() );
 			}
+
+			OnAttackableDies(this);
 
 			// Execute Die
 			if (inputController)

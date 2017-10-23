@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 0.043
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 886024144}
-  m_IndirectSpecularColor: {r: 0.010077285, g: 0.00852815, b: 0.02759779, a: 0.043}
+  m_IndirectSpecularColor: {r: 0.010083243, g: 0.008521583, b: 0.027594082, a: 0.043}
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -1016,6 +1016,11 @@ Prefab:
       propertyPath: m_RootOrder
       value: 11
       objectReference: {fileID: 0}
+    - target: {fileID: 114554427420127092, guid: 9d7788180427d3d4dab6c38d92c581b9,
+        type: 2}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 9d7788180427d3d4dab6c38d92c581b9, type: 2}
   m_IsPrefabParent: 0
@@ -1745,20 +1750,6 @@ Light:
   m_Lightmapping: 4
   m_AreaSize: {x: 1, y: 1}
   m_BounceIntensity: 3
-  m_FalloffTable:
-    m_Table[0]: 0
-    m_Table[1]: 0
-    m_Table[2]: 0
-    m_Table[3]: 0
-    m_Table[4]: 0
-    m_Table[5]: 0
-    m_Table[6]: 0
-    m_Table[7]: 0
-    m_Table[8]: 0
-    m_Table[9]: 0
-    m_Table[10]: 0
-    m_Table[11]: 0
-    m_Table[12]: 0
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
   m_ShadowRadius: 0
@@ -2284,7 +2275,7 @@ Prefab:
     m_Modifications:
     - target: {fileID: 4860705358351190, guid: 186166c00133e8e4f83a20e048e278a6, type: 2}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 1.74
       objectReference: {fileID: 0}
     - target: {fileID: 4860705358351190, guid: 186166c00133e8e4f83a20e048e278a6, type: 2}
       propertyPath: m_LocalPosition.y
@@ -3780,7 +3771,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1827884806}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0.22, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 90391056}
@@ -3797,6 +3788,7 @@ Transform:
   - {fileID: 660686220}
   - {fileID: 493312720}
   - {fileID: 914308973}
+  - {fileID: 1893608480}
   m_Father: {fileID: 0}
   m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -3887,6 +3879,87 @@ Transform:
   m_PrefabParentObject: {fileID: 4000011389478184, guid: 94cd86138d9233a4f8d62276eb74c283,
     type: 2}
   m_PrefabInternal: {fileID: 1879341138}
+--- !u!1 &1893608479
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 1893608480}
+  - component: {fileID: 1893608481}
+  m_Layer: 0
+  m_Name: SpawnManagerPrototype
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1893608480
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1893608479}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.24, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1827884807}
+  m_RootOrder: 14
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1893608481
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1893608479}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 051e83bc59cfbf14ca01afbb182d02d8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  waves:
+  - stages:
+    - index: 0
+      isStarted: 0
+    - index: 1
+      isStarted: 0
+    - index: 2
+      isStarted: 0
+    - index: 3
+      isStarted: 0
+    spawnStages:
+    - index: 0
+      isStarted: 0
+      monsters:
+      - enemy: {fileID: 1201289100612482, guid: 708f9debb04499c49b893c3ca3f07cfb,
+          type: 2}
+        count: 10
+      duration: 20
+    - index: 1
+      isStarted: 0
+      monsters:
+      - enemy: {fileID: 1689664021860500, guid: 3c52e5d3f7f36844085688653d9c73b8,
+          type: 2}
+        count: 20
+      - enemy: {fileID: 1200185571721126, guid: 666aba011db19844e8ef004e0fe2ce0a,
+          type: 2}
+        count: 3
+      duration: 20
+    - index: 3
+      isStarted: 0
+      monsters:
+      - enemy: {fileID: 1884886964741938, guid: 9c279ebdb7245324dba9067ca144d265,
+          type: 2}
+        count: 1
+      duration: 0
+    pauseStages: []
+    completionStages:
+    - index: 2
+      isStarted: 0
+      completion: 100
+    rewardStages: []
 --- !u!1 &1908339256
 GameObject:
   m_ObjectHideFlags: 0

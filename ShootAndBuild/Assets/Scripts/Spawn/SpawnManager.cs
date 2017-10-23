@@ -13,8 +13,7 @@ namespace SAB.Spawn
     [Serializable]
     public class EnemyWave
     {
-
-        public EnemyWave(int _spwanerCount)
+		public EnemyWave(int _spwanerCount)
         {
             //index will be spwaner id
             spawnPropability = new SpawnPropabilityBlock[_spwanerCount];
