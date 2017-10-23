@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using UnityEditor;
 
 namespace SAB
 {
@@ -29,14 +30,26 @@ namespace SAB
 
         public AudioListener audioListener;
 
+		CameraShakes cameraShakes = new CameraShakes();
+
+		// TODO: Move this into editor
+		public CameraShakeParams testShakeParams = new CameraShakeParams(1.0f, 0.1f, 1.0f);
+
         void Awake()
         {
-            instance = this;
+            Instance = this;
         }
 
         void Start()
         {
+			Vector3 terrainCenter = TerrainManager.Instance.GetTerrainCenter3D(); 
+
+			lastPlayerSphereCenter = terrainCenter + new Vector3(0.0f, 10.0f, 0.0f);
+
             GetPlayerBoundingSphere(out lastPlayerSphereCenter, out lastPlayerSphereRadius);
+
+			// Init audio Listener
+			Update();
         }
 
         void GetPlayerBoundingSphere(out Vector3 center, out float radius)
@@ -79,19 +92,171 @@ namespace SAB
             Vector3 heighOffsetDirection = new Vector3(0.0f, 1.0f, -rotZ);
             float heightOffsetAmount = (minimumHeight + (playerSphereRadius * heightSlope));
 
-            Vector3 newCameraPos = playerSphereCenter + heightOffsetAmount * heighOffsetDirection;
+            Vector3 newCameraPos	= playerSphereCenter + heightOffsetAmount * heighOffsetDirection;
+			Vector3 newLookatPoint	= playerSphereCenter;
+
+			cameraShakes.TickOffset();
+			Vector3 shakeOffset = GetCameraShakeOffset();
+
+			newCameraPos	+= shakeOffset;
+			newLookatPoint	+= shakeOffset;
 
             transform.position = newCameraPos;
-            transform.LookAt(playerSphereCenter);
-
+            transform.LookAt(newLookatPoint);
 
             audioListener.transform.position = playerSphereCenter;
             audioListener.transform.rotation = Quaternion.AngleAxis(180.0f, new Vector3(0.0f, 1.0f, 0.0f)) * transform.rotation;
         }
 
-        public static CameraController instance
+		public Vector3 GetListenerPosition()
+		{
+			return audioListener.transform.position;
+		}
+
+		public float GetListenerWidth()
+		{
+			return lastPlayerSphereRadius * 1.5f;
+		}
+
+		public void AddCameraShake(CameraShakeParams shakeParams)
+		{
+			if (shakeParams.Strength <= 0 || shakeParams.Duration <= 0)
+			{
+				return;
+			}
+
+			cameraShakes.StartNewShake(shakeParams);
+		}
+
+        public static CameraController Instance
         {
             get; private set;
+        }
+
+		public Vector3 GetCameraShakeOffset()
+		{
+			return cameraShakes.OffsetSum.To3D(0.0f);
+		}
+    }
+
+	[System.Serializable]
+	public struct CameraShakeParams
+	{
+		[Range(0.00f, 5)]
+		public float Strength;
+
+		[Range(0, 0.999f)]
+		public float Smoothness;
+
+		[Range(0.00f, 10.0f)]
+		public float Duration;
+
+		public CameraShakeParams(float strength = 0.5f, float smoothness = 0.1f, float duration = 0.2f)
+		{
+			Strength	= strength;
+			Smoothness	= smoothness;
+			Duration	= duration;
+		}
+	}
+
+	class CameraShakes
+	{
+		private List<CameraShake>	ActiveShakes	= new List<CameraShake>();
+		public Vector2				OffsetSum		= Vector2.zero;
+
+		public void StartNewShake(CameraShakeParams shakeParams)
+		{
+			CameraShake newShake = new CameraShake(shakeParams);
+
+			ActiveShakes.Add(newShake);
+		}
+
+		public void TickOffset()
+		{
+			OffsetSum = Vector2.zero;
+
+			foreach (CameraShake shake in ActiveShakes)
+			{
+				shake.TickShake();
+				OffsetSum += shake.Offset;
+			}
+
+			ActiveShakes.RemoveAll(shake => shake.DurationLeft <= 0.0f);
+		}
+	}
+
+	class CameraShake
+	{
+		public CameraShakeParams ShakeParams;
+		
+		public float	DurationLeft;
+		public Vector2	Offset;
+
+		public CameraShake(CameraShakeParams shakeParams)
+		{
+			ShakeParams		= shakeParams;
+			DurationLeft	= shakeParams.Duration;
+			Offset			= (Random.insideUnitCircle * shakeParams.Strength) * (1.0f - ShakeParams.Smoothness);
+		}
+
+		public void TickShake()
+		{
+			DurationLeft -= Time.deltaTime;
+
+			if (Time.deltaTime == 0.0)
+			{
+				return;
+			}
+
+			if (DurationLeft <= 0.0)
+			{
+				Offset			= Vector2.zero;
+				DurationLeft	= 0.0f;
+				return;
+			}
+
+			float timeLeftRelative = (DurationLeft / ShakeParams.Duration);
+
+			Debug.Assert(timeLeftRelative <= 1 && timeLeftRelative >= 0);
+
+			float strength = ShakeParams.Strength * timeLeftRelative;
+
+			Vector2 newOffset = Random.insideUnitCircle * strength;
+
+			Offset = Vector2.Lerp(newOffset, Offset, ShakeParams.Smoothness);
+		}
+	}
+
+	[CustomEditor(typeof(CameraController))]
+    public class CameraControllerEditor : Editor
+    {
+        public override void OnInspectorGUI()
+        {
+            CameraController cameraController = (CameraController)target;
+
+            List<string> hideFields = new List<string>();
+            DrawPropertiesExcluding(serializedObject, hideFields.ToArray());
+            serializedObject.ApplyModifiedProperties();
+
+			GUILayout.Space(20);
+
+			
+
+            // Audio Manager only exist (and works) during play
+            GUI.enabled = Application.isPlaying;
+
+            if (GUILayout.Button("AddShake"))
+            {
+                cameraController.AddCameraShake(cameraController.testShakeParams);
+            }
+		
+			GUILayout.Label("ShakeOffset: "		+ cameraController.GetCameraShakeOffset());
+			GUILayout.Label("ShakeStrength: "	+ Vector3.Magnitude(cameraController.GetCameraShakeOffset()));
+
+			// repaint every frame
+			EditorUtility.SetDirty(target);
+
+            GUI.enabled = true;
         }
     }
 }

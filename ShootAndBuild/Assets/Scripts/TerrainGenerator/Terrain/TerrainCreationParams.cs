@@ -42,6 +42,13 @@ namespace SAB.Terrain
 	public class RegionParameters
 	{
 		[Header("Generation")]
+
+		[Range(0, 0.4f)]
+		public float BrickAreaSize		= 0.1f;
+
+		[Range(0, 10)]
+		public int BrickAreaCount		= 2;
+
 		[Range(0, 20)]
 		public int WaterCircles			= 4;
 
@@ -50,6 +57,9 @@ namespace SAB.Terrain
 
 		[Range(0, 1.0f)]
 		public float BeachSize			= 0.14f;
+
+		public float MaxWaterDistanceAscension	=  1.0f;
+		public float UnderwaterTerrainHeight	= -1.0f;
 
 		[Header("Debug")]
 		public bool ShowRegions			= false;
@@ -61,40 +71,61 @@ namespace SAB.Terrain
 	// --------------------------------------------------------
 
 	[System.Serializable]
-	public class TransformParameters
+	public class WaterParameters
 	{
-		public Vector2 TerrainCenter = new Vector2(0.0f, 0.0f);
-		public Vector2 TerrainSizeWS = new Vector2(64.0f, 64.0f);
-
-		[Range(-5.0f, 20.0f)]
-		public float HeightMax =  6.0f;
-
-		[Range(-10.0f, 5.0f)]
-		public float HeightMin =  0.0f;
+		public GameObject	WaterPlanePrefab;
+		public bool			UseWater		= true;
+		public float		WaterHeight		= 0.0f;
 	}
 
 	// --------------------------------------------------------
 
 	[System.Serializable]
-	public class HeightGenerationParameters
+	public class TransformParameters
+	{
+		public Vector2 TerrainSizeWS = new Vector2(64.0f, 64.0f);
+	}
+
+	// --------------------------------------------------------
+
+	[System.Serializable]
+	public class RegionDesc
+	{
+		public RegionHeightDesc		HeightDesc;
+		public RegionTextureDesc	TextureDesc;
+	}
+
+	// --------------------------------------------------------
+
+	[System.Serializable]
+	public class RegionHeightDesc
 	{
 		[Range(0.005f, 0.1f)]
 		public float PerlinFrequencyCoarse	= 0.015f;
 		[Range(0.005f, 0.5f)]
 		public float PerlinFrequencyFine	= 0.10f;
-
-		[Range(0.0f, 1.0f)]
-		public float PerlinWeightCoarse		= 0.50f;
-
 		[Range(0.0f, 1.0f)]
 		public float PerlinWeightFine		= 0.15f;
-		public bool DebugHeightRange		= false;
+
+		public float MaxAdditionalRandomAbsHeight	= 0.1f;
+
+		public float GenerateRandomAdditionalHeightAbs(float seed, int x, int z)
+		{
+			float perlinCoarse = Mathf.PerlinNoise(seed + x * PerlinFrequencyCoarse,	seed + z * PerlinFrequencyCoarse);
+			float perlinFine   = Mathf.PerlinNoise(seed + x * PerlinFrequencyFine,		seed + z * PerlinFrequencyFine);
+			
+			float noiseTotal = Mathf.Lerp(perlinCoarse, perlinFine, PerlinWeightFine);
+
+			noiseTotal *= MaxAdditionalRandomAbsHeight;
+
+			return noiseTotal;
+		}
 	}
 
 	// --------------------------------------------------------
 
 	[System.Serializable]
-	public class TexturePair
+	public class RegionTextureDesc
 	{
 		public Texture2D Albedo1;
 		public Texture2D Albedo2;
@@ -102,11 +133,11 @@ namespace SAB.Terrain
 		public Texture2D Normal1;
 		public Texture2D Normal2;
 
-		[Range(0.5f, 20.0f)]
+		[Range(0.5f, 40.0f)]
 		public float Tiling1 = 4.0f;
 		
-		[Range(0.5f, 20.0f)]
-		public float Tiling2 = 4.0f;
+		[Range(0.5f, 40.0f)]
+		public float Tiling2 = 3.0f;
 
 		[Range(1.0f, 20.0f)]
 		public float BlendingSharpness12 = 7.0f;
@@ -132,6 +163,8 @@ namespace SAB.Terrain
 
 		public float GetBlendValue12(float seed, float x, float z)
 		{
+			seed += 20.0f;
+
 			float perlinCoarse = Mathf.PerlinNoise(seed + x * PerlinFrequency12, seed + z * PerlinFrequency12);
 			
 			float amount2nd = TerrainTextureTypes.RedistributeBlendFactor(perlinCoarse, Share2ndTexture);
@@ -143,20 +176,9 @@ namespace SAB.Terrain
 	// --------------------------------------------------------
 
 	[System.Serializable]
-	public class TextureParameters
+	public class RegionDescParameters
 	{
-		public TexturePair TexturePlaneA;
-		public TexturePair TexturePlaneB;
-		public TexturePair TextureRock;
-		
-		[Range(1.0f, 20.0f)]
-		public float RockBlendingSharpness	= 7.0f;
-
-		[Range(0.0f, 1.0f)]
-		public float PlaneBShare = 0.5f;
-
-		[Range(0.0f, 90.0f)]
-		public float RockSteepnessAngle	= 55.0f;
+		public RegionDesc[] RegionDescs = new RegionDesc[(int) RegionType.Count];
 	}
 
 	// --------------------------------------------------------

@@ -119,7 +119,7 @@ namespace SAB
 
             player.isAlive = true;
             player.playerObject.SetActive(true);
-            player.playerObject.GetComponent<Attackable>().OnRespawn();
+            player.playerObject.GetComponent<Attackable>().OnRespawn(GetRandomPlayerSpawnPosition());
 
             InputManager.instance.SetVibration(playerID, 0.5f, 0.5f, 0.2f);
 
@@ -147,13 +147,21 @@ namespace SAB
             Debug.Assert(removed);
         }
 
+		private Vector3 GetRandomPlayerSpawnPosition()
+		{
+			float randRadius = 5.0f;
+			Vector2 spawnCircleCenter = TerrainManager.Instance.GetTerrainCenter2D();
+			Vector3 rndSpawnOffset = new Vector3(Random.Range(-randRadius, randRadius), 0.0f, Random.Range(-randRadius, randRadius));
+
+            return new Vector3(spawnCircleCenter.x, 0.0f, spawnCircleCenter.y) + rndSpawnOffset;
+		}
+
         private void SpawnNewPlayer(PlayerID playerID)
         {
             GameObject newPlayerObject = Instantiate(playerPrefab, gameObject.transform);
             newPlayerObject.name = playerID.ToString();
 
-            float randRadius = 5.0f;
-            newPlayerObject.transform.position = new Vector3(Random.Range(-randRadius, randRadius), 0.0f, Random.Range(-randRadius, randRadius));
+            newPlayerObject.transform.position = GetRandomPlayerSpawnPosition();
             newPlayerObject.GetComponent<InputController>().playerID = playerID;
             newPlayerObject.GetComponent<Attackable>().PlayerDies += OnPlayerDies;
 

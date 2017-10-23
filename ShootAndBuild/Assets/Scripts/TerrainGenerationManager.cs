@@ -8,6 +8,12 @@ namespace SAB
 {
 	public class TerrainGenerationManager : MonoBehaviour
 	{
+		[SerializeField]
+		private TerrainManager TerrainManager;
+
+		[SerializeField]
+		private AmbientSoundManager	AmbientSoundManager;
+
 		public int Resolution = 129;
 
 		public bool UseTimeAsSeed = true;
@@ -17,8 +23,8 @@ namespace SAB
 		public int RegionSeed  = 1000;
 
 		public TransformParameters			TransformParams;
-		public HeightGenerationParameters	HeightParams;
-		public TextureParameters			TextureParams;
+		public RegionDescParameters			RegionDescParams;
+		public WaterParameters				WaterParams;
 		public VoronoiParameters			VoronoiParams;
 		public RegionParameters				RegionParams;
 
@@ -27,6 +33,7 @@ namespace SAB
 		public RegionMapGenerator RegionGenerator		= new RegionMapGenerator();
 		public RegionGridGenerator RegionGridGenerator	= new RegionGridGenerator();
 		public TerrainGenerator TerrainGenerator		= new TerrainGenerator();
+
 
 		// -----------------------------------------------------------------
 
@@ -53,6 +60,9 @@ namespace SAB
 					DestroyImmediate(TerrainObject);
 				}
 			}
+
+			TerrainManager.ReplaceTerrain(null, null, new Vector2(0.0f, 0.0f));
+			AmbientSoundManager.GenerateAmbientGrid(null, null, new Vector2(0.0f, 0.0f));
 		}
 		
 		// -----------------------------------------------------------------
@@ -77,26 +87,31 @@ namespace SAB
 				RegionSeed  = timeSeed;
 			}
 
-			List<VoronoiCell> voronoiCells = VoronoiGenerator.GenerateVoronoi(VoronoiSeed, VoronoiParams, TransformParams.TerrainCenter, TransformParams.TerrainSizeWS);
+			List<VoronoiCell> voronoiCells = VoronoiGenerator.GenerateVoronoi(VoronoiSeed, VoronoiParams, TransformParams.TerrainSizeWS);
 
 			if (voronoiCells == null)
 			{
 				return;
 			}
 
-			RegionMapTransformation regionMapTransformation = new RegionMapTransformation(TransformParams.TerrainCenter, TransformParams.TerrainSizeWS, Resolution);
+			RegionMapTransformation regionMapTransformation = new RegionMapTransformation(TransformParams.TerrainSizeWS, Resolution);
 			RegionGenerator.GenerateRegions(RegionSeed, voronoiCells, RegionParams, regionMapTransformation);
 
 			RegionGridGenerator.GenerateRegionGrid(RegionGenerator.RegionMap, regionMapTransformation, RegionParams);
 
 			DeleteTerrain();
 
-			TerrainObject = TerrainGenerator.GenerateTerrain(RegionGenerator.RegionMap, RegionGridGenerator.RegionGrid, regionMapTransformation, TransformParams, HeightParams, TextureParams, Resolution, TerrainSeed);
+			TerrainObject = TerrainGenerator.GenerateTerrain(RegionGenerator.RegionMap, RegionGridGenerator.RegionGrid, regionMapTransformation, TransformParams, RegionGridGenerator.HeightRangeY, RegionDescParams, WaterParams, Resolution, TerrainSeed);
 
 			if (TerrainObject)
 			{
 				TerrainObject.transform.parent = this.transform;
 			}
+
+			TerrainManager.ReplaceTerrain(TerrainObject.GetComponent<UnityEngine.Terrain>(), RegionGridGenerator.RegionGrid, TransformParams.TerrainSizeWS);
+			AmbientSoundManager.GenerateAmbientGrid(RegionGridGenerator.RegionGrid, RegionGenerator.RegionMap, TransformParams.TerrainSizeWS);
+
+
 		}
 	}
 

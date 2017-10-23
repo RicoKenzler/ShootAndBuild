@@ -11,14 +11,12 @@ namespace SAB.Terrain
 	public class VoronoiCreationState
 	{
 		public List<Vector2> InputVerticesIncludingSuperTriangle		= new List<Vector2>();		
-		public List<Triangle> DelauneyTrianglesIncludingSuperTriangle	= new List<Triangle>();
+		public List<TriangleI> DelauneyTrianglesIncludingSuperTriangle	= new List<TriangleI>();
 		public List<VoronoiCell> VoronoiCells							= new List<VoronoiCell>();
 		
-		public int		POINT_COUNT_WITHOUT_SUPER_TRIANGLE				= -1;
-		public Vector2 MIN_COORDS										= new Vector2(0,0);
-		public Vector2 MAX_COORDS										= new Vector2(0,0);
+		public int	   POINT_COUNT_WITHOUT_SUPER_TRIANGLE				= -1;
 		public Vector2 DIMENSIONS										= new Vector2(0,0);
-		public Triangle SuperTriangle									= new Triangle();
+		public TriangleI SuperTriangle									= new TriangleI();
 		public VoronoiParameters VoronoiParams							= new VoronoiParameters();
 	}
 
@@ -64,7 +62,7 @@ namespace SAB.Terrain
 		}
 	}
 
-	public struct Triangle
+	public struct TriangleI
 	{
 		public PointIndex IndexP0;
 		public PointIndex IndexP1;
@@ -105,7 +103,7 @@ namespace SAB.Terrain
 					((edge.IndexP2 == IndexP0) || (edge.IndexP2 == IndexP1) || (edge.IndexP2 == IndexP2)));
 		}
 
-		public bool SharesPointWith(Triangle other)
+		public bool SharesPointWith(TriangleI other)
 		{
 			bool ownP0Shared = ((IndexP0 == other.IndexP0) || (IndexP0 == other.IndexP1) || (IndexP0 == other.IndexP2));
 			bool ownP1Shared = ((IndexP1 == other.IndexP0) || (IndexP1 == other.IndexP1) || (IndexP1 == other.IndexP2));
@@ -114,7 +112,7 @@ namespace SAB.Terrain
 			return ownP0Shared || ownP1Shared || ownP2Shared;
 		}
 
-		public int SharedPointCount(Triangle other, out bool ownP0Shared, out bool ownP1Shared, out bool ownP2Shared)
+		public int SharedPointCount(TriangleI other, out bool ownP0Shared, out bool ownP1Shared, out bool ownP2Shared)
 		{
 			ownP0Shared = ((IndexP0 == other.IndexP0) || (IndexP0 == other.IndexP1) || (IndexP0 == other.IndexP2));
 			ownP1Shared = ((IndexP1 == other.IndexP0) || (IndexP1 == other.IndexP1) || (IndexP1 == other.IndexP2));
@@ -191,11 +189,31 @@ namespace SAB.Terrain
 		{
 			return (Start + End) * 0.5f;
 		}
+
+		public Vector2 GetNearestPointTo(Vector2 pos)
+		{
+			Vector2 startToPos = pos - Start;
+			Vector2 startToEnd = End - Start;
+
+			float edgeLengthSquared = Vector2.SqrMagnitude(startToEnd);
+
+			// find t such that 
+			// Start + (startToEnd) * t = nearestPoint
+
+			// if startToEnd was unitVector, we would get projection from StartToPos onto Edge, being
+			// the distance of the nearest point to start.
+			// By dividing by edgeLengthSquared, we first normalize startToEnd and then turn the "distance" into the "t"
+			float t = Vector2.Dot(startToPos, startToEnd) / edgeLengthSquared;
+
+			t = Mathf.Clamp01(t);
+
+			return Start + t * startToEnd;
+		}
 	}
 
 	public struct VoronoiNeighbor
 	{
-		public PointIndex	NeighborIndexIfValid;
+		public PointIndex	NeighborIndexIfValid;	//< clamped == not valid
 		public Edge			EdgeToNeighbor;
 		public bool			WasClamped;
 

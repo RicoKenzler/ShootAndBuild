@@ -22,7 +22,11 @@ MonoBehaviour:
     type: 2}
   ricochetEffect: {fileID: 1000010844420130, guid: 4edabb1c0dde62743b137378c7d22980,
     type: 2}
-  shootSound: {fileID: 11400000, guid: 18ba650aa9e549c47b6306e46c4c71be, type: 2}
+  shootSound: {fileID: 11400000, guid: f2de9e037aa408942a4895201c525bf7, type: 2}
+  shakeParams:
+    Strength: 0.01
+    Smoothness: 0
+    Duration: 0.01
   damage: 20
   projectileSpeed: 10
   projectilesPerShot: 1

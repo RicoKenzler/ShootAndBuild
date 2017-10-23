@@ -8,17 +8,21 @@ namespace SAB.Terrain
 {
 	public class RegionTile
 	{
-		public List<float> Amounts	= new List<float>((int)RegionType.Count);
-		public CellIndex Cell		= -1;
+		public List<float> RegionAmounts	= new List<float>((int)RegionType.Count + 1);
+		public float Height				= 0.0f;
+		public RegionType MainRegion	= RegionType.Count;
+		public CellIndex Cell			= -1;
 
 		public RegionTile()
 		{
-			for (int t = 0; t < (int) RegionType.Count; ++t)
+			for (int t = 0; t < (int) RegionType.Count + 1; ++t)
 			{
-				Amounts.Add(0.0f);
+				RegionAmounts.Add(0.0f);
             }
 
-			Amounts[(int) RegionType.Uninitialized] = 1.0f;
+			MainRegion = RegionType.Count;
+
+			RegionAmounts[(int) RegionType.Count] = 1.0f;
 		}
 
 		public Color GetDebugColor()
@@ -27,7 +31,7 @@ namespace SAB.Terrain
 
 			for (int t = 0; t < (int) RegionType.Count; ++t)
 			{
-				float amount = Amounts[t];
+				float amount = RegionAmounts[t];
 				Color typeCol = RegionMapTypes.GetDebugColor((RegionType)t);
 
 				col.r += amount*typeCol.r;
@@ -44,6 +48,7 @@ namespace SAB.Terrain
 	public class RegionGridGenerator
 	{
 		public RegionTile[,] RegionGrid;
+		public Vector2 HeightRangeY;
 		List<RegionCell> RegionCells = null;
 
 		RegionParameters RegionParams;
@@ -67,19 +72,21 @@ namespace SAB.Terrain
 			}
 
 			// 1) Assign Cells
-			AssignCellsToTiles();
 			AssignAmountsToTiles();
 
-			// 1) Check consistency
+			HeightRangeY = new Vector2(float.MaxValue, float.MinValue);
+
+			// 2) Check consistency && find min/max Height
 			for (int iy = 0; iy < RegionGrid.GetLength(1); iy++)
 			{
 				for (int ix = 0; ix < RegionGrid.GetLength(0); ix++)
 				{
+					RegionTile tile = RegionGrid[ix, iy];
+
 					float amountSum = 0.0f;
 					for (int t = 0; t < (int) RegionType.Count; ++t)
 					{
-						RegionTile tile = RegionGrid[ix, iy];
-						amountSum += tile.Amounts[t];
+						amountSum += tile.RegionAmounts[t];
 					}
 
 					if (amountSum < 0.99f || amountSum > 1.01f)
@@ -87,40 +94,11 @@ namespace SAB.Terrain
 						Debug.Assert(false, "Inconsistent Region Grid");
 						break;
 					}
-				}
-			}
-		}
 
-		// -----------------------------------------------------------
+					HeightRangeY.x = Mathf.Min(tile.Height, HeightRangeY.x);
+					HeightRangeY.y = Mathf.Max(tile.Height, HeightRangeY.y);
 
-		public void AssignCellsToTiles()
-		{
-			for (CellIndex c = 0; c < RegionCells.Count; ++c)
-            {
-				RegionCell cell = RegionCells[c];
-				Rect aabb = cell.VoronoiCell.CalculateAABB();
-
-				int minX, minZ, maxX, maxZ;
-				MapTransformation.GetIndexRect(aabb, out minX, out minZ, out maxX, out maxZ);
-
-				for (int iZ = minZ; iZ < maxZ; ++iZ)
-				{
-					for (int iX = minX; iX < maxX; ++iX)
-					{
-						RegionTile curTile = RegionGrid[iX, iZ];
-
-						if (curTile.Cell != -1)
-						{
-							continue;
-						}
-
-						Vector2 tileCenter = MapTransformation.GetTileCenter(iX, iZ);
-
-						if (cell.VoronoiCell.IsInside(tileCenter))
-						{
-							curTile.Cell = c;
-						}
-					}
+					Debug.Assert(tile.RegionAmounts[(int) RegionType.Count] == 0.0f);
 				}
 			}
 		}
@@ -129,23 +107,113 @@ namespace SAB.Terrain
 
 		public void AssignAmountsToTiles()
 		{
-			for (int iY = 0; iY < RegionGrid.GetLength(1); iY++)
-			{
-				for (int iX = 0; iX < RegionGrid.GetLength(0); iX++)
-				{
-					RegionTile curTile = RegionGrid[iX, iY];
+			// for all cells...
+			for (CellIndex c = 0; c < RegionCells.Count; ++c)
+            {
+				RegionCell curCell = RegionCells[c];
+				
+				List<VoronoiNeighbor> allNeighbors = curCell.VoronoiCell.NeighborCellsCCW;
 
-					if (curTile.Cell == -1)
+				// ... create triangles with consecutive neighbors
+				for (int n = 0; n < allNeighbors.Count; ++n)
+				{
+					int nextNeighborIndex = (n+1) % allNeighbors.Count;
+					int prevNeighborIndex = (n- 1 + allNeighbors.Count) % allNeighbors.Count;
+
+					VoronoiNeighbor prevNeighbor		= allNeighbors[prevNeighborIndex];
+					VoronoiNeighbor curNeighbor			= allNeighbors[n];
+					VoronoiNeighbor nextNeighbor		= allNeighbors[nextNeighborIndex];
+
+					// cur, neigh, nextneigh
+					Triangle curTriangle = new Triangle(curCell.VoronoiCell.Centroid, curNeighbor.EdgeToNeighbor.Start, curNeighbor.EdgeToNeighbor.End);
+
+					Rect aabb = curTriangle.CalculateAABB();
+
+					int minX, minZ, maxX, maxZ;
+					MapTransformation.GetIndexRect(aabb, out minX, out minZ, out maxX, out maxZ);
+
+					// every cell within triangle
+					for (int iZ = minZ; iZ < maxZ; ++iZ)
 					{
-						Debug.Assert(false);
-						curTile.Cell = 0;
+						for (int iX = minX; iX < maxX; ++iX)
+						{
+							RegionTile curTile = RegionGrid[iX, iZ];
+
+							Vector2 tileCenter = MapTransformation.GetTileCenter(iX, iZ);
+
+							float bCur, bPrevNeigh, bNextNeigh;
+							bool isInside = curTriangle.TryGetBarycentricCoordinates(tileCenter, out bCur, out bPrevNeigh, out bNextNeigh);
+							
+							if (!isInside)
+							{
+								continue;
+							}
+
+							curTile.MainRegion = curCell.RegionType;
+
+							// N1 = prevNeighbor
+							// N  = curNeighbor
+							// N2 = nextNeighbor
+							// C  = curCell
+							//
+							//  N2 /
+							//    n2    \
+							//   / \  N  \
+							//  / C \     \
+							// /     n1___/
+							// \    /    /
+							//  \__/ N1 /
+							// 
+							// f(c)  = 100% c
+							// f(n1) =  33% (C + N + N1)
+							// f(n2) =  33% (C + N + N2)
+
+							// f(x) = f(c) * b_c + f(n1) * b_n1 + f(n2) * b_n2
+							// = b_c*c + b_n1*0.33*(C+N+N1) + b_n2*0.33*(C+N+N2)
+							// = c*(b_c + b_n1*0.33 + b_n2*0.33) + N * 0.33 * (b_n1 + b_n2) + N1 * b_n1*0.33 + N2 * b_n2 * 0.33)
+							// = 0.33 * (c*(3*b_c + b_n1 + b_n2) + N * (b_n1 + b_n2) + N1 * (b_n1) + N2 * (b_n2))
+							// = c * (0.33 + 0.66*b_c) + N * 0.33 * (b_n1 + b_n2) + N1 * 0.33 * (b_n1) + N2 * 0.33 * (b_n2)
+
+							RegionCell cell_N  = curNeighbor.WasClamped  ? curCell : RegionCells[curNeighbor.NeighborIndexIfValid];
+							RegionCell cell_N1 = prevNeighbor.WasClamped ? curCell : RegionCells[prevNeighbor.NeighborIndexIfValid];
+							RegionCell cell_N2 = nextNeighbor.WasClamped ? curCell : RegionCells[nextNeighbor.NeighborIndexIfValid];
+
+							Debug.Assert(curTile.RegionAmounts[(int) RegionType.Count] == 1.0f);
+							curTile.RegionAmounts[(int) RegionType.Count] = 0.0f;
+
+							const float ONE_THIRD = (1.0f / 3.0f);
+
+							// c * (0.33 + 0.66*b_c)
+							float amountCur = bCur * (2.0f * ONE_THIRD) + ONE_THIRD;
+							curTile.RegionAmounts[(int) curCell.RegionType]  += amountCur;
+
+							// N * (0.33* (b_n1 + b_n2))
+							float amountN = ONE_THIRD * (bPrevNeigh + bNextNeigh);
+							curTile.RegionAmounts[(int) cell_N.RegionType]   += amountN;
+
+							// N1 * (0.33 * b_n1)
+							float amountN1 = ONE_THIRD * (bPrevNeigh);
+							curTile.RegionAmounts[(int) cell_N1.RegionType]  += amountN1;
+
+							// N2 * (0.33 * b_n2)
+							float amountN2 = ONE_THIRD * (bNextNeigh);
+							curTile.RegionAmounts[(int) cell_N2.RegionType]  += amountN2;
+
+							// Assign Cell
+							curTile.Cell = c;
+
+							// Assign Height (dependent on water distance)
+							curTile.Height	=	amountCur	* curCell.ComputeHeightDueToWaterDistance(RegionParams) + 
+												amountN		* cell_N.ComputeHeightDueToWaterDistance(RegionParams)  +
+												amountN1	* cell_N1.ComputeHeightDueToWaterDistance(RegionParams) +
+												amountN2	* cell_N2.ComputeHeightDueToWaterDistance(RegionParams);
+							
+						}
 					}
 
-					RegionCell curCell = RegionCells[curTile.Cell];
-
-					curTile.Amounts[(int) RegionType.Uninitialized] = 0.0f;
-					curTile.Amounts[(int) curCell.RegionType] = 1.0f;
 				}
+
+				
 			}
 		}
 

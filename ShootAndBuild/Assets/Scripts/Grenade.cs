@@ -7,12 +7,13 @@ namespace SAB
     public class Grenade : MonoBehaviour
     {
         public float timeToExplode = 2.0f;
-        public ParticleSystem explosionParticles;
         public float maxDamage = 10.0f;
         public float maxForce = 10.0f;
         public float radius = 8.0f;
-        public AudioData explosionSound;
 		public bool doFriendlyFire = false;
+        public ParticleSystem explosionParticles;
+        public AudioData explosionSound;
+		public CameraShakeParams explosionShake = new CameraShakeParams();
 
 		[HideInInspector]
         public Throwable owner;
@@ -108,6 +109,7 @@ namespace SAB
             ParticleManager.instance.SpawnParticle(explosionParticles.gameObject, gameObject, transform.position, null, false, 10.0f, false, false);
             AudioManager.instance.PlayAudio(explosionSound, selfPos);
             InputManager.instance.SetVibrationAll(0.1f, 0.1f, 0.5f);
+			CameraController.Instance.AddCameraShake(explosionShake);
 
             Destroy(gameObject);
         }

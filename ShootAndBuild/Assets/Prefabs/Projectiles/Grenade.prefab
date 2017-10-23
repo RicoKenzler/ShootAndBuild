@@ -103,6 +103,7 @@ MeshRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
+  m_SortingLayer: 0
   m_SortingOrder: 0
 --- !u!33 &33182469964813642
 MeshFilter:
@@ -150,10 +151,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timeToExplode: 0.8
-  explosionParticles: {fileID: 198000012777718758, guid: acf39d9f4addf294d93fa56fa373961b,
-    type: 2}
   maxDamage: 50
   maxForce: 50
   radius: 4
+  doFriendlyFire: 0
+  explosionParticles: {fileID: 198000012777718758, guid: acf39d9f4addf294d93fa56fa373961b,
+    type: 2}
   explosionSound: {fileID: 11400000, guid: bac2341babaf07a4dad54ac5b1651053, type: 2}
+  explosionShake:
+    Strength: 0.5
+    Smoothness: 0.1
+    Duration: 0.2
   owner: {fileID: 0}
+  buffs: []
+  ownerFaction: 0

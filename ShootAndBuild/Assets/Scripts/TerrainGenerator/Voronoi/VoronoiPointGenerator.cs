@@ -49,18 +49,18 @@ namespace SAB.Terrain
 					int gridCellX = i % pseudoRandomGridDimensionX;
 					int gridCellY = i / pseudoRandomGridDimensionX;
 
-					x = UnityEngine.Random.Range(State.MIN_COORDS.x + gridCellX * PSEUDO_RANDOM_GRID_CELL_SIZE.x, State.MIN_COORDS.x + (gridCellX + 1) * PSEUDO_RANDOM_GRID_CELL_SIZE.x);
-					y = UnityEngine.Random.Range(State.MIN_COORDS.y + gridCellY * PSEUDO_RANDOM_GRID_CELL_SIZE.y, State.MIN_COORDS.y + (gridCellY + 1) * PSEUDO_RANDOM_GRID_CELL_SIZE.y);
+					x = UnityEngine.Random.Range(0.0f + gridCellX * PSEUDO_RANDOM_GRID_CELL_SIZE.x, (gridCellX + 1) * PSEUDO_RANDOM_GRID_CELL_SIZE.x);
+					y = UnityEngine.Random.Range(0.0f + gridCellY * PSEUDO_RANDOM_GRID_CELL_SIZE.y, (gridCellY + 1) * PSEUDO_RANDOM_GRID_CELL_SIZE.y);
 				}
 				else
 				{
 					// randomly distribute
-					x = UnityEngine.Random.Range(State.MIN_COORDS.x, State.MAX_COORDS.x);
-					y = UnityEngine.Random.Range(State.MIN_COORDS.y, State.MAX_COORDS.y);
+					x = UnityEngine.Random.Range(0.0f, State.DIMENSIONS.x);
+					y = UnityEngine.Random.Range(0.0f, State.DIMENSIONS.y);
 				}
 
-				x = Mathf.Clamp(x, State.MIN_COORDS.x + 0.02f * State.DIMENSIONS.x, State.MAX_COORDS.x - 0.02f * State.DIMENSIONS.x);
-				y = Mathf.Clamp(y, State.MIN_COORDS.y + 0.02f * State.DIMENSIONS.y, State.MAX_COORDS.y - 0.02f * State.DIMENSIONS.y);
+				x = Mathf.Clamp(x, 0.0f + 0.02f * State.DIMENSIONS.x, State.DIMENSIONS.x - 0.02f * State.DIMENSIONS.x);
+				y = Mathf.Clamp(y, 0.0f + 0.02f * State.DIMENSIONS.y, State.DIMENSIONS.y - 0.02f * State.DIMENSIONS.y);
 
 				bool validPoint = true;
 

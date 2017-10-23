@@ -33,7 +33,12 @@ namespace SAB
 
             if (shootable.Cooldown <= 0)
             {
-                Quaternion rotationToEnemy = Quaternion.LookRotation(nearestEnemy.transform.position - transform.position);
+				Vector3 lookatVector = nearestEnemy.transform.position - transform.position;
+
+				// make 2D (?)
+				lookatVector.y = 0.0f;
+
+                Quaternion rotationToEnemy = Quaternion.LookRotation(lookatVector);
 
                 shootable.Shoot(rotationToEnemy);
             }

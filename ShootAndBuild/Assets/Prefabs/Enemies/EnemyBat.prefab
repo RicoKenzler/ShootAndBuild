@@ -1453,6 +1453,8 @@ MonoBehaviour:
   restingInfo:
     restDuration: 0
     restCooldown: 0
+  buffOnAttack: {fileID: 0}
+  buffOnAttackProbability: 0.2
   zigZagFrequency: 1
   zigZagAngle: 90
   estimateFuturePosition: 0.7
@@ -1491,7 +1493,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 20
-  showHealthBar: 1
+  showHealthBar: 0
   faction: 1
   itemDrops:
   - itemPrefab: {fileID: 1797189723984674, guid: ebaf5d1e5ef1660458836d848ca0b292,
