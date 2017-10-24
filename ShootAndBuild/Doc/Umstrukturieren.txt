@@ -1,0 +1,37 @@
+Assets
+	Audio
+		Sounds
+		Music
+		Ambients	
+
+	Art
+		UI
+			Animations
+		Creatures
+			Bat
+				Textures
+				Models
+				Materials
+		Effects
+			Materials
+			Scripts
+
+Prefabs
+	Audio
+	Buffs
+	Items
+	Weapons
+	Enemies
+	Particles
+	
+Plugins
+Scripts
+	UI
+	Terrain
+		Editor
+
+
+
+-> Alle Objekte in der szene prefabs
+-> MasterManager, der prefabs instanziiert
+-> trello anlegen
