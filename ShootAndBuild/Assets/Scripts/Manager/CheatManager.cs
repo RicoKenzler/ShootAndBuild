@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEditor;
 
 namespace SAB
 {
@@ -48,105 +47,6 @@ namespace SAB
 		public static CheatManager instance
 		{
 			get; private set;
-		}
-	}
-
-
-	[CustomEditor(typeof(CheatManager))]
-	public class CheatManagerEditor : Editor
-	{
-		public override void OnInspectorGUI()
-		{
-			CheatManager cheatManager = (CheatManager)target;
-
-			bool freezeEnemyOld = cheatManager.freezeEnemies;
-
-			DrawDefaultInspector();
-
-			// We only want to modify Scene data during play mode
-			GUI.enabled = Application.isPlaying;
-
-			List<Attackable> attackablesToKill = new List<Attackable>();
-
-			GUILayout.Label("Kill", EditorStyles.boldLabel);
-			if (GUILayout.Button("Kill all Enemies"))
-			{
-				foreach (EnemyBehaviourBase enemy in EnemyManager.instance.allEnemies)
-				{
-					attackablesToKill.Add(enemy.GetComponent<Attackable>());
-				}
-			}
-
-			if (GUILayout.Button("Kill all Players"))
-			{
-				foreach (InputController player  in PlayerManager.instance.allAlivePlayers)
-				{
-					attackablesToKill.Add(player.GetComponent<Attackable>());
-				}
-			}
-
-			if (GUILayout.Button("Kill all Buildings"))
-			{
-				foreach (Building building in BuildingManager.instance.allBuildings)
-				{
-					attackablesToKill.Add(building.GetComponent<Attackable>());
-				}
-			}
-
-			foreach (Attackable attackable in attackablesToKill)
-			{
-				attackable.DealLethalDamage(cheatManager.gameObject, cheatManager.gameObject);
-			}
-
-			GUILayout.Label("Add", EditorStyles.boldLabel);
-			if (GUILayout.Button("Add Resources"))
-			{
-				int cheatCount = 500;
-
-				foreach (ItemType itemType in System.Enum.GetValues(typeof(ItemType)))
-				{
-					ItemData itemData = ItemManager.instance.GetItemInfos(itemType);
-					if (itemData.useOnCollect)
-					{
-						continue;
-					}
-
-					if (itemData.isShared)
-					{
-						Inventory.sharedInventoryInstance.AddItem(itemType, cheatCount);
-					}
-					else
-					{
-						foreach (InputController player in PlayerManager.instance.allAlivePlayers)
-						{
-							player.GetComponent<Inventory>().AddItem(itemType, cheatCount);
-						}
-					}
-				
-				}
-			}
-
-			if (GUILayout.Button("Add Enemies"))
-			{
-				Spawn.EnemySpawner[] allSpawners = FindObjectsOfType<Spawn.EnemySpawner>();
-			
-				if (allSpawners.Length > 0)
-				{
-					allSpawners[0].ForceImmediateSpawn();
-				}
-			}
-
-			if (GUILayout.Button("Next Wave"))
-			{
-				SAB.Spawn.SpawnManager.instance.NextWave();
-			}
-
-			GUI.enabled = true;		
-
-			if (!freezeEnemyOld && cheatManager.freezeEnemies)
-			{
-				cheatManager.stopEnemySpawns = true;
-			}
 		}
 	}
 }

@@ -2,6 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
+
 namespace SAB
 {
 	public class DebugHelper : MonoBehaviour 
@@ -19,7 +23,7 @@ namespace SAB
 			Vector3 p3 = new Vector3(quadMax.x, quadMin.y,	quadMax.z);
 			Vector3 p4 = new Vector3(quadMin.x, halfHeight,	quadMax.z);
 
-			BufferQuad(p1, p2, p3, p4, col);
+			BufferQuad(p1, p2, p3, p4, col); 
 		}
 
 		public static void BufferQuad(Vector3 p1, Vector3 p2, Vector3 p3, Vector3 p4, Color col)
@@ -43,7 +47,7 @@ namespace SAB
 
 			BufferedTriangleColors.Add(col);
 			BufferedTriangleColors.Add(col);
-			BufferedTriangleColors.Add(col);
+			BufferedTriangleColors.Add(col); 
 
 			BufferedTrianglesIndices.Add(firstIndex);
 			BufferedTrianglesIndices.Add(firstIndex + 1);
@@ -67,8 +71,6 @@ namespace SAB
 			tmpMesh.SetTriangles(BufferedTrianglesIndices, 0);
 
 			tmpMesh.SetColors(BufferedTriangleColors);
-			
-			
 			tmpMesh.RecalculateNormals();
 
 			Material mat = new Material(Shader.Find("Unlit/DebugPrimitive"));
@@ -92,9 +94,11 @@ namespace SAB
 
 		public static void DrawText(Vector3 pos3, Color col, string text)
 		{
-			GUIStyle style = new GUIStyle();
-			style.normal.textColor = col;
-			UnityEditor.Handles.Label (pos3, text, style);
+			#if UNITY_EDITOR
+				GUIStyle style = new GUIStyle();
+				style.normal.textColor = col;
+				UnityEditor.Handles.Label (pos3, text, style);
+			#endif
 		}
 	}
 }

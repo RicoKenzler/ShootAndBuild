@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using UnityEditor;
 using UnityEngine;
 
 namespace SAB
@@ -249,16 +248,4 @@ namespace SAB
     }
 
     //----------------------------------------------------------------------
-
-    // TODO move to seperate script
-    [CustomEditor(typeof(WeaponData))]
-    public class WeaponDataEditor : Editor
-    {
-        public override void OnInspectorGUI()
-        {
-            WeaponData editorTarget = (WeaponData)target;
-
-            DrawDefaultInspector();
-        }
-    }
 }

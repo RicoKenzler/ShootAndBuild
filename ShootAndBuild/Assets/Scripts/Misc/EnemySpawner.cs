@@ -1,12 +1,11 @@
-﻿using UnityEditor;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace SAB.Spawn
 {
 
     public class EnemySpawner : MonoBehaviour
     {
-        public float spawnRadius = 3;
+        public float spawnRadius = 3; 
 
         private SpawnPropabilityBlock currentSpwanBlock = null;
         private float[] spawnTimer = null;
@@ -93,14 +92,6 @@ namespace SAB.Spawn
 
         }
 
-        //----------------------------------------------------------------------
-
-#if UNITY_EDITOR
-        void OnDrawGizmos()
-        {
-            Handles.Disc(Quaternion.identity, this.transform.position, Vector3.up, this.spawnRadius, false, 0);
-        }
-#endif
         //----------------------------------------------------------------------
 
     }

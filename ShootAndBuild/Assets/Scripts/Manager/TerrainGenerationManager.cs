@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEditor;
 using SAB.Terrain;
 
 namespace SAB
@@ -112,26 +111,6 @@ namespace SAB
 			AmbientSoundManager.GenerateAmbientGrid(RegionGridGenerator.RegionGrid, RegionGenerator.RegionMap, TransformParams.TerrainSizeWS);
 
 
-		}
-	}
-
-	// -----------------------------------------------------------------
-
-	[CustomEditor(typeof(TerrainGenerationManager))]
-	public class TerrainGeneratorEditor : Editor
-	{
-		public override void OnInspectorGUI()
-		{
-			TerrainGenerationManager terrainGenerator = (TerrainGenerationManager)target;
-
-			DrawDefaultInspector();
-
-			GUILayout.Label("Generate", EditorStyles.boldLabel);
-			if (GUILayout.Button("Regenerate"))
-			{
-				terrainGenerator.RegenerateAll();
-				EditorUtility.SetDirty(terrainGenerator);
-			}
 		}
 	}
 }
