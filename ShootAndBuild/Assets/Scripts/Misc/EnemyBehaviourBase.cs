@@ -117,7 +117,7 @@ namespace SAB
 		protected string walkAnimName		= "walk";
 		protected string attackAnimName		= "attack";
 
-		// ------------------------------------------------
+		///////////////////////////////////////////////////////////////////////////
 
 		protected void TryStartAnim(string animName, float speed = 1.0f, bool suppressedByAttack = true)
 		{
@@ -138,7 +138,7 @@ namespace SAB
             }
 		}
 
-		// ------------------------------------------------
+		///////////////////////////////////////////////////////////////////////////
 
 		protected virtual void Awake()
 		{
@@ -146,7 +146,7 @@ namespace SAB
 			movable = GetComponent<Movable>();
 		}
 
-		// ------------------------------------------------
+		///////////////////////////////////////////////////////////////////////////
 
         protected virtual void Start()
         {
@@ -158,14 +158,14 @@ namespace SAB
             transform.SetParent(EnemyManager.instance.transform);
         }
 
-		// ------------------------------------------------
+		///////////////////////////////////////////////////////////////////////////
 
         void OnDisable()
         {
             EnemyManager.instance.RegisterEnemy(this, true);
         }
 
-		// ------------------------------------------------
+		///////////////////////////////////////////////////////////////////////////
 
         protected GameObject GetNearestPlayer(out float distSq)
         {
@@ -189,7 +189,7 @@ namespace SAB
             return bestPlayer;
         }
 
-		// ------------------------------------------------
+		///////////////////////////////////////////////////////////////////////////
 
         protected GameObject GetNearestBuilding(out float distSq)
         {
@@ -213,7 +213,7 @@ namespace SAB
             return bestBuilding;
         }
 
-		// ------------------------------------------------
+		///////////////////////////////////////////////////////////////////////////
 
 		protected GameObject FindNextTarget()
 		{
@@ -262,7 +262,7 @@ namespace SAB
 			return bestTarget;
 		}
 
-		// ------------------------------------------------
+		///////////////////////////////////////////////////////////////////////////
 
 		protected float GetDistanceAndDirectionTo(Vector3 target, out Vector3 direction)
 		{
@@ -282,7 +282,7 @@ namespace SAB
 			return distance;
 		}
 
-        // ------------------------------------------------
+        ///////////////////////////////////////////////////////////////////////////
 
         protected Vector3 EstimateFuturePosition(GameObject target, float timeIntoFuture)
         {
@@ -299,7 +299,7 @@ namespace SAB
             return estimatedPosition;
         }
    
-		// ------------------------------------------------
+		///////////////////////////////////////////////////////////////////////////
 
 		protected void TryPerformInstantAttack(GameObject target)
 		{
@@ -326,7 +326,7 @@ namespace SAB
 			}
 		}
 
-		// ------------------------------------------------
+		///////////////////////////////////////////////////////////////////////////
 
         void Update()
         {
@@ -366,7 +366,7 @@ namespace SAB
 			TryStartAnim(walkAnimName);
         }
 
-		// ------------------------------------------------
+		///////////////////////////////////////////////////////////////////////////
 
 		protected abstract void OnUpdate();
     }

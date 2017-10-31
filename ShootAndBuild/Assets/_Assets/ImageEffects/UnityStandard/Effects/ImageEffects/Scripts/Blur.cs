@@ -18,7 +18,7 @@ namespace UnityStandardAssets.ImageEffects
         public float blurSpread = 0.6f;
 
 
-        // --------------------------------------------------------
+        ///////////////////////////////////////////////////////////////////////////
         // The blur iteration shader.
         // Basically it just takes 4 texture samples and averages them.
         // By applying it repeatedly and spreading out sample locations
@@ -43,7 +43,7 @@ namespace UnityStandardAssets.ImageEffects
             }
         }
 
-        // --------------------------------------------------------
+        ///////////////////////////////////////////////////////////////////////////
 
         protected void Start()
         {

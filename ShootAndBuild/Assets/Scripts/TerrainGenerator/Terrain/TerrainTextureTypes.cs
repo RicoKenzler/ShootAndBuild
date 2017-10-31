@@ -5,7 +5,7 @@ using UnityEngine;
 namespace SAB.Terrain
 {
 
-	// --------------------------------------------------------
+	///////////////////////////////////////////////////////////////////////////
 
 	public class TerrainTextureTypes
 	{
@@ -14,7 +14,7 @@ namespace SAB.Terrain
 			return ((int) regionType) * 2 + (second ? 1 : 0);
 		}
 
-		// --------------------------------------------------------
+		///////////////////////////////////////////////////////////////////////////
 
 		public static float RedistributeBlendFactor(float blend12, float share2)
 		{
@@ -26,7 +26,7 @@ namespace SAB.Terrain
 			return 1.0f - amount1st;
 		}
 
-		// --------------------------------------------------------
+		///////////////////////////////////////////////////////////////////////////
 
 		public static float ApplySharpness(float oldBlendValue, float blendingSharpness)
 		{
@@ -39,5 +39,5 @@ namespace SAB.Terrain
 		}
 	}
 
-	// -----------------------------------------------------------------
+	///////////////////////////////////////////////////////////////////////////
 }

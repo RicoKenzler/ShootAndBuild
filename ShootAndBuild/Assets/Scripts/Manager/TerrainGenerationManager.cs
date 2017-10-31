@@ -34,7 +34,7 @@ namespace SAB
 		public TerrainGenerator TerrainGenerator		= new TerrainGenerator();
 
 
-		// -----------------------------------------------------------------
+		///////////////////////////////////////////////////////////////////////////
 
 		public void DeleteTerrain()
 		{
@@ -64,7 +64,7 @@ namespace SAB
 			AmbientSoundManager.GenerateAmbientGrid(null, null, new Vector2(0.0f, 0.0f));
 		}
 		
-		// -----------------------------------------------------------------
+		///////////////////////////////////////////////////////////////////////////
 
 		public void OnDrawGizmosSelected()
 		{
@@ -74,7 +74,7 @@ namespace SAB
 			TerrainGenerator.DebugDraw();
 		}
 
-		// -----------------------------------------------------------------
+		///////////////////////////////////////////////////////////////////////////
 
 		public void RegenerateAll()
 		{

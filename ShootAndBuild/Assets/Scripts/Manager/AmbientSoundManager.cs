@@ -3,26 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
 
-// ExtensionMethods-Helper to allow for syntax vector3.xz();
-// TODO: Put in separate file
-
-public static class VectorExtensions
-{
-	public static Vector2 xz(this Vector3 vec3D)
-	{
-		return new Vector2(vec3D.x, vec3D.z);
-	}
-
-	public static Vector3 To3D(this Vector2 vec2D, float y)
-    {
-		return new Vector3(vec2D.x, y, vec2D.y);
-	}
-}
-
-// ------------------------------------------------------
+///////////////////////////////////////////////////////////////////////////
 
 namespace SAB
 {
+	///////////////////////////////////////////////////////////////////////////
+
 	enum AmbientSoundType
 	{
 		Grass,
@@ -32,21 +18,22 @@ namespace SAB
 		Invalid
 	}
 
-	// ------------------------------------------------------
-
+	///////////////////////////////////////////////////////////////////////////
+	// Helper struct: Cell within the sound grid
+	///////////////////////////////////////////////////////////////////////////
 	[System.Serializable]
 	struct AmbientSoundCell
 	{
 		public AmbientSoundType	SoundType;
 
-		// ------------------------------------------------------
+		///////////////////////////////////////////////////////////////////////////
 
 		public AmbientSoundCell(AmbientSoundType soundType)
 		{
 			SoundType = soundType;
 		}
 
-		// ------------------------------------------------------
+		///////////////////////////////////////////////////////////////////////////
 
 		public static Color GetDebugColor(AmbientSoundType soundType)
 		{
@@ -63,7 +50,7 @@ namespace SAB
 			return Color.white;
 		}
 
-		// ------------------------------------------------------
+		///////////////////////////////////////////////////////////////////////////
 
 		public Color GetDebugColor()
 		{
@@ -71,92 +58,91 @@ namespace SAB
 		}
 	}
 
-	// ------------------------------------------------------
-
+	///////////////////////////////////////////////////////////////////////////
+	// Ambient Sound Manager
+	///////////////////////////////////////////////////////////////////////////
 	public class AmbientSoundManager : MonoBehaviour 
 	{
-		//-------------------------------------------------	
+		///////////////////////////////////////////////////////////////////////////	
 		// Audio sources
-		//-------------------------------------------------	
+		///////////////////////////////////////////////////////////////////////////	
 		private const int AUDIO_SOURCE_COUNT = 2;
-		private AudioSource[]		AudioSources;
-		private AmbientSoundType[]	CurPlayingSoundTypes;
-		private float[]				SourceMaxVolume;
+		private AudioSource[]		m_AudioSources;
+		private AmbientSoundType[]	m_CurPlayingSoundTypes;
+		private float[]				m_SourceMaxVolume;
 
-		//-------------------------------------------------	
+		///////////////////////////////////////////////////////////////////////////	
 		// Audio clips
-		//-------------------------------------------------	
-		public AmbientSoundData	AudioLoopWater;
-		public AmbientSoundData	AudioLoopGrass;
-		public AmbientSoundData AudioLoopRuins;
+		///////////////////////////////////////////////////////////////////////////	
+		[SerializeField] private AmbientSoundData m_AudioLoopWater;
+		[SerializeField] private AmbientSoundData m_AudioLoopGrass;
+		[SerializeField] private AmbientSoundData m_AudioLoopRuins;
 
-		//-------------------------------------------------	
+		///////////////////////////////////////////////////////////////////////////	
 		// Mixer & Tracks
-		//-------------------------------------------------	
-		public AudioMixer		AudioMixer;
-		private AudioMixerGroup AmbientMixerGroup;
+		///////////////////////////////////////////////////////////////////////////	
+		[SerializeField] private AudioMixer		m_AudioMixer;
+		private AudioMixerGroup					m_AmbientMixerGroup;
 
-		//-------------------------------------------------	
+		///////////////////////////////////////////////////////////////////////////	
 		// What does it mean to "mute" "unmute"?
-		//-------------------------------------------------	
-		private const float AmbientGroupVolumeMuted		= -80.0f;
-		public float		AmbientGroupVolumeDefault	= 0.0f;
-		public float		FadeOutTime					= 2.0f;
-		public float		FadeInTime					= 3.0f;
-		public float		PanoramaFadeTime			= 3.0f;
+		///////////////////////////////////////////////////////////////////////////	
+		private const float					AMBIENT_GROUP_VOLUME_MUTED	= -80.0f;
+		[SerializeField] private  float		m_AmbientGroupVolumeDefault	= 0.0f;
+		[SerializeField] private  float		m_FadeOutTime				= 2.0f;
+		[SerializeField] private  float		m_FadeInTime				= 3.0f;
+		[SerializeField] private  float		m_PanoramaFadeTime			= 3.0f;
 
 		[Range(0,1)]
-		public float		MaxStereo					= 0.7f;
+		[SerializeField] private  float		m_MaxStereo					= 0.7f;
 
-		//-------------------------------------------------	
+		///////////////////////////////////////////////////////////////////////////	
 		// Ambient Grid
-		//-------------------------------------------------	
-		public	int	AmbientGridCellSize		= 16;
+		///////////////////////////////////////////////////////////////////////////	
+		[SerializeField] private  int		m_AmbientGridCellSize		= 16;
 
-		[SerializeField]
-		private int AmbientGridDimension	= 0;
+		[SerializeField] private int		m_AmbientGridDimension		= 0;
 
-		[SerializeField]
-		AmbientSoundCell[]	AmbientGrid;
+		[SerializeField] AmbientSoundCell[]	m_AmbientGrid;
 
-		[SerializeField] 
-		Vector2				TerrainSizeWS;
+		[SerializeField] Vector2			m_TerrainSizeWS;
 
-		//-------------------------------------------------	
-		// Listeners
-		//-------------------------------------------------	
-		Vector2[]			SubListenerPositions = new Vector2[4];
+		///////////////////////////////////////////////////////////////////////////
+
+		List<Vector2>						m_DebugListenerPositions = new List<Vector2>();
+
+		///////////////////////////////////////////////////////////////////////////
 
 		void Awake()
 		{
 			Instance = this;
 		}
 
-		//-------------------------------------------------	
+		///////////////////////////////////////////////////////////////////////////	
 
 		void Start() 
 		{
-			Debug.Assert(TerrainSizeWS == TerrainManager.Instance.TerrainSizeWS, "Please Regenerate Map!");
+			Debug.Assert(m_TerrainSizeWS == TerrainManager.Instance.TerrainSizeWS, "Please Regenerate Map!");
 
-			AmbientMixerGroup = AudioMixer.FindMatchingGroups("Ambient")[0];
+			m_AmbientMixerGroup = m_AudioMixer.FindMatchingGroups("Ambient")[0];
 
 			Debug.Assert(gameObject.GetComponent<AudioSource>() == null);
 
-			AudioSources			= new AudioSource[AUDIO_SOURCE_COUNT];
-			CurPlayingSoundTypes	= new AmbientSoundType[AUDIO_SOURCE_COUNT];
-			SourceMaxVolume			= new float[AUDIO_SOURCE_COUNT];
+			m_AudioSources			= new AudioSource[AUDIO_SOURCE_COUNT];
+			m_CurPlayingSoundTypes	= new AmbientSoundType[AUDIO_SOURCE_COUNT];
+			m_SourceMaxVolume			= new float[AUDIO_SOURCE_COUNT];
 
 			for (int i = 0; i < AUDIO_SOURCE_COUNT; ++i)
 			{
-				AudioSources[i]				= gameObject.AddComponent<AudioSource>();
-				CurPlayingSoundTypes[i]		= AmbientSoundType.Invalid;
-				SourceMaxVolume[i]			= 1.0f;
+				m_AudioSources[i]				= gameObject.AddComponent<AudioSource>();
+				m_CurPlayingSoundTypes[i]		= AmbientSoundType.Invalid;
+				m_SourceMaxVolume[i]			= 1.0f;
 
-				AudioSources[i].outputAudioMixerGroup = AmbientMixerGroup;
+				m_AudioSources[i].outputAudioMixerGroup = m_AmbientMixerGroup;
 			}
 		}
 		
-		//-------------------------------------------------	
+		///////////////////////////////////////////////////////////////////////////	
 
 		struct SamplePosition
 		{
@@ -176,7 +162,7 @@ namespace SAB
 
 		void Update() 
 		{
-			if (AmbientGrid == null)
+			if (m_AmbientGrid == null)
 			{ 
 				Debug.Log("AmbientGrid not Active. Please Regenerate Terrain!");
 				return;
@@ -185,11 +171,11 @@ namespace SAB
 			// 0) Mute / Adjust Volume?
 			if (CheatManager.instance.disableAudio)
 			{
-				AmbientMixerGroup.audioMixer.SetFloat("AmbientVolume", AmbientGroupVolumeMuted);
+				m_AmbientMixerGroup.audioMixer.SetFloat("AmbientVolume", AMBIENT_GROUP_VOLUME_MUTED);
 			}
 			else
 			{
-				AmbientMixerGroup.audioMixer.SetFloat("AmbientVolume", AmbientGroupVolumeDefault);
+				m_AmbientMixerGroup.audioMixer.SetFloat("AmbientVolume", m_AmbientGroupVolumeDefault);
 			}
 
 			// 1) Get sub-listener positions
@@ -221,6 +207,8 @@ namespace SAB
 			int[] leftAmount				= {0, 0};
 			int[] rightAmount				= {0, 0};
 			
+			m_DebugListenerPositions.Clear();
+
 			// bottom left and bottom right have highest priority!
 			foreach (SamplePosition samplePosition in samplePositionsByPriority)
 			{
@@ -252,6 +240,8 @@ namespace SAB
 						break;
 					}
 				}
+
+				m_DebugListenerPositions.Add(samplePosition.Pos);
 			}
 
 			int[]   totalAmounts	= {0, 0};
@@ -279,7 +269,7 @@ namespace SAB
 			UpdateAudioSources(soundType[primaryIndex], panoramas[primaryIndex], intensities[primaryIndex], soundType[secondaryIndex], panoramas[secondaryIndex], intensities[secondaryIndex]);
 		}
 
-		//-------------------------------------------------	
+		///////////////////////////////////////////////////////////////////////////	
 
 		float GetPanoramaAmount(int amountLeft, int amountRight)
 		{
@@ -293,12 +283,12 @@ namespace SAB
 
 			// [left, right] in [-1, 1]
 			float panorama = (normalizedPanorama * 2.0f) - 1.0f;
-			panorama *= MaxStereo;
+			panorama *= m_MaxStereo;
 
 			return panorama;
 		}
 
-		//-------------------------------------------------	
+		///////////////////////////////////////////////////////////////////////////	
 
 		void UpdateAudioSources(AmbientSoundType primaryType, float primaryPanorama, float primaryIntensity, AmbientSoundType secondaryType, float secondaryPanorama, float secondaryIntensity)
 		{
@@ -308,8 +298,8 @@ namespace SAB
 			// 1) Fade out old sources
 			for (int s = 0; s < AUDIO_SOURCE_COUNT; ++s)
 			{
-				bool isPrimary		= (CurPlayingSoundTypes[s] == primaryType)		&& (primaryType != AmbientSoundType.Invalid);
-				bool isSecondary	= (CurPlayingSoundTypes[s] == secondaryType)	&& (secondaryType != AmbientSoundType.Invalid);
+				bool isPrimary		= (m_CurPlayingSoundTypes[s] == primaryType)		&& (primaryType != AmbientSoundType.Invalid);
+				bool isSecondary	= (m_CurPlayingSoundTypes[s] == secondaryType)	&& (secondaryType != AmbientSoundType.Invalid);
 
 				if (isPrimary)
 				{
@@ -322,12 +312,12 @@ namespace SAB
 				else 
 				{
 					// slowly fade out sound
-					float newVolume = FadeAudioSource(AudioSources[s], null, SourceMaxVolume[s], 0.0f);
+					float newVolume = FadeAudioSource(m_AudioSources[s], null, m_SourceMaxVolume[s], 0.0f);
 
 					if (newVolume == 0.0f)
 					{
-						AudioSources[s].Stop();
-						CurPlayingSoundTypes[s] = AmbientSoundType.Invalid;
+						m_AudioSources[s].Stop();
+						m_CurPlayingSoundTypes[s] = AmbientSoundType.Invalid;
 					}
 				}
 			}
@@ -335,7 +325,7 @@ namespace SAB
 			// 2) Start new sources
 			for (int s = 0; s < AUDIO_SOURCE_COUNT; ++s)
 			{
-				if (CurPlayingSoundTypes[s] == AmbientSoundType.Invalid)
+				if (m_CurPlayingSoundTypes[s] == AmbientSoundType.Invalid)
 				{
 					bool startPrimaryNext	= !primaryTypeAlreadyPlaying;
 					bool startSecondaryNext = !startPrimaryNext && !secondaryTypeAlreadyPlaying ;
@@ -368,41 +358,41 @@ namespace SAB
 			// 3) Fade in / adjust panorama
 			for (int s = 0; s < AUDIO_SOURCE_COUNT; ++s)
 			{
-				if (CurPlayingSoundTypes[s] == AmbientSoundType.Invalid)
+				if (m_CurPlayingSoundTypes[s] == AmbientSoundType.Invalid)
 				{
 					continue;
 				}
 
-				bool isPrimary		= (CurPlayingSoundTypes[s] == primaryType);
-				bool isSecondary	= (CurPlayingSoundTypes[s] == secondaryType);
+				bool isPrimary		= (m_CurPlayingSoundTypes[s] == primaryType);
+				bool isSecondary	= (m_CurPlayingSoundTypes[s] == secondaryType);
 
 				if (isPrimary || isSecondary)
 				{
 					float intensity = isPrimary ? primaryIntensity : secondaryIntensity;
 
-					FadeAudioSource(AudioSources[s], isPrimary ? primaryPanorama : secondaryPanorama, SourceMaxVolume[s], SourceMaxVolume[s] * intensity);
+					FadeAudioSource(m_AudioSources[s], isPrimary ? primaryPanorama : secondaryPanorama, m_SourceMaxVolume[s], m_SourceMaxVolume[s] * intensity);
 				}
 			}
 		}
 
-		//-------------------------------------------------	
+		///////////////////////////////////////////////////////////////////////////	
 
 		void StartAudioSource(int audioSourceIndex, AmbientSoundType ambientType, float initPanorama)
 		{
-			AudioSource audioSource = AudioSources[audioSourceIndex];
+			AudioSource audioSource = m_AudioSources[audioSourceIndex];
 
 			AmbientSoundData ambientSoundData;
 
 			switch (ambientType)
 			{
 				case AmbientSoundType.Water:
-					ambientSoundData = AudioLoopWater;
+					ambientSoundData = m_AudioLoopWater;
 					break;
 				case AmbientSoundType.Grass:
-					ambientSoundData = AudioLoopGrass;
+					ambientSoundData = m_AudioLoopGrass;
 					break;
 				case AmbientSoundType.Ruins:
-					ambientSoundData = AudioLoopRuins;
+					ambientSoundData = m_AudioLoopRuins;
 					break;
 				default:
 					Debug.Assert(false);
@@ -423,18 +413,18 @@ namespace SAB
 			audioSource.volume		= 0.0f;
 			audioSource.Play();
 
-			CurPlayingSoundTypes[audioSourceIndex]	= ambientType;
-			SourceMaxVolume[audioSourceIndex]		= ambientSoundData.VolumeFactor;
+			m_CurPlayingSoundTypes[audioSourceIndex]	= ambientType;
+			m_SourceMaxVolume[audioSourceIndex]		= ambientSoundData.VolumeFactor;
 		}
 
-		//-------------------------------------------------	
+		///////////////////////////////////////////////////////////////////////////	
 
 		float FadeAudioSource(AudioSource audioSource, float? newTargetPanorama, float maxVolume, float targetVolume)
 		{
 			float oldVolume = audioSource.volume;
 
 			bool isFadeIn = targetVolume > oldVolume;
-			float fadeTime = isFadeIn ? FadeInTime : FadeOutTime;
+			float fadeTime = isFadeIn ? m_FadeInTime : m_FadeOutTime;
 			float fadePerSecond	= (1.0f / Mathf.Max(fadeTime, 0.001f)) * (isFadeIn ? 1.0f : -1.0f);
 
 			// (fade/second) * (second/tick) = fade/tick
@@ -458,7 +448,7 @@ namespace SAB
 			if (newTargetPanorama != null)
 			{
 				float oldPanorama = audioSource.panStereo;
-				float panoramaFadePerSecond = (1.0f / Mathf.Max(PanoramaFadeTime, 0.001f));
+				float panoramaFadePerSecond = (1.0f / Mathf.Max(m_PanoramaFadeTime, 0.001f));
 				panoramaFadePerSecond *= (newTargetPanorama.Value > oldPanorama) ? 1.0f : -1.0f;
 
 				float panoramaFadePerTick = panoramaFadePerSecond * Time.unscaledDeltaTime;
@@ -476,24 +466,24 @@ namespace SAB
 			return newVolume;
 		}
 
-		//-------------------------------------------------	
+		///////////////////////////////////////////////////////////////////////////	
 
 		AmbientSoundCell GetAmbientCellSafe(Vector2 posWS)
 		{
-			int iX = (int) (posWS.x / AmbientGridCellSize);
-			int iZ = (int) (posWS.y / AmbientGridCellSize);
+			int iX = (int) (posWS.x / m_AmbientGridCellSize);
+			int iZ = (int) (posWS.y / m_AmbientGridCellSize);
 
-			iX = Mathf.Clamp(iX, 0, AmbientGridDimension - 1);
-			iZ = Mathf.Clamp(iZ, 0, AmbientGridDimension - 1);
+			iX = Mathf.Clamp(iX, 0, m_AmbientGridDimension - 1);
+			iZ = Mathf.Clamp(iZ, 0, m_AmbientGridDimension - 1);
 
-			return AmbientGrid[iX * AmbientGridDimension + iZ];
+			return m_AmbientGrid[iX * m_AmbientGridDimension + iZ];
 		}
 
-		//-------------------------------------------------	
+		///////////////////////////////////////////////////////////////////////////	
 
 		public void OnDrawGizmosSelected()
 		{
-			if (AmbientGrid == null)
+			if (m_AmbientGrid == null)
 			{ 
 				Debug.Log("AmbientGrid not Active. Please Regenerate Terrain!");
 				return;
@@ -501,17 +491,17 @@ namespace SAB
 
 			float debugDrawHeight = 1.0f;
 
-			for (int iX = 0; iX < AmbientGridDimension; iX++)
+			for (int iX = 0; iX < m_AmbientGridDimension; iX++)
 			{
-				for (int iZ = 0; iZ < AmbientGridDimension; iZ++)
+				for (int iZ = 0; iZ < m_AmbientGridDimension; iZ++)
 				{
-					Vector2 cellMin = new Vector2(iX * AmbientGridCellSize, iZ * AmbientGridCellSize);
-					Vector2 cellMax = cellMin + new Vector2(AmbientGridCellSize, AmbientGridCellSize);
+					Vector2 cellMin = new Vector2(iX * m_AmbientGridCellSize, iZ * m_AmbientGridCellSize);
+					Vector2 cellMax = cellMin + new Vector2(m_AmbientGridCellSize, m_AmbientGridCellSize);
 					
 					Vector2 cellMinOffsetted = Vector2.Lerp(cellMin, cellMax, 0.05f);
 					Vector2 cellMaxOffsetted = Vector2.Lerp(cellMin, cellMax, 0.95f);
 
-					AmbientSoundCell curCell = AmbientGrid[iX * AmbientGridDimension + iZ];
+					AmbientSoundCell curCell = m_AmbientGrid[iX * m_AmbientGridDimension + iZ];
 
 					Color col = curCell.GetDebugColor();		
 					col.a = 0.5f;	
@@ -520,9 +510,9 @@ namespace SAB
 				}
 			}
 
-			for (int i = 0; i < 4; ++i)
+			for (int i = 0; i < m_DebugListenerPositions.Count; ++i)
 			{
-				Vector2 pos2D = SubListenerPositions[i];
+				Vector2 pos2D = m_DebugListenerPositions[i];
 				
 				Color debugColor = AmbientSoundCell.GetDebugColor(GetAmbientCellSafe(pos2D).SoundType);
 				
@@ -533,45 +523,45 @@ namespace SAB
 			DebugHelper.DrawBufferedTriangles();
 		}
 
-		//-------------------------------------------------	
+		///////////////////////////////////////////////////////////////////////////	
 
 		public static AmbientSoundManager Instance
 		{
 			get; private set;
 		}
 
-		//-------------------------------------------------	
+		///////////////////////////////////////////////////////////////////////////	
 
 		public void GenerateAmbientGrid(Terrain.RegionTile[,] regionTiles, List<Terrain.RegionCell> regionCells, Vector2 terrainSizeWS)
 		{
 			if (regionTiles == null)
 			{
-				AmbientGrid				= null;
-				TerrainSizeWS			= new Vector2(0.0f, 0.0f);
-				AmbientGridDimension	= 0;
+				m_AmbientGrid				= null;
+				m_TerrainSizeWS			= new Vector2(0.0f, 0.0f);
+				m_AmbientGridDimension	= 0;
 				return;
 			}
 
-			TerrainSizeWS = terrainSizeWS;
+			m_TerrainSizeWS = terrainSizeWS;
 
-			AmbientGridDimension = (int) Mathf.Ceil(Mathf.Max(terrainSizeWS.x, terrainSizeWS.y) / (float) AmbientGridCellSize);
-			AmbientGridDimension = Mathf.Max(AmbientGridDimension, 1);
+			m_AmbientGridDimension = (int) Mathf.Ceil(Mathf.Max(terrainSizeWS.x, terrainSizeWS.y) / (float) m_AmbientGridCellSize);
+			m_AmbientGridDimension = Mathf.Max(m_AmbientGridDimension, 1);
 			
-			AmbientGrid = new AmbientSoundCell[AmbientGridDimension * AmbientGridDimension];
+			m_AmbientGrid = new AmbientSoundCell[m_AmbientGridDimension * m_AmbientGridDimension];
 
 			int regionDimensionX = regionTiles.GetLength(0);
 			int regionDimensionZ = regionTiles.GetLength(1);
 			Vector2 regionTileSize = new Vector2(terrainSizeWS.x / regionDimensionX, terrainSizeWS.y / regionDimensionZ);
 
-			for (int ambientX = 0 ; ambientX < AmbientGridDimension; ++ambientX)
+			for (int ambientX = 0 ; ambientX < m_AmbientGridDimension; ++ambientX)
 			{
-				float xWS		= (ambientX + 0.5f) * AmbientGridCellSize;
+				float xWS		= (ambientX + 0.5f) * m_AmbientGridCellSize;
 				int regionX		= (int) (xWS / regionTileSize.x);
 				regionX			= Mathf.Min(regionX, regionDimensionX - 1);
 
-				for (int ambientZ = 0 ; ambientZ < AmbientGridDimension; ++ambientZ)
+				for (int ambientZ = 0 ; ambientZ < m_AmbientGridDimension; ++ambientZ)
 				{
-					float zWS		= (ambientZ + 0.5f) * AmbientGridCellSize;
+					float zWS		= (ambientZ + 0.5f) * m_AmbientGridCellSize;
 					int regionZ		= (int) (zWS / regionTileSize.y);
 					regionZ			= Mathf.Min(regionZ, regionDimensionZ - 1);
 
@@ -592,7 +582,7 @@ namespace SAB
 							break;
 					}
 
-					AmbientGrid[ambientX * AmbientGridDimension + ambientZ] = curCell;
+					m_AmbientGrid[ambientX * m_AmbientGridDimension + ambientZ] = curCell;
 				}
 			}
 		}

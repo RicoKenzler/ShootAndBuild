@@ -2,17 +2,20 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// Class wants to be used from non-editor code, but wants to use editor-code to draw
 #if UNITY_EDITOR
-using UnityEditor;
+	using UnityEditor;
 #endif
 
 namespace SAB
 {
 	public class DebugHelper : MonoBehaviour 
 	{
-		public static List<Vector3> BufferedTrianglesVertices	= new List<Vector3>();
-		public static List<int>		BufferedTrianglesIndices	= new List<int>();
-		public static List<Color>	BufferedTriangleColors		= new List<Color>();
+		private static List<Vector3>	s_BufferedTrianglesVertices	= new List<Vector3>();
+		private static List<int>		s_BufferedTrianglesIndices	= new List<int>();
+		private static List<Color>		s_BufferedTriangleColors	= new List<Color>();
+
+		///////////////////////////////////////////////////////////////////////////
 
 		public static void BufferQuad(Vector3 quadMin, Vector3 quadMax, Color col)
 		{
@@ -26,51 +29,57 @@ namespace SAB
 			BufferQuad(p1, p2, p3, p4, col); 
 		}
 
+		///////////////////////////////////////////////////////////////////////////
+
 		public static void BufferQuad(Vector3 p1, Vector3 p2, Vector3 p3, Vector3 p4, Color col)
 		{
 			BufferTriangle(p1, p2, p3, col);
 			BufferTriangle(p1, p3, p4, col);
 		}
 
+		///////////////////////////////////////////////////////////////////////////
+
 		public static void BufferTriangle(Vector3 p1, Vector3 p2, Vector3 p3, Color col)
 		{
-			if (BufferedTrianglesVertices.Count > 100000)
+			if (s_BufferedTrianglesVertices.Count > 100000)
 			{
 				Debug.Log("Using BufferTriangle() without Drawing Buffers?");
 				return;
 			}
 
-			int firstIndex = BufferedTrianglesVertices.Count;
-			BufferedTrianglesVertices.Add(p1);
-			BufferedTrianglesVertices.Add(p2);
-			BufferedTrianglesVertices.Add(p3);
+			int firstIndex = s_BufferedTrianglesVertices.Count;
+			s_BufferedTrianglesVertices.Add(p1);
+			s_BufferedTrianglesVertices.Add(p2);
+			s_BufferedTrianglesVertices.Add(p3);
 
-			BufferedTriangleColors.Add(col);
-			BufferedTriangleColors.Add(col);
-			BufferedTriangleColors.Add(col); 
+			s_BufferedTriangleColors.Add(col);
+			s_BufferedTriangleColors.Add(col);
+			s_BufferedTriangleColors.Add(col); 
 
-			BufferedTrianglesIndices.Add(firstIndex);
-			BufferedTrianglesIndices.Add(firstIndex + 1);
-			BufferedTrianglesIndices.Add(firstIndex + 2);
+			s_BufferedTrianglesIndices.Add(firstIndex);
+			s_BufferedTrianglesIndices.Add(firstIndex + 1);
+			s_BufferedTrianglesIndices.Add(firstIndex + 2);
 		}
+
+		///////////////////////////////////////////////////////////////////////////
 
 		public static void DrawBufferedTriangles()
 		{
-			if (BufferedTrianglesVertices.Count == 0)
+			if (s_BufferedTrianglesVertices.Count == 0)
 			{
 				return;
 			}
 
 			Mesh tmpMesh = new Mesh();
-			Vector3[] verticesArray = new Vector3[BufferedTrianglesVertices.Count];
-			BufferedTrianglesVertices.CopyTo(verticesArray);
-			tmpMesh.SetVertices(BufferedTrianglesVertices);
+			Vector3[] verticesArray = new Vector3[s_BufferedTrianglesVertices.Count];
+			s_BufferedTrianglesVertices.CopyTo(verticesArray);
+			tmpMesh.SetVertices(s_BufferedTrianglesVertices);
 						
-			int[] indicesArray = new int[BufferedTrianglesIndices.Count];
-			BufferedTrianglesIndices.CopyTo(indicesArray);
-			tmpMesh.SetTriangles(BufferedTrianglesIndices, 0);
+			int[] indicesArray = new int[s_BufferedTrianglesIndices.Count];
+			s_BufferedTrianglesIndices.CopyTo(indicesArray);
+			tmpMesh.SetTriangles(s_BufferedTrianglesIndices, 0);
 
-			tmpMesh.SetColors(BufferedTriangleColors);
+			tmpMesh.SetColors(s_BufferedTriangleColors);
 			tmpMesh.RecalculateNormals();
 
 			Material mat = new Material(Shader.Find("Unlit/DebugPrimitive"));
@@ -78,26 +87,26 @@ namespace SAB
 			Graphics.DrawMeshNow(tmpMesh, Vector3.zero, Quaternion.identity);
 			Object.DestroyImmediate(tmpMesh);
 
-			BufferedTrianglesVertices.Clear();
-			BufferedTrianglesIndices.Clear();
-			BufferedTriangleColors.Clear();
+			s_BufferedTrianglesVertices.Clear();
+			s_BufferedTrianglesIndices.Clear();
+			s_BufferedTriangleColors.Clear();
 		}
 
-		// -------------------------------------------------------------------
+		///////////////////////////////////////////////////////////////////////////
 
 		public static void DrawText(Vector2 pos2, float height, Color col, string text)
 		{
 			DrawText(new Vector3(pos2.x, height, pos2.y), col, text);
 		}
 
-		// -------------------------------------------------------------------
+		///////////////////////////////////////////////////////////////////////////
 
 		public static void DrawText(Vector3 pos3, Color col, string text)
 		{
 			#if UNITY_EDITOR
 				GUIStyle style = new GUIStyle();
 				style.normal.textColor = col;
-				UnityEditor.Handles.Label (pos3, text, style);
+				UnityEditor.Handles.Label (pos3, text, style); 
 			#endif
 		}
 	}

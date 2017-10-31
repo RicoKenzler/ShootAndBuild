@@ -60,7 +60,7 @@ float4 _Params; // x=radius, y=minz, z=attenuation power, w=SSAO power
 
 ENDCG
 
-	// ---- SSAO pass, 8 samples
+	/////////////////////////////////////////////////////////////////////////// SSAO pass, 8 samples
 	Pass {
 		
 CGPROGRAM
@@ -88,7 +88,7 @@ ENDCG
 
 	}
 
-// ---- SSAO pass, 14 samples
+/////////////////////////////////////////////////////////////////////////// SSAO pass, 14 samples
 	Pass {
 		
 CGPROGRAM
@@ -122,7 +122,7 @@ ENDCG
 
 	}
 	
-// ---- SSAO pass, 26 samples
+/////////////////////////////////////////////////////////////////////////// SSAO pass, 26 samples
 	Pass {
 		
 CGPROGRAM
@@ -168,7 +168,7 @@ ENDCG
 
 	}
 
-// ---- Blur pass
+/////////////////////////////////////////////////////////////////////////// Blur pass
 	Pass {
 CGPROGRAM
 #pragma vertex vert
@@ -240,7 +240,7 @@ half4 frag( v2f i ) : SV_Target
 ENDCG
 	}
 	
-	// ---- Composite pass
+	/////////////////////////////////////////////////////////////////////////// Composite pass
 	Pass {
 CGPROGRAM
 #pragma vertex vert

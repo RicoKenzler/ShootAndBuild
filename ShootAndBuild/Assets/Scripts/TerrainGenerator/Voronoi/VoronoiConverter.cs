@@ -12,7 +12,7 @@ namespace SAB.Terrain
 	{
 		VoronoiCreationState State;
 
-		// -------------------------------------------------
+		///////////////////////////////////////////////////////////////////////////
 
 		public bool DelauneyToVoronoi(VoronoiCreationState creationState)
 		{
@@ -212,14 +212,14 @@ namespace SAB.Terrain
 			return true;
 		}
 			
-		// -------------------------------------------------------------------
+		///////////////////////////////////////////////////////////////////////////
 
 		public bool IsOutsideClampRect(Vector2 point)
 		{
 			return (point.x < 0.0f) || (point.y < 0.0f) || (point.x > State.DIMENSIONS.x) || (point.y > State.DIMENSIONS.y);
 		}
 
-		// -------------------------------------------------------------------
+		///////////////////////////////////////////////////////////////////////////
 
 		Vector2 ClampToBorder(Vector2 startPoint, Vector2 dirNorm, Vector2 clampRectMin, Vector2 clampRectMax)
 		{
@@ -287,7 +287,7 @@ namespace SAB.Terrain
 			return newPoint;
 		}
 	
-		// -------------------------------------------------------------------
+		///////////////////////////////////////////////////////////////////////////
 
 		public Vector2 ComputeClampedEdgeEnd(Vector2 insideEdgeStart, Vector2 outsideEdgeEnd)
 		{

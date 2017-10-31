@@ -2,8 +2,6 @@
 
 private TerrainManager m_Manager
 
-public  TerrainManager GIBBET NET
-
 public TerrainManager terrainManager {   get{ return m_Manager; } set{ m_Manager = value} }
 
 ///////////////////////////////////////////////////////////////

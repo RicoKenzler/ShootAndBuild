@@ -421,7 +421,7 @@ namespace SAB.Terrain
 			return !errorHappened;
 		} // < end addClampEdge method
 
-		// ---------------------------------------------
+		///////////////////////////////////////////////////////////////////////////
 
 		public Rect CalculateAABB()
 		{
@@ -444,7 +444,7 @@ namespace SAB.Terrain
 			return aabb;
 		}
 
-		// ---------------------------------------------
+		///////////////////////////////////////////////////////////////////////////
 
 		public bool IsInside(Vector2 samplePoint)
 		{
@@ -464,7 +464,7 @@ namespace SAB.Terrain
 			return true;
 		}
 
-		// ---------------------------------------------
+		///////////////////////////////////////////////////////////////////////////
 
 	} //< End class Voronoi Cell
 }

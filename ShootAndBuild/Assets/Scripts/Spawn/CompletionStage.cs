@@ -8,7 +8,7 @@ namespace SAB.Spawn
 		public int completion = 0;
 		private MonsterSpawnStage linkedMonsterSpawn = null;
 
-		//----------------------------------------------------------------------
+		///////////////////////////////////////////////////////////////////////////
 
 		public override void Start()
 		{
@@ -17,7 +17,7 @@ namespace SAB.Spawn
 			linkedMonsterSpawn = wave.GetFirstPreviousMonsterSpawn(index);
 		}
 
-		//----------------------------------------------------------------------
+		///////////////////////////////////////////////////////////////////////////
 
 		public override bool IsCompleted
 		{
@@ -35,7 +35,7 @@ namespace SAB.Spawn
 			}
 		}
 
-		//----------------------------------------------------------------------
+		///////////////////////////////////////////////////////////////////////////
 
 	}
 }

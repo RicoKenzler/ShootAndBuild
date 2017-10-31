@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace SAB.Terrain
 {
-	// --------------------------------------------------------
+	///////////////////////////////////////////////////////////////////////////
 
 	[System.Serializable]
 	public class VoronoiParameters
@@ -36,7 +36,7 @@ namespace SAB.Terrain
 		public bool SuppressNewBorderEdges	= false;
 	}
 
-	// --------------------------------------------------------
+	///////////////////////////////////////////////////////////////////////////
 
 	[System.Serializable]
 	public class RegionParameters
@@ -68,7 +68,7 @@ namespace SAB.Terrain
 		public bool ShowRegionGrid		= false;
 	}
 
-	// --------------------------------------------------------
+	///////////////////////////////////////////////////////////////////////////
 
 	[System.Serializable]
 	public class WaterParameters
@@ -78,7 +78,7 @@ namespace SAB.Terrain
 		public float		WaterHeight		= 0.0f;
 	}
 
-	// --------------------------------------------------------
+	///////////////////////////////////////////////////////////////////////////
 
 	[System.Serializable]
 	public class TransformParameters
@@ -86,7 +86,7 @@ namespace SAB.Terrain
 		public Vector2 TerrainSizeWS = new Vector2(64.0f, 64.0f);
 	}
 
-	// --------------------------------------------------------
+	///////////////////////////////////////////////////////////////////////////
 
 	[System.Serializable]
 	public class RegionDesc
@@ -95,7 +95,7 @@ namespace SAB.Terrain
 		public RegionTextureDesc	TextureDesc;
 	}
 
-	// --------------------------------------------------------
+	///////////////////////////////////////////////////////////////////////////
 
 	[System.Serializable]
 	public class RegionHeightDesc
@@ -122,7 +122,7 @@ namespace SAB.Terrain
 		}
 	}
 
-	// --------------------------------------------------------
+	///////////////////////////////////////////////////////////////////////////
 
 	[System.Serializable]
 	public class RegionTextureDesc
@@ -173,7 +173,7 @@ namespace SAB.Terrain
 		}
 	}
 
-	// --------------------------------------------------------
+	///////////////////////////////////////////////////////////////////////////
 
 	[System.Serializable]
 	public class RegionDescParameters
@@ -181,7 +181,7 @@ namespace SAB.Terrain
 		public RegionDesc[] RegionDescs = new RegionDesc[(int) RegionType.Count];
 	}
 
-	// --------------------------------------------------------
+	///////////////////////////////////////////////////////////////////////////
 
 }
 

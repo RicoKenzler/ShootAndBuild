@@ -99,7 +99,7 @@ namespace SAB.Terrain
 			while (true);
 		}
 
-		// -------------------------------------------------------------------
+		///////////////////////////////////////////////////////////////////////////
 
 		void DoLloydRelaxation(VoronoiCreationState state, float relaxationAmount)
 		{
@@ -113,7 +113,7 @@ namespace SAB.Terrain
 			}
 		}
 
-		// -------------------------------------------------------------------
+		///////////////////////////////////////////////////////////////////////////
 
 		public void DebugDraw(VoronoiParameters voronoiParams)
 		{
