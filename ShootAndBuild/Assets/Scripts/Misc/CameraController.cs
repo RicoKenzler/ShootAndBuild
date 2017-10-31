@@ -3,53 +3,64 @@ using System.Collections.Generic;
 
 namespace SAB
 {
-
     public class CameraController : MonoBehaviour
     {
         [Range(0, 20)]
-        public float heightSlope = 2.0f;        //< height-gain per player-bounding-sphere-radius
+        [SerializeField] private float m_HeightSlope		= 2.0f;        //< height-gain per player-bounding-sphere-radius
 
         [Range(0, 200)]
-        public float minimumHeight = 15.0f;
+        [SerializeField] private float m_MinimumHeight		= 15.0f;
 
         [Range(0, 0.9999999f)]
-        public float inertiaMovement = 0.93f;
+        [SerializeField] private float m_InertiaMovement	= 0.93f;
 
         [Range(0, 0.9999999f)]
-        public float inertiaZoom = 0.98f;
+        [SerializeField] private float m_InertiaZoom		= 0.98f;
 
         [Range(0, 20)]
-        public float minimumRadius = 2.00f;     //< if players are nearer than this, camera height wont change
+        [SerializeField] private float m_MinimumRadius		= 2.00f;     //< if players are nearer than this, camera height wont change
 
         [Range(0, 1)]
-        public float rotZ = 0.1f;
+        [SerializeField] private float m_RotZ				= 0.1f;
 
-        private Vector3 lastPlayerSphereCenter = new Vector3(0.0f, 0.0f, 0.0f);
-        private float lastPlayerSphereRadius = 1.0f;
+        [SerializeField] private AudioListener m_AudioListener;
 
-        public AudioListener audioListener;
+		///////////////////////////////////////////////////////////////////////////
 
-		CameraShakes cameraShakes = new CameraShakes();
+        private Vector3 m_LastPlayerSphereCenter = new Vector3(0.0f, 0.0f, 0.0f);
+        private float	m_LastPlayerSphereRadius = 1.0f;
+
+		private CameraShakes m_CameraShakes = new CameraShakes();
 
 		// TODO: Move this into editor
-		public CameraShakeParams testShakeParams = new CameraShakeParams(1.0f, 0.1f, 1.0f);
+		[SerializeField] private CameraShakeParams m_TestShakeParams = new CameraShakeParams(1.0f, 0.1f, 1.0f);
+
+		///////////////////////////////////////////////////////////////////////////
+
+		public CameraShakeParams testShakeParams { get { return m_TestShakeParams; } }
+
+		///////////////////////////////////////////////////////////////////////////
 
         void Awake()
         {
             Instance = this;
         }
 
+		///////////////////////////////////////////////////////////////////////////
+
         void Start()
         {
 			Vector3 terrainCenter = TerrainManager.Instance.GetTerrainCenter3D(); 
 
-			lastPlayerSphereCenter = terrainCenter + new Vector3(0.0f, 10.0f, 0.0f);
+			m_LastPlayerSphereCenter = terrainCenter + new Vector3(0.0f, 10.0f, 0.0f);
 
-            GetPlayerBoundingSphere(out lastPlayerSphereCenter, out lastPlayerSphereRadius);
+            GetPlayerBoundingSphere(out m_LastPlayerSphereCenter, out m_LastPlayerSphereRadius);
 
 			// Init audio Listener
 			Update();
         }
+
+		///////////////////////////////////////////////////////////////////////////
 
         void GetPlayerBoundingSphere(out Vector3 center, out float radius)
         {
@@ -57,8 +68,8 @@ namespace SAB
 
             if (allPlayers.Count == 0)
             {
-                center = lastPlayerSphereCenter;
-                radius = lastPlayerSphereRadius;
+                center = m_LastPlayerSphereCenter;
+                radius = m_LastPlayerSphereRadius;
 
                 return;
             }
@@ -73,8 +84,10 @@ namespace SAB
             radius = Mathf.Max(playerBB.extents.x, playerBB.extents.z);
             center = playerBB.center;
 
-            radius = Mathf.Max(minimumRadius, radius);
+            radius = Mathf.Max(m_MinimumRadius, radius);
         }
+
+		///////////////////////////////////////////////////////////////////////////
 
         void Update()
         {
@@ -82,19 +95,19 @@ namespace SAB
             float playerSphereRadius;
             GetPlayerBoundingSphere(out playerSphereCenter, out playerSphereRadius);
 
-            playerSphereCenter = Vector3.Lerp(playerSphereCenter, lastPlayerSphereCenter, inertiaMovement);
-            playerSphereRadius = Mathf.Lerp(playerSphereRadius, lastPlayerSphereRadius, inertiaZoom);
+            playerSphereCenter = Vector3.Lerp(playerSphereCenter, m_LastPlayerSphereCenter, m_InertiaMovement);
+            playerSphereRadius = Mathf.Lerp(playerSphereRadius, m_LastPlayerSphereRadius, m_InertiaZoom);
 
-            lastPlayerSphereRadius = playerSphereRadius;
-            lastPlayerSphereCenter = playerSphereCenter;
+            m_LastPlayerSphereRadius = playerSphereRadius;
+            m_LastPlayerSphereCenter = playerSphereCenter;
 
-            Vector3 heighOffsetDirection = new Vector3(0.0f, 1.0f, -rotZ);
-            float heightOffsetAmount = (minimumHeight + (playerSphereRadius * heightSlope));
+            Vector3 heighOffsetDirection = new Vector3(0.0f, 1.0f, -m_RotZ);
+            float heightOffsetAmount = (m_MinimumHeight + (playerSphereRadius * m_HeightSlope));
 
             Vector3 newCameraPos	= playerSphereCenter + heightOffsetAmount * heighOffsetDirection;
 			Vector3 newLookatPoint	= playerSphereCenter;
 
-			cameraShakes.TickOffset();
+			m_CameraShakes.TickOffset();
 			Vector3 shakeOffset = GetCameraShakeOffset();
 
 			newCameraPos	+= shakeOffset;
@@ -103,19 +116,25 @@ namespace SAB
             transform.position = newCameraPos;
             transform.LookAt(newLookatPoint);
 
-            audioListener.transform.position = playerSphereCenter;
-            audioListener.transform.rotation = Quaternion.AngleAxis(180.0f, new Vector3(0.0f, 1.0f, 0.0f)) * transform.rotation;
+            m_AudioListener.transform.position = playerSphereCenter;
+            m_AudioListener.transform.rotation = Quaternion.AngleAxis(180.0f, new Vector3(0.0f, 1.0f, 0.0f)) * transform.rotation;
         }
+
+		///////////////////////////////////////////////////////////////////////////
 
 		public Vector3 GetListenerPosition()
 		{
-			return audioListener.transform.position;
+			return m_AudioListener.transform.position;
 		}
+
+		///////////////////////////////////////////////////////////////////////////
 
 		public float GetListenerWidth()
 		{
-			return lastPlayerSphereRadius * 1.5f;
+			return m_LastPlayerSphereRadius * 1.5f;
 		}
+
+		///////////////////////////////////////////////////////////////////////////
 
 		public void AddCameraShake(CameraShakeParams shakeParams)
 		{
@@ -124,19 +143,25 @@ namespace SAB
 				return;
 			}
 
-			cameraShakes.StartNewShake(shakeParams);
+			m_CameraShakes.StartNewShake(shakeParams);
 		}
+
+		///////////////////////////////////////////////////////////////////////////
 
         public static CameraController Instance
         {
             get; private set;
         }
 
+		///////////////////////////////////////////////////////////////////////////
+
 		public Vector3 GetCameraShakeOffset()
 		{
-			return cameraShakes.OffsetSum.To3D(0.0f);
+			return m_CameraShakes.OffsetSum.To3D(0.0f);
 		}
     }
+
+	///////////////////////////////////////////////////////////////////////////
 
 	[System.Serializable]
 	public struct CameraShakeParams
@@ -157,6 +182,8 @@ namespace SAB
 			Duration	= duration;
 		}
 	}
+
+	///////////////////////////////////////////////////////////////////////////
 
 	class CameraShakes
 	{
@@ -183,6 +210,8 @@ namespace SAB
 			ActiveShakes.RemoveAll(shake => shake.DurationLeft <= 0.0f);
 		}
 	}
+
+	///////////////////////////////////////////////////////////////////////////
 
 	class CameraShake
 	{

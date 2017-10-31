@@ -44087,14 +44087,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 17aaa91eaaa9cb24eb7b8930224c731a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  heightSlope: 2
-  minimumHeight: 15
-  inertiaMovement: 0.93
-  inertiaZoom: 0.98
-  minimumRadius: 2
-  rotZ: 0.1
-  audioListener: {fileID: 197147373}
-  testShakeParams:
+  m_HeightSlope: 2
+  m_MinimumHeight: 15
+  m_InertiaMovement: 0.93
+  m_InertiaZoom: 0.98
+  m_MinimumRadius: 2
+  m_RotZ: 0.1
+  m_AudioListener: {fileID: 197147373}
+  m_TestShakeParams:
     Strength: 1
     Smoothness: 0.1
     Duration: 1

@@ -1,40 +1,40 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace SAB
 {
     public class Building : MonoBehaviour
     {
-        public int costs = 10;
-        public Sprite icon;
+		[FormerlySerializedAs("costs")]
+        [SerializeField] private int		m_Costs = 10;
 
-        private Attackable attackable;
-        private Renderer childsRenderer;
+		[FormerlySerializedAs("icon")]
+        [SerializeField] private Sprite		m_Icon;
+
+        private Attackable	m_Attackable;
+        private Renderer	m_ChildsRenderer;
 
         ///////////////////////////////////////////////////////////////////////////
+
+		public Sprite icon { get { return m_Icon; } }
+
+		///////////////////////////////////////////////////////////////////////////
 
         // Use this for initialization
         void Start()
         {
             BuildingManager.instance.RegisterBuilding(this, false);
 
-            this.attackable = this.GetComponent<Attackable>();
-            this.childsRenderer = this.GetComponentInChildren<Renderer>();
+            this.m_Attackable = this.GetComponent<Attackable>();
+            this.m_ChildsRenderer = this.GetComponentInChildren<Renderer>();
 
-            if (this.attackable == null)
+            if (this.m_Attackable == null)
             {
                 Debug.LogWarning("Building without attackable");
             }
-            this.attackable.OnDamage += OnDamage;
-        }
-
-        ///////////////////////////////////////////////////////////////////////////
-
-        // Update is called once per frame
-        void Update()
-        {
-
+            this.m_Attackable.OnDamage += OnDamage;
         }
 
         ///////////////////////////////////////////////////////////////////////////
@@ -53,7 +53,7 @@ namespace SAB
                 return;
             }
 
-            Inventory.sharedInventoryInstance.AddItem(ItemType.Gold, -costs);
+            Inventory.sharedInventoryInstance.AddItem(ItemType.Gold, -m_Costs);
         }
 
         ///////////////////////////////////////////////////////////////////////////
@@ -61,7 +61,7 @@ namespace SAB
         public bool IsPayable()
         {
             int goldAmount = Inventory.sharedInventoryInstance.GetItemCount(ItemType.Gold);
-            if (goldAmount >= costs)
+            if (goldAmount >= m_Costs)
             {
                 return true;
             }
@@ -78,9 +78,9 @@ namespace SAB
 
         private void OnDamage()
         {
-            foreach (var m in childsRenderer.materials)
+            foreach (var m in m_ChildsRenderer.materials)
             {
-                m.color = Color.Lerp(new Color(0.5f, 0.0f, 0.0f), Color.white, attackable.HealthNormalized);
+                m.color = Color.Lerp(new Color(0.5f, 0.0f, 0.0f), Color.white, m_Attackable.HealthNormalized);
             }
         }
     }
