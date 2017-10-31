@@ -2,115 +2,120 @@
 using System.Collections.Generic;
 using UnityEngine;
 using SAB.Terrain;
+using UnityEngine.Serialization;
 
 namespace SAB
 {
 	public class TerrainGenerationManager : MonoBehaviour
 	{
-		[SerializeField]
-		private TerrainManager TerrainManager;
+		[SerializeField] private TerrainManager			m_TerrainManager;
 
-		[SerializeField]
-		private AmbientSoundManager	AmbientSoundManager;
+		[SerializeField] private AmbientSoundManager	m_AmbientSoundManager;
 
-		public int Resolution = 129;
+		[SerializeField] private int					m_Resolution = 65;
 
-		public bool UseTimeAsSeed = true;
+		[SerializeField] private bool					m_UseTimeAsSeed = false;
 
-		public int TerrainSeed = 1000;
-		public int VoronoiSeed = 1000;
-		public int RegionSeed  = 1000;
+		[SerializeField] private int					m_TerrainSeed = 22400;
+		[SerializeField] private int					m_VoronoiSeed = 22400;
+		[SerializeField] private int					m_RegionSeed  = 22400;
 
-		public TransformParameters			TransformParams;
-		public RegionDescParameters			RegionDescParams;
-		public WaterParameters				WaterParams;
-		public VoronoiParameters			VoronoiParams;
-		public RegionParameters				RegionParams;
+		[FormerlySerializedAs("TransformParams")]
+		[SerializeField] private TransformParameters	m_TransformParams;
 
-		GameObject TerrainObject;
-		public VoronoiCreator VoronoiGenerator			= new VoronoiCreator();
-		public RegionMapGenerator RegionGenerator		= new RegionMapGenerator();
-		public RegionGridGenerator RegionGridGenerator	= new RegionGridGenerator();
-		public TerrainGenerator TerrainGenerator		= new TerrainGenerator();
+		[FormerlySerializedAs("RegionDescParams")]
+		[SerializeField] private RegionDescParameters	m_RegionDescParams;
 
+		[FormerlySerializedAs("WaterParams")]
+		[SerializeField] private WaterParameters		m_WaterParams;
+
+		[FormerlySerializedAs("VoronoiParams")]
+		[SerializeField] private VoronoiParameters		m_VoronoiParams;
+
+		[FormerlySerializedAs("RegionParams")]
+		[SerializeField] private RegionParameters		m_RegionParams;
+
+		private GameObject			m_TerrainObject;
+		private VoronoiCreator		m_VoronoiGenerator		= new VoronoiCreator();
+		private RegionMapGenerator	m_RegionGenerator		= new RegionMapGenerator();
+		private RegionGridGenerator m_RegionGridGenerator	= new RegionGridGenerator();
+		private TerrainGenerator	m_TerrainGenerator		= new TerrainGenerator();
 
 		///////////////////////////////////////////////////////////////////////////
 
 		public void DeleteTerrain()
 		{
-			if (!TerrainObject)
+			if (!m_TerrainObject)
 			{
 				UnityEngine.Terrain childTerrain = GetComponentInChildren<UnityEngine.Terrain>();
-				TerrainObject = childTerrain ? childTerrain.gameObject : null;
+				m_TerrainObject = childTerrain ? childTerrain.gameObject : null;
 			}
 
-			if (TerrainObject)
+			if (m_TerrainObject)
 			{
 				if (Application.isPlaying)
 				{
-					Destroy(TerrainObject.GetComponent<UnityEngine.Terrain>());
-					Destroy(TerrainObject.GetComponent<UnityEngine.TerrainCollider>());
-					Destroy(TerrainObject);
+					Destroy(m_TerrainObject.GetComponent<UnityEngine.Terrain>());
+					Destroy(m_TerrainObject.GetComponent<UnityEngine.TerrainCollider>());
+					Destroy(m_TerrainObject);
 				}
 				else
 				{
-					DestroyImmediate(TerrainObject.GetComponent<UnityEngine.Terrain>());
-					DestroyImmediate(TerrainObject.GetComponent<UnityEngine.TerrainCollider>());
-					DestroyImmediate(TerrainObject);
+					DestroyImmediate(m_TerrainObject.GetComponent<UnityEngine.Terrain>());
+					DestroyImmediate(m_TerrainObject.GetComponent<UnityEngine.TerrainCollider>());
+					DestroyImmediate(m_TerrainObject);
 				}
 			}
 
-			TerrainManager.ReplaceTerrain(null, null, new Vector2(0.0f, 0.0f));
-			AmbientSoundManager.GenerateAmbientGrid(null, null, new Vector2(0.0f, 0.0f));
+			m_TerrainManager.ReplaceTerrain(null, null, new Vector2(0.0f, 0.0f));
+			m_AmbientSoundManager.GenerateAmbientGrid(null, null, new Vector2(0.0f, 0.0f));
 		}
 		
 		///////////////////////////////////////////////////////////////////////////
 
 		public void OnDrawGizmosSelected()
 		{
-			VoronoiGenerator.DebugDraw(VoronoiParams);
-			RegionGenerator.DebugDraw();
-			RegionGridGenerator.DebugDraw();
-			TerrainGenerator.DebugDraw();
+			m_VoronoiGenerator.DebugDraw(m_VoronoiParams);
+			m_RegionGenerator.DebugDraw();
+			m_RegionGridGenerator.DebugDraw();
+			m_TerrainGenerator.DebugDraw();
 		}
 
 		///////////////////////////////////////////////////////////////////////////
 
 		public void RegenerateAll()
 		{
-			if (UseTimeAsSeed)
+			if (m_UseTimeAsSeed)
 			{
 				int timeSeed = (System.DateTime.Now.Millisecond + System.DateTime.Now.Second * 1000) % 100000;
-				TerrainSeed = timeSeed;
-				VoronoiSeed = timeSeed;
-				RegionSeed  = timeSeed;
+				m_TerrainSeed = timeSeed;
+				m_VoronoiSeed = timeSeed;
+				m_RegionSeed  = timeSeed;
 			}
 
-			List<VoronoiCell> voronoiCells = VoronoiGenerator.GenerateVoronoi(VoronoiSeed, VoronoiParams, TransformParams.TerrainSizeWS);
+			List<VoronoiCell> voronoiCells = m_VoronoiGenerator.GenerateVoronoi(m_VoronoiSeed, m_VoronoiParams, m_TransformParams.TerrainSizeWS);
 
 			if (voronoiCells == null)
 			{
 				return;
 			}
 
-			RegionMapTransformation regionMapTransformation = new RegionMapTransformation(TransformParams.TerrainSizeWS, Resolution);
-			RegionGenerator.GenerateRegions(RegionSeed, voronoiCells, RegionParams, regionMapTransformation);
+			RegionMapTransformation regionMapTransformation = new RegionMapTransformation(m_TransformParams.TerrainSizeWS, m_Resolution);
+			m_RegionGenerator.GenerateRegions(m_RegionSeed, voronoiCells, m_RegionParams, regionMapTransformation);
 
-			RegionGridGenerator.GenerateRegionGrid(RegionGenerator.RegionMap, regionMapTransformation, RegionParams);
+			m_RegionGridGenerator.GenerateRegionGrid(m_RegionGenerator.RegionMap, regionMapTransformation, m_RegionParams);
 
 			DeleteTerrain();
 
-			TerrainObject = TerrainGenerator.GenerateTerrain(RegionGenerator.RegionMap, RegionGridGenerator.RegionGrid, regionMapTransformation, TransformParams, RegionGridGenerator.HeightRangeY, RegionDescParams, WaterParams, Resolution, TerrainSeed);
+			m_TerrainObject = m_TerrainGenerator.GenerateTerrain(m_RegionGenerator.RegionMap, m_RegionGridGenerator.RegionGrid, regionMapTransformation, m_TransformParams, m_RegionGridGenerator.HeightRangeY, m_RegionDescParams, m_WaterParams, m_Resolution, m_TerrainSeed);
 
-			if (TerrainObject)
+			if (m_TerrainObject)
 			{
-				TerrainObject.transform.parent = this.transform;
+				m_TerrainObject.transform.parent = this.transform;
 			}
 
-			TerrainManager.ReplaceTerrain(TerrainObject.GetComponent<UnityEngine.Terrain>(), RegionGridGenerator.RegionGrid, TransformParams.TerrainSizeWS);
-			AmbientSoundManager.GenerateAmbientGrid(RegionGridGenerator.RegionGrid, RegionGenerator.RegionMap, TransformParams.TerrainSizeWS);
-
-
+			m_TerrainManager.ReplaceTerrain(m_TerrainObject.GetComponent<UnityEngine.Terrain>(), m_RegionGridGenerator.RegionGrid, m_TransformParams.TerrainSizeWS);
+			m_AmbientSoundManager.GenerateAmbientGrid(m_RegionGridGenerator.RegionGrid, m_RegionGenerator.RegionMap, m_TransformParams.TerrainSizeWS);
 		}
 	}
 }

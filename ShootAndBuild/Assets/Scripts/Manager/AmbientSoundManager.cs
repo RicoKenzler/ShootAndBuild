@@ -122,7 +122,7 @@ namespace SAB
 
 		void Start() 
 		{
-			Debug.Assert(m_TerrainSizeWS == TerrainManager.Instance.TerrainSizeWS, "Please Regenerate Map!");
+			Debug.Assert(m_TerrainSizeWS == TerrainManager.Instance.terrainSizeWS, "Please Regenerate Map!");
 
 			m_AmbientMixerGroup = m_AudioMixer.FindMatchingGroups("Ambient")[0];
 

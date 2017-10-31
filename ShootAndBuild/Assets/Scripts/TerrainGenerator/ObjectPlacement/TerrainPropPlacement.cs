@@ -73,7 +73,7 @@ namespace SAB.Terrain
 		{
 			containerObject = null;
 
-			GameObject terrainObject = terrainManager.Terrain.gameObject;
+			GameObject terrainObject = terrainManager.terrain.gameObject;
 			
 			Transform oldGroupObjectTransform = terrainObject.transform.Find(PropGroupName);
 			GameObject groupObject = oldGroupObjectTransform == null ? null : oldGroupObjectTransform.gameObject;
@@ -96,19 +96,19 @@ namespace SAB.Terrain
 
 			Debug.Assert(terrainManager);
 
-			if (!terrainManager.Terrain)
+			if (!terrainManager.terrain)
 			{
 				Debug.LogWarning("No Terrain found");
 				return;
 			}
 
-			if (terrainManager.RegionGrid == null)
+			if (terrainManager.regionGrid == null)
 			{
 				Debug.LogWarning("Currently RegionGrid is not serialized, so you first have to generate a terrain");
 				return;
 			}
 			
-			regionMapTransformation = terrainManager.RegionMapTransformation;
+			regionMapTransformation = terrainManager.regionMapTransformation;
 
 			RecreateEmptyContainerObject();
 			CreateProps();
@@ -151,7 +151,7 @@ namespace SAB.Terrain
 				return;
 			}
 
-			RegionTile[,] regionGrid = terrainManager.RegionGrid;
+			RegionTile[,] regionGrid = terrainManager.regionGrid;
 
 			for (int x = 0; x < regionGrid.GetLength(0); ++x)
 			{
