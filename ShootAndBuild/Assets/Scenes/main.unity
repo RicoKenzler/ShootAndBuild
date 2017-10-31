@@ -349,19 +349,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8483eb10e75bb534da6661d655f08c28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  invinciblePlayers: 1
-  invincibleEnemies: 0
-  invincibleBuildings: 0
-  freezeEnemies: 0
-  freezeTowers: 0
-  stopEnemySpawns: 0
-  disableWin: 1
-  disableLose: 1
-  noResourceCosts: 1
-  ultraHighDamage: 0
-  disableAudio: 0
-  disableMusic: 1
-  disableVibration: 0
+  m_InvinciblePlayers: 1
+  m_InvincibleEnemies: 0
+  m_InvincibleBuildings: 0
+  m_FreezeEnemies: 0
+  m_FreezeTowers: 0
+  m_StopEnemySpawns: 0
+  m_DisableWin: 1
+  m_DisableLose: 1
+  m_NoResourceCosts: 1
+  m_UltraHighDamage: 0
+  m_DisableAudio: 0
+  m_DisableMusic: 1
+  m_DisableVibration: 1
 --- !u!1 &12416358
 GameObject:
   m_ObjectHideFlags: 0
@@ -27059,17 +27059,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 693ed2a6785dc6942a0a606e043cfecc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  winCondition: 0
-  loseCondition: 1
-  winConditionContextValue: 1000
-  winConditionContextObject: {fileID: 0}
-  loseConditionContextValue: 0
-  loseConditionContextObject: {fileID: 434030327}
-  winText: {fileID: 224037688484329938, guid: d60a6b3c6631baa4eb5fd4ec8635203e, type: 2}
-  loseText: {fileID: 224054935631800498, guid: 4aef694037a6ded4193a1fe324f1efde, type: 2}
-  winSound: {fileID: 11400000, guid: 9a6cd1cbcb08f4646ae99d8752d6b2b7, type: 2}
-  loseSound: {fileID: 11400000, guid: a2e040e2702b51b41a3113e1648962e2, type: 2}
-  canvas: {fileID: 1202426840}
+  m_WinCondition: 0
+  m_LoseCondition: 1
+  m_WinConditionContextValue: 1000
+  m_WinConditionContextObject: {fileID: 0}
+  m_LoseConditionContextValue: 0
+  m_LoseConditionContextObject: {fileID: 434030327}
+  m_WinText: {fileID: 224037688484329938, guid: d60a6b3c6631baa4eb5fd4ec8635203e,
+    type: 2}
+  m_LoseText: {fileID: 224054935631800498, guid: 4aef694037a6ded4193a1fe324f1efde,
+    type: 2}
+  m_WinSound: {fileID: 11400000, guid: 9a6cd1cbcb08f4646ae99d8752d6b2b7, type: 2}
+  m_LoseSound: {fileID: 11400000, guid: a2e040e2702b51b41a3113e1648962e2, type: 2}
+  m_Canvas: {fileID: 1202426840}
 --- !u!1 &1271082809
 GameObject:
   m_ObjectHideFlags: 0

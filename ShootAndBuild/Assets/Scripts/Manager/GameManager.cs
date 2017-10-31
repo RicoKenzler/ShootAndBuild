@@ -33,54 +33,69 @@ namespace SAB
 
     public class GameManager : MonoBehaviour
     {
-        public WinCondition winCondition    = WinCondition.MoneyTotal;
-        public LoseCondition loseCondition  = LoseCondition.DestroyObject;
+        [SerializeField] private WinCondition	m_WinCondition	= WinCondition.MoneyTotal;
+        [SerializeField] private LoseCondition	m_LoseCondition	= LoseCondition.DestroyObject;
 
-        public int winConditionContextValue = 1000;
-        public GameObject winConditionContextObject = null;
-        public int loseConditionContextValue = 0;
-        public GameObject loseConditionContextObject = null;
+        [SerializeField] private int			m_WinConditionContextValue		= 1000;
+        [SerializeField] private GameObject		m_WinConditionContextObject		= null;
+        [SerializeField] private int			m_LoseConditionContextValue		= 0;
+        [SerializeField] private GameObject		m_LoseConditionContextObject	= null;
 
-        public RectTransform winText;
-        public RectTransform loseText;
+        [SerializeField] private RectTransform	m_WinText;
+        [SerializeField] private RectTransform	m_LoseText;
 
-        public AudioData winSound;
-        public AudioData loseSound;
+        [SerializeField] private AudioData		m_WinSound;
+        [SerializeField] private AudioData		m_LoseSound;
 
-        public Canvas canvas;
+        [SerializeField] private Canvas			m_Canvas;
 
-        private GameStatus gameStatus = GameStatus.Running;
+        private GameStatus m_gameStatus = GameStatus.Running;
+
+		///////////////////////////////////////////////////////////////////////////
+
+		public LoseCondition	loseCondition				{ get { return m_LoseCondition; } }
+		public GameObject		loseConditionContextObject	{ get { return m_LoseConditionContextObject; } }
+		public int				loseConditionContextValue	{ get { return m_LoseConditionContextValue; } }
+		public WinCondition		winCondition				{ get { return m_WinCondition; } }
+		public GameObject		winConditionContextObject	{ get { return m_WinConditionContextObject; } }
+		public int				winConditionContextValue	{ get { return m_WinConditionContextValue; } }
+
+		///////////////////////////////////////////////////////////////////////////
 
         public GameStatus Status
         {
-            get {  return this.gameStatus; }
+            get {  return this.m_gameStatus; }
         }
+
+		///////////////////////////////////////////////////////////////////////////
 
         public static GameManager Instance
         {
             get; private set;
         }
 
-        // Use this for initialization
+		///////////////////////////////////////////////////////////////////////////
+
         void Awake()
         {
             Instance = this;
         }
 
-        // Update is called once per frame
+		///////////////////////////////////////////////////////////////////////////
+
         void Update()
         {
-            if (gameStatus == GameStatus.Running)
+            if (m_gameStatus == GameStatus.Running)
             {
                 CheckWinConditions();
             }
 
-            if (gameStatus == GameStatus.Running)
+            if (m_gameStatus == GameStatus.Running)
             {
                 CheckLoseConditions();
             }
 
-            if (gameStatus == GameStatus.Running || gameStatus == GameStatus.Paused)
+            if (m_gameStatus == GameStatus.Running || m_gameStatus == GameStatus.Paused)
             {
                 if (InputManager.instance.DidAnyPlayerJustPress(ButtonType.Start))
                 {
@@ -95,14 +110,16 @@ namespace SAB
 			}
         }
 
+		///////////////////////////////////////////////////////////////////////////
+
         void CheckWinConditions()
         {
-            Debug.Assert(gameStatus == GameStatus.Running);
+            Debug.Assert(m_gameStatus == GameStatus.Running);
 
-            switch (winCondition)
+            switch (m_WinCondition)
             {
                 case WinCondition.MoneyTotal:
-                    if (GetCurrentWinConditionContext() >= winConditionContextValue)
+                    if (GetCurrentWinConditionContext() >= m_WinConditionContextValue)
                     {
                         WinGame();
                     }
@@ -110,9 +127,11 @@ namespace SAB
             }
         }
 
+		///////////////////////////////////////////////////////////////////////////
+
         public int GetCurrentWinConditionContext()
         {
-            switch (winCondition)
+            switch (m_WinCondition)
             {
                 case WinCondition.MoneyTotal:
                     return Inventory.sharedInventoryInstance.GetItemCount(ItemType.Gold);
@@ -121,17 +140,19 @@ namespace SAB
             return -1;
         }
 
+		///////////////////////////////////////////////////////////////////////////
+
         public int GetCurrentLoseConditionContext()
         {
-            switch (loseCondition)
+            switch (m_LoseCondition)
             {
                 case LoseCondition.Default:
                     return -1;
 
                 case LoseCondition.DestroyObject:
-                    if (loseConditionContextObject)
+                    if (m_LoseConditionContextObject)
                     {
-                        Attackable loseConditionAttackable = loseConditionContextObject.GetComponent<Attackable>();
+                        Attackable loseConditionAttackable = m_LoseConditionContextObject.GetComponent<Attackable>();
                         return loseConditionAttackable.Health;
                     }
                     else
@@ -143,13 +164,15 @@ namespace SAB
             return -1;
         }
 
+		///////////////////////////////////////////////////////////////////////////
+
         void CheckLoseConditions()
         {
-            Debug.Assert(gameStatus == GameStatus.Running);
+            Debug.Assert(m_gameStatus == GameStatus.Running);
 
             bool lostGame = false;
 
-            switch (loseCondition)
+            switch (m_LoseCondition)
             {
                 case LoseCondition.Default:
                 // we need to check this special condition anyways for all lose conditions
@@ -182,23 +205,27 @@ namespace SAB
             }
         }
 
+		///////////////////////////////////////////////////////////////////////////
+
         void TogglePause()
         {
-            Debug.Assert(gameStatus == GameStatus.Running || gameStatus == GameStatus.Paused);
+            Debug.Assert(m_gameStatus == GameStatus.Running || m_gameStatus == GameStatus.Paused);
 
-            if (gameStatus == GameStatus.Running)
+            if (m_gameStatus == GameStatus.Running)
             {
                 Time.timeScale = 0.0f;
-                gameStatus = GameStatus.Paused;
+                m_gameStatus = GameStatus.Paused;
             }
             else
             {
                 Time.timeScale = 1.0f;
-                gameStatus = GameStatus.Running;
+                m_gameStatus = GameStatus.Running;
             }
 
-            CameraController.Instance.GetComponent<UnityStandardAssets.ImageEffects.Blur>().enabled = (gameStatus == GameStatus.Paused);
+            CameraController.Instance.GetComponent<UnityStandardAssets.ImageEffects.Blur>().enabled = (m_gameStatus == GameStatus.Paused);
         }
+
+		///////////////////////////////////////////////////////////////////////////
 
         void WinGame()
         {
@@ -207,10 +234,12 @@ namespace SAB
                 return;
             }
 
-            AudioManager.instance.PlayAudio(winSound);
-            Instantiate(winText.gameObject, canvas.transform, false);
-            gameStatus = GameStatus.Won;
+            AudioManager.instance.PlayAudio(m_WinSound);
+            Instantiate(m_WinText.gameObject, m_Canvas.transform, false);
+            m_gameStatus = GameStatus.Won;
         }
+
+		///////////////////////////////////////////////////////////////////////////
 
         void LoseGame()
         {
@@ -219,9 +248,9 @@ namespace SAB
                 return;
             }
 
-            AudioManager.instance.PlayAudio(loseSound);
-            Instantiate(loseText.gameObject, canvas.transform, false);
-            gameStatus = GameStatus.Lost;
+            AudioManager.instance.PlayAudio(m_LoseSound);
+            Instantiate(m_LoseText.gameObject, m_Canvas.transform, false);
+            m_gameStatus = GameStatus.Lost;
         }
 
     }
