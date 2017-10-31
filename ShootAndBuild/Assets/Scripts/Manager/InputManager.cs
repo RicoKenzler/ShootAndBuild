@@ -7,7 +7,6 @@ using XInputDotNetPure;
 
 namespace SAB
 {
-
     public enum AxisType
     {
         LeftAxisH,
@@ -20,6 +19,8 @@ namespace SAB
         MenuV,
     }
 
+	///////////////////////////////////////////////////////////////////////////
+
     public enum ButtonType
     {
         Taunt,
@@ -31,6 +32,8 @@ namespace SAB
 
         Unused,
     }
+	
+	///////////////////////////////////////////////////////////////////////////
 
     public enum InputMethod
     {
@@ -42,27 +45,32 @@ namespace SAB
         Gamepad4,
     }
 
+	///////////////////////////////////////////////////////////////////////////
+
     public class InputManager : MonoBehaviour
     {
-        [SerializeField]
-        InputMethod debugKeyboardEmulates;
+        [SerializeField] InputMethod m_DebugKeyboardEmulates = InputMethod.Keyboard;
 
-        private Dictionary<PlayerID, InputPlayer> activePlayersById = new Dictionary<PlayerID, InputPlayer>();
-        private Dictionary<InputMethod, PlayerID> inputMethodToPlayerID = new Dictionary<InputMethod, PlayerID>();
+        private Dictionary<PlayerID, InputPlayer> m_ActivePlayersById = new Dictionary<PlayerID, InputPlayer>();
+        private Dictionary<InputMethod, PlayerID> m_InputMethodToPlayerID = new Dictionary<InputMethod, PlayerID>();
 
         private const float TRIGGER_DOWN_THRESHOLD = 0.3f;
 
+		///////////////////////////////////////////////////////////////////////////
+
         bool UsesDebugEmulation()
         {
-            return (debugKeyboardEmulates != InputMethod.Keyboard);
+            return (m_DebugKeyboardEmulates != InputMethod.Keyboard);
         }
+
+		///////////////////////////////////////////////////////////////////////////
 
         string ApplyDebugEmulationOnString(string inputIdentifier)
         {
-            Debug.Assert(debugKeyboardEmulates != InputMethod.Keyboard);
+            Debug.Assert(m_DebugKeyboardEmulates != InputMethod.Keyboard);
 
             // For debugging: switch keyboard with emulated inputMethod
-            string strEmulated = InputMethodToPostfix(debugKeyboardEmulates);
+            string strEmulated = InputMethodToPostfix(m_DebugKeyboardEmulates);
             string strKeyboard = InputMethodToPostfix(InputMethod.Keyboard);
 
             if (inputIdentifier.Contains(strEmulated))
@@ -74,6 +82,8 @@ namespace SAB
                 return inputIdentifier.Replace(strKeyboard, strEmulated);
             }
         }
+
+		///////////////////////////////////////////////////////////////////////////
 
         class InputPlayer
         {
@@ -95,6 +105,8 @@ namespace SAB
                 }
             }
 
+			///////////////////////////////////////////////////////////////////////////
+
             class PlayerAxisInfos
             {
                 public string axisIdentifier;
@@ -111,39 +123,49 @@ namespace SAB
                 }
             }
 
-            private Dictionary<ButtonType, PlayerButtonInfos> buttonInfos = new Dictionary<ButtonType, PlayerButtonInfos>();
-            private Dictionary<AxisType, PlayerAxisInfos> axisInfos = new Dictionary<AxisType, PlayerAxisInfos>();
+			///////////////////////////////////////////////////////////////////////////
 
-            public InputMethod inputMethod = InputMethod.Keyboard;
-            private float vibrationAmountR = 0.0f;
-            private float vibrationAmountL = 0.0f;
-            private float vibrateUntil = 0.0f;
-            private bool vibrationSleep = true;
+            private Dictionary<ButtonType, PlayerButtonInfos>	m_ButtonInfos	= new Dictionary<ButtonType, PlayerButtonInfos>();
+            private Dictionary<AxisType, PlayerAxisInfos>		m_AxisInfos		= new Dictionary<AxisType, PlayerAxisInfos>();
+
+            private InputMethod m_InputMethod		= InputMethod.Keyboard;
+            private float		m_VibrationAmountR	= 0.0f;
+            private float		m_VibrationAmountL	= 0.0f;
+            private float		m_VibrateUntil		= 0.0f;
+            private bool		m_VibrationSleep	= true;
+
+			///////////////////////////////////////////////////////////////////////////
+
+			public InputMethod inputMethod { get { return m_InputMethod; } set { m_InputMethod = value; } }
+
+			///////////////////////////////////////////////////////////////////////////
 
             public void InitButtonStates()
             {
-                buttonInfos.Clear();
-                axisInfos.Clear();
+                m_ButtonInfos.Clear();
+                m_AxisInfos.Clear();
 
                 foreach (ButtonType buttonType in System.Enum.GetValues(typeof(ButtonType)))
                 {
-                    string inputIdentifier = InputManager.instance.ButtonToPrefix(buttonType) + InputManager.instance.InputMethodToPostfix(inputMethod);
-                    buttonInfos[buttonType] = new PlayerButtonInfos(inputIdentifier);
+                    string inputIdentifier = InputManager.instance.ButtonToPrefix(buttonType) + InputManager.instance.InputMethodToPostfix(m_InputMethod);
+                    m_ButtonInfos[buttonType] = new PlayerButtonInfos(inputIdentifier);
                 }
 
                 foreach (AxisType axisType in System.Enum.GetValues(typeof(AxisType)))
                 {
-                    string inputIdentifier = InputManager.instance.AxisToPrefix(axisType) + InputManager.instance.InputMethodToPostfix(inputMethod);
-                    axisInfos[axisType] = new PlayerAxisInfos(inputIdentifier);
+                    string inputIdentifier = InputManager.instance.AxisToPrefix(axisType) + InputManager.instance.InputMethodToPostfix(m_InputMethod);
+                    m_AxisInfos[axisType] = new PlayerAxisInfos(inputIdentifier);
                 }
 
                 UpdateButtonStates();
             }
 
+			///////////////////////////////////////////////////////////////////////////
+
             PlayerButtonInfos GetButtonInfos(ButtonType buttonType)
             {
                 PlayerButtonInfos outState = null;
-                if (!buttonInfos.TryGetValue(buttonType, out outState))
+                if (!m_ButtonInfos.TryGetValue(buttonType, out outState))
                 {
                     Debug.Log("Trying to access unknown button " + buttonType);
                 }
@@ -151,10 +173,12 @@ namespace SAB
                 return outState;
             }
 
+			///////////////////////////////////////////////////////////////////////////
+
             PlayerAxisInfos GetAxisInfos(AxisType axisType)
             {
                 PlayerAxisInfos outState = null;
-                if (!axisInfos.TryGetValue(axisType, out outState))
+                if (!m_AxisInfos.TryGetValue(axisType, out outState))
                 {
                     Debug.Log("Trying to access unknown axis " + axisType);
                 }
@@ -162,22 +186,30 @@ namespace SAB
                 return outState;
             }
 
+			///////////////////////////////////////////////////////////////////////////
+
             public float GetAxisValue(AxisType axisType)
             {
                 return GetAxisInfos(axisType).axisValue;
             }
+			
+			///////////////////////////////////////////////////////////////////////////
 
             public bool IsButtonDown(ButtonType buttonType)
             {
                 PlayerButtonInfos buttonInfos = GetButtonInfos(buttonType);
                 return buttonInfos.isDownState;
             }
+			
+			///////////////////////////////////////////////////////////////////////////
 
             public bool WasButtonJustPressed(ButtonType buttonType)
             {
                 PlayerButtonInfos buttonInfos = GetButtonInfos(buttonType);
                 return buttonInfos.wasJustPressedState;
             }
+			
+			///////////////////////////////////////////////////////////////////////////
 
             public bool WasAxisJustPressed(AxisType axisType, out bool positive)
             {
@@ -186,10 +218,12 @@ namespace SAB
 
                 return axisInfos.wasJustPressedState;
             }
+			
+			///////////////////////////////////////////////////////////////////////////
 
             public void UpdateButtonStates()
             {
-                foreach (KeyValuePair<ButtonType, PlayerButtonInfos> buttonInfoPair in buttonInfos)
+                foreach (KeyValuePair<ButtonType, PlayerButtonInfos> buttonInfoPair in m_ButtonInfos)
                 {
                     PlayerButtonInfos infos = buttonInfoPair.Value;
 
@@ -210,7 +244,7 @@ namespace SAB
                     infos.isDownState = isButtonDown;
                 }
 
-                foreach (KeyValuePair<AxisType, PlayerAxisInfos> axisInfoPair in axisInfos)
+                foreach (KeyValuePair<AxisType, PlayerAxisInfos> axisInfoPair in m_AxisInfos)
                 {
                     PlayerAxisInfos infos = axisInfoPair.Value;
 
@@ -241,24 +275,28 @@ namespace SAB
                     infos.isDownState = isDownState;
                 }
             }
+			
+			///////////////////////////////////////////////////////////////////////////
 
             public void StartVibration(float amountL, float amountR, float duration)
             {
-                if (amountL <= vibrationAmountL && amountR <= vibrationAmountR)
+                if (amountL <= m_VibrationAmountL && amountR <= m_VibrationAmountR)
                 {
                     // dont overwrite hard vibration with soft vibration
                     return;
                 }
 
-                vibrationAmountL = amountL;
-                vibrationAmountR = amountR;
-                vibrateUntil = Time.unscaledTime + duration;
-                vibrationSleep = false;
+                m_VibrationAmountL = amountL;
+                m_VibrationAmountR = amountR;
+                m_VibrateUntil = Time.unscaledTime + duration;
+                m_VibrationSleep = false;
             }
+			
+			///////////////////////////////////////////////////////////////////////////
 
             private int GetXInputPlayerIndex()
             {
-                switch (inputMethod)
+                switch (m_InputMethod)
                 {
                     case InputMethod.Gamepad1: return 0;
                     case InputMethod.Gamepad2: return 1;
@@ -268,20 +306,22 @@ namespace SAB
 
                 return -1;
             }
+			
+			///////////////////////////////////////////////////////////////////////////
 
             public void UpdateVibration()
             {
-                if (vibrationSleep)
+                if (m_VibrationSleep)
                 {
                     return;
                 }
 
-                if (CheatManager.instance.disableVibration || (Time.unscaledTime > vibrateUntil))
+                if (CheatManager.instance.disableVibration || (Time.unscaledTime > m_VibrateUntil))
                 {
                     // We vibrated long enough
-                    vibrationAmountL = 0.0f;
-                    vibrationAmountR = 0.0f;
-                    vibrationSleep = true;
+                    m_VibrationAmountL = 0.0f;
+                    m_VibrationAmountR = 0.0f;
+                    m_VibrationSleep = true;
                 }
 
                 int xInputIndex = GetXInputPlayerIndex();
@@ -292,21 +332,17 @@ namespace SAB
                     return;
                 }
 
-                GamePad.SetVibration((PlayerIndex)xInputIndex, vibrationAmountL, vibrationAmountR);
+                GamePad.SetVibration((PlayerIndex)xInputIndex, m_VibrationAmountL, m_VibrationAmountR);
             }
         }
 
-        // Use this for initialization
-        void Start()
-        {
-
-        }
+		///////////////////////////////////////////////////////////////////////////
 
         public InputMethod? IsButtonDownForUnusedInputMethod(ButtonType buttonType)
         {
             foreach (InputMethod inputMethod in System.Enum.GetValues(typeof(InputMethod)))
             {
-                if (inputMethodToPlayerID.ContainsKey(inputMethod))
+                if (m_InputMethodToPlayerID.ContainsKey(inputMethod))
                 {
                     // this controller already controls a player
                     continue;
@@ -320,6 +356,8 @@ namespace SAB
 
             return null;
         }
+		
+		///////////////////////////////////////////////////////////////////////////
 
         public void OnSpawnNewPlayer(PlayerID playerID, InputMethod inputMethod)
         {
@@ -327,40 +365,50 @@ namespace SAB
             newInputPlayer.inputMethod = inputMethod;
             newInputPlayer.InitButtonStates();
 
-            inputMethodToPlayerID[inputMethod] = playerID;
-            activePlayersById[playerID] = newInputPlayer;
+            m_InputMethodToPlayerID[inputMethod] = playerID;
+            m_ActivePlayersById[playerID] = newInputPlayer;
         }
+		
+		///////////////////////////////////////////////////////////////////////////
 
         void Awake()
         {
             instance = this;
         }
+		
+		///////////////////////////////////////////////////////////////////////////
 
         // Update is called once per frame
         void Update()
         {
-            foreach (KeyValuePair<PlayerID, InputPlayer> player in activePlayersById)
+            foreach (KeyValuePair<PlayerID, InputPlayer> player in m_ActivePlayersById)
             {
                 player.Value.UpdateVibration();
                 player.Value.UpdateButtonStates();
             }
         }
+		
+		///////////////////////////////////////////////////////////////////////////
 
         private InputPlayer GetInputPlayer(PlayerID playerID)
         {
-            if (!activePlayersById.ContainsKey(playerID))
+            if (!m_ActivePlayersById.ContainsKey(playerID))
             {
                 Debug.Log("Accessing invalid Player " + playerID);
                 return new InputPlayer();
             }
 
-            return activePlayersById[playerID];
+            return m_ActivePlayersById[playerID];
         }
+		
+		///////////////////////////////////////////////////////////////////////////
 
         private InputMethod GetInputMethod(PlayerID playerID)
         {
             return GetInputPlayer(playerID).inputMethod;
         }
+		
+		///////////////////////////////////////////////////////////////////////////
 
         public string InputMethodToPostfix(InputMethod inputMethod)
         {
@@ -380,6 +428,8 @@ namespace SAB
 
             return " InvalidInputMethod";
         }
+		
+		///////////////////////////////////////////////////////////////////////////
 
         private string AxisToPrefix(AxisType axisType)
         {
@@ -402,6 +452,8 @@ namespace SAB
 
             return "InvalidAxis";
         }
+		
+		///////////////////////////////////////////////////////////////////////////
 
         public string ButtonToPrefix(ButtonType buttonType)
         {
@@ -426,6 +478,8 @@ namespace SAB
 
             return "InvalidButton";
         }
+		
+		///////////////////////////////////////////////////////////////////////////
 
         public float GetAxisValue(PlayerID playerID, AxisType axisType)
         {
@@ -433,6 +487,8 @@ namespace SAB
 
             return player.GetAxisValue(axisType);
         }
+		
+		///////////////////////////////////////////////////////////////////////////
 
         public bool IsButtonDown(PlayerID playerID, ButtonType buttonType)
         {
@@ -440,6 +496,8 @@ namespace SAB
 
             return player.IsButtonDown(buttonType);
         }
+		
+		///////////////////////////////////////////////////////////////////////////
 
         public bool IsButtonDown(InputMethod inputMethod, ButtonType buttonType)
         {
@@ -454,6 +512,8 @@ namespace SAB
 
             return (axisValue > TRIGGER_DOWN_THRESHOLD);
         }
+		
+		///////////////////////////////////////////////////////////////////////////
 
         public bool WasButtonJustPressed(PlayerID playerID, ButtonType buttonType)
         {
@@ -461,11 +521,15 @@ namespace SAB
 
             return player.WasButtonJustPressed(buttonType);
         }
+		
+		///////////////////////////////////////////////////////////////////////////
 
         public void SetVibration(PlayerID playerID, float amountLeft, float amountRight, float duration)
         {
             GetInputPlayer(playerID).StartVibration(amountLeft, amountRight, duration);
         }
+		
+		///////////////////////////////////////////////////////////////////////////
 
         public void SetVibrationAll(float amountLeft, float amountRight, float duration)
         {
@@ -474,6 +538,8 @@ namespace SAB
                 SetVibration(player.playerID, amountLeft, amountRight, duration);
             }
         }
+		
+		///////////////////////////////////////////////////////////////////////////
 
         public bool WasAxisJustPressed(PlayerID playerID, AxisType axisType, out bool positive)
         {
@@ -481,10 +547,12 @@ namespace SAB
 
             return inputPlayer.WasAxisJustPressed(axisType, out positive);
         }
+		
+		///////////////////////////////////////////////////////////////////////////
 
         public bool DidAnyPlayerJustPress(ButtonType buttonType)
         {
-            foreach (KeyValuePair<PlayerID, InputPlayer> activePlayer in activePlayersById)
+            foreach (KeyValuePair<PlayerID, InputPlayer> activePlayer in m_ActivePlayersById)
             {
                 if (activePlayer.Value.WasButtonJustPressed(buttonType))
                 {
@@ -494,6 +562,8 @@ namespace SAB
 
             return false;
         }
+		
+		///////////////////////////////////////////////////////////////////////////
 
         public static InputManager instance
         {

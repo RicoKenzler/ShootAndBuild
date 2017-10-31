@@ -3,41 +3,46 @@ using UnityEngine;
 
 namespace SAB
 {
-
     public class HealthBarManager : MonoBehaviour
     {
-        public HealthBar healthBarPrefab;
+        [SerializeField] private HealthBar m_HealthBarPrefab;
 
-        private List<HealthBar> healthBars = new List<HealthBar>();
+        private List<HealthBar> m_HealthBars = new List<HealthBar>();
+
+		///////////////////////////////////////////////////////////////////////////
 
         void Awake()
         {
             instance = this;
         }
+		
+		///////////////////////////////////////////////////////////////////////////
 
         public void AddHealthBar(Attackable attackable)
         {
-            HealthBar instanceBG = Instantiate(healthBarPrefab, transform);
+            HealthBar instanceBG = Instantiate(m_HealthBarPrefab, transform);
             instanceBG.target = attackable;
             instanceBG.name = "HealthBarBG - " + attackable.name;
             instanceBG.isBackgroundDuplicate = true;
-            healthBars.Add(instanceBG.GetComponent<HealthBar>());
+            m_HealthBars.Add(instanceBG.GetComponent<HealthBar>());
 
-            HealthBar instance = Instantiate(healthBarPrefab, transform);
+            HealthBar instance = Instantiate(m_HealthBarPrefab, transform);
             instance.target = attackable;
             instance.name = "HealthBar - " + attackable.name;
-            healthBars.Add(instance.GetComponent<HealthBar>());
+            m_HealthBars.Add(instance.GetComponent<HealthBar>());
         }
+		
+		///////////////////////////////////////////////////////////////////////////
 
         public void RemoveHealthBar(Attackable attackable)
         {
-            for (int i = healthBars.Count - 1; i >= 0; --i)
+            for (int i = m_HealthBars.Count - 1; i >= 0; --i)
             {
-                HealthBar bar = healthBars[i];
+                HealthBar bar = m_HealthBars[i];
 
                 if (bar.target == attackable)
                 {
-                    healthBars.RemoveAt(i);
+                    m_HealthBars.RemoveAt(i);
 
                     // when the play mode stops, the bar may already be destroyed
                     if (bar == null)
@@ -51,6 +56,8 @@ namespace SAB
                 }
             }
         }
+		
+		///////////////////////////////////////////////////////////////////////////
 
         public static HealthBarManager instance
         {
