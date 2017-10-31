@@ -35574,9 +35574,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 03fbbbd0278921c48933a452c18ba65d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  oneShotPrefab: {fileID: 1923018058346438, guid: 64c2276d619a5374589bce0c5fdc6e30,
+  m_OneShotPrefab: {fileID: 1923018058346438, guid: 64c2276d619a5374589bce0c5fdc6e30,
     type: 2}
-  audioMixer: {fileID: 24100000, guid: 4bbc8c941e664a1458add2f014bede89, type: 2}
+  m_AudioMixer: {fileID: 24100000, guid: 4bbc8c941e664a1458add2f014bede89, type: 2}
 --- !u!1 &1722117125
 GameObject:
   m_ObjectHideFlags: 0

@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace SAB
 {
+	///////////////////////////////////////////////////////////////////////////
 
     public class BuildingManager : MonoBehaviour
     {
@@ -13,17 +14,7 @@ namespace SAB
             allBuildings = new List<Building>();
         }
 
-        // Use this for initialization
-        void Start()
-        {
-
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-
-        }
+		///////////////////////////////////////////////////////////////////////////
 
         public void RegisterBuilding(Building building, bool unregister)
         {
@@ -38,10 +29,14 @@ namespace SAB
             }
         }
 
+		///////////////////////////////////////////////////////////////////////////
+
         public static BuildingManager instance
         {
             get; private set;
         }
+
+		///////////////////////////////////////////////////////////////////////////
 
         public List<Building> allBuildings
         {

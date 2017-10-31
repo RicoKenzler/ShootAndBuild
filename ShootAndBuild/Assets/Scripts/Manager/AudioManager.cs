@@ -5,35 +5,30 @@ using UnityEngine.Audio;
 
 namespace SAB
 {
-	
 	public class AudioManager : MonoBehaviour
 	{
-		public GameObject oneShotPrefab;
+		[SerializeField] private GameObject			m_OneShotPrefab;
 
-		public AudioMixer audioMixer;
-		private AudioMixerGroup soundGroup;
+		[SerializeField] private AudioMixer			m_AudioMixer;
+						 private AudioMixerGroup	m_SoundGroup;
+
+		///////////////////////////////////////////////////////////////////////////
 
 		void Awake()
 		{
 			instance = this;
-			soundGroup = audioMixer.FindMatchingGroups("Sound")[0];
+			m_SoundGroup = m_AudioMixer.FindMatchingGroups("Sound")[0];
 		}
 
-		void Start ()
-		{
+		///////////////////////////////////////////////////////////////////////////
 		
-		}
-	
-		// Update is called once per frame
-		void Update ()
-		{
-		
-		}
 		public float SemitoneToPitch(float semitone)
 		{
 			float pitch = Mathf.Pow(2.0f, (semitone / (float) 12.0f));
 			return pitch;
 		}
+
+		///////////////////////////////////////////////////////////////////////////
 
 		public float RandomPitchFromSemitones(int[] semitones)
 		{
@@ -48,11 +43,15 @@ namespace SAB
 			return SemitoneToPitch(halftone);
 		}
 
+		///////////////////////////////////////////////////////////////////////////
+
 		public float GetRandomMusicalPitch()
 		{
 			int[] niceSemitones = { 0, 2, 4, 5, 7, 9, 11, 12,  0, 4, 7, 12, 0, 7,   5};
 			return RandomPitchFromSemitones(niceSemitones);
 		}
+
+		///////////////////////////////////////////////////////////////////////////
 
 		public AudioSource PlayAudio(AudioData audioData, Vector3? position3D = null, float? overridePitch = null)
 		{
@@ -76,7 +75,7 @@ namespace SAB
 
 			bool playUISound = audioData.isUISound;
 
-			GameObject audioObject = Instantiate(oneShotPrefab, gameObject.transform);
+			GameObject audioObject = Instantiate(m_OneShotPrefab, gameObject.transform);
 			audioObject.name = "OneShot " + rndClip.name;
 
 			if (position3D.HasValue)
@@ -94,7 +93,7 @@ namespace SAB
 			audioSource.volume					= audioData.volume;
 			audioSource.dopplerLevel			= (playUISound || audioData.suppressDoppler) ? 0.0f : 1.0f;
 			audioSource.spatialBlend			= playUISound ? 0.0f : audioData.amount3D;
-			audioSource.outputAudioMixerGroup	= soundGroup;
+			audioSource.outputAudioMixerGroup	= m_SoundGroup;
 
 			if (overridePitch.HasValue)
 			{
@@ -122,6 +121,8 @@ namespace SAB
 			return audioSource;
 		}
 	
+		///////////////////////////////////////////////////////////////////////////
+
 		public static AudioManager instance
 		{
 			get; private set;

@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace SAB
 {
+	///////////////////////////////////////////////////////////////////////////
 	
 	public class CheatManager : MonoBehaviour 
 	{
@@ -29,20 +30,14 @@ namespace SAB
 		public bool disableMusic			= false;
         public bool disableVibration        = false;
 
+		///////////////////////////////////////////////////////////////////////////
+
 		void Awake()
 		{
 			instance = this;
 		}
-
-		void Start() 
-		{
 		
-		}
-	
-		void Update() 
-		{
-
-		}
+		///////////////////////////////////////////////////////////////////////////
 
 		public static CheatManager instance
 		{

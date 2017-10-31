@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace SAB
 {
+	///////////////////////////////////////////////////////////////////////////
 
     public class AttackableManager : MonoBehaviour
     {
@@ -11,6 +12,8 @@ namespace SAB
             instance = this;
             allAttackables = new List<Attackable>();
         }
+
+		///////////////////////////////////////////////////////////////////////////
 
         public void RegisterAttackable(Attackable behaviour, bool unregister)
         {
@@ -25,10 +28,14 @@ namespace SAB
             }
         }
 
+		///////////////////////////////////////////////////////////////////////////
+
         public static AttackableManager instance
         {
             get; private set;
         }
+
+		///////////////////////////////////////////////////////////////////////////
 
         public List<Attackable> allAttackables
         {
