@@ -10,31 +10,31 @@ namespace SAB.Terrain
 {
 	public class DelauneyTriangulator
 	{
-		VoronoiCreationState State;
+		private VoronoiCreationState m_State;
 
 		// Bowyer-Watson Algorithm for Delauny-Triangulation
 		public bool GetDelauneyTriangluation(VoronoiCreationState creationState)
 		{
-			State = creationState;
+			m_State = creationState;
 
-			Debug.Assert(State.InputVerticesIncludingSuperTriangle.Count == State.POINT_COUNT_WITHOUT_SUPER_TRIANGLE);
-			Debug.Assert(State.DelauneyTrianglesIncludingSuperTriangle.Count == 0);
+			Debug.Assert(m_State.InputVerticesIncludingSuperTriangle.Count == m_State.POINT_COUNT_WITHOUT_SUPER_TRIANGLE);
+			Debug.Assert(m_State.DelauneyTrianglesIncludingSuperTriangle.Count == 0);
 
 			// 2) Get Super Triangle
-			float maxDimension = Mathf.Max(State.DIMENSIONS.x, State.DIMENSIONS.y);
+			float maxDimension = Mathf.Max(m_State.DIMENSIONS.x, m_State.DIMENSIONS.y);
 			Vector2 superTriangleP1 = new Vector2(0.0f - maxDimension, 0.0f - maxDimension);
 			Vector2 superTriangleP2 = superTriangleP1 + new Vector2(0, maxDimension * 5);
 			Vector2 superTriangleP3 = superTriangleP1 + new Vector2(maxDimension * 5, 0);
 				
-			PointIndex SUPER_TRIANGLE_INDEX_P1 = State.POINT_COUNT_WITHOUT_SUPER_TRIANGLE;
-			PointIndex SUPER_TRIANGLE_INDEX_P2 = State.POINT_COUNT_WITHOUT_SUPER_TRIANGLE + 1;
-			PointIndex SUPER_TRIANGLE_INDEX_P3 = State.POINT_COUNT_WITHOUT_SUPER_TRIANGLE + 2;
-			State.InputVerticesIncludingSuperTriangle.Add(superTriangleP1);
-			State.InputVerticesIncludingSuperTriangle.Add(superTriangleP2);
-			State.InputVerticesIncludingSuperTriangle.Add(superTriangleP3);
+			PointIndex SUPER_TRIANGLE_INDEX_P1 = m_State.POINT_COUNT_WITHOUT_SUPER_TRIANGLE;
+			PointIndex SUPER_TRIANGLE_INDEX_P2 = m_State.POINT_COUNT_WITHOUT_SUPER_TRIANGLE + 1;
+			PointIndex SUPER_TRIANGLE_INDEX_P3 = m_State.POINT_COUNT_WITHOUT_SUPER_TRIANGLE + 2;
+			m_State.InputVerticesIncludingSuperTriangle.Add(superTriangleP1);
+			m_State.InputVerticesIncludingSuperTriangle.Add(superTriangleP2);
+			m_State.InputVerticesIncludingSuperTriangle.Add(superTriangleP3);
 
 			// 3) Start algorithm. (Our input list looks like this: [i1, i2, i3, i4, ... s1, s2, s3]		
-			bool superTriangleValid = State.SuperTriangle.TryInit(SUPER_TRIANGLE_INDEX_P1, SUPER_TRIANGLE_INDEX_P2, SUPER_TRIANGLE_INDEX_P3, State.InputVerticesIncludingSuperTriangle);
+			bool superTriangleValid = m_State.SuperTriangle.TryInit(SUPER_TRIANGLE_INDEX_P1, SUPER_TRIANGLE_INDEX_P2, SUPER_TRIANGLE_INDEX_P3, m_State.InputVerticesIncludingSuperTriangle);
 
 			if (!superTriangleValid)
 			{
@@ -42,18 +42,18 @@ namespace SAB.Terrain
 				return false;
 			}
 
-			State.DelauneyTrianglesIncludingSuperTriangle.Add(State.SuperTriangle);
+			m_State.DelauneyTrianglesIncludingSuperTriangle.Add(m_State.SuperTriangle);
 			
-			for (int p = 0; p < State.POINT_COUNT_WITHOUT_SUPER_TRIANGLE; ++p) 
+			for (int p = 0; p < m_State.POINT_COUNT_WITHOUT_SUPER_TRIANGLE; ++p) 
 			{
-				Vector2 currentPoint = State.InputVerticesIncludingSuperTriangle[p];
+				Vector2 currentPoint = m_State.InputVerticesIncludingSuperTriangle[p];
 
 				List<TriIndex> deleteTrianglesSorted = new List<TriIndex>();
 
 				// Find all Traingles, in which circle we lie
-				for (TriIndex t = 0; t < State.DelauneyTrianglesIncludingSuperTriangle.Count; ++t)
+				for (TriIndex t = 0; t < m_State.DelauneyTrianglesIncludingSuperTriangle.Count; ++t)
 				{
-					TriangleI currentTriangle = State.DelauneyTrianglesIncludingSuperTriangle[t];
+					TriangleI currentTriangle = m_State.DelauneyTrianglesIncludingSuperTriangle[t];
 
 					if (currentTriangle.CircumscribedCircle.IsPointInside(currentPoint))
 					{
@@ -66,7 +66,7 @@ namespace SAB.Terrain
 				// Find all Edges that are not shared between badies
 				for (int dT = 0; dT < deleteTrianglesSorted.Count; ++dT)
 				{
-					TriangleI currentTriangle = State.DelauneyTrianglesIncludingSuperTriangle[deleteTrianglesSorted[dT]];
+					TriangleI currentTriangle = m_State.DelauneyTrianglesIncludingSuperTriangle[deleteTrianglesSorted[dT]];
 
 					EdgeIndices edge1 = new EdgeIndices(currentTriangle.IndexP0, currentTriangle.IndexP1);
 					EdgeIndices edge2 = new EdgeIndices(currentTriangle.IndexP1, currentTriangle.IndexP2);
@@ -83,7 +83,7 @@ namespace SAB.Terrain
 							continue;
 						}
 
-						TriangleI otherTriangle = State.DelauneyTrianglesIncludingSuperTriangle[deleteTrianglesSorted[dT2]];
+						TriangleI otherTriangle = m_State.DelauneyTrianglesIncludingSuperTriangle[deleteTrianglesSorted[dT2]];
 
 						if (!edge1Shared && otherTriangle.SharesEdge(edge1))
 						{
@@ -117,7 +117,7 @@ namespace SAB.Terrain
 				for (int dt = deleteTrianglesSorted.Count - 1; dt >= 0; --dt)
 				{
 					int indexToDelete = deleteTrianglesSorted[dt];
-					State.DelauneyTrianglesIncludingSuperTriangle.RemoveAt(indexToDelete);
+					m_State.DelauneyTrianglesIncludingSuperTriangle.RemoveAt(indexToDelete);
 				}
 
 				// Add new triangles for given edges
@@ -125,7 +125,7 @@ namespace SAB.Terrain
 				{
 					EdgeIndices currentEdge = edgesForNewTriangles[e];
 					TriangleI newTriangle = new TriangleI();
-					bool initSuccessfull = newTriangle.TryInit(currentEdge.IndexP1, currentEdge.IndexP2, p, State.InputVerticesIncludingSuperTriangle);
+					bool initSuccessfull = newTriangle.TryInit(currentEdge.IndexP1, currentEdge.IndexP2, p, m_State.InputVerticesIncludingSuperTriangle);
 
 					if (!initSuccessfull)
 					{
@@ -133,7 +133,7 @@ namespace SAB.Terrain
 						return false;
 					}
 
-					State.DelauneyTrianglesIncludingSuperTriangle.Add(newTriangle);
+					m_State.DelauneyTrianglesIncludingSuperTriangle.Add(newTriangle);
 				}
 			} //< end for each point
 

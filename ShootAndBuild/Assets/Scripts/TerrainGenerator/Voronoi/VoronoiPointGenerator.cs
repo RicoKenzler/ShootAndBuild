@@ -11,13 +11,13 @@ namespace SAB.Terrain
 {
 	public class VoronoiPointGenerator
 	{
-		VoronoiCreationState State;
+		private VoronoiCreationState m_State;
 
 		public void CreateRandomPoints(VoronoiCreationState creationState, int seed)
 		{
-			State = creationState;
+			m_State = creationState;
 
-			Debug.Assert(State.InputVerticesIncludingSuperTriangle.Count == 0);
+			Debug.Assert(m_State.InputVerticesIncludingSuperTriangle.Count == 0);
 
 			// Distribute ~2/3 of the points p to a regular grid of size y,x
 			// x   *   y = p/2
@@ -28,17 +28,17 @@ namespace SAB.Terrain
 			// 1) Get Random Point List.
 			UnityEngine.Random.InitState(seed);
 
-			float ratioXbyY = State.DIMENSIONS.x / State.DIMENSIONS.y;
-			float pseudoRandomGridDimensionY_F = Mathf.Sqrt((State.POINT_COUNT_WITHOUT_SUPER_TRIANGLE * 2 / 3));
+			float ratioXbyY = m_State.DIMENSIONS.x / m_State.DIMENSIONS.y;
+			float pseudoRandomGridDimensionY_F = Mathf.Sqrt((m_State.POINT_COUNT_WITHOUT_SUPER_TRIANGLE * 2 / 3));
 			float pseudoRandomGridDimensionX_F = pseudoRandomGridDimensionY_F * ratioXbyY;
 			int pseudoRandomGridDimensionX = (int) Mathf.Max(pseudoRandomGridDimensionX_F, 1);
 			int pseudoRandomGridDimensionY = (int) Mathf.Max(pseudoRandomGridDimensionY_F, 1);
 	
 			int pseudoRandomGridPointCount = pseudoRandomGridDimensionX * pseudoRandomGridDimensionX;
 
-			Vector2 PSEUDO_RANDOM_GRID_CELL_SIZE = new Vector2(State.DIMENSIONS.x / (float)pseudoRandomGridDimensionX, State.DIMENSIONS.y / (float)pseudoRandomGridDimensionY);
+			Vector2 PSEUDO_RANDOM_GRID_CELL_SIZE = new Vector2(m_State.DIMENSIONS.x / (float)pseudoRandomGridDimensionX, m_State.DIMENSIONS.y / (float)pseudoRandomGridDimensionY);
 
-			for (int i = 0; i < State.POINT_COUNT_WITHOUT_SUPER_TRIANGLE; ++i)
+			for (int i = 0; i < m_State.POINT_COUNT_WITHOUT_SUPER_TRIANGLE; ++i)
 			{
 				float x;
 				float y;
@@ -55,19 +55,19 @@ namespace SAB.Terrain
 				else
 				{
 					// randomly distribute
-					x = UnityEngine.Random.Range(0.0f, State.DIMENSIONS.x);
-					y = UnityEngine.Random.Range(0.0f, State.DIMENSIONS.y);
+					x = UnityEngine.Random.Range(0.0f, m_State.DIMENSIONS.x);
+					y = UnityEngine.Random.Range(0.0f, m_State.DIMENSIONS.y);
 				}
 
-				x = Mathf.Clamp(x, 0.0f + 0.02f * State.DIMENSIONS.x, State.DIMENSIONS.x - 0.02f * State.DIMENSIONS.x);
-				y = Mathf.Clamp(y, 0.0f + 0.02f * State.DIMENSIONS.y, State.DIMENSIONS.y - 0.02f * State.DIMENSIONS.y);
+				x = Mathf.Clamp(x, 0.0f + 0.02f * m_State.DIMENSIONS.x, m_State.DIMENSIONS.x - 0.02f * m_State.DIMENSIONS.x);
+				y = Mathf.Clamp(y, 0.0f + 0.02f * m_State.DIMENSIONS.y, m_State.DIMENSIONS.y - 0.02f * m_State.DIMENSIONS.y);
 
 				bool validPoint = true;
 
-				for (int j = 0; j < State.InputVerticesIncludingSuperTriangle.Count; ++j)
+				for (int j = 0; j < m_State.InputVerticesIncludingSuperTriangle.Count; ++j)
 				{
-					float dx = State.InputVerticesIncludingSuperTriangle[j].x - x;
-					float dy = State.InputVerticesIncludingSuperTriangle[j].y - y;
+					float dx = m_State.InputVerticesIncludingSuperTriangle[j].x - x;
+					float dy = m_State.InputVerticesIncludingSuperTriangle[j].y - y;
 
 					if (Mathf.Abs(dx) < 0.001f && Mathf.Abs(dy) < 0.001f)
 					{
@@ -82,7 +82,7 @@ namespace SAB.Terrain
 					continue;
 				}
 
-				State.InputVerticesIncludingSuperTriangle.Add(new Vector2(x,y));
+				m_State.InputVerticesIncludingSuperTriangle.Add(new Vector2(x,y));
 			}
 		} //< end create random points
 

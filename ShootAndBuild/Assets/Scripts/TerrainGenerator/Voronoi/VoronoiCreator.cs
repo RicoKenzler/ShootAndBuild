@@ -10,22 +10,22 @@ namespace SAB.Terrain
 {
 	public class VoronoiCreator
 	{
-		VoronoiCreationState State				= new VoronoiCreationState();
+		private VoronoiCreationState m_State			= new VoronoiCreationState();
 
-		VoronoiPointGenerator PointGenerator	= new VoronoiPointGenerator();
-		DelauneyTriangulator Triangulator		= new DelauneyTriangulator();
-		VoronoiConverter Converter				= new VoronoiConverter();
+		private VoronoiPointGenerator m_PointGenerator	= new VoronoiPointGenerator();
+		private DelauneyTriangulator m_Triangulator		= new DelauneyTriangulator();
+		private VoronoiConverter m_Converter			= new VoronoiConverter();
 
-		private bool WasRunAtLeastOnce			= false;
-		int			 InvalidTries				= 0;
-		float		 RelaxationAmountLeft		= 0.0f;
+		private bool	m_WasRunAtLeastOnce			= false;
+		private int		m_InvalidTries				= 0;
+		private float	m_RelaxationAmountLeft		= 0.0f;
 
 		public List<VoronoiCell> GenerateVoronoi(int seed, VoronoiParameters voronoiParams, Vector2 gridSizeWS, bool afterInvalidRun = false)
 		{
 			// Return Cached Voronoi
-			if (voronoiParams.NoRecomputation && State.VoronoiCells.Count == voronoiParams.VoronoiPointCount)
+			if (voronoiParams.NoRecomputation && m_State.VoronoiCells.Count == voronoiParams.VoronoiPointCount)
 			{
-				return State.VoronoiCells;
+				return m_State.VoronoiCells;
 			}
 
 			// TODO: Relaxation
@@ -35,9 +35,9 @@ namespace SAB.Terrain
 			// 0) Only allow n invalid runs
 			if (afterInvalidRun)
 			{
-				InvalidTries++;
+				m_InvalidTries++;
 
-				if (InvalidTries > 3)
+				if (m_InvalidTries > 3)
 				{
 					Debug.Log("Too many invalid tries in a row. Aborting");
 					return null;
@@ -45,25 +45,25 @@ namespace SAB.Terrain
 			}
 			else
 			{
-				InvalidTries = 0;
+				m_InvalidTries = 0;
 			}
 
 			// 0) Init
-			State = new VoronoiCreationState();
-			State.VoronoiParams = voronoiParams;
-			State.DIMENSIONS = gridSizeWS;
-			State.POINT_COUNT_WITHOUT_SUPER_TRIANGLE = State.VoronoiParams.VoronoiPointCount;
+			m_State = new VoronoiCreationState();
+			m_State.VoronoiParams = voronoiParams;
+			m_State.DIMENSIONS = gridSizeWS;
+			m_State.POINT_COUNT_WITHOUT_SUPER_TRIANGLE = m_State.VoronoiParams.VoronoiPointCount;
 
-			WasRunAtLeastOnce = true;
-			RelaxationAmountLeft = State.VoronoiParams.RelaxationAmount;
+			m_WasRunAtLeastOnce = true;
+			m_RelaxationAmountLeft = m_State.VoronoiParams.RelaxationAmount;
 
 			// 1) Create Random Points
-			PointGenerator.CreateRandomPoints(State, seed);
+			m_PointGenerator.CreateRandomPoints(m_State, seed);
 
 			do
 			{
 				// 2) Delauney
-				bool delauneySuccess = Triangulator.GetDelauneyTriangluation(State);
+				bool delauneySuccess = m_Triangulator.GetDelauneyTriangluation(m_State);
 
 				if (!delauneySuccess)
 				{
@@ -72,7 +72,7 @@ namespace SAB.Terrain
 				}
 
 				// 3) Voronoi
-				bool voronoiSuccess = Converter.DelauneyToVoronoi(State);
+				bool voronoiSuccess = m_Converter.DelauneyToVoronoi(m_State);
 
 				if (!voronoiSuccess)
 				{
@@ -80,20 +80,20 @@ namespace SAB.Terrain
 					return GenerateVoronoi(seed + 1, voronoiParams, gridSizeWS, true);
 				}
 
-				if (RelaxationAmountLeft <= 0.0f)
+				if (m_RelaxationAmountLeft <= 0.0f)
 				{
-					return State.VoronoiCells;
+					return m_State.VoronoiCells;
 				}
 				else
 				{
-					DoLloydRelaxation(State, Mathf.Min(RelaxationAmountLeft, 1.0f));
+					DoLloydRelaxation(m_State, Mathf.Min(m_RelaxationAmountLeft, 1.0f));
 
-					RelaxationAmountLeft -= 1.0f;
+					m_RelaxationAmountLeft -= 1.0f;
 
 					// Remove all temporary structs and super triangle (will be re-evaluated in next try)
-					State.InputVerticesIncludingSuperTriangle.RemoveRange(voronoiParams.VoronoiPointCount, State.InputVerticesIncludingSuperTriangle.Count - voronoiParams.VoronoiPointCount);
-					State.DelauneyTrianglesIncludingSuperTriangle	= new List<TriangleI>();
-					State.VoronoiCells								= new List<VoronoiCell>();
+					m_State.InputVerticesIncludingSuperTriangle.RemoveRange(voronoiParams.VoronoiPointCount, m_State.InputVerticesIncludingSuperTriangle.Count - voronoiParams.VoronoiPointCount);
+					m_State.DelauneyTrianglesIncludingSuperTriangle	= new List<TriangleI>();
+					m_State.VoronoiCells								= new List<VoronoiCell>();
 				}
 			}
 			while (true);
@@ -117,22 +117,22 @@ namespace SAB.Terrain
 
 		public void DebugDraw(VoronoiParameters voronoiParams)
 		{
-			if (!WasRunAtLeastOnce)
+			if (!m_WasRunAtLeastOnce)
 			{
 				return; 
 			} 
 
 			float debugDrawHeight = 1.0f;
 
-			float triangleOffsetLength = 0.05f * ((State.DIMENSIONS.x + State.DIMENSIONS.y) / State.POINT_COUNT_WITHOUT_SUPER_TRIANGLE);
+			float triangleOffsetLength = 0.05f * ((m_State.DIMENSIONS.x + m_State.DIMENSIONS.y) / m_State.POINT_COUNT_WITHOUT_SUPER_TRIANGLE);
 			triangleOffsetLength = Mathf.Lerp(triangleOffsetLength, 0.1f, 0.9f);
 
 			if (voronoiParams.ShowDelauney)
 			{
 				// Draw all Triangles:
-				for (TriIndex t = 0; t < State.DelauneyTrianglesIncludingSuperTriangle.Count; ++t)
+				for (TriIndex t = 0; t < m_State.DelauneyTrianglesIncludingSuperTriangle.Count; ++t)
 				{
-					TriangleI currentTriangle = State.DelauneyTrianglesIncludingSuperTriangle[t];
+					TriangleI currentTriangle = m_State.DelauneyTrianglesIncludingSuperTriangle[t];
 
 					if (voronoiParams.DebugDrawOnlyVertexIndex != -1 && !currentTriangle.HasAsVertex(voronoiParams.DebugDrawOnlyVertexIndex))
 					{
@@ -144,9 +144,9 @@ namespace SAB.Terrain
 						continue;
 					}
 
-					Vector3 p1 = new Vector3(State.InputVerticesIncludingSuperTriangle[currentTriangle.IndexP0].x, debugDrawHeight, State.InputVerticesIncludingSuperTriangle[currentTriangle.IndexP0].y);
-					Vector3 p2 = new Vector3(State.InputVerticesIncludingSuperTriangle[currentTriangle.IndexP1].x, debugDrawHeight, State.InputVerticesIncludingSuperTriangle[currentTriangle.IndexP1].y);
-					Vector3 p3 = new Vector3(State.InputVerticesIncludingSuperTriangle[currentTriangle.IndexP2].x, debugDrawHeight, State.InputVerticesIncludingSuperTriangle[currentTriangle.IndexP2].y);
+					Vector3 p1 = new Vector3(m_State.InputVerticesIncludingSuperTriangle[currentTriangle.IndexP0].x, debugDrawHeight, m_State.InputVerticesIncludingSuperTriangle[currentTriangle.IndexP0].y);
+					Vector3 p2 = new Vector3(m_State.InputVerticesIncludingSuperTriangle[currentTriangle.IndexP1].x, debugDrawHeight, m_State.InputVerticesIncludingSuperTriangle[currentTriangle.IndexP1].y);
+					Vector3 p3 = new Vector3(m_State.InputVerticesIncludingSuperTriangle[currentTriangle.IndexP2].x, debugDrawHeight, m_State.InputVerticesIncludingSuperTriangle[currentTriangle.IndexP2].y);
 
 					Vector3 centroid = (p1 + p2 + p3) / 3.0f;
 
@@ -170,7 +170,7 @@ namespace SAB.Terrain
 					col = Color.Lerp(Color.green, col, 0.6f);
 
 					bool a1; bool a2; bool a3;
-					int sharedPointCount = currentTriangle.SharedPointCount(State.SuperTriangle, out a1, out a2, out a3);
+					int sharedPointCount = currentTriangle.SharedPointCount(m_State.SuperTriangle, out a1, out a2, out a3);
 					if (sharedPointCount == 1)
 					{
 						col = new Color(0.0f, 0.0f, 0.0f);
@@ -194,14 +194,14 @@ namespace SAB.Terrain
 
 			if (voronoiParams.ShowVoronoi)
 			{
-				for (PointIndex c = 0; c < State.VoronoiCells.Count; ++c)
+				for (PointIndex c = 0; c < m_State.VoronoiCells.Count; ++c)
 				{
 					if (voronoiParams.DebugDrawOnlyVertexIndex != -1 && c != voronoiParams.DebugDrawOnlyVertexIndex)
 					{
 						continue;
 					}
 
-					VoronoiCell currentCell = State.VoronoiCells[c];
+					VoronoiCell currentCell = m_State.VoronoiCells[c];
 					Color cellBaseColor = new Color(c * 0.123f % 1.0f, c * 0.311f % 1.0f, c * 0.76f % 1.0f);
 
 					for (int p = 0; p < currentCell.NeighborCellsCCW.Count; ++p)
@@ -211,7 +211,7 @@ namespace SAB.Terrain
 						if (voronoiParams.DebugDrawOnlyTriangleIndex != -1)
 						{
 							EdgeIndices currentEdgeIndices = new EdgeIndices(c, neighbor.NeighborIndexIfValid);
-							TriangleI focusTriangle = State.DelauneyTrianglesIncludingSuperTriangle[voronoiParams.DebugDrawOnlyTriangleIndex];
+							TriangleI focusTriangle = m_State.DelauneyTrianglesIncludingSuperTriangle[voronoiParams.DebugDrawOnlyTriangleIndex];
 							if (!focusTriangle.SharesEdge(currentEdgeIndices))
 							{
 								continue;
@@ -261,10 +261,10 @@ namespace SAB.Terrain
 
 				Gizmos.color = col;
 
-				Gizmos.DrawLine(new Vector3(0.0f,				debugDrawHeight, 0.0f),					new Vector3(0.0f,				debugDrawHeight, State.DIMENSIONS.y));
-				Gizmos.DrawLine(new Vector3(0.0f,				debugDrawHeight, State.DIMENSIONS.y),	new Vector3(State.DIMENSIONS.x, debugDrawHeight, State.DIMENSIONS.y));
-				Gizmos.DrawLine(new Vector3(State.DIMENSIONS.x, debugDrawHeight, State.DIMENSIONS.y),	new Vector3(State.DIMENSIONS.x, debugDrawHeight, 0.0f));
-				Gizmos.DrawLine(new Vector3(State.DIMENSIONS.x, debugDrawHeight, 0.0f),					new Vector3(0.0f,				debugDrawHeight, 0.0f));
+				Gizmos.DrawLine(new Vector3(0.0f,				debugDrawHeight, 0.0f),					new Vector3(0.0f,				debugDrawHeight, m_State.DIMENSIONS.y));
+				Gizmos.DrawLine(new Vector3(0.0f,				debugDrawHeight, m_State.DIMENSIONS.y),	new Vector3(m_State.DIMENSIONS.x, debugDrawHeight, m_State.DIMENSIONS.y));
+				Gizmos.DrawLine(new Vector3(m_State.DIMENSIONS.x, debugDrawHeight, m_State.DIMENSIONS.y),	new Vector3(m_State.DIMENSIONS.x, debugDrawHeight, 0.0f));
+				Gizmos.DrawLine(new Vector3(m_State.DIMENSIONS.x, debugDrawHeight, 0.0f),					new Vector3(0.0f,				debugDrawHeight, 0.0f));
 			}
 
 			if (voronoiParams.ShowPoints)
@@ -272,7 +272,7 @@ namespace SAB.Terrain
 				Color col = new Color(1.0f, 1.0f, 0.0f);
 				Gizmos.color = new Color(col.r, col.g, col.b, 0.5f);
 
-				for (int p = 0; p < State.InputVerticesIncludingSuperTriangle.Count; ++p)
+				for (int p = 0; p < m_State.InputVerticesIncludingSuperTriangle.Count; ++p)
 				{
 					if (voronoiParams.DebugDrawOnlyVertexIndex != -1 && p != voronoiParams.DebugDrawOnlyVertexIndex)
 					{
@@ -281,7 +281,7 @@ namespace SAB.Terrain
 
 					if (voronoiParams.DebugDrawOnlyTriangleIndex != -1)
 					{
-						TriangleI focusTriangle = State.DelauneyTrianglesIncludingSuperTriangle[voronoiParams.DebugDrawOnlyTriangleIndex];
+						TriangleI focusTriangle = m_State.DelauneyTrianglesIncludingSuperTriangle[voronoiParams.DebugDrawOnlyTriangleIndex];
 						if (!focusTriangle.HasAsVertex(p))
 						{
 							continue;
@@ -289,7 +289,7 @@ namespace SAB.Terrain
 					}
 
 
-					Vector2 pos = State.InputVerticesIncludingSuperTriangle[p];
+					Vector2 pos = m_State.InputVerticesIncludingSuperTriangle[p];
 
 					Gizmos.DrawSphere(new Vector3(pos.x, debugDrawHeight, pos.y), triangleOffsetLength * 2.0f);
 

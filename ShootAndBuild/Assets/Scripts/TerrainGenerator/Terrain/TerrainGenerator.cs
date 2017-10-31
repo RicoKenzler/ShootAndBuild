@@ -9,39 +9,36 @@ namespace SAB.Terrain
 
 	public class TerrainGenerator
 	{
-		GameObject TerrainObject;
-
-		public int Resolution = 1;
-
-		public int TerrainSeed = 0;
+		private GameObject	m_TerrainObject;
+		private int			m_Resolution	= 1;
+		private int			m_TerrainSeed	= 0;
 		
-		public TransformParameters			TransformParams;
-		public RegionDescParameters			RegionDescParams;
-		public WaterParameters				WaterParams;
-		RegionMapTransformation				RegionTransformation;
-		List<RegionCell>					RegionMap;
-		RegionTile[,]						RegionGrid;
+		private TransformParameters			m_TransformParams;
+		private RegionDescParameters		m_RegionDescParams;
+		private WaterParameters				m_WaterParams;
+		private RegionMapTransformation		m_RegionTransformation;
+		private List<RegionCell>			m_RegionMap;
+		private RegionTile[,]				m_RegionGrid;
 
-		public float MinY;
-		public float MaxY;
+		private float MinY;
+		private float MaxY;
 		
 		public GameObject GenerateTerrain(List<RegionCell> regionMap, RegionTile[,] regionGrid, RegionMapTransformation regionMapTransformation, TransformParameters transformParams, Vector2 cellHeightRangeY, RegionDescParameters regionDescParams, WaterParameters waterParams, int resolution, int terrainSeed)
 		{
 			// 0) Init Members
-			TerrainObject			= null;
-			Resolution				= resolution;
-			TerrainSeed				= terrainSeed;
-			TransformParams			= transformParams;
-			RegionDescParams		= regionDescParams;
-			WaterParams				= waterParams;
-			RegionTransformation	= regionMapTransformation;
-			RegionMap				= regionMap;
-			RegionGrid				= regionGrid;
+			m_TerrainObject			= null;
+			m_Resolution			= resolution;
+			m_TerrainSeed			= terrainSeed;
+			m_TransformParams		= transformParams;
+			m_RegionDescParams		= regionDescParams;
+			m_WaterParams			= waterParams;
+			m_RegionTransformation	= regionMapTransformation;
+			m_RegionMap				= regionMap;
+			m_RegionGrid			= regionGrid;
 
-
-			if (RegionDescParams.RegionDescs.Length != (int) RegionType.Count)
+			if (m_RegionDescParams.RegionDescs.Length != (int) RegionType.Count)
 			{
-				Debug.LogWarning("You did not specify a RegionDesc for every RegionType " + "(" + RegionDescParams.RegionDescs.Length + " / " + RegionType.Count + ")");
+				Debug.LogWarning("You did not specify a RegionDesc for every RegionType " + "(" + m_RegionDescParams.RegionDescs.Length + " / " + RegionType.Count + ")");
 				return null;
 			} 
 
@@ -49,10 +46,10 @@ namespace SAB.Terrain
 
 			for (int r = 0; r < (int) RegionType.Count; ++r)
 			{
-				maxAdditionalRandomHeight = Mathf.Max(RegionDescParams.RegionDescs[r].HeightDesc.MaxAdditionalRandomAbsHeight, maxAdditionalRandomHeight);
+				maxAdditionalRandomHeight = Mathf.Max(m_RegionDescParams.RegionDescs[r].HeightDesc.MaxAdditionalRandomAbsHeight, maxAdditionalRandomHeight);
 			}
 
-			MinY = RegionTransformation.CellSize.x; //< Hack: get rid of warning without tossing for-future-use-member
+			MinY = m_RegionTransformation.CellSize.x; //< Hack: get rid of warning without tossing for-future-use-member
 
 			MinY = cellHeightRangeY.x;
 			MaxY = cellHeightRangeY.y + maxAdditionalRandomHeight;
@@ -66,28 +63,28 @@ namespace SAB.Terrain
 			TerrainData terrainData = new TerrainData();
 
 			//Set heights
-			terrainData.heightmapResolution = Resolution; 
-			terrainData.alphamapResolution	= Resolution;
+			terrainData.heightmapResolution = m_Resolution; 
+			terrainData.alphamapResolution	= m_Resolution;
 
-			if (Resolution != terrainData.heightmapResolution)
+			if (m_Resolution != terrainData.heightmapResolution)
 			{
-				Debug.LogWarning("Resolution " + Resolution + " is not supported. Unity suggests: " + terrainData.heightmapResolution);
+				Debug.LogWarning("Resolution " + m_Resolution + " is not supported. Unity suggests: " + terrainData.heightmapResolution);
 				return null;
 			}
 
 			terrainData.SetHeights(0, 0, GenerateHeightMap());
 			terrainData.size = new Vector3(
-				TransformParams.TerrainSizeWS.x, 
+				m_TransformParams.TerrainSizeWS.x, 
 				MaxY - MinY, 
-				TransformParams.TerrainSizeWS.y);
+				m_TransformParams.TerrainSizeWS.y);
 
 			//Set textures
 			SplatPrototype[] splatPrototypes = new SplatPrototype[(int)RegionType.Count * 2];
 
 			for (int r = 0; r < (int) RegionType.Count; ++r)
 			{
-				splatPrototypes[TerrainTextureTypes.RegionTypeToSplatIndex((RegionType) r, false)]		= RegionDescParams.RegionDescs[r].TextureDesc.CreateSplatPrototype(false);
-				splatPrototypes[TerrainTextureTypes.RegionTypeToSplatIndex((RegionType) r, true)]		= RegionDescParams.RegionDescs[r].TextureDesc.CreateSplatPrototype(true);
+				splatPrototypes[TerrainTextureTypes.RegionTypeToSplatIndex((RegionType) r, false)]		= m_RegionDescParams.RegionDescs[r].TextureDesc.CreateSplatPrototype(false);
+				splatPrototypes[TerrainTextureTypes.RegionTypeToSplatIndex((RegionType) r, true)]		= m_RegionDescParams.RegionDescs[r].TextureDesc.CreateSplatPrototype(true);
 			}
 
 			terrainData.splatPrototypes = splatPrototypes;
@@ -102,35 +99,35 @@ namespace SAB.Terrain
 				return null;
 			}
 
-			TerrainObject = UnityEngine.Terrain.CreateTerrainGameObject(terrainData);
-			TerrainObject.name = "Terrain (Generated)";
+			m_TerrainObject = UnityEngine.Terrain.CreateTerrainGameObject(terrainData);
+			m_TerrainObject.name = "Terrain (Generated)";
 
-			TerrainObject.transform.position = new Vector3(
+			m_TerrainObject.transform.position = new Vector3(
 				0.0f, 
 				MinY, 
 				0.0f);
 
-			UnityEngine.Terrain terrainComponent = TerrainObject.GetComponent<UnityEngine.Terrain>();
+			UnityEngine.Terrain terrainComponent = m_TerrainObject.GetComponent<UnityEngine.Terrain>();
 			terrainComponent.Flush();
 
-			UnityEngine.TerrainCollider terrainCollider = TerrainObject.GetComponent<UnityEngine.TerrainCollider>();
+			UnityEngine.TerrainCollider terrainCollider = m_TerrainObject.GetComponent<UnityEngine.TerrainCollider>();
 			terrainCollider.terrainData = terrainData; 
 
 			// 2) Create Water Plane
-			CreateWaterPlane(TerrainObject);
+			CreateWaterPlane(m_TerrainObject);
 
-			return TerrainObject;
+			return m_TerrainObject;
 		}
 
 		///////////////////////////////////////////////////////////////////////////
 
 		public void CreateWaterPlane(GameObject terrainObject)
 		{
-			if (WaterParams.UseWater)
+			if (m_WaterParams.UseWater)
 			{
-				GameObject waterPlaneObject = MonoBehaviour.Instantiate(WaterParams.WaterPlanePrefab, terrainObject.transform);
-				waterPlaneObject.transform.localScale	= new Vector3(TransformParams.TerrainSizeWS.x, 1.0f, TransformParams.TerrainSizeWS.y);
-				waterPlaneObject.transform.position		= new Vector3(TransformParams.TerrainSizeWS.x * 0.5f, WaterParams.WaterHeight, TransformParams.TerrainSizeWS.y * 0.5f);		
+				GameObject waterPlaneObject = MonoBehaviour.Instantiate(m_WaterParams.WaterPlanePrefab, terrainObject.transform);
+				waterPlaneObject.transform.localScale	= new Vector3(m_TransformParams.TerrainSizeWS.x, 1.0f, m_TransformParams.TerrainSizeWS.y);
+				waterPlaneObject.transform.position		= new Vector3(m_TransformParams.TerrainSizeWS.x * 0.5f, m_WaterParams.WaterHeight, m_TransformParams.TerrainSizeWS.y * 0.5f);		
 				waterPlaneObject.name = "WaterPlane";
 			}
 		}
@@ -139,14 +136,14 @@ namespace SAB.Terrain
 
 		public float[,] GenerateHeightMap()
 		{
-			float[,] Heightmap = new float[Resolution, Resolution];
+			float[,] Heightmap = new float[m_Resolution, m_Resolution];
 
 			float maxHeight = 0.0f;
 			float minHeight = 1.0f;
 
-			for (int x = 0; x < Resolution; x++)
+			for (int x = 0; x < m_Resolution; x++)
 			{
-				for (int z = 0; z < Resolution; z++)
+				for (int z = 0; z < m_Resolution; z++)
 				{
 					float height = GetNormalizedHeight(x, z);
 
@@ -167,14 +164,14 @@ namespace SAB.Terrain
 
 		public float[,,] GenerateTextureMaps(TerrainData TerrainData)
 		{
-			float[,,] textureMaps = new float[Resolution, Resolution, (int) RegionType.Count * 2];
+			float[,,] textureMaps = new float[m_Resolution, m_Resolution, (int) RegionType.Count * 2];
 
-			for (int x = 0; x < Resolution; x++)
+			for (int x = 0; x < m_Resolution; x++)
 			{
-				for (int z = 0; z < Resolution; z++)
+				for (int z = 0; z < m_Resolution; z++)
 				{
-					RegionTile curTile		 = RegionGrid[x,z];
-					RegionCell curCell		 = RegionMap[curTile.Cell];
+					RegionTile curTile		 = m_RegionGrid[x,z];
+					RegionCell curCell		 = m_RegionMap[curTile.Cell];
 				
 					float weightSum = 0.0f;
 
@@ -187,10 +184,10 @@ namespace SAB.Terrain
 							continue;
 						}
 
-						RegionDesc curRegionDesc = RegionDescParams.RegionDescs[region];
+						RegionDesc curRegionDesc = m_RegionDescParams.RegionDescs[region];
 						RegionTextureDesc curTextureDesc = curRegionDesc.TextureDesc;
 
-						float blend12 = curTextureDesc.GetBlendValue12(TerrainSeed, x, z);
+						float blend12 = curTextureDesc.GetBlendValue12(m_TerrainSeed, x, z);
 						int splatIndex1 = TerrainTextureTypes.RegionTypeToSplatIndex((RegionType) region, false);
 						int splatIndex2 = TerrainTextureTypes.RegionTypeToSplatIndex((RegionType) region, true);
 
@@ -213,14 +210,14 @@ namespace SAB.Terrain
 
 		public float GetNormalizedHeight(int x, int z)
 		{
-			RegionTile regionTile = RegionGrid[x,z];
-			RegionCell regionCell = RegionMap[regionTile.Cell];
+			RegionTile regionTile = m_RegionGrid[x,z];
+			RegionCell regionCell = m_RegionMap[regionTile.Cell];
 
 			float baseHeight = regionTile.Height;
 
-			RegionDesc regionDesc = RegionDescParams.RegionDescs[(int) regionCell.RegionType];
+			RegionDesc regionDesc = m_RegionDescParams.RegionDescs[(int) regionCell.RegionType];
 
-			float totalHeightAbs = baseHeight + regionDesc.HeightDesc.GenerateRandomAdditionalHeightAbs(TerrainSeed, x, z);
+			float totalHeightAbs = baseHeight + regionDesc.HeightDesc.GenerateRandomAdditionalHeightAbs(m_TerrainSeed, x, z);
 
 			float totalHeightRel = (totalHeightAbs - MinY) / (MaxY - MinY);
 

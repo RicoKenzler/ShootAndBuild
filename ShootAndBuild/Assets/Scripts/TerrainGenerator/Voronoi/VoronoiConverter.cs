@@ -10,35 +10,35 @@ namespace SAB.Terrain
 {
 	public class VoronoiConverter
 	{
-		VoronoiCreationState State;
+		private VoronoiCreationState m_State;
 
 		///////////////////////////////////////////////////////////////////////////
 
 		public bool DelauneyToVoronoi(VoronoiCreationState creationState)
 		{
-			State = creationState;
+			m_State = creationState;
 
-			Debug.Assert(State.InputVerticesIncludingSuperTriangle.Count == State.POINT_COUNT_WITHOUT_SUPER_TRIANGLE + 3);
-			Debug.Assert(State.DelauneyTrianglesIncludingSuperTriangle.Count > 0);
-			Debug.Assert(State.VoronoiCells.Count == 0);
+			Debug.Assert(m_State.InputVerticesIncludingSuperTriangle.Count == m_State.POINT_COUNT_WITHOUT_SUPER_TRIANGLE + 3);
+			Debug.Assert(m_State.DelauneyTrianglesIncludingSuperTriangle.Count > 0);
+			Debug.Assert(m_State.VoronoiCells.Count == 0);
 
-			int pointCountWithoutSuperTriangle = State.InputVerticesIncludingSuperTriangle.Count - 3;
+			int pointCountWithoutSuperTriangle = m_State.InputVerticesIncludingSuperTriangle.Count - 3;
 
-			State.VoronoiCells.Capacity = pointCountWithoutSuperTriangle;
+			m_State.VoronoiCells.Capacity = pointCountWithoutSuperTriangle;
 
 			for (PointIndex p = 0; p < pointCountWithoutSuperTriangle; ++p)
 			{
-				State.VoronoiCells.Add(new VoronoiCell());
+				m_State.VoronoiCells.Add(new VoronoiCell());
 			} 
 
 			// Register All Edges & Centers
 			Dictionary<EdgeKey, TwoTriangleIndices> edgesToTriangleIndices = new Dictionary<long, TwoTriangleIndices>();
 			List<Vector2> triangleVoronoiCenters = new List<Vector2>();
-			triangleVoronoiCenters.Capacity = State.DelauneyTrianglesIncludingSuperTriangle.Count;
+			triangleVoronoiCenters.Capacity = m_State.DelauneyTrianglesIncludingSuperTriangle.Count;
 
-			for (TriIndex t = 0; t < State.DelauneyTrianglesIncludingSuperTriangle.Count; ++t)
+			for (TriIndex t = 0; t < m_State.DelauneyTrianglesIncludingSuperTriangle.Count; ++t)
 			{
-				TriangleI currentTriangle = State.DelauneyTrianglesIncludingSuperTriangle[t];
+				TriangleI currentTriangle = m_State.DelauneyTrianglesIncludingSuperTriangle[t];
 
 				Vector2 center = currentTriangle.CircumscribedCircle.Center;	
 				triangleVoronoiCenters.Add(center);
@@ -67,17 +67,17 @@ namespace SAB.Terrain
 			}
 
 			// Add All Edges
-			for (TriIndex t = 0; t < State.DelauneyTrianglesIncludingSuperTriangle.Count; ++t)
+			for (TriIndex t = 0; t < m_State.DelauneyTrianglesIncludingSuperTriangle.Count; ++t)
 			{
 				// Tell every VoronoiCell (DelauneyVertex), which HullVertices it has
-				TriangleI currentTriangle = State.DelauneyTrianglesIncludingSuperTriangle[t];
+				TriangleI currentTriangle = m_State.DelauneyTrianglesIncludingSuperTriangle[t];
 
 				Vector2 currentTriangleCenter = triangleVoronoiCenters[t];
 
 				for (int side = 0; side < 3; ++side)
 				{
 					EdgeIndices curEdgeIndices = currentTriangle.GetEdgeOppositeTo(side);
-					Vector2  curOppositeVertex = State.InputVerticesIncludingSuperTriangle[currentTriangle.GetIndex(side)];
+					Vector2  curOppositeVertex = m_State.InputVerticesIncludingSuperTriangle[currentTriangle.GetIndex(side)];
 
 					TwoTriangleIndices neighborTriangles = edgesToTriangleIndices[curEdgeIndices.ComputeKey()];
 
@@ -89,20 +89,20 @@ namespace SAB.Terrain
 						continue;
 					}
 
-					TriangleI otherTriangle = State.DelauneyTrianglesIncludingSuperTriangle[otherTriangleIndex];
+					TriangleI otherTriangle = m_State.DelauneyTrianglesIncludingSuperTriangle[otherTriangleIndex];
 					Vector2 otherTriangleCenter = triangleVoronoiCenters[otherTriangleIndex];
 
 					Edge edgeForNeighbors = new Edge(currentTriangleCenter, otherTriangleCenter);
 						
-					if (curEdgeIndices.IndexP1 < State.VoronoiCells.Count)
+					if (curEdgeIndices.IndexP1 < m_State.VoronoiCells.Count)
 					{
 						VoronoiNeighbor neighbor1 = new VoronoiNeighbor(curEdgeIndices.IndexP2, edgeForNeighbors);
-						State.VoronoiCells[curEdgeIndices.IndexP1].NeighborCellsCCW.Add(neighbor1);
+						m_State.VoronoiCells[curEdgeIndices.IndexP1].NeighborCellsCCW.Add(neighbor1);
 					}
-					if (curEdgeIndices.IndexP2 < State.VoronoiCells.Count)
+					if (curEdgeIndices.IndexP2 < m_State.VoronoiCells.Count)
 					{
 						VoronoiNeighbor neighbor2 = new VoronoiNeighbor(curEdgeIndices.IndexP1, edgeForNeighbors);
-						State.VoronoiCells[curEdgeIndices.IndexP2].NeighborCellsCCW.Add(neighbor2);	
+						m_State.VoronoiCells[curEdgeIndices.IndexP2].NeighborCellsCCW.Add(neighbor2);	
 					}
 
 				}
@@ -111,15 +111,15 @@ namespace SAB.Terrain
 			List<int> indicesToRemove = new List<int>();
 
 			// Remove and Clamp edges
-			for (PointIndex c = 0; c < State.VoronoiCells.Count; ++c)
+			for (PointIndex c = 0; c < m_State.VoronoiCells.Count; ++c)
 			{
-				if (State.VoronoiParams.SuppressClamping)
+				if (m_State.VoronoiParams.SuppressClamping)
 				{
 					break;
 				}
 
 				indicesToRemove.Clear();
-				VoronoiCell currentCell = State.VoronoiCells[c];
+				VoronoiCell currentCell = m_State.VoronoiCells[c];
 				for (int n = 0; n < currentCell.NeighborCellsCCW.Count; ++n)
 				{
 					VoronoiNeighbor neighborCopy = currentCell.NeighborCellsCCW[n];
@@ -170,25 +170,25 @@ namespace SAB.Terrain
 			}
 
 			// Sort CCW and force edge directions
-			for (PointIndex c = 0; c < State.VoronoiCells.Count; ++c)
+			for (PointIndex c = 0; c < m_State.VoronoiCells.Count; ++c)
 			{
-				VoronoiCell currentCell = State.VoronoiCells[c];
-				Debug.Assert(State.VoronoiCells.Count >= 3);
+				VoronoiCell currentCell = m_State.VoronoiCells[c];
+				Debug.Assert(m_State.VoronoiCells.Count >= 3);
 				
 				currentCell.SortEdgesCCW(true);
 			}
 
 			// Add Edges at clamp rect
-			for (PointIndex c = 0; c < State.VoronoiCells.Count; ++c)
+			for (PointIndex c = 0; c < m_State.VoronoiCells.Count; ++c)
 			{
-				VoronoiCell currentCell = State.VoronoiCells[c];
+				VoronoiCell currentCell = m_State.VoronoiCells[c];
 				
-				if (State.VoronoiParams.SuppressNewBorderEdges)
+				if (m_State.VoronoiParams.SuppressNewBorderEdges)
 				{
 					break;
 				}
 
-				bool success = currentCell.AddClampRectEdgesToFillOpenPolygon(new Vector2(0.0f, 0.0f), State.DIMENSIONS);
+				bool success = currentCell.AddClampRectEdgesToFillOpenPolygon(new Vector2(0.0f, 0.0f), m_State.DIMENSIONS);
 				
 				if (!success)
 				{
@@ -197,9 +197,9 @@ namespace SAB.Terrain
 			}
 
 			// Calculate Centroid
-			for (PointIndex c = 0; c < State.VoronoiCells.Count; ++c)
+			for (PointIndex c = 0; c < m_State.VoronoiCells.Count; ++c)
 			{
-				VoronoiCell currentCell = State.VoronoiCells[c];
+				VoronoiCell currentCell = m_State.VoronoiCells[c];
 				currentCell.CalculateCentroid();
 
 				if (currentCell.NeighborCellsCCW.Count == 0)
@@ -216,7 +216,7 @@ namespace SAB.Terrain
 
 		public bool IsOutsideClampRect(Vector2 point)
 		{
-			return (point.x < 0.0f) || (point.y < 0.0f) || (point.x > State.DIMENSIONS.x) || (point.y > State.DIMENSIONS.y);
+			return (point.x < 0.0f) || (point.y < 0.0f) || (point.x > m_State.DIMENSIONS.x) || (point.y > m_State.DIMENSIONS.y);
 		}
 
 		///////////////////////////////////////////////////////////////////////////
@@ -269,7 +269,7 @@ namespace SAB.Terrain
 				}
 				else
 				{
-					newPoint.x = State.DIMENSIONS.x;
+					newPoint.x = m_State.DIMENSIONS.x;
 				}
 			}
 			else
@@ -280,7 +280,7 @@ namespace SAB.Terrain
 				}
 				else
 				{
-					newPoint.y = State.DIMENSIONS.y;
+					newPoint.y = m_State.DIMENSIONS.y;
 				}
 			}
 
@@ -303,7 +303,7 @@ namespace SAB.Terrain
 			moveDirection.x /= moveDirectionLength;
 			moveDirection.y /= moveDirectionLength;
 
-			return ClampToBorder(insideEdgeStart, moveDirection, new Vector2(0.0f, 0.0f), State.DIMENSIONS);
+			return ClampToBorder(insideEdgeStart, moveDirection, new Vector2(0.0f, 0.0f), m_State.DIMENSIONS);
 		}
 
 
