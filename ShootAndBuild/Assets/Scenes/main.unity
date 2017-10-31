@@ -14578,7 +14578,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c37927f0e791474291bb0a0f6583918, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  debugKeyboardEmulates: 0
+  m_DebugKeyboardEmulates: 0
 --- !u!1 &665872698
 GameObject:
   m_ObjectHideFlags: 0
@@ -36164,7 +36164,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e7b9cb0b4e2d7fb43bbce82735adeb30, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  healthBarPrefab: {fileID: 114497382061760316, guid: c25666976c1e40d45a536ea63de71ec6,
+  m_HealthBarPrefab: {fileID: 114497382061760316, guid: c25666976c1e40d45a536ea63de71ec6,
     type: 2}
 --- !u!1 &1757006333
 GameObject:
