@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace SAB
 {
-
     public enum WeaponType
     {
         None = 0,
@@ -31,56 +31,95 @@ namespace SAB
     [CreateAssetMenu(menuName = "Custom/WeaponData", fileName = "WeaponData")]
     public class WeaponData : ScriptableObject
     {
-        static int layerMask;
+		[FormerlySerializedAs("weaponID")]
+        [SerializeField] private ItemType m_WeaponID;
 
-        public ItemType weaponID;
+		[FormerlySerializedAs("type")]
+        [SerializeField] private WeaponType m_Type = WeaponType.Projectile;
 
-        public WeaponType type = WeaponType.Projectile;
+		[FormerlySerializedAs("damageType")]
+        [SerializeField] private DamageType m_DamageType = DamageType.Direct;
 
-        public DamageType damageType = DamageType.Direct;
-
-        /// <summary>
         /// spread in degrees
-        /// </summary>
-        public float spread = 0;
+		[FormerlySerializedAs("spread")]
+        [SerializeField] private float m_Spread = 0;
 
-        /// <summary>
-        /// cooldown before next shot for pulsed weapons
-        /// </summary>
-        public float coolDownTime;
+        [FormerlySerializedAs("coolDownTime")]
+        [SerializeField] private float m_CoolDownTime;
 
-        public GameObject viewModel;
+		[FormerlySerializedAs("viewModel")]
+        [SerializeField] private GameObject m_ViewModel;
 
-        public GameObject projectile = null;
+		[FormerlySerializedAs("projectile")]
+        [SerializeField] private GameObject m_Projectile = null;
 
-        public GameObject muzzleFlashEffect;
+		[FormerlySerializedAs("muzzleFlashEffect")]
+        [SerializeField] private GameObject m_MuzzleFlashEffect;
 
-        public GameObject ricochetEffect;
+		[FormerlySerializedAs("ricochetEffect")]
+        [SerializeField] private GameObject m_RicochetEffect;
 
-        public AudioData shootSound;
+		[FormerlySerializedAs("shootSound")]
+        [SerializeField] private AudioData m_ShootSound;
 
-		public CameraShakeParams shakeParams;
+		[FormerlySerializedAs("shakeParams")]
+		[SerializeField] private CameraShakeParams m_ShakeParams;
 
-        public int damage = 10;
+		[FormerlySerializedAs("damage")]
+        [SerializeField] private int m_Damage = 10;
 
-        public float projectileSpeed;
+		[FormerlySerializedAs("projectileSpeed")]
+        [SerializeField] private float m_ProjectileSpeed;
 
         /// <summary>can be used to implement for example a shotgun</summary>
-        public int projectilesPerShot = 1;
+		[FormerlySerializedAs("projectilesPerShot")]
+        [SerializeField] private int m_ProjectilesPerShot = 1;
 
         [Tooltip("amount of default speed that will be added/subtracted from default speed" )]
-        public float projectileRandomSpeed = 0;
+		[FormerlySerializedAs("projectileRandomSpeed")]
+        [SerializeField] private float m_ProjectileRandomSpeed = 0;
 
-        public float range = 50;
+		[FormerlySerializedAs("range")]
+        [SerializeField] private float m_Range = 50;
 
-        public float areaDamage = 0;
+		[FormerlySerializedAs("areaDamage")]
+        [SerializeField] private float m_AreaDamage = 0;
 
-        public float areaRadius = 0;
+		[FormerlySerializedAs("areaRadius")]
+        [SerializeField] private float m_AreaRadius = 0;
 
-        public float recoilForce = 0;
+		[FormerlySerializedAs("recoilForce")]
+        [SerializeField] private float m_RecoilForce = 0;
 
-		public List<BuffData> buffs;
+		[FormerlySerializedAs("buffs")]
+		[SerializeField] private List<BuffData> m_Buffs;
 
+		///////////////////////////////////////////////////////////////////////////
+		
+		public ItemType				weaponID				{ get { return m_WeaponID;				}}
+		public WeaponType			type					{ get { return m_Type;					}}
+		public DamageType			damageType				{ get { return m_DamageType;			}}
+        public float				spread					{ get { return m_Spread;				}}
+        public float				coolDownTime			{ get { return m_CoolDownTime;			}}
+		public GameObject			viewModel				{ get { return m_ViewModel;				}}
+		public GameObject			projectile				{ get { return m_Projectile;			}}
+		public GameObject			muzzleFlashEffect		{ get { return m_MuzzleFlashEffect;		}}
+		public GameObject			ricochetEffect			{ get { return m_RicochetEffect;		}}
+		public AudioData			shootSound				{ get { return m_ShootSound;			}}
+		public CameraShakeParams	shakeParams				{ get { return m_ShakeParams;			}}
+		public int					damage					{ get { return m_Damage;				}}
+		public float				projectileSpeed			{ get { return m_ProjectileSpeed;		}}
+        public int					projectilesPerShot		{ get { return m_ProjectilesPerShot;	}}
+        public float				projectileRandomSpeed	{ get { return m_ProjectileRandomSpeed;	}}
+		public float				range					{ get { return m_Range;					}}
+		public float				areaDamage				{ get { return m_AreaDamage;			}}
+		public float				areaRadius				{ get { return m_AreaRadius;			}}
+		public float				recoilForce				{ get { return m_RecoilForce;			}}
+		public List<BuffData>		buffs					{ get { return m_Buffs;					}}
+
+		///////////////////////////////////////////////////////////////////////////
+
+        private int layerMask;
         private float cooldown = 0f;
 
         private RaycastHit[] hits = new RaycastHit[20];
@@ -120,36 +159,36 @@ namespace SAB
             Vector3 shootHeightOffset = new Vector3(0.0f, 0.5f, 0.0f);
             _origin += shootHeightOffset;
 
-            if (type == WeaponType.Projectile)
+            if (m_Type == WeaponType.Projectile)
             {
-                for (int i = 0; i < projectilesPerShot; ++i)
+                for (int i = 0; i < m_ProjectilesPerShot; ++i)
                 {
-                    Quaternion dir = _direction * Quaternion.AngleAxis(Random.Range(-spread * 0.5f, spread * 0.5f), Vector3.up);
+                    Quaternion dir = _direction * Quaternion.AngleAxis(Random.Range(-m_Spread * 0.5f, m_Spread * 0.5f), Vector3.up);
 
                     GameObject projectileContainer = GameObject.Find("Projectiles");
-                    GameObject projectileGo = Instantiate(projectile, projectileContainer.transform);
+                    GameObject projectileGo = Instantiate(m_Projectile, projectileContainer.transform);
                     projectileGo.transform.position = _origin;
                     projectileGo.transform.rotation = dir;
 
-					float speed = projectileSpeed + Random.Range(-projectileSpeed * projectileRandomSpeed, projectileSpeed * projectileRandomSpeed);
+					float speed = m_ProjectileSpeed + Random.Range(-m_ProjectileSpeed * m_ProjectileRandomSpeed, m_ProjectileSpeed * m_ProjectileRandomSpeed);
 
                     Projectile proj = projectileGo.GetComponent<Projectile>();
                     proj.Direction = new Vector3(0.0f, 0.0f, 1.0f);
                     proj.Owner = _owner;
-                    proj.Damage = damage;
-					proj.Init(speed, range, new List<BuffData>(buffs), ricochetEffect);
+                    proj.Damage = m_Damage;
+					proj.Init(speed, m_Range, new List<BuffData>(m_Buffs), m_RicochetEffect);
 
                     //TODO range of projectile
                     //TODO damage type to projectile
                 }
             }
-            else if (type == WeaponType.Hitscan)
+            else if (m_Type == WeaponType.Hitscan)
             {
 
-                for (int i = 0; i < projectilesPerShot; ++i)
+                for (int i = 0; i < m_ProjectilesPerShot; ++i)
                 {
 
-                    Quaternion dir = _direction * Quaternion.AngleAxis(Random.Range(-spread * 0.5f, spread * 0.5f), Vector3.up);
+                    Quaternion dir = _direction * Quaternion.AngleAxis(Random.Range(-m_Spread * 0.5f, m_Spread * 0.5f), Vector3.up);
 
                     //this is shit!
                     for(int r = 0; r < hits.Length; ++r)
@@ -158,15 +197,15 @@ namespace SAB
                     }
 
                     //raycast goes here
-                    int hitCount = Physics.RaycastNonAlloc(_origin, dir * Vector3.forward, hits, range, layerMask, QueryTriggerInteraction.Ignore);
+                    int hitCount = Physics.RaycastNonAlloc(_origin, dir * Vector3.forward, hits, m_Range, layerMask, QueryTriggerInteraction.Ignore);
 
-                    int damageToDeal = damage;
+                    int damageToDeal = m_Damage;
 
-                    Debug.DrawLine(_origin, _origin + dir * (Vector3.forward * range), Color.magenta, 1f);
+                    Debug.DrawLine(_origin, _origin + dir * (Vector3.forward * m_Range), Color.magenta, 1f);
 
                     hits = hits.OrderBy(h => h.distance).ToArray(); //seems like the most unefficient way to do it
 
-                    if (damageType == DamageType.Direct)
+                    if (m_DamageType == DamageType.Direct)
                     {
                         Attackable attackable = null;
                         for (int h = 0; h < hitCount; ++h)
@@ -174,10 +213,10 @@ namespace SAB
                             if (hits[h].transform != null && hits[h].transform.gameObject.layer == 0)
                             {
                                 //display ricochet effect
-                                if (ricochetEffect != null)
+                                if (m_RicochetEffect != null)
                                 {
                                     Debug.DrawLine(hits[h].point, hits[h].point + hits[h].normal * 2f, Color.green, 5f);
-                                    ParticleManager.instance.SpawnParticle(ricochetEffect, ParticleManager.instance.gameObject, hits[h].point, 
+                                    ParticleManager.instance.SpawnParticle(m_RicochetEffect, ParticleManager.instance.gameObject, hits[h].point, 
                                                                                 Quaternion.LookRotation(hits[h].normal, Vector3.up), false, 2.0f, false, false);
 
                                 }
@@ -190,10 +229,10 @@ namespace SAB
                                 attackable = hits[h].rigidbody.GetComponent<Attackable>();
                                 if (attackable != null)
                                 {
-                                    damageToDeal -= attackable.DealDamage(damageToDeal, owner.gameObject, owner.gameObject, buffs);
+                                    damageToDeal -= attackable.DealDamage(damageToDeal, owner.gameObject, owner.gameObject, m_Buffs);
 
 									// je: I find it more appropriate, when damage is not consumed
-									damageToDeal = damage;
+									damageToDeal = m_Damage;
                                 }
 
                                 if (damageToDeal <= 0)
@@ -203,7 +242,7 @@ namespace SAB
                             }
 
                         }
-                    } else if (damageType == DamageType.Area)
+                    } else if (m_DamageType == DamageType.Area)
                     {
                         if (hitCount > 0 && hits[0].rigidbody != null)
                         {
@@ -218,20 +257,20 @@ namespace SAB
             Movable movable = owner.gameObject.GetComponent<Movable>();
             if (movable != null)
             {
-                movable.impulseForce = _direction * (-Vector3.forward * recoilForce);
+                movable.impulseForce = _direction * (-Vector3.forward * m_RecoilForce);
             }
 
 
-            cooldown = coolDownTime;
+            cooldown = m_CoolDownTime;
 
             //sound
-            AudioManager.instance.PlayAudio(shootSound, _origin);
-			CameraController.Instance.AddCameraShake(shakeParams);
+            AudioManager.instance.PlayAudio(m_ShootSound, _origin);
+			CameraController.Instance.AddCameraShake(m_ShakeParams);
 
             //muzzleflash
-            if (muzzleFlashEffect != null)
+            if (m_MuzzleFlashEffect != null)
             {
-                ParticleManager.instance.SpawnParticle(muzzleFlashEffect, _owner.gameObject, _origin, _direction, false, 1.0f, false, false);
+                ParticleManager.instance.SpawnParticle(m_MuzzleFlashEffect, _owner.gameObject, _origin, _direction, false, 1.0f, false, false);
             }
         }
 
