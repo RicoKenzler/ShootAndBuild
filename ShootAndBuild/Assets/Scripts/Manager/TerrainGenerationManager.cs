@@ -103,19 +103,19 @@ namespace SAB
 			RegionMapTransformation regionMapTransformation = new RegionMapTransformation(m_TransformParams.TerrainSizeWS, m_Resolution);
 			m_RegionGenerator.GenerateRegions(m_RegionSeed, voronoiCells, m_RegionParams, regionMapTransformation);
 
-			m_RegionGridGenerator.GenerateRegionGrid(m_RegionGenerator.RegionMap, regionMapTransformation, m_RegionParams);
+			m_RegionGridGenerator.GenerateRegionGrid(m_RegionGenerator.regionMap, regionMapTransformation, m_RegionParams);
 
 			DeleteTerrain();
 
-			m_TerrainObject = m_TerrainGenerator.GenerateTerrain(m_RegionGenerator.RegionMap, m_RegionGridGenerator.RegionGrid, regionMapTransformation, m_TransformParams, m_RegionGridGenerator.HeightRangeY, m_RegionDescParams, m_WaterParams, m_Resolution, m_TerrainSeed);
+			m_TerrainObject = m_TerrainGenerator.GenerateTerrain(m_RegionGenerator.regionMap, m_RegionGridGenerator.regionGrid, regionMapTransformation, m_TransformParams, m_RegionGridGenerator.heightRangeY, m_RegionDescParams, m_WaterParams, m_Resolution, m_TerrainSeed);
 
 			if (m_TerrainObject)
 			{
 				m_TerrainObject.transform.parent = this.transform;
 			}
 
-			m_TerrainManager.ReplaceTerrain(m_TerrainObject.GetComponent<UnityEngine.Terrain>(), m_RegionGridGenerator.RegionGrid, m_TransformParams.TerrainSizeWS);
-			m_AmbientSoundManager.GenerateAmbientGrid(m_RegionGridGenerator.RegionGrid, m_RegionGenerator.RegionMap, m_TransformParams.TerrainSizeWS);
+			m_TerrainManager.ReplaceTerrain(m_TerrainObject.GetComponent<UnityEngine.Terrain>(), m_RegionGridGenerator.regionGrid, m_TransformParams.TerrainSizeWS);
+			m_AmbientSoundManager.GenerateAmbientGrid(m_RegionGridGenerator.regionGrid, m_RegionGenerator.regionMap, m_TransformParams.TerrainSizeWS);
 		}
 	}
 }

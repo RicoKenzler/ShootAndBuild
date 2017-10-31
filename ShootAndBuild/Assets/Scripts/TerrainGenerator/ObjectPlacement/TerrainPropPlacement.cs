@@ -1,10 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace SAB.Terrain
 {
-	
 	[System.Serializable]
 	public class Prop
 	{
@@ -22,6 +22,8 @@ namespace SAB.Terrain
 		[Range(0.0f, 1000.0f)]
 		public float		RelativeProbability	= 100;
 	}
+
+	///////////////////////////////////////////////////////////////////////////
 
 	[System.Serializable]
 	public class PropGroup
@@ -42,81 +44,83 @@ namespace SAB.Terrain
 		public float RndPropFrequency = 1.0f;
 	}
 
+	///////////////////////////////////////////////////////////////////////////
+
 	public class TerrainPropPlacement : MonoBehaviour 
 	{
-		[SerializeField]
-		private TerrainManager			terrainManager;
-		private GameObject				containerObject;
-		private float					seed;
-		private RegionMapTransformation	regionMapTransformation;
+		[FormerlySerializedAs("propGroups")]
+		[SerializeField] private PropGroup[]	m_PropGroups;
+		[SerializeField] private TerrainManager m_TerrainManager;
 
-		public PropGroup[]	propGroups;
+		///////////////////////////////////////////////////////////////////////////
 
-		const string PropGroupName = "Props";
+		private GameObject				m_ContainerObject;
+		private float					m_Seed;
+		private RegionMapTransformation	m_RegionMapTransformation;
+
+		const string PROP_GROUP_NAME = "Props";
+
+		///////////////////////////////////////////////////////////////////////////
 
 		void Awake()
 		{
 			Instance = this;
 		}
-
-		void Start() 
-		{
-			
-		}
 		
-		void Update() 
-		{
-			
-		}
+		///////////////////////////////////////////////////////////////////////////
 
 		public void RecreateEmptyContainerObject()
 		{
-			containerObject = null;
+			m_ContainerObject = null;
 
-			GameObject terrainObject = terrainManager.terrain.gameObject;
+			GameObject terrainObject = m_TerrainManager.terrain.gameObject;
 			
-			Transform oldGroupObjectTransform = terrainObject.transform.Find(PropGroupName);
+			Transform oldGroupObjectTransform = terrainObject.transform.Find(PROP_GROUP_NAME);
 			GameObject groupObject = oldGroupObjectTransform == null ? null : oldGroupObjectTransform.gameObject;
 			if (groupObject)
 			{
 				GameObject.DestroyImmediate(groupObject);
 			}
 
-			groupObject = new GameObject(PropGroupName);
+			groupObject = new GameObject(PROP_GROUP_NAME);
 			groupObject.transform.parent = terrainObject.transform;
 
-			containerObject = groupObject;
+			m_ContainerObject = groupObject;
 		}
+
+		///////////////////////////////////////////////////////////////////////////
 
 		public void RegenerateAll(int _seed)
 		{
-			seed = 0.174f * _seed;
+			m_Seed = 0.174f * _seed;
 
 			Random.InitState(_seed);
 
-			Debug.Assert(terrainManager);
+			Debug.Assert(m_TerrainManager);
 
-			if (!terrainManager.terrain)
+			if (!m_TerrainManager.terrain)
 			{
 				Debug.LogWarning("No Terrain found");
 				return;
 			}
 
-			if (terrainManager.regionGrid == null)
+			if (m_TerrainManager.regionGrid == null)
 			{
 				Debug.LogWarning("Currently RegionGrid is not serialized, so you first have to generate a terrain");
 				return;
 			}
 			
-			regionMapTransformation = terrainManager.regionMapTransformation;
+			m_RegionMapTransformation = m_TerrainManager.regionMapTransformation;
 
 			RecreateEmptyContainerObject();
 			CreateProps();
 		}
 
+		///////////////////////////////////////////////////////////////////////////
+
 		void CreateProps()
 		{
-			foreach (PropGroup propGroup in propGroups)
+			foreach (PropGroup propGroup in m_PropGroups)
 			{
 				if (propGroup.Regions.Length == 0)
 				{
@@ -124,7 +128,7 @@ namespace SAB.Terrain
 				}
 
 				GameObject subContainerObject = new GameObject();
-				subContainerObject.transform.parent = containerObject.transform;
+				subContainerObject.transform.parent = m_ContainerObject.transform;
 				
 				subContainerObject.name = "";
 
@@ -136,6 +140,8 @@ namespace SAB.Terrain
 				GenerateProps(propGroup, subContainerObject.transform);
 			}
 		}
+
+		///////////////////////////////////////////////////////////////////////////
 
 		void GenerateProps(PropGroup propGroup, Transform subContainerObject)
 		{
@@ -151,13 +157,13 @@ namespace SAB.Terrain
 				return;
 			}
 
-			RegionTile[,] regionGrid = terrainManager.regionGrid;
+			RegionTile[,] regionGrid = m_TerrainManager.regionGrid;
 
 			for (int x = 0; x < regionGrid.GetLength(0); ++x)
 			{
 				for (int z = 0; z < regionGrid.GetLength(1); ++z)
 				{
-					float maskRnd = Mathf.PerlinNoise(seed + x * propGroup.MaskFrequency,	seed + z * propGroup.MaskFrequency);
+					float maskRnd = Mathf.PerlinNoise(m_Seed + x * propGroup.MaskFrequency,	m_Seed + z * propGroup.MaskFrequency);
 					if (maskRnd > propGroup.MaskDensity)
 					{
 						continue;
@@ -192,22 +198,24 @@ namespace SAB.Terrain
 						continue;
 					}
 
-					PlaceProp(propGroup, subContainerObject, x, z, probabilitySum, seed + 0.123f);
+					PlaceProp(propGroup, subContainerObject, x, z, probabilitySum, m_Seed + 0.123f);
 				}
 			}
 		}
 
+		///////////////////////////////////////////////////////////////////////////
+
 		public void PlaceProp(PropGroup propGroup, Transform subContainerObject, int x, int z, float probabilitySum, float seed)
 		{
-			Vector2 tileMin = regionMapTransformation.GetTileMin(x, z);
-			Vector2 tileMax = tileMin + regionMapTransformation.CellSize;
+			Vector2 tileMin = m_RegionMapTransformation.GetTileMin(x, z);
+			Vector2 tileMax = tileMin + m_RegionMapTransformation.CellSize;
 			
 			Vector3 rndPos;
 			rndPos.x = Mathf.Lerp(tileMin.x, tileMax.x, Random.Range(0.0f, 1.0f));
 			rndPos.y = 0.0f;
 			rndPos.z = Mathf.Lerp(tileMin.y, tileMax.y, Random.Range(0.0f, 1.0f));
 
-			rndPos.y = terrainManager.GetInterpolatedHeight(rndPos.x, rndPos.z);
+			rndPos.y = m_TerrainManager.GetInterpolatedHeight(rndPos.x, rndPos.z);
 
 			// rnd in [0,1], but distribution is not uniform :(
 			float rnd = Mathf.PerlinNoise(seed + x * propGroup.RndPropFrequency, seed + z * propGroup.RndPropFrequency);
@@ -253,6 +261,8 @@ namespace SAB.Terrain
 				return;
 			}
 		}
+
+		///////////////////////////////////////////////////////////////////////////
 
 		public static TerrainPropPlacement Instance
 		{
