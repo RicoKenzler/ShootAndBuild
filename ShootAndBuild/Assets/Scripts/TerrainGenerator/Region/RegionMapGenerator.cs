@@ -76,6 +76,11 @@ namespace SAB.Terrain
 						continue;
 					}
 
+					if (cell.RegionType == RegionType.Water)
+					{
+						continue;
+					}
+
 					cell.RegionType = RegionType.Bricks;
 				}
 			}
