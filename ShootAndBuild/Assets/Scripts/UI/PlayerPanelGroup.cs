@@ -9,27 +9,20 @@ namespace SAB
 
     public class PlayerPanelGroup : MonoBehaviour
     {
-        [SerializeField]
-        private PlayerPanel playerPanelPrefab;
+        [SerializeField] private PlayerPanel m_PlayerPanelPrefab;
 
-        private Dictionary<PlayerID, PlayerPanel> playerPanels = new Dictionary<PlayerID, PlayerPanel>();
+		///////////////////////////////////////////////////////////////////////////
+
+        private Dictionary<PlayerID, PlayerPanel> m_PlayerPanels = new Dictionary<PlayerID, PlayerPanel>();
+
+		///////////////////////////////////////////////////////////////////////////
 
         void Awake()
         {
             instance = this;
         }
 
-        // Use this for initialization
-        void Start()
-        {
-
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-
-        }
+		///////////////////////////////////////////////////////////////////////////
 
         public void AddPlayerPanel(PlayerID playerID, GameObject player)
         {
@@ -39,22 +32,26 @@ namespace SAB
                 return;
             }
 
-            GameObject newPlayerPanelObject = Instantiate(playerPanelPrefab.gameObject, gameObject.transform, false);
+            GameObject newPlayerPanelObject = Instantiate(m_PlayerPanelPrefab.gameObject, gameObject.transform, false);
             newPlayerPanelObject.name = "Player Panel " + playerID;
 
             PlayerPanel newPlayerPanel = newPlayerPanelObject.GetComponent<PlayerPanel>();
             newPlayerPanel.AssignPlayer(player);
 
-            playerPanels.Add(playerID, newPlayerPanel);
+            m_PlayerPanels.Add(playerID, newPlayerPanel);
         }
+
+		///////////////////////////////////////////////////////////////////////////
 
         public PlayerPanel GetPlayerPanel(PlayerID playerID)
         {
             PlayerPanel outPanel;
-            playerPanels.TryGetValue(playerID, out outPanel);
+            m_PlayerPanels.TryGetValue(playerID, out outPanel);
 
             return outPanel;
         }
+
+		///////////////////////////////////////////////////////////////////////////
 
         public static PlayerPanelGroup instance
         {

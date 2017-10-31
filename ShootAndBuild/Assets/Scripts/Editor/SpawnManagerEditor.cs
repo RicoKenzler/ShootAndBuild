@@ -6,15 +6,12 @@ using SAB.Spawn;
 
 namespace SAB
 {
-
     [CustomEditor(typeof(SpawnManager))]
     public class SpawnManagerEditor : Editor
     {
         public override void OnInspectorGUI()
         {
             SpawnManager editorTarget = (SpawnManager)this.target;
-
-
 
             EditorGUILayout.LabelField("Enemy Templates", EditorStyles.boldLabel);
 

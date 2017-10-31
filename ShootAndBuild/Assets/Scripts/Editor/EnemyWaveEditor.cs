@@ -11,9 +11,9 @@ namespace SAB
 {
 	public class EnemyWaveEditor : EditorWindow
 	{
-		private static SpawnManagerPrototype manager = null;
-		private static EnemyWaveEditor window = null;
-		private Vector2 scrollPosition;
+		private static SpawnManagerPrototype m_Manager = null;
+		private static EnemyWaveEditor m_Window = null;
+		private Vector2 m_ScrollPosition;
 
 		///////////////////////////////////////////////////////////////////////////
 
@@ -21,34 +21,34 @@ namespace SAB
 		static void Init()
 		{
 			// Get existing open window or if none, make a new one:
-			window = GetWindow<EnemyWaveEditor>();
-			window.Show();
+			m_Window = GetWindow<EnemyWaveEditor>();
+			m_Window.Show();
 		}
 
 		///////////////////////////////////////////////////////////////////////////
 
 		void OnEnable()
 		{
-			manager = FindObjectOfType<SpawnManagerPrototype>();
-			window = this;
+			m_Manager = FindObjectOfType<SpawnManagerPrototype>();
+			m_Window = this;
 		}
 
 		///////////////////////////////////////////////////////////////////////////
 
 		void OnFocus()
 		{
-			manager = FindObjectOfType<SpawnManagerPrototype>();
+			m_Manager = FindObjectOfType<SpawnManagerPrototype>();
 		}
 
 		///////////////////////////////////////////////////////////////////////////
 
 		void OnGUI()
 		{
-			scrollPosition = EditorGUILayout.BeginScrollView(scrollPosition);
+			m_ScrollPosition = EditorGUILayout.BeginScrollView(m_ScrollPosition);
 
 			EditorGUILayout.BeginVertical();
 
-			for (int i = 0; i < manager.waves.Count; ++i)
+			for (int i = 0; i < m_Manager.waves.Count; ++i)
 			{
 				EditorGUILayout.BeginHorizontal();
 
@@ -59,31 +59,31 @@ namespace SAB
 				GUILayout.Button("Down");
 				if (GUILayout.Button("X"))
 				{
-					manager.waves.RemoveAt(i);
+					m_Manager.waves.RemoveAt(i);
 					break;
 				}
 
 				EditorGUILayout.EndVertical();
 
-				for (int j = 0; j < manager.waves[i].stages.Count; ++j)
+				for (int j = 0; j < m_Manager.waves[i].stages.Count; ++j)
 				{
 					GUILayout.BeginVertical(GUILayout.Width(150));
 					GUILayout.BeginHorizontal();
-					DrawComboBox(manager.waves[i].stages[j], manager.waves[i]);
+					DrawComboBox(m_Manager.waves[i].stages[j], m_Manager.waves[i]);
 					if (GUILayout.Button("X"))
 					{
-						manager.waves[i].stages.RemoveAt(j);
+						m_Manager.waves[i].stages.RemoveAt(j);
 						break;
 					}
 					GUILayout.EndHorizontal();
-					DrawStage(manager.waves[i].stages[j]);
+					DrawStage(m_Manager.waves[i].stages[j]);
 					GUILayout.EndVertical();
 				}
 
 				if (GUILayout.Button("+"))
 				{
 					MonsterSpawnStage stage = new MonsterSpawnStage();
-					manager.waves[i].stages.Add(stage);
+					m_Manager.waves[i].stages.Add(stage);
 				}
 				
 				EditorGUILayout.EndHorizontal();
@@ -91,7 +91,7 @@ namespace SAB
 
 			if (GUILayout.Button("Add New Wave"))
 			{
-				manager.waves.Add(new SpawnWave());
+				m_Manager.waves.Add(new SpawnWave());
 			}
 
 			EditorGUILayout.EndVertical();

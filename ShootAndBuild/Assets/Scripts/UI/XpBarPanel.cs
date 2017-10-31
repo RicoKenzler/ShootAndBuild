@@ -6,19 +6,20 @@ namespace SAB
 
     public class XpBarPanel : MonoBehaviour
     {
-        public UiBar XpBar;
-		public Animator XpBarAnimator;
+        [SerializeField] private UiBar m_XpBar;
+
+		///////////////////////////////////////////////////////////////////////////
+
+		private Animator m_XpBarAnimator;
+
+		///////////////////////////////////////////////////////////////////////////
 
 		private void Awake()
 		{
-			XpBarAnimator = GetComponent<Animator>();
+			m_XpBarAnimator = GetComponent<Animator>();
 		}
 
-		// Use this for initialization
-		void Start ()
-        {
-		
-	    }
+		///////////////////////////////////////////////////////////////////////////
 	
 	    // Update is called once per frame
 	    void Update ()
@@ -26,12 +27,12 @@ namespace SAB
             int killedEnemies = CounterManager.instance.GetCounterValue(null, CounterType.KilledEnemies).CurrentCount;
             float percentage = ((killedEnemies % 20) / 20.0f);
             
-			if (percentage < XpBar.TargetPercentage)
+			if (percentage < m_XpBar.targetPercentage)
 			{
-				XpBarAnimator.SetTrigger("Grow");
+				m_XpBarAnimator.SetTrigger("Grow");
 			}
 
-		    XpBar.TargetPercentage = percentage;
+		    m_XpBar.targetPercentage = percentage;
 	    }
     }
 

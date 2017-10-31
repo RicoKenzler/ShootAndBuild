@@ -6,47 +6,43 @@ namespace SAB
 
     public class PlayerPanel : MonoBehaviour
     {
-        [SerializeField]
-        Image healthBarFillImage;
-        [SerializeField]
-        Image activeItemImage;
-        [SerializeField]
-        Image activeWeaponImage;
-        [SerializeField]
-        Image activeBuildingImage;
-        [SerializeField]
-        Text activeItemCountText;
-        [SerializeField]
-        Animator weaponSelectionRect;
-        [SerializeField]
-        Animator itemSelectionRect;
-        [SerializeField]
-        Animator buildingSelectionRect;
+        [SerializeField] private Image		m_HealthBarFillImage;
+        [SerializeField] private Image		m_ActiveItemImage;
+        [SerializeField] private Image		m_ActiveWeaponImage;
+        [SerializeField] private Image		m_ActiveBuildingImage;
+        [SerializeField] private Text		m_ActiveItemCountText;
+        [SerializeField] private Animator	m_WeaponSelectionRect;
+        [SerializeField] private Animator	m_ItemSelectionRect;
+        [SerializeField] private Animator	m_BuildingSelectionRect;
 
-        private int displayedHealthText = 0;
-        private float displayedHealthRelative = 0.0f;
-        bool displayedPlayerAlive = false;
-        private int displayedActiveItemCount = -1;
-        private ItemType displayedActiveItemType = ItemType.None;
-        private Building displayedActiveBuilding = null;
-		private WeaponData displayedActiveWeapon = null;
+        [SerializeField] private bool	m_UseDynamicHealthColor		= false;
+        [SerializeField] private float	m_HealthBarSmoothness		= 0.8f;
+        [SerializeField] private float	m_TimeUntilSelectionFadeout	= -1;
 
-        private InventorySelectionCategory displayedActiveSelectionCategory = InventorySelectionCategory.Item;
+		///////////////////////////////////////////////////////////////////////////
 
-        public bool useDynamicHealthColor = false;
-        public float healthBarSmoothness = 0.8f;
-        public float timeUntilSelectionFadeout = 1.5f;
+        private int			m_DisplayedHealthText		= 0;
+        private float		m_DisplayedHealthRelative	= 0.0f;
+        private bool		m_DisplayedPlayerAlive		= false;
+        private int			m_DisplayedActiveItemCount	= -1;
+        private ItemType	m_DisplayedActiveItemType	= ItemType.None;
+        private Building	m_DisplayedActiveBuilding	= null;
+		private WeaponData	m_DisplayedActiveWeapon		= null;
+        private InventorySelectionCategory m_DisplayedActiveSelectionCategory = InventorySelectionCategory.Item;
 
-        private Attackable assignedAttackable;
-        private Inventory assignedInventory;
-        private PlayerMenu assignedPlayerMenu;
+        private Attackable	m_AssignedAttackable;
+        private Inventory	m_AssignedInventory;
+        private PlayerMenu	m_AssignedPlayerMenu;
 
-        private Animator activeItemCountTextAnimator;
-        private Animator activeItemImageAnimator;
+        private Animator	m_ActiveItemCountTextAnimator;
+        private Animator	m_ActiveItemImageAnimator;
 
-        private Color deactivatedColorTint = new Color(0.5f, 0.5f, 0.5f, 0.5f);
-        private Color activatedColorTint = new Color(1.0f, 1.0f, 1.0f, 1.0f);
-        private Color defaultTextColor;
+        private Color		m_DefaultItemCountTextColor;
+
+        private readonly Color DEACTIVATED_COLOR_TINT	= new Color(0.5f, 0.5f, 0.5f, 0.5f);
+        private readonly Color ACTIVATED_COLOR_TINT		= new Color(1.0f, 1.0f, 1.0f, 1.0f);
+
+		///////////////////////////////////////////////////////////////////////////
 
         // Update is called once per frame
         void Update()
@@ -54,9 +50,11 @@ namespace SAB
             UpdateUI();
         }
 
+		///////////////////////////////////////////////////////////////////////////
+
         void UpdateUI()
         {
-            if (!assignedAttackable)
+            if (!m_AssignedAttackable)
             {
                 // for testing standalone version
                 return;
@@ -70,16 +68,20 @@ namespace SAB
 			UpdateWeapons();
         }
 
+		///////////////////////////////////////////////////////////////////////////
+
         bool IsPlayerAlive()
         {
-            return assignedAttackable.Health > 0;
+            return m_AssignedAttackable.Health > 0;
         }
+
+		///////////////////////////////////////////////////////////////////////////
 
         void UpdateIsPlayerAlive()
         {
             bool isPlayerAlive = IsPlayerAlive();
 
-            if (isPlayerAlive != displayedPlayerAlive)
+            if (isPlayerAlive != m_DisplayedPlayerAlive)
             {
                 // Do not interpolate
                 UpdateHealthBar(true);
@@ -87,24 +89,26 @@ namespace SAB
                 UpdateBuildings(true);
 				UpdateWeapons(true);
                 UpdateInventorySelection();
-                displayedPlayerAlive = isPlayerAlive;
+                m_DisplayedPlayerAlive = isPlayerAlive;
             }
         }
 
+		///////////////////////////////////////////////////////////////////////////
+
         private void UpdateHealthBar(bool forceImmediateUpdate = false)
         {
-            int newHealth = assignedAttackable.Health;
-            float newHealthRelative = (float)assignedAttackable.Health / (float)assignedAttackable.maxHealth;
+            int newHealth = m_AssignedAttackable.Health;
+            float newHealthRelative = (float)m_AssignedAttackable.Health / (float)m_AssignedAttackable.maxHealth;
 
-            if (!forceImmediateUpdate && displayedHealthText == newHealth && newHealthRelative == displayedHealthRelative)
+            if (!forceImmediateUpdate && m_DisplayedHealthText == newHealth && newHealthRelative == m_DisplayedHealthRelative)
             {
                 return;
             }
 
-            float healthDifference = newHealthRelative - displayedHealthRelative;
+            float healthDifference = newHealthRelative - m_DisplayedHealthRelative;
 
             // Method 2: start fast
-            float smoothRelativeHealth = Mathf.Lerp(newHealthRelative, displayedHealthRelative, healthBarSmoothness);
+            float smoothRelativeHealth = Mathf.Lerp(newHealthRelative, m_DisplayedHealthRelative, m_HealthBarSmoothness);
 
             if (forceImmediateUpdate || Mathf.Abs(healthDifference) <= 0.001f)
             {
@@ -113,7 +117,7 @@ namespace SAB
 
             Color desiredColor = new Color(1.0f, 0.0f, 0.0f);
 
-            if (useDynamicHealthColor)
+            if (m_UseDynamicHealthColor)
             {
                 Color colorFullHealth = new Color(0.0f, 1.0f, 0.0f, 1.0f);
                 Color colorMediumHealth = new Color(1.0f, 1.0f, 0.0f, 1.0f);
@@ -129,39 +133,43 @@ namespace SAB
                 }
             }
 
-            healthBarFillImage.color = desiredColor;
-            healthBarFillImage.fillAmount = smoothRelativeHealth;
+            m_HealthBarFillImage.color = desiredColor;
+            m_HealthBarFillImage.fillAmount = smoothRelativeHealth;
 
-            displayedHealthRelative = smoothRelativeHealth;
-            displayedHealthText = newHealth;
+            m_DisplayedHealthRelative = smoothRelativeHealth;
+            m_DisplayedHealthText = newHealth;
         }
+
+		///////////////////////////////////////////////////////////////////////////
 
         void UpdateBuildings(bool forceUpdateAll = false)
         {
-            Building activeBuilding = assignedPlayerMenu.activeBuildingPrefab;
+            Building activeBuilding = m_AssignedPlayerMenu.activeBuildingPrefab;
 
-            bool buildingTypeChanged = (displayedActiveBuilding != activeBuilding);
+            bool buildingTypeChanged = (m_DisplayedActiveBuilding != activeBuilding);
             if (forceUpdateAll || buildingTypeChanged)
             {
                 // Update Active item Type
-                displayedActiveBuilding = activeBuilding;
-                activeBuildingImage.overrideSprite = activeBuilding ? activeBuilding.icon : null;
+                m_DisplayedActiveBuilding = activeBuilding;
+                m_ActiveBuildingImage.overrideSprite = activeBuilding ? activeBuilding.icon : null;
             }
 
             bool buildingBuildable = (IsPlayerAlive() && (activeBuilding && activeBuilding.IsPayable()));
 
-            activeBuildingImage.color = buildingBuildable ? activatedColorTint : deactivatedColorTint;
+            m_ActiveBuildingImage.color = buildingBuildable ? ACTIVATED_COLOR_TINT : DEACTIVATED_COLOR_TINT;
         }
+
+		///////////////////////////////////////////////////////////////////////////
 
 		void UpdateWeapons(bool forceUpdateAll = false)
         {
-            WeaponData activeWeapon = assignedPlayerMenu.activeWeapon;
+            WeaponData activeWeapon = m_AssignedPlayerMenu.activeWeapon;
 
-            bool weaponChanged = (displayedActiveWeapon != activeWeapon);
+            bool weaponChanged = (m_DisplayedActiveWeapon != activeWeapon);
             if (forceUpdateAll || weaponChanged)
             {
                 // Update Active item Type
-                displayedActiveWeapon = activeWeapon;
+                m_DisplayedActiveWeapon = activeWeapon;
 
 				if (activeWeapon)
 				{
@@ -169,114 +177,126 @@ namespace SAB
 
 					ItemData weaponItemInfos = ItemManager.instance.GetItemInfos(itemType);
 
-					activeWeaponImage.overrideSprite = weaponItemInfos.icon;
+					m_ActiveWeaponImage.overrideSprite = weaponItemInfos.icon;
 				}
 				else
 				{
-					activeWeaponImage.overrideSprite = null;
+					m_ActiveWeaponImage.overrideSprite = null;
 				}
             }
 
             bool weaponUsable = (IsPlayerAlive() && activeWeapon && (activeWeapon.Cooldown < 0.1f));
 
-            activeWeaponImage.color = weaponUsable ? activatedColorTint : deactivatedColorTint;
+            m_ActiveWeaponImage.color = weaponUsable ? ACTIVATED_COLOR_TINT : DEACTIVATED_COLOR_TINT;
         }
+
+		///////////////////////////////////////////////////////////////////////////
 
         void UpdateItems(bool forceUpdateAll = false)
         {
-            ItemType activeItemType = assignedPlayerMenu.activeItemType;
+            ItemType activeItemType = m_AssignedPlayerMenu.activeItemType;
             ItemData itemData = ItemManager.instance.GetItemInfos(activeItemType);
 
-            int activeItemCount = assignedInventory.GetItemCount(assignedPlayerMenu.activeItemType);
+            int activeItemCount = m_AssignedInventory.GetItemCount(m_AssignedPlayerMenu.activeItemType);
 
-            bool itemTypeChanged = (displayedActiveItemType != activeItemType);
+            bool itemTypeChanged = (m_DisplayedActiveItemType != activeItemType);
             if (forceUpdateAll || itemTypeChanged)
             {
                 // Update Active item Type
-                displayedActiveItemType = activeItemType;
-                activeItemImage.overrideSprite = itemData.icon;
+                m_DisplayedActiveItemType = activeItemType;
+                m_ActiveItemImage.overrideSprite = itemData.icon;
             }
 
-            bool itemCountChanged = (displayedActiveItemCount != activeItemCount);
+            bool itemCountChanged = (m_DisplayedActiveItemCount != activeItemCount);
             if (forceUpdateAll || itemTypeChanged || itemCountChanged)
             {
                 // Update Item Count
-                activeItemCountText.text = activeItemCount.ToString();
+                m_ActiveItemCountText.text = activeItemCount.ToString();
 
-                if (activeItemCount > displayedActiveItemCount && activeItemCount > 0)
+                if (activeItemCount > m_DisplayedActiveItemCount && activeItemCount > 0)
                 {
                     HighlightActiveItemCount();
                 }
 
-                displayedActiveItemCount = activeItemCount;
+                m_DisplayedActiveItemCount = activeItemCount;
             }
 
             bool deactivatedItem = (!IsPlayerAlive() || (activeItemCount == 0));
 
-            activeItemImage.color = deactivatedItem ? deactivatedColorTint : activatedColorTint;
-            activeItemCountText.color = deactivatedItem ? deactivatedColorTint : defaultTextColor;
-            activeWeaponImage.color = IsPlayerAlive() ? activatedColorTint : deactivatedColorTint;
+            m_ActiveItemImage.color = deactivatedItem ? DEACTIVATED_COLOR_TINT : ACTIVATED_COLOR_TINT;
+            m_ActiveItemCountText.color = deactivatedItem ? DEACTIVATED_COLOR_TINT : m_DefaultItemCountTextColor;
+            m_ActiveWeaponImage.color = IsPlayerAlive() ? ACTIVATED_COLOR_TINT : DEACTIVATED_COLOR_TINT;
         }
+
+		///////////////////////////////////////////////////////////////////////////
 
         public void HighlightActiveItem()
         {
-            activeItemImageAnimator.SetTrigger("Grow");
+            m_ActiveItemImageAnimator.SetTrigger("Grow");
         }
+
+		///////////////////////////////////////////////////////////////////////////
 
         public void HighlightActiveItemCount()
         {
-            activeItemCountTextAnimator.SetTrigger("Grow");
+            m_ActiveItemCountTextAnimator.SetTrigger("Grow");
         }
+
+		///////////////////////////////////////////////////////////////////////////
 
         void UpdateInventorySelection()
         {
-            InventorySelectionCategory newCategory = assignedPlayerMenu.activeSelectionCategory;
+            InventorySelectionCategory newCategory = m_AssignedPlayerMenu.activeSelectionCategory;
 
             bool hideSelection = false;
 
-            if (timeUntilSelectionFadeout >= 0.0f)
+            if (m_TimeUntilSelectionFadeout >= 0.0f)
             {
-                if ((Time.time > (assignedPlayerMenu.lastMenuInteractionTime + timeUntilSelectionFadeout)))
+                if ((Time.time > (m_AssignedPlayerMenu.lastMenuInteractionTime + m_TimeUntilSelectionFadeout)))
                 {
                     hideSelection = true;
                 }
             }
 
-            Animator oldSelectionRect = GetSelectionRectForCategory(displayedActiveSelectionCategory);
+            Animator oldSelectionRect = GetSelectionRectForCategory(m_DisplayedActiveSelectionCategory);
             Animator newSelectionRect = GetSelectionRectForCategory(newCategory);
 
             oldSelectionRect.SetBool("Visible", false);
             newSelectionRect.SetBool("Visible", (!IsPlayerAlive() || hideSelection) ? false : true);
 
-            displayedActiveSelectionCategory = newCategory;
+            m_DisplayedActiveSelectionCategory = newCategory;
         }
+
+		///////////////////////////////////////////////////////////////////////////
 
         Animator GetSelectionRectForCategory(InventorySelectionCategory category)
         {
             switch (category)
             {
                 case InventorySelectionCategory.Item:
-                    return itemSelectionRect;
+                    return m_ItemSelectionRect;
                 case InventorySelectionCategory.Weapon:
-                    return weaponSelectionRect;
+                    return m_WeaponSelectionRect;
                 case InventorySelectionCategory.Building:
-                    return buildingSelectionRect;
+                    return m_BuildingSelectionRect;
             }
 
             Debug.LogWarning("Missing case statement");
             return null;
         }
 
+		///////////////////////////////////////////////////////////////////////////
+
         public void AssignPlayer(GameObject player)
         {
-            assignedAttackable = player.GetComponent<Attackable>();
-            assignedInventory = player.GetComponent<Inventory>();
-            assignedPlayerMenu = player.GetComponent<PlayerMenu>();
+            m_AssignedAttackable = player.GetComponent<Attackable>();
+            m_AssignedInventory = player.GetComponent<Inventory>();
+            m_AssignedPlayerMenu = player.GetComponent<PlayerMenu>();
 
-            activeItemCountTextAnimator = activeItemCountText.GetComponent<Animator>();
-            activeItemImageAnimator = activeItemImage.GetComponent<Animator>();
+            m_ActiveItemCountTextAnimator = m_ActiveItemCountText.GetComponent<Animator>();
+            m_ActiveItemImageAnimator = m_ActiveItemImage.GetComponent<Animator>();
 
-            defaultTextColor = activeItemCountText.color;
+            m_DefaultItemCountTextColor = m_ActiveItemCountText.color;
 
             UpdateUI();
         }

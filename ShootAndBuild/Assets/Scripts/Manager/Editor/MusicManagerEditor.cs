@@ -7,9 +7,8 @@ namespace SAB
 	[CustomEditor(typeof(MusicManager))]
 	public class MusicManagerEditor : Editor
 	{
-		private bool positiveBuffTriggered = false;
-		private bool negativeBuffTriggered = false;
-
+		private bool m_PositiveBuffTriggered = false;
+		private bool m_NegativeBuffTriggered = false;
 
 		public override void OnInspectorGUI()
 		{
@@ -18,20 +17,20 @@ namespace SAB
 			DrawDefaultInspector();
 
 			GUILayout.Label("Trigger", EditorStyles.boldLabel);
-			if (GUILayout.Button((positiveBuffTriggered ? "(-)" : "(+)") + " Positive Buff"))
+			if (GUILayout.Button((m_PositiveBuffTriggered ? "(-)" : "(+)") + " Positive Buff"))
 			{
-				int delta = positiveBuffTriggered ? -1 : 1;
+				int delta = m_PositiveBuffTriggered ? -1 : 1;
 				musicManager.OnAddPlayerBuffCount(delta, true);
 
-				positiveBuffTriggered = !positiveBuffTriggered;
+				m_PositiveBuffTriggered = !m_PositiveBuffTriggered;
 			}
 
-			if (GUILayout.Button((negativeBuffTriggered ? "(-)" : "(+)") + " Negative Buff"))
+			if (GUILayout.Button((m_NegativeBuffTriggered ? "(-)" : "(+)") + " Negative Buff"))
 			{
-				int delta = negativeBuffTriggered ? -1 : 1;
+				int delta = m_NegativeBuffTriggered ? -1 : 1;
 				musicManager.OnAddPlayerBuffCount(delta, false);
 
-				negativeBuffTriggered = !negativeBuffTriggered;
+				m_NegativeBuffTriggered = !m_NegativeBuffTriggered;
 			}
 
 			if (GUILayout.Button("Signal Combat"))

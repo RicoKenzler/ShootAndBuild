@@ -9,9 +9,8 @@ namespace SAB
 {
     public class EnemyWaveWindow : EditorWindow
     {
-
-        private static SpawnManager managerInstance = null;
-        private static EnemyWaveWindow windowInstance = null;
+        private static SpawnManager s_ManagerInstance = null;
+        private static EnemyWaveWindow s_WindowInstance = null;
 
         private static readonly int MARGIN_WIDTH = 6;
         private static readonly int LINE_HEIGHT = 22;
@@ -24,8 +23,8 @@ namespace SAB
         static void Init()
         {
             // Get existing open window or if none, make a new one:
-            windowInstance = (EnemyWaveWindow)EditorWindow.GetWindow(typeof(EnemyWaveWindow));
-            windowInstance.Show();
+            s_WindowInstance = (EnemyWaveWindow)EditorWindow.GetWindow(typeof(EnemyWaveWindow));
+            s_WindowInstance.Show();
         }
 
         ///////////////////////////////////////////////////////////////////////////
@@ -33,8 +32,8 @@ namespace SAB
         void OnEnable()
         {
             //Debug.Log("enabele");
-            managerInstance = FindObjectOfType<SpawnManager>();
-            windowInstance = this;
+            s_ManagerInstance = FindObjectOfType<SpawnManager>();
+            s_WindowInstance = this;
 
         }
 
@@ -43,7 +42,7 @@ namespace SAB
         void OnFocus()
         {
             //Debug.Log("focus");
-            managerInstance = FindObjectOfType<SpawnManager>();
+            s_ManagerInstance = FindObjectOfType<SpawnManager>();
         }
 
         ///////////////////////////////////////////////////////////////////////////
@@ -53,7 +52,7 @@ namespace SAB
             int xOffset = 0;
             int yOffset = MARGIN_WIDTH;
 
-            if (managerInstance == null)
+            if (s_ManagerInstance == null)
             {
                 GUIStyle style = new GUIStyle();
                 style.normal.textColor = Color.red;
@@ -83,18 +82,18 @@ namespace SAB
             //GUI.EndScrollView();
 
             //TODO list waves
-            Rect wavesRect = new Rect(xOffset, yOffset, windowInstance.position.width -MARGIN_WIDTH, LINE_HEIGHT );
+            Rect wavesRect = new Rect(xOffset, yOffset, s_WindowInstance.position.width -MARGIN_WIDTH, LINE_HEIGHT );
             GUILayout.BeginArea(wavesRect);
             DrawWaves();
             GUILayout.EndArea();
 
             yOffset += LINE_HEIGHT + MARGIN_WIDTH;
 
-            for (int s = 0; s < managerInstance.spawners.Length; ++s)
+            for (int s = 0; s < s_ManagerInstance.spawners.Length; ++s)
             {
 
 
-                Rect timeLineRect = new Rect(xOffset, yOffset, windowInstance.position.width - MARGIN_WIDTH,  LINE_HEIGHT * 6); //TODO find a way to place height
+                Rect timeLineRect = new Rect(xOffset, yOffset, s_WindowInstance.position.width - MARGIN_WIDTH,  LINE_HEIGHT * 6); //TODO find a way to place height
                 GUILayout.BeginArea(timeLineRect);
 
                 int ySize;
@@ -105,7 +104,7 @@ namespace SAB
            
 
             }
-            xOffset += 180 + managerInstance.waves.Count * (WAVE_WIDTH + MARGIN_WIDTH);
+            xOffset += 180 + s_ManagerInstance.waves.Count * (WAVE_WIDTH + MARGIN_WIDTH);
 
 
 
@@ -117,7 +116,7 @@ namespace SAB
 
             if (GUILayout.Button("Add Wave", GUILayout.Width(WAVE_WIDTH), GUILayout.Height(yOffset)))
             {
-                managerInstance.waves.Add(new EnemyWave(managerInstance.spawners.Length));
+                s_ManagerInstance.waves.Add(new EnemyWave(s_ManagerInstance.spawners.Length));
 
             }
             GUILayout.EndArea();
@@ -129,7 +128,7 @@ namespace SAB
         {
             _ySize = 0;
 
-            EditorGUILayout.LabelField(" "+ managerInstance.spawners[_spawnerIndex].ID); //hackedy hack
+            EditorGUILayout.LabelField(" "+ s_ManagerInstance.spawners[_spawnerIndex].ID); //hackedy hack
             _ySize += LINE_HEIGHT;
 
             //TODO have extra boxes for each spwawn block
@@ -138,7 +137,7 @@ namespace SAB
 
             int ySize = 0;
             //waves row
-            for (int w = 0; w < managerInstance.waves.Count; ++w)
+            for (int w = 0; w < s_ManagerInstance.waves.Count; ++w)
             {
                 //TODO x offset
                 Rect buttonRect = new Rect(xOffset, 0, WAVE_WIDTH, 80); //TODO height flexible
@@ -146,7 +145,7 @@ namespace SAB
 
                 EditorGUILayout.BeginVertical();
                 {
-                    SpawnPropabilityBlock currentSpb = managerInstance.waves[w].spawnPropability[_spawnerIndex];
+                    SpawnPropabilityBlock currentSpb = s_ManagerInstance.waves[w].spawnPropability[_spawnerIndex];
                     if (currentSpb.enemies == null || currentSpb.spawnRate == null)
                     {
                         currentSpb.enemies = new List<EnemyType>();
@@ -181,7 +180,7 @@ namespace SAB
                         currentSpb.spawnRate.Add(1);
                     }
 
-                    managerInstance.waves[w].spawnPropability[_spawnerIndex] = currentSpb;
+                    s_ManagerInstance.waves[w].spawnPropability[_spawnerIndex] = currentSpb;
                 }
                 EditorGUILayout.EndVertical();
 
@@ -214,7 +213,7 @@ namespace SAB
             int xOffset = 180; //TODO limit length of spawer labels
             //waves row
 
-            for (int w = 0; w < managerInstance.waves.Count; ++w)
+            for (int w = 0; w < s_ManagerInstance.waves.Count; ++w)
             {
 
                 Rect buttonRect = new Rect(xOffset, 0, WAVE_WIDTH, LINE_HEIGHT); //TODO height flexible
@@ -223,13 +222,13 @@ namespace SAB
                 EditorGUILayout.BeginHorizontal(GUILayout.Width(WAVE_WIDTH));
                 {
                     EditorGUILayout.LabelField("Wave " + (w + 1), GUILayout.Width(55) );
-                    managerInstance.waves[w].duration = EditorGUILayout.FloatField("", managerInstance.waves[w].duration, GUILayout.Width(30));
+                    s_ManagerInstance.waves[w].duration = EditorGUILayout.FloatField("", s_ManagerInstance.waves[w].duration, GUILayout.Width(30));
                     EditorGUILayout.LabelField("s", GUILayout.Width(10));
 
                     GUI.backgroundColor = new Color(1, 0.5f, 0.5f);
                     if (GUILayout.Button("X", GUILayout.Width(20)))
                     {
-                        managerInstance.waves.RemoveAt(w);
+                        s_ManagerInstance.waves.RemoveAt(w);
 
                     }
                     GUI.backgroundColor = Color.white;

@@ -8,26 +8,19 @@ namespace SAB
 
 	public class QuestPanel : MonoBehaviour 
 	{
-        public Text winTextPanel;
-		public Text loseTextPanel;
-        Animator winTextAnimator;
-		Animator loseTextAnimator;
+        [SerializeField] private Text m_WinTextPanel;
+		[SerializeField] private Text m_LoseTextPanel;
+        private Animator m_WinTextAnimator;
+		private Animator m_LoseTextAnimator;
 
 		///////////////////////////////////////////////////////////////////////////
 
 		void Awake()
 		{
-			winTextAnimator		= winTextPanel.GetComponent<Animator>();
-			loseTextAnimator	= loseTextPanel.GetComponent<Animator>();
+			m_WinTextAnimator	= m_WinTextPanel.GetComponent<Animator>();
+			m_LoseTextAnimator	= m_LoseTextPanel.GetComponent<Animator>();
 		}
-
-		///////////////////////////////////////////////////////////////////////////
-		
-		void Start() 
-		{
-			
-		}
-		
+				
 		///////////////////////////////////////////////////////////////////////////
 		
 		void Update() 
@@ -64,16 +57,16 @@ namespace SAB
                     break;
             }
 
-            if (winTextPanel.text != winString)
+            if (m_WinTextPanel.text != winString)
             {
-                winTextPanel.text = winString;
-                winTextAnimator.SetTrigger("Grow");
+                m_WinTextPanel.text = winString;
+                m_WinTextAnimator.SetTrigger("Grow");
             }
 
-			if (loseTextPanel.text != loseString)
+			if (m_LoseTextPanel.text != loseString)
             {
-                loseTextPanel.text = loseString;
-                loseTextAnimator.SetTrigger("Grow");
+                m_LoseTextPanel.text = loseString;
+                m_LoseTextAnimator.SetTrigger("Grow");
             }
 		}
 	}

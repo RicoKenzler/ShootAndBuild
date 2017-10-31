@@ -17,9 +17,7 @@ namespace SAB
 
 			GUILayout.Space(20);
 
-			
-
-            // Audio Manager only exist (and works) during play
+            // Some things Manager only exist (and works) during play
             GUI.enabled = Application.isPlaying;
 
             if (GUILayout.Button("AddShake"))

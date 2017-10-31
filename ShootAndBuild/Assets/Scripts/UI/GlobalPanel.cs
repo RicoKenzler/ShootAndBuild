@@ -7,62 +7,74 @@ namespace SAB
 {
     public class GlobalPanel : MonoBehaviour
     {
-        int lastGoldAmount = -1;
-        int lastLifesAmount = -1;
+        [SerializeField] private Text m_GoldAmountText;
+        [SerializeField] private Text m_LifesAmountText;
 
-        public Text goldAmountText;
-        public Text lifesAmountText;
+		///////////////////////////////////////////////////////////////////////////
 
-        public Animator goldAmountAnimator;
-        public Animator lifesAmountAnimator;
+        private int m_LastGoldAmount = -1;
+        private int m_LastLifesAmount = -1;
+		
+        private Animator m_GoldAmountAnimator;
+        private Animator m_LifesAmountAnimator;
+
+		///////////////////////////////////////////////////////////////////////////
 
         void Awake()
         {
             instance = this;
         }
 
-        // Use this for initialization
+		///////////////////////////////////////////////////////////////////////////
+        
         void Start()
         {
-            goldAmountAnimator = goldAmountText.GetComponent<Animator>();
-            lifesAmountAnimator = lifesAmountText.GetComponent<Animator>();
+            m_GoldAmountAnimator = m_GoldAmountText.GetComponent<Animator>();
+            m_LifesAmountAnimator = m_LifesAmountText.GetComponent<Animator>();
         }
 
-        // Update is called once per frame
+		///////////////////////////////////////////////////////////////////////////
+       
         void Update()
         {
             Inventory sharedInventory = Inventory.sharedInventoryInstance;
 
             int newGoldAmount = sharedInventory.GetItemCount(ItemType.Gold);
 
-            if (newGoldAmount != lastGoldAmount)
+            if (newGoldAmount != m_LastGoldAmount)
             {
-                goldAmountText.text = newGoldAmount.ToString();
-                lastGoldAmount = newGoldAmount;
+                m_GoldAmountText.text = newGoldAmount.ToString();
+                m_LastGoldAmount = newGoldAmount;
 
                 HighlightMoney();
             }
 
             int newLivesAmount = sharedInventory.GetItemCount(ItemType.ExtraLifes);
 
-            if (newLivesAmount != lastLifesAmount)
+            if (newLivesAmount != m_LastLifesAmount)
             {
-                lifesAmountText.text = newLivesAmount.ToString() + "  Lifes";
-                lastLifesAmount = newLivesAmount;
+                m_LifesAmountText.text = newLivesAmount.ToString() + "  Lifes";
+                m_LastLifesAmount = newLivesAmount;
 
                 HighlightLifes();
             }
         }
 
+		///////////////////////////////////////////////////////////////////////////
+
         public void HighlightMoney()
         {
-            goldAmountAnimator.SetTrigger("Grow");
+            m_GoldAmountAnimator.SetTrigger("Grow");
         }
+
+		///////////////////////////////////////////////////////////////////////////
 
         public void HighlightLifes()
         {
-            lifesAmountAnimator.SetTrigger("Grow");
+            m_LifesAmountAnimator.SetTrigger("Grow");
         }
+
+		///////////////////////////////////////////////////////////////////////////
 
         public static GlobalPanel instance
         {

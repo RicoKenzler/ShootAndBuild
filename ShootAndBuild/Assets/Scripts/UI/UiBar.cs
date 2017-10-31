@@ -1,31 +1,39 @@
 ﻿using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace SAB
 {
     public class UiBar : MonoBehaviour
     {
-        public Image BarFillingImage;
-        private RectTransform BarFillingTransform;
+		[FormerlySerializedAs("BarFillingImage")]
+        [SerializeField] private Image m_BarFillingImage;
 
+		[FormerlySerializedAs("TargetPercentage")]
         [Range(0.0f, 1.0f)]
-        public float TargetPercentage = 0.5f;
+        [SerializeField] private float m_TargetPercentage = 0.5f;
 
+		[FormerlySerializedAs("Smoothness")]
         [Range(0.0f, 0.999f)]
-        public float Smoothness = 0.85f;
+        [SerializeField] private float m_Smoothness = 0.85f;
 
-        float CurrentPercentage  = 0.5f;
+		///////////////////////////////////////////////////////////////////////////
+
+        private RectTransform m_BarFillingTransform;
+        private float m_CurrentPercentage  = 0.5f;
+
+		///////////////////////////////////////////////////////////////////////////
+
+		public float targetPercentage { get { return m_TargetPercentage; } set { m_TargetPercentage = value; } }
+
+		///////////////////////////////////////////////////////////////////////////
 
         private void Awake()
         {
-            BarFillingTransform = BarFillingImage.rectTransform;
+            m_BarFillingTransform = m_BarFillingImage.rectTransform;
         }
 
-        // Use this for initialization
-        void Start ()
-        {
-		
-	    }
+		///////////////////////////////////////////////////////////////////////////
 	
 	    // Update is called once per frame
 	    void Update ()
@@ -33,28 +41,31 @@ namespace SAB
 		    UpdateBarIfNecessary();
 	    }
 
+		///////////////////////////////////////////////////////////////////////////
+
         void UpdateBarIfNecessary()
         {
-            if (TargetPercentage == CurrentPercentage)
+            if (m_TargetPercentage == m_CurrentPercentage)
             {
                 return;
             }
 
-            CurrentPercentage = Mathf.Lerp(TargetPercentage, CurrentPercentage, Smoothness);
+            m_CurrentPercentage = Mathf.Lerp(m_TargetPercentage, m_CurrentPercentage, m_Smoothness);
 
-            if (Mathf.Abs(CurrentPercentage - TargetPercentage) < 0.005f)
+            if (Mathf.Abs(m_CurrentPercentage - m_TargetPercentage) < 0.005f)
             {
-                CurrentPercentage = TargetPercentage;
+                m_CurrentPercentage = m_TargetPercentage;
             }
 
             UpdateBar();
         }
 
+		///////////////////////////////////////////////////////////////////////////
+
         void UpdateBar()
         {
-            BarFillingTransform.anchorMin = new Vector2(CurrentPercentage - 1.0f, BarFillingTransform.anchorMin.y);
-            BarFillingTransform.anchorMax = new Vector2(CurrentPercentage, BarFillingTransform.anchorMax.y);
+            m_BarFillingTransform.anchorMin = new Vector2(m_CurrentPercentage - 1.0f, m_BarFillingTransform.anchorMin.y);
+            m_BarFillingTransform.anchorMax = new Vector2(m_CurrentPercentage, m_BarFillingTransform.anchorMax.y);
         }
-
     }
 }

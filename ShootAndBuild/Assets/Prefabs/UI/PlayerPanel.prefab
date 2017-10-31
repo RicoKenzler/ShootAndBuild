@@ -893,14 +893,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2246d5c0161bac54f827b83164c81d30, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  healthBarFillImage: {fileID: 114604971702907400}
-  activeItemImage: {fileID: 114830827929897052}
-  activeWeaponImage: {fileID: 114396841195093088}
-  activeBuildingImage: {fileID: 114756472964393910}
-  activeItemCountText: {fileID: 114340616867503302}
-  weaponSelectionRect: {fileID: 95042686880368708}
-  itemSelectionRect: {fileID: 95021404929993986}
-  buildingSelectionRect: {fileID: 95872189628408608}
+  m_HealthBarFillImage: {fileID: 114604971702907400}
+  m_ActiveItemImage: {fileID: 114830827929897052}
+  m_ActiveWeaponImage: {fileID: 114396841195093088}
+  m_ActiveBuildingImage: {fileID: 114756472964393910}
+  m_ActiveItemCountText: {fileID: 114340616867503302}
+  m_WeaponSelectionRect: {fileID: 95042686880368708}
+  m_ItemSelectionRect: {fileID: 95021404929993986}
+  m_BuildingSelectionRect: {fileID: 95872189628408608}
   useDynamicHealthColor: 0
   healthBarSmoothness: 0.8
   timeUntilSelectionFadeout: -1
