@@ -4,7 +4,6 @@ using UnityEngine;
 
 namespace SAB
 {
-
     public class PlayerMenu : MonoBehaviour
     {
         public AudioData menuSelectionRightSound;

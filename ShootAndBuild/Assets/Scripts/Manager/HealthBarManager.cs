@@ -21,13 +21,12 @@ namespace SAB
         public void AddHealthBar(Attackable attackable)
         {
             HealthBar instanceBG = Instantiate(m_HealthBarPrefab, transform);
-            instanceBG.target = attackable;
             instanceBG.name = "HealthBarBG - " + attackable.name;
-            instanceBG.isBackgroundDuplicate = true;
+			instanceBG.Init(attackable, true);
             m_HealthBars.Add(instanceBG.GetComponent<HealthBar>());
 
             HealthBar instance = Instantiate(m_HealthBarPrefab, transform);
-            instance.target = attackable;
+			instance.Init(attackable, false);
             instance.name = "HealthBar - " + attackable.name;
             m_HealthBars.Add(instance.GetComponent<HealthBar>());
         }

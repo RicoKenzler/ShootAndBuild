@@ -1,45 +1,59 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace SAB
 {
     public class EnemyBehaviourSimpleFollow : EnemyBehaviourBase
     {
-        public  float zigZagFrequency    = 0.0f;
-        public  float zigZagAngle        = 90.0f;
-        private int   zigZagID           = 0;
+		[FormerlySerializedAs("zigZagFrequency")]
+        [SerializeField] private float m_ZigZagFrequency					= 0.0f;
 
+		[FormerlySerializedAs("zigZagAngle")]
+        [SerializeField] private float m_ZigZagAngle						= 90.0f;
+
+		[FormerlySerializedAs("estimateFuturePosition")]
         [Range (0.0f, 1.0f)]
-        public float estimateFuturePosition     = 0.0f;
+        [SerializeField] private float m_EstimateFuturePosition				= 0.0f;
 
+		[FormerlySerializedAs("estimateFuturePositionSmoothness")]
         [Range (0.0f, 1.0f)]
-        public float estimateFuturePositionSmoothness = 0.9f;
+        [SerializeField] private float m_EstimateFuturePositionSmoothness	= 0.9f;
 
-        private GameObject  lastTarget = null;
-        private Vector3     lastTargetToTargetFutureOffset = Vector3.zero;
+		///////////////////////////////////////////////////////////////////////////
+
+        private int			m_ZigZagID							= 0;
+        private GameObject  m_LastTarget						= null;
+        private Vector3     m_LastTargetToTargetFutureOffset	= Vector3.zero;
+
+		///////////////////////////////////////////////////////////////////////////
 
         protected override void Start()
         {
 			base.Start();
 
             // TODO: Use other ID system
-            zigZagID = UnityEngine.Random.Range(0, 10000);
+            m_ZigZagID = UnityEngine.Random.Range(0, 10000);
         }
+
+		///////////////////////////////////////////////////////////////////////////
 
         Vector3 ApplyZigZagAmount(Vector3 direction)
         {
-            if (zigZagFrequency == 0.0f || zigZagAngle == 0.0f)
+            if (m_ZigZagFrequency == 0.0f || m_ZigZagAngle == 0.0f)
             {
                 return direction;
             }
 
-            float currentAngleNorm = Mathf.Sin(zigZagFrequency * Time.time + zigZagID);
-            float currentAngle = zigZagAngle * 0.5f * currentAngleNorm;
+            float currentAngleNorm = Mathf.Sin(m_ZigZagFrequency * Time.time + m_ZigZagID);
+            float currentAngle = m_ZigZagAngle * 0.5f * currentAngleNorm;
 
             Quaternion rotation = Quaternion.AngleAxis(currentAngle, Vector3.up);
 
             return rotation * direction;
         }
+
+		///////////////////////////////////////////////////////////////////////////
 
 		protected override void OnUpdate()
 		{
@@ -61,12 +75,12 @@ namespace SAB
 			float distToTarget = GetDistanceAndDirectionTo(exactTargetPos, out exactDirectionTowardsTarget);
 
             // 2) Mix with future position
-            float timeIntoFuture = Math.Min(distToTarget, 15.0f) * 0.2f * estimateFuturePosition;
+            float timeIntoFuture = Math.Min(distToTarget, 15.0f) * 0.2f * m_EstimateFuturePosition;
             Vector3 futureTargetPos = EstimateFuturePosition(nearestTarget, timeIntoFuture);
 
-            if (lastTarget != nearestTarget)
+            if (m_LastTarget != nearestTarget)
             {
-                lastTargetToTargetFutureOffset = Vector3.zero;
+                m_LastTargetToTargetFutureOffset = Vector3.zero;
             }
 
             // Try not to run away from current target, just to reach future target
@@ -77,7 +91,7 @@ namespace SAB
             }
 
             Vector3 targetToTargetFuturePositionOffset = futureTargetPos - exactTargetPos;
-            Vector3 smoothTargetToTargetFuturePositionOffset = Vector3.Lerp(targetToTargetFuturePositionOffset, lastTargetToTargetFutureOffset, estimateFuturePositionSmoothness);
+            Vector3 smoothTargetToTargetFuturePositionOffset = Vector3.Lerp(targetToTargetFuturePositionOffset, m_LastTargetToTargetFutureOffset, m_EstimateFuturePositionSmoothness);
             Vector3 smoothFuturePosition = exactTargetPos + smoothTargetToTargetFuturePositionOffset;
 
             // Debug future position:
@@ -119,10 +133,8 @@ namespace SAB
                 TryPerformInstantAttack(nearestTarget);
             }
 
-            lastTarget                      = nearestTarget;
-            lastTargetToTargetFutureOffset  = smoothTargetToTargetFuturePositionOffset;
+            m_LastTarget                      = nearestTarget;
+            m_LastTargetToTargetFutureOffset  = smoothTargetToTargetFuturePositionOffset;
         }
-
-     
     }
 }

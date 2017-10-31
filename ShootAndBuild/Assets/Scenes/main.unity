@@ -2138,8 +2138,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ac6ad59033b119e499c55681ff11c134, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  resolution: 1
-  size: 128
+  m_Resolution: 1
+  m_Size: 128
 --- !u!4 &83095323
 Transform:
   m_ObjectHideFlags: 0
@@ -9425,14 +9425,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 59143764a3ad1cd43877d99dddefa7ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  killingSpreeDefinitions:
-  - KillCount: 30
+  m_KillingSpreeDefinitions:
+  - KillCount: 25
     Title: Killing Spree
     AudioMessage: {fileID: 11400000, guid: 8900b7fb7edd01a40ac29f7fad9f3336, type: 2}
-  - KillCount: 60
+  - KillCount: 40
     Title: M-M-M-Monsterkill
     AudioMessage: {fileID: 11400000, guid: 5a4d414bed0ab074893797c352b0e85f, type: 2}
-  killingSpreeInterval: 2
+  m_KillingSpreeInterval: 2
 --- !u!4 &441971553
 Transform:
   m_ObjectHideFlags: 0
@@ -18681,11 +18681,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c9156fcae1fadac40b8e5284012b6e71, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startGold: 10
-  startLives: 4
-  startGrenades: 4
-  notEnoughResourcesSound: {fileID: 11400000, guid: 4a296f9be14238049812b642393e3ba8,
-    type: 2}
+  m_NotEnoughResourcesSound: {fileID: 0}
 --- !u!1 &908480222
 GameObject:
   m_ObjectHideFlags: 0

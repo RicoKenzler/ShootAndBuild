@@ -3,64 +3,82 @@ using UnityEngine.UI;
 
 namespace SAB
 {
-
     public class HealthBar : MonoBehaviour
     {
-        public Attackable target;
-        public int yOffset = -20;
-        public bool isBackgroundDuplicate = false;
-        public float healthSmoothAmount = 0.9f;
-        public bool hasDynamicColor = false;
+        [SerializeField] private int		m_yOffset				= -20;
+        [SerializeField] private bool		m_IsBackgroundDuplicate = false;
+        [SerializeField] private float		m_HealthSmoothAmount	= 0.9f;
+        [SerializeField] private bool		m_HasDynamicColor		= false;
 
-        private Vector2 originalSize;
-        private bool alwaysShowHealth = false;
-        private float lastDisplayedHealthFactor;
-        private Image image;
+		///////////////////////////////////////////////////////////////////////////
+
+        private bool		m_AlwaysShowHealth = false;
+        private Attackable	m_Target;
+        private Vector2		m_OriginalSize;
+        private float		m_LastDisplayedHealthFactor;
+        private Image		m_Image;
+
+		///////////////////////////////////////////////////////////////////////////
+
+		public bool			isBackgroundDuplicate	{ get { return m_IsBackgroundDuplicate; }}
+		public Attackable	target					{ get { return m_Target; } }
+		
+		///////////////////////////////////////////////////////////////////////////
+
+		public void Init(Attackable target, bool isBackgroundDuplicate)
+		{
+			m_Target				= target;
+			m_IsBackgroundDuplicate = isBackgroundDuplicate;
+		}
+
+		///////////////////////////////////////////////////////////////////////////
 
         void Start()
         {
-            originalSize = GetComponent<RectTransform>().sizeDelta;
-            image = GetComponent<Image>();
-            lastDisplayedHealthFactor = 1.0f;
-            alwaysShowHealth = (target.GetComponent<InputController>() != null);
+            m_OriginalSize = GetComponent<RectTransform>().sizeDelta;
+            m_Image = GetComponent<Image>();
+            m_LastDisplayedHealthFactor = 1.0f;
+            m_AlwaysShowHealth = (m_Target.GetComponent<InputController>() != null);
         }
+
+		///////////////////////////////////////////////////////////////////////////
 
         void Update()
         {
             RectTransform rect = GetComponent<RectTransform>();
 
-            Vector2 uiPos = RectTransformUtility.WorldToScreenPoint(Camera.main, target.transform.position);
-            uiPos.y += yOffset;
+            Vector2 uiPos = RectTransformUtility.WorldToScreenPoint(Camera.main, m_Target.transform.position);
+            uiPos.y += m_yOffset;
             rect.anchoredPosition = uiPos;
 
-            float exactHealthFactor = target.Health / (float)target.maxHealth;
-            float smoothedHealthFactor = Mathf.Lerp(lastDisplayedHealthFactor, exactHealthFactor, 1.0f - healthSmoothAmount);
+            float exactHealthFactor = m_Target.Health / (float)m_Target.maxHealth;
+            float smoothedHealthFactor = Mathf.Lerp(m_LastDisplayedHealthFactor, exactHealthFactor, 1.0f - m_HealthSmoothAmount);
 
-            lastDisplayedHealthFactor = smoothedHealthFactor;
+            m_LastDisplayedHealthFactor = smoothedHealthFactor;
 
-            if (!alwaysShowHealth && (smoothedHealthFactor >= 0.999f))
+            if (!m_AlwaysShowHealth && (smoothedHealthFactor >= 0.999f))
             {
                 // Full health: No Bar
                 rect.sizeDelta = new Vector2(0.0f, 0.0f);
                 return;
             }
 
-            if (isBackgroundDuplicate)
+            if (m_IsBackgroundDuplicate)
             {
-                image.color = new Color(0.2f, 0.2f, 0.2f, 1.0f);
-                rect.sizeDelta = originalSize;
+                m_Image.color = new Color(0.2f, 0.2f, 0.2f, 1.0f);
+                rect.sizeDelta = m_OriginalSize;
                 return;
             }
 
 
-            Vector2 desiredSize = new Vector2(originalSize.x * smoothedHealthFactor, originalSize.y);
+            Vector2 desiredSize = new Vector2(m_OriginalSize.x * smoothedHealthFactor, m_OriginalSize.y);
 
             rect.sizeDelta = desiredSize;
 
-            uiPos.x -= (originalSize.x - rect.sizeDelta.x) / 2;
+            uiPos.x -= (m_OriginalSize.x - rect.sizeDelta.x) / 2;
             rect.anchoredPosition = uiPos;
 
-            if (hasDynamicColor)
+            if (m_HasDynamicColor)
             {
                 Color desiredColor;
                 Color colorFullHealth = new Color(0.0f, 1.0f, 0.0f, 1.0f);
@@ -76,13 +94,12 @@ namespace SAB
                     desiredColor = Color.Lerp(colorMediumHealth, colorFullHealth, (smoothedHealthFactor - 0.5f) * 2.0f);
                 }
 
-                image.color = desiredColor;
+                m_Image.color = desiredColor;
             }
-            else if (target.faction == Faction.Player)
+            else if (m_Target.faction == Faction.Player)
             {
-                image.color = new Color(0.4f, 0.7f, 0.2f, 1.0f);
+                m_Image.color = new Color(0.4f, 0.7f, 0.2f, 1.0f);
             }
         }
-
     }
 }

@@ -2165,10 +2165,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c9156fcae1fadac40b8e5284012b6e71, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startGold: 10
-  startLives: 4
-  startGrenades: 4
-  notEnoughResourcesSound: {fileID: 11400000, guid: 4a296f9be14238049812b642393e3ba8,
+  m_StartGold: 10
+  m_StartLives: 4
+  m_StartGrenades: 4
+  m_NotEnoughResourcesSound: {fileID: 11400000, guid: 4a296f9be14238049812b642393e3ba8,
     type: 2}
 --- !u!114 &114039302743832264
 MonoBehaviour:
@@ -2243,10 +2243,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae2ccd3d32969ce4eb17f9a6832abd71, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerID: 1
-  speed: 10
-  deadzone: 0.2
-  movementAnimationMoultiplier: 0.5
+  m_Speed: 10
+  m_Deadzone: 0.2
+  m_MovementAnimationMoultiplier: 0.5
 --- !u!114 &114569976537219696
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -2,10 +2,8 @@
 using System.Collections.ObjectModel;
 using UnityEngine;
 
-
 namespace SAB
 {
-
     public enum InventorySelectionCategory
     {
         Item,
@@ -15,37 +13,41 @@ namespace SAB
         Count,
     }
 
+	///////////////////////////////////////////////////////////////////////////
+
     public class Inventory : MonoBehaviour
     {
-        Dictionary<ItemType, int> itemCounts = new Dictionary<ItemType, int>();
+        [SerializeField] private AudioData m_NotEnoughResourcesSound;
 
-        public int startGold = 10;
-        public int startLives = 4;
-        public int startGrenades = 4;
+		///////////////////////////////////////////////////////////////////////////
 
-        public AudioData notEnoughResourcesSound;
+        private Dictionary<ItemType, int> m_ItemCounts = new Dictionary<ItemType, int>();
 
-        private Throwable throwable;
-        private InputController inputController;
-        private Attackable attackable;
-        private PlayerMenu playerMenu;
-		private Buffable buffable;
+        private Throwable		m_Throwable;
+        private InputController m_InputController;
+        private Attackable		m_Attackable;
+        private PlayerMenu		m_PlayerMenu;
+		private Buffable		m_Buffable;
+
+		///////////////////////////////////////////////////////////////////////////
 
         // ReadOnly Dictionaries are not supported before .Net 4.5
         public Dictionary<ItemType, int> GetItemsReadOnly()
         {
-            return itemCounts;
+            return m_ItemCounts;
         }
+
+		///////////////////////////////////////////////////////////////////////////
 
         void Awake()
         {
-            inputController = GetComponent<InputController>();
-            attackable = GetComponent<Attackable>();
-            playerMenu = GetComponent<PlayerMenu>();
-            throwable = GetComponent<Throwable>();
-			buffable = GetComponent<Buffable>();
+            m_InputController = GetComponent<InputController>();
+            m_Attackable = GetComponent<Attackable>();
+            m_PlayerMenu = GetComponent<PlayerMenu>();
+            m_Throwable = GetComponent<Throwable>();
+			m_Buffable = GetComponent<Buffable>();
 
-            if (inputController)
+            if (m_InputController)
             {
                 // init start items
                 Dictionary<ItemType, ItemData> itemInfos = ItemManager.instance.itemDataMap;
@@ -66,26 +68,30 @@ namespace SAB
             }
         }
 
+		///////////////////////////////////////////////////////////////////////////
+
         public void TriggerNotEnoughItemsSound()
         {
             // Only applicable for shared inventory (so we have ONE place where to balance it)
-            Debug.Assert(!inputController);
+            Debug.Assert(!m_InputController);
 
-            AudioManager.instance.PlayAudio(notEnoughResourcesSound);
+            AudioManager.instance.PlayAudio(m_NotEnoughResourcesSound);
         }
+
+		///////////////////////////////////////////////////////////////////////////
 
         public void TryUseActiveItem()
         {
-            if (!inputController)
+            if (!m_InputController)
             {
                 // not aplicable for shared inventory
                 Debug.Assert(false);
                 return;
             }
 
-            PlayerPanel playerPanel = PlayerPanelGroup.instance.GetPlayerPanel(inputController.playerID);
+            PlayerPanel playerPanel = PlayerPanelGroup.instance.GetPlayerPanel(m_InputController.playerID);
 
-            if ((GetItemCount(playerMenu.activeItemType) <= 0) && !CheatManager.instance.noResourceCosts)
+            if ((GetItemCount(m_PlayerMenu.activeItemType) <= 0) && !CheatManager.instance.noResourceCosts)
             {
                 // Item not usable
                 sharedInventoryInstance.TriggerNotEnoughItemsSound();
@@ -98,13 +104,15 @@ namespace SAB
             // Use Item
             playerPanel.HighlightActiveItem();
 
-            UseItem(playerMenu.activeItemType);
+            UseItem(m_PlayerMenu.activeItemType);
 
             if (!CheatManager.instance.noResourceCosts)
             {
-                AddItem(playerMenu.activeItemType, -1);
+                AddItem(m_PlayerMenu.activeItemType, -1);
             }
         }
+
+		///////////////////////////////////////////////////////////////////////////
 
         void UseItem(ItemType itemType, int count = 1)
         {
@@ -116,7 +124,7 @@ namespace SAB
                     Debug.Assert(false, "Passive Items are not usable");
                     break;
                 case ItemUsageCategory.UsableItem:
-                    throwable.Throw();
+                    m_Throwable.Throw();
                     break;
                 case ItemUsageCategory.Weapon:
                     Debug.Assert(false, "Weapons are not usable");
@@ -125,11 +133,11 @@ namespace SAB
                     switch (itemInfos.itemType)
                     {
                         case ItemType.CheeseHeal:
-                            attackable.Heal(1.0f);
+                            m_Attackable.Heal(1.0f);
                             break;
 
                         case ItemType.AppleHeal:
-                            attackable.Heal(0.25f);
+                            m_Attackable.Heal(0.25f);
                             break;
 
                         default:
@@ -143,12 +151,14 @@ namespace SAB
                     break;
             }
 
-			buffable.AddBuffs(itemInfos.buffs);
+			m_Buffable.AddBuffs(itemInfos.buffs);
 
             // Player Counter
-            PlayerID? user = inputController ? (PlayerID?)inputController.playerID : null;
+            PlayerID? user = m_InputController ? (PlayerID?)m_InputController.playerID : null;
             CounterManager.instance.AddToCounters(user, CounterType.ItemsUsed, count, itemInfos.itemType.ToString());
         }
+
+		///////////////////////////////////////////////////////////////////////////
 
         public void AddItem(ItemType itemType, int count)
         {
@@ -171,21 +181,23 @@ namespace SAB
                 return;
             }
 
-            if (itemCounts.ContainsKey(itemType))
+            if (m_ItemCounts.ContainsKey(itemType))
             {
-                itemCounts[itemType] += count;
+                m_ItemCounts[itemType] += count;
             }
             else
             {
-                itemCounts.Add(itemType, count);
+                m_ItemCounts.Add(itemType, count);
             }
         }
+
+		///////////////////////////////////////////////////////////////////////////
 
         public int GetItemCount(ItemType itemType)
         {
             int itemAmount = 0;
 
-            if (!itemCounts.TryGetValue(itemType, out itemAmount))
+            if (!m_ItemCounts.TryGetValue(itemType, out itemAmount))
             {
                 return 0;
             }
@@ -193,11 +205,11 @@ namespace SAB
             return itemAmount;
         }
 
+		///////////////////////////////////////////////////////////////////////////
+
         public static Inventory sharedInventoryInstance
         {
             get; private set;
         }
     }
-
-
 }

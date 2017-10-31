@@ -1,19 +1,25 @@
 ﻿using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace SAB.Spawn
 {
-
     public class EnemySpawner : MonoBehaviour
     {
-        public float spawnRadius = 3; 
+		[FormerlySerializedAs("spawnRadius")]
+        [SerializeField] private float m_SpawnRadius = 3; 
 
-        private SpawnPropabilityBlock currentSpwanBlock = null;
-        private float[] spawnTimer = null;
+        private SpawnPropabilityBlock	m_CurrentSpwanBlock = null;
+        private float[]					m_SpawnTimer		= null;
 
         //??
+		// profit!
         int totalSpawnCount = 0;
 
         ///////////////////////////////////////////////////////////////////////////
+
+		public float spawnRadius { get { return m_SpawnRadius; } }
+
+		///////////////////////////////////////////////////////////////////////////
 
         public string ID
         {
@@ -35,25 +41,25 @@ namespace SAB.Spawn
         void Update()
         {
 
-            if (currentSpwanBlock == null)
+            if (m_CurrentSpwanBlock == null)
             {
                 return;
             }
 
 
-            for (int i = 0; i < spawnTimer.Length; ++i)
+            for (int i = 0; i < m_SpawnTimer.Length; ++i)
             {
-                spawnTimer[i] += Time.deltaTime * this.currentSpwanBlock.spawnRate[i];
+                m_SpawnTimer[i] += Time.deltaTime * this.m_CurrentSpwanBlock.spawnRate[i];
 
-                while (spawnTimer[i] >= 1)
+                while (m_SpawnTimer[i] >= 1)
                 {
-                    spawnTimer[i] -= 1;
+                    m_SpawnTimer[i] -= 1;
                     if (CheatManager.instance.stopEnemySpawns)
                     {
                         return;
                     }
 
-                    Spawn(this.currentSpwanBlock.enemies[i]);
+                    Spawn(this.m_CurrentSpwanBlock.enemies[i]);
                 }
             }
         }
@@ -74,7 +80,7 @@ namespace SAB.Spawn
             if (enemyPrefab != null)
             {
                 totalSpawnCount++;
-                Vector3 spawnPosition = this.transform.position + Random.insideUnitSphere *spawnRadius;
+                Vector3 spawnPosition = this.transform.position + Random.insideUnitSphere *m_SpawnRadius;
                 spawnPosition.y = this.transform.position.y;
                 GameObject enemyInstance = GameObject.Instantiate(enemyPrefab, spawnPosition, Quaternion.identity);
                 enemyInstance.name = enemyPrefab.name + " " + totalSpawnCount;
@@ -83,12 +89,11 @@ namespace SAB.Spawn
 
         ///////////////////////////////////////////////////////////////////////////
 
-
         public void SetSpawnRate(SpawnPropabilityBlock _spawnData)
         {
 
-            this.currentSpwanBlock = _spawnData;
-            this.spawnTimer = new float[this.currentSpwanBlock.spawnRate.Count];
+            this.m_CurrentSpwanBlock = _spawnData;
+            this.m_SpawnTimer = new float[this.m_CurrentSpwanBlock.spawnRate.Count];
 
         }
 

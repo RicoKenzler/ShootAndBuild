@@ -2,41 +2,47 @@
 
 namespace SAB
 {
-
     public class InputController : MonoBehaviour
     {
-        public PlayerID playerID;
+        [SerializeField] private float m_Speed = 10.0f;
+        [SerializeField] private float m_Deadzone = 0.2f;
+        [SerializeField] private float m_MovementAnimationMoultiplier = 0.5f;
 
-        public float speed = 10.0f;
-        public float deadzone = 0.2f;
-        public float movementAnimationMoultiplier = 0.5f;
+		///////////////////////////////////////////////////////////////////////////
 
-        private Animation animationController;
-        private TauntController tauntController;
-        private Shootable shootable;
-        private Movable movable;
-        private Builder builder;
-        private Inventory inventory;
-        private PlayerMenu playerMenu;
+        private PlayerID		m_PlayerID;
+		private Animation		m_AnimationController;
+        private TauntController m_TauntController;
+        private Shootable		m_Shootable;
+        private Movable			m_Movable;
+        private Builder			m_Builder;
+        private Inventory		m_Inventory;
+        private PlayerMenu		m_PlayerMenu;
+
+		///////////////////////////////////////////////////////////////////////////
+
+		public PlayerID playerID { get { return m_PlayerID; } set { m_PlayerID = value; }}
+
+		///////////////////////////////////////////////////////////////////////////
 
         void Start()
         {
-            tauntController = GetComponent<TauntController>();
-            shootable = GetComponent<Shootable>();
-            movable = GetComponent<Movable>();
-            builder = GetComponent<Builder>();
-            inventory = GetComponent<Inventory>();
-            playerMenu = GetComponent<PlayerMenu>();
+            m_TauntController = GetComponent<TauntController>();
+            m_Shootable = GetComponent<Shootable>();
+            m_Movable = GetComponent<Movable>();
+            m_Builder = GetComponent<Builder>();
+            m_Inventory = GetComponent<Inventory>();
+            m_PlayerMenu = GetComponent<PlayerMenu>();
 
-            animationController = GetComponentInChildren<Animation>();
-            if (animationController == null)
+            m_AnimationController = GetComponentInChildren<Animation>();
+            if (m_AnimationController == null)
             {
-                Debug.LogWarning("no animation found on player " + playerID);
+                Debug.LogWarning("no animation found on player " + m_PlayerID);
             }
             else
             {
-                animationController["idle"].speed = 1;
-                animationController.Play();
+                m_AnimationController["idle"].speed = 1;
+                m_AnimationController.Play();
             }
         }
 
@@ -52,10 +58,10 @@ namespace SAB
             /////////////////////////////////////////
             // Movement
             /////////////////////////////////////////
-            float leftHorizontal = InputManager.instance.GetAxisValue(playerID, AxisType.LeftAxisH);
-            float leftVertical = InputManager.instance.GetAxisValue(playerID, AxisType.LeftAxisV);
-            float rightHorizontal = InputManager.instance.GetAxisValue(playerID, AxisType.RightAxisH);
-            float rightVertical = InputManager.instance.GetAxisValue(playerID, AxisType.RightAxisV);
+            float leftHorizontal = InputManager.instance.GetAxisValue(m_PlayerID, AxisType.LeftAxisH);
+            float leftVertical = InputManager.instance.GetAxisValue(m_PlayerID, AxisType.LeftAxisV);
+            float rightHorizontal = InputManager.instance.GetAxisValue(m_PlayerID, AxisType.RightAxisH);
+            float rightVertical = InputManager.instance.GetAxisValue(m_PlayerID, AxisType.RightAxisV);
 
             Vector3 leftInputVector = new Vector3(leftHorizontal, 0, leftVertical);
             float leftInputVectorLength = leftInputVector.magnitude;
@@ -64,12 +70,12 @@ namespace SAB
             {
                 leftInputVector.Normalize();
             }
-            else if (Mathf.Abs(leftHorizontal) < deadzone && Mathf.Abs(leftVertical) < deadzone)
+            else if (Mathf.Abs(leftHorizontal) < m_Deadzone && Mathf.Abs(leftVertical) < m_Deadzone)
             {
                 leftInputVector = Vector3.zero;
             }
 
-            movable.moveForce = leftInputVector * speed;
+            m_Movable.moveForce = leftInputVector * m_Speed;
 
             /////////////////////////////////////////
             // Rotation
@@ -77,7 +83,7 @@ namespace SAB
             Vector3 rightInputVector = new Vector3(rightHorizontal, 0, rightVertical);
             float rightInputVectorLength = rightInputVector.magnitude;
 
-            if (Mathf.Abs(rightHorizontal) < deadzone && Mathf.Abs(rightVertical) < deadzone)
+            if (Mathf.Abs(rightHorizontal) < m_Deadzone && Mathf.Abs(rightVertical) < m_Deadzone)
             {
                 rightInputVector = Vector3.zero;
                 rightInputVectorLength = 0;
@@ -91,27 +97,27 @@ namespace SAB
             /////////////////////////////////////////
             // Buttons
             /////////////////////////////////////////
-            bool useItemButtonPressed = InputManager.instance.WasButtonJustPressed(playerID, ButtonType.UseItem);
-            bool shootTriggerPressed = InputManager.instance.IsButtonDown(playerID, ButtonType.Shoot);
+            bool useItemButtonPressed = InputManager.instance.WasButtonJustPressed(m_PlayerID, ButtonType.UseItem);
+            bool shootTriggerPressed = InputManager.instance.IsButtonDown(m_PlayerID, ButtonType.Shoot);
 
-            if (shootable != null && shootTriggerPressed)
+            if (m_Shootable != null && shootTriggerPressed)
             {
-                shootable.Shoot();
+                m_Shootable.Shoot();
             }
 
             if (useItemButtonPressed)
             {
-                inventory.TryUseActiveItem();
+                m_Inventory.TryUseActiveItem();
             }
 
-            if (InputManager.instance.WasButtonJustPressed(playerID, ButtonType.Taunt))
+            if (InputManager.instance.WasButtonJustPressed(m_PlayerID, ButtonType.Taunt))
             {
-                tauntController.PlayTaunt();
+                m_TauntController.PlayTaunt();
             }
 
-            if (InputManager.instance.WasButtonJustPressed(playerID, ButtonType.Build))
+            if (InputManager.instance.WasButtonJustPressed(m_PlayerID, ButtonType.Build))
             {
-                builder.TryBuild();
+                m_Builder.TryBuild();
             }
 
             /////////////////////////////////////////
@@ -119,41 +125,41 @@ namespace SAB
             /////////////////////////////////////////
 
             bool positive;
-            if (InputManager.instance.WasAxisJustPressed(playerID, AxisType.MenuH, out positive))
+            if (InputManager.instance.WasAxisJustPressed(m_PlayerID, AxisType.MenuH, out positive))
             {
-                playerMenu.ChangeSelectionCategory(positive);
+                m_PlayerMenu.ChangeSelectionCategory(positive);
             }
 
-            if (InputManager.instance.WasAxisJustPressed(playerID, AxisType.MenuV, out positive))
+            if (InputManager.instance.WasAxisJustPressed(m_PlayerID, AxisType.MenuV, out positive))
             {
-                playerMenu.CycleThroughCategory(positive);
+                m_PlayerMenu.CycleThroughCategory(positive);
             }
 
             /////////////////////////////////////////
             // Animation
             /////////////////////////////////////////
 
-            if (animationController != null)
+            if (m_AnimationController != null)
             {
-                float movementSpeed = movable.moveForce.magnitude;
+                float movementSpeed = m_Movable.moveForce.magnitude;
 
-                if (!animationController.IsPlaying("attack"))
+                if (!m_AnimationController.IsPlaying("attack"))
                 {
                     if (movementSpeed > 0)
                     {
-                        animationController["walk"].speed = movementSpeed * movementAnimationMoultiplier;
-                        animationController.Play("walk");
+                        m_AnimationController["walk"].speed = movementSpeed * m_MovementAnimationMoultiplier;
+                        m_AnimationController.Play("walk");
                     }
                     else
                     {
-                        animationController.Play("idle");
+                        m_AnimationController.Play("idle");
                     }
                 }
 
                 if (useItemButtonPressed)
                 {
-                    animationController["attack"].speed = 2;
-                    animationController.Play("attack");
+                    m_AnimationController["attack"].speed = 2;
+                    m_AnimationController.Play("attack");
                 }
             }
 

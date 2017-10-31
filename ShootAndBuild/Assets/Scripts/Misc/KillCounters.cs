@@ -1,10 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace SAB
 {
-
     [System.Serializable]
     public struct KillingSpreeDefinition
     {
@@ -13,23 +13,35 @@ namespace SAB
         public AudioData AudioMessage;
     }
 
+	///////////////////////////////////////////////////////////////////////////
+
     public class KillCounters : MonoBehaviour
     {
-        public KillingSpreeDefinition[] killingSpreeDefinitions;
-        public float killingSpreeInterval = 3.0f;
+		[FormerlySerializedAs("killingSpreeDefinitions")]
+        [SerializeField] private KillingSpreeDefinition[]	m_KillingSpreeDefinitions;
+        [SerializeField] private float						m_KillingSpreeInterval = 2.0f;
 
-        KillCounter[] killCounters;
+		///////////////////////////////////////////////////////////////////////////
+
+        private KillCounter[] m_KillCounters;
+
+		///////////////////////////////////////////////////////////////////////////
+
+		public KillingSpreeDefinition[] killingSpreeDefinitions { get { return m_KillingSpreeDefinitions; } }
+		public float					killingSpreeInterval	{ get { return m_KillingSpreeInterval; } }
+
+		///////////////////////////////////////////////////////////////////////////
 
         void Awake()
         {
             instance = this;
 
-            killCounters = new KillCounter[(int)PlayerID.Count];
+            m_KillCounters = new KillCounter[(int)PlayerID.Count];
 
-            for (int i = 0; i < killCounters.Length; ++i)
+            for (int i = 0; i < m_KillCounters.Length; ++i)
             {
-                killCounters[i] = new KillCounter();
-                killCounters[i].playerID = (PlayerID)i;
+                m_KillCounters[i] = new KillCounter();
+                m_KillCounters[i].playerID = (PlayerID)i;
             }
         }
 
@@ -56,7 +68,7 @@ namespace SAB
 
                 int killCount = CounterManager.instance.GetCounterValue(playerID, CounterType.KilledEnemies, "").CurrentCount;
 
-                killCounters[(int)playerID].OnCountersChanged(Time.time, killCount);
+                m_KillCounters[(int)playerID].OnCountersChanged(Time.time, killCount);
             }
         }
 
