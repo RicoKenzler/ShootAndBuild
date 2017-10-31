@@ -9,22 +9,14 @@ public class ParticleManager : MonoBehaviour
         instance = this;
     }
 
-	// Use this for initialization
-	void Start ()
-	{
-		
-	}
-	
-	// Update is called once per frame
-	void Update ()
-	{
-
-	}
+	///////////////////////////////////////////////////////////////////////////
 
 	public static ParticleManager instance
     {
         get; private set;
     }
+
+	///////////////////////////////////////////////////////////////////////////
 
 	public void SpawnParticle(GameObject particleAsset, GameObject spawner, Vector3 position, Quaternion? rotation, bool isInLocalSpace, float lifetime, bool scaleByParentSize, bool offsetToOutside)
 	{
@@ -53,6 +45,8 @@ public class ParticleManager : MonoBehaviour
 		// unfortunately it's not trivial to get the particles duration :(
 		Destroy(newObject, lifetime);
 	}
+
+	///////////////////////////////////////////////////////////////////////////
 
 	private float GetScale(GameObject spawner)
 	{

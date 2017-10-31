@@ -3210,9 +3210,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a739a455706fb914ea278b664e55a4ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerPrefab: {fileID: 1229075479329374, guid: f6383526f2d250f469efc2ccf8646d7e,
+  m_PlayerPrefab: {fileID: 1229075479329374, guid: f6383526f2d250f469efc2ccf8646d7e,
     type: 2}
-  spawnFailSound: {fileID: 11400000, guid: 80faac22e6623574299acf97f572436a, type: 2}
+  m_SpawnFailSound: {fileID: 11400000, guid: 80faac22e6623574299acf97f572436a, type: 2}
 --- !u!1 &168819910
 GameObject:
   m_ObjectHideFlags: 0
@@ -19628,9 +19628,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d110d731a8b13f4ca33d5c8655c14aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  notificationBar: {fileID: 1290277512}
-  notificationBarText: {fileID: 1665516965}
-  notificationDisplayDuration: 3
+  m_NotificationBar: {fileID: 1290277512}
+  m_NotificationBarText: {fileID: 1665516965}
+  m_NotificationDisplayDuration: 3
 --- !u!1 &916404809
 GameObject:
   m_ObjectHideFlags: 0

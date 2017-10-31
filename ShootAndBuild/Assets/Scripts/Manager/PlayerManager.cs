@@ -4,6 +4,8 @@ using UnityEngine;
 namespace SAB
 {
 
+	///////////////////////////////////////////////////////////////////////////
+
     public enum PlayerID
     {
         Player1 = 0,
@@ -14,26 +16,36 @@ namespace SAB
         Count = 4
     }
 
+	///////////////////////////////////////////////////////////////////////////
+
     public class PlayerManager : MonoBehaviour
     {
-        public GameObject playerPrefab;
-        public AudioData spawnFailSound;
-
-        private ButtonType spawnButton = ButtonType.Taunt;
-
         class Player
         {
             public GameObject playerObject;
             public bool isAlive;
         }
 
-        private Dictionary<PlayerID, Player> activePlayersById = new Dictionary<PlayerID, Player>();
+		///////////////////////////////////////////////////////////////////////////
+
+        [SerializeField] private GameObject m_PlayerPrefab;
+        [SerializeField] private AudioData	m_SpawnFailSound;
+
+        private const ButtonType m_SpawnButton = ButtonType.Taunt;
+
+		///////////////////////////////////////////////////////////////////////////
+
+        private Dictionary<PlayerID, Player> m_ActivePlayersById = new Dictionary<PlayerID, Player>();
+
+		///////////////////////////////////////////////////////////////////////////
 
         void Awake()
         {
             instance = this;
             allAlivePlayers = new List<InputController>();
         }
+
+		///////////////////////////////////////////////////////////////////////////
 
         void Update()
         {
@@ -42,9 +54,11 @@ namespace SAB
             TryRespawnDeadPlayers();
         }
 
+		///////////////////////////////////////////////////////////////////////////
+
         private void TrySpawnNewPlayers()
         {
-            InputMethod? buttonPresser = InputManager.instance.IsButtonDownForUnusedInputMethod(spawnButton);
+            InputMethod? buttonPresser = InputManager.instance.IsButtonDownForUnusedInputMethod(m_SpawnButton);
 
             if (!buttonPresser.HasValue)
             {
@@ -54,7 +68,7 @@ namespace SAB
             // 1) Try spawn NEW players
             foreach (PlayerID playerID in System.Enum.GetValues(typeof(PlayerID)))
             {
-                if (activePlayersById.ContainsKey(playerID))
+                if (m_ActivePlayersById.ContainsKey(playerID))
                 {
                     // Player already exists
                     continue;
@@ -74,10 +88,14 @@ namespace SAB
             }
         }
 
+		///////////////////////////////////////////////////////////////////////////
+
         public bool HasPlayerJoined(PlayerID playerID)
         {
-            return activePlayersById.ContainsKey(playerID);
+            return m_ActivePlayersById.ContainsKey(playerID);
         }
+
+		///////////////////////////////////////////////////////////////////////////
 
         private bool TrySpendLife()
         {
@@ -88,20 +106,22 @@ namespace SAB
             }
 
             GlobalPanel.instance.HighlightLifes();
-            AudioManager.instance.PlayAudio(spawnFailSound);
+            AudioManager.instance.PlayAudio(m_SpawnFailSound);
             return false;
         }
 
+		///////////////////////////////////////////////////////////////////////////
+
         private void TryRespawnDeadPlayers()
         {
-            foreach (KeyValuePair<PlayerID, Player> playerPair in activePlayersById)
+            foreach (KeyValuePair<PlayerID, Player> playerPair in m_ActivePlayersById)
             {
                 if (playerPair.Value.isAlive)
                 {
                     continue;
                 }
 
-                if (InputManager.instance.WasButtonJustPressed(playerPair.Key, spawnButton))
+                if (InputManager.instance.WasButtonJustPressed(playerPair.Key, m_SpawnButton))
                 {
                     if (!TrySpendLife())
                     {
@@ -112,6 +132,8 @@ namespace SAB
                 }
             }
         }
+
+		///////////////////////////////////////////////////////////////////////////
 
         private void RespawnDeadPlayer(PlayerID playerID)
         {
@@ -126,10 +148,12 @@ namespace SAB
             allAlivePlayers.Add(player.playerObject.GetComponent<InputController>());
         }
 
+		///////////////////////////////////////////////////////////////////////////
+
         private void OnPlayerDies(PlayerID playerID)
         {
             Player player;
-            if (!activePlayersById.TryGetValue(playerID, out player))
+            if (!m_ActivePlayersById.TryGetValue(playerID, out player))
             {
                 Debug.Assert(false, "Deleting player " + playerID + "that was not registered.");
                 return;
@@ -147,6 +171,8 @@ namespace SAB
             Debug.Assert(removed);
         }
 
+		///////////////////////////////////////////////////////////////////////////
+
 		private Vector3 GetRandomPlayerSpawnPosition()
 		{
 			float randRadius = 5.0f;
@@ -156,9 +182,11 @@ namespace SAB
             return new Vector3(spawnCircleCenter.x, 0.0f, spawnCircleCenter.y) + rndSpawnOffset;
 		}
 
+		///////////////////////////////////////////////////////////////////////////
+
         private void SpawnNewPlayer(PlayerID playerID)
         {
-            GameObject newPlayerObject = Instantiate(playerPrefab, gameObject.transform);
+            GameObject newPlayerObject = Instantiate(m_PlayerPrefab, gameObject.transform);
             newPlayerObject.name = playerID.ToString();
 
             newPlayerObject.transform.position = GetRandomPlayerSpawnPosition();
@@ -169,7 +197,7 @@ namespace SAB
             newPlayer.playerObject = newPlayerObject;
             newPlayer.isAlive = true;
 
-            activePlayersById[playerID] = newPlayer;
+            m_ActivePlayersById[playerID] = newPlayer;
             allAlivePlayers.Add(newPlayerObject.GetComponent<InputController>());
 
             InputManager.instance.SetVibration(playerID, 0.5f, 0.5f, 0.2f);
@@ -177,21 +205,27 @@ namespace SAB
             PlayerPanelGroup.instance.AddPlayerPanel(playerID, newPlayerObject);
         }
 
+		///////////////////////////////////////////////////////////////////////////
+
         private Player GetPlayer(PlayerID playerID)
         {
-            if (!activePlayersById.ContainsKey(playerID))
+            if (!m_ActivePlayersById.ContainsKey(playerID))
             {
                 Debug.Log("Accessing invalid Player " + playerID);
                 return new Player();
             }
 
-            return activePlayersById[playerID];
+            return m_ActivePlayersById[playerID];
         }
+
+		///////////////////////////////////////////////////////////////////////////
 
         public List<InputController> allAlivePlayers
         {
             get; private set;
         }
+
+		///////////////////////////////////////////////////////////////////////////
 
         public static PlayerManager instance
         {

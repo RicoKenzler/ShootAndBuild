@@ -32,64 +32,57 @@ namespace SAB
 
 	public class NotificationManager : MonoBehaviour 
 	{
-		public GameObject	notificationBar;
-		public Text			notificationBarText;
-		public float		notificationDisplayDuration = 2.0f;
+		[SerializeField] private GameObject	m_NotificationBar;
+		[SerializeField] private Text		m_NotificationBarText;
+		[SerializeField] private float		m_NotificationDisplayDuration = 3.0f;
 
-		private Animator    notificationBarAnimator;
-		private float		hideNotificationCountdown   = -1.0f;
+		private Animator    m_NotificationBarAnimator;
+		private float		m_HideNotificationCountdown   = -1.0f;
 
-		Queue<Notification>	queuedTexts = new Queue<Notification>();
+		Queue<Notification>	m_QueuedTexts = new Queue<Notification>();
 
 		///////////////////////////////////////////////////////////////////////////
 
 		void Awake()
 		{
 			instance = this;
-			notificationBarAnimator = notificationBar.GetComponent<Animator>();
-		}
-
-		///////////////////////////////////////////////////////////////////////////
-		
-		void Start() 
-		{
-			
+			m_NotificationBarAnimator = m_NotificationBar.GetComponent<Animator>();
 		}
 		
 		///////////////////////////////////////////////////////////////////////////
 
 		public void ShowNotification(Notification notification)
 		{
-			queuedTexts.Enqueue(notification);
+			m_QueuedTexts.Enqueue(notification);
 		}
 
 		///////////////////////////////////////////////////////////////////////////
 
 		private void HideNotification()
 		{
-			notificationBarAnimator.SetBool("Visible", false);
+			m_NotificationBarAnimator.SetBool("Visible", false);
 		}
 
 		///////////////////////////////////////////////////////////////////////////
 		
 		void Update() 
 		{
-			if (hideNotificationCountdown > 0)
+			if (m_HideNotificationCountdown > 0)
 			{
-				hideNotificationCountdown -= Time.deltaTime;
+				m_HideNotificationCountdown -= Time.deltaTime;
 
-				if (hideNotificationCountdown <= 0)
+				if (m_HideNotificationCountdown <= 0)
 				{
  					HideNotification();
 				}
 			}
 
-			if (hideNotificationCountdown <= 0 && queuedTexts.Count > 0)
+			if (m_HideNotificationCountdown <= 0 && m_QueuedTexts.Count > 0)
 			{
-				Notification nextNotification = queuedTexts.Dequeue();
+				Notification nextNotification = m_QueuedTexts.Dequeue();
 				ApplyNotification(nextNotification);
 
-				hideNotificationCountdown = notificationDisplayDuration;
+				m_HideNotificationCountdown = m_NotificationDisplayDuration;
 			}
 		}
 
@@ -97,8 +90,8 @@ namespace SAB
 
 		void ApplyNotification(Notification notification)
 		{
-			notificationBarText.text  = notification.Text;
-			notificationBarAnimator.SetBool("Visible", true);
+			m_NotificationBarText.text  = notification.Text;
+			m_NotificationBarAnimator.SetBool("Visible", true);
 
 			Color textColor = Color.white;
 
@@ -117,7 +110,7 @@ namespace SAB
 					break;
 			}
 
-			notificationBarText.color = textColor;
+			m_NotificationBarText.color = textColor;
 		}
 
 		///////////////////////////////////////////////////////////////////////////
