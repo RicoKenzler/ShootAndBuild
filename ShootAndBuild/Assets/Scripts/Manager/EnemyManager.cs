@@ -12,17 +12,7 @@ namespace SAB
             allEnemies = new List<EnemyBehaviourBase>();
         }
 
-        // Use this for initialization
-        void Start()
-        {
-
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-
-        }
+		///////////////////////////////////////////////////////////////////////////
 
         public void RegisterEnemy(EnemyBehaviourBase behaviour, bool unregister)
         {
@@ -37,14 +27,20 @@ namespace SAB
             }
         }
 
+		///////////////////////////////////////////////////////////////////////////
+
         public static EnemyManager instance
         {
             get; private set;
         }
 
+		///////////////////////////////////////////////////////////////////////////
+
         public List<EnemyBehaviourBase> allEnemies
         {
             get; private set;
         }
+
+		///////////////////////////////////////////////////////////////////////////
     }
 }

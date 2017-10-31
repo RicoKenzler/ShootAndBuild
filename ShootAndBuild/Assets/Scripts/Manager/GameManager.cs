@@ -13,17 +13,23 @@ namespace SAB
         Lost,
         Won
     }
-    
+  
+	///////////////////////////////////////////////////////////////////////////
+	  
     public enum WinCondition
     {
         MoneyTotal          // gain X money
     };
+
+	///////////////////////////////////////////////////////////////////////////
 
     public enum LoseCondition
     {
         Default,             // lose all lifes
         DestroyObject,
     };
+
+	///////////////////////////////////////////////////////////////////////////
 
     public class GameManager : MonoBehaviour
     {

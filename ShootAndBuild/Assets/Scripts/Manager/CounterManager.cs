@@ -6,12 +6,13 @@ using TCounterContext = System.String;
 
 namespace SAB
 {
-
     public enum CounterType
     {
         KilledEnemies,
         ItemsUsed,
     }
+
+	///////////////////////////////////////////////////////////////////////////
 
     public struct CounterValue
     {
@@ -23,20 +24,30 @@ namespace SAB
         }
     }
 
+	///////////////////////////////////////////////////////////////////////////
+
     public delegate void CountersChangedCallback();
+
+	///////////////////////////////////////////////////////////////////////////
 
     public class CounterManager : MonoBehaviour
     {
         [System.NonSerialized]
         public const string NO_CONTEXT = "";
-        public static int COUNTER_PER_PLAYER_COUNT = (int)PlayerID.Count + 1;
+        public const int COUNTER_PER_PLAYER_COUNT = (int)PlayerID.Count + 1;
+
+		///////////////////////////////////////////////////////////////////////////
 
         public event CountersChangedCallback OnCountersChanged;
+
+		///////////////////////////////////////////////////////////////////////////
 
         public bool countersAreDirty
         {
             get; private set;
         }
+
+		///////////////////////////////////////////////////////////////////////////
 
         // example:
         // If we kill an enemy, we increment
@@ -47,11 +58,15 @@ namespace SAB
             get; private set;
         }
 
+		///////////////////////////////////////////////////////////////////////////
+
         void Awake()
         {
             instance = this;
             ResetAllCounters();
         }
+
+		///////////////////////////////////////////////////////////////////////////
 
         int PlayerIDToCounterIndex(PlayerID? srcPlayer)
         {
@@ -63,10 +78,14 @@ namespace SAB
             return (int)srcPlayer.Value;
         }
 
+		///////////////////////////////////////////////////////////////////////////
+
         void Start()
         {
 
         }
+
+		///////////////////////////////////////////////////////////////////////////
 
         public void ResetAllCounters()
         {
@@ -80,6 +99,8 @@ namespace SAB
             countersAreDirty = true;
         }
 
+		///////////////////////////////////////////////////////////////////////////
+
         void Update()
         {
             if (countersAreDirty)
@@ -92,6 +113,8 @@ namespace SAB
                 countersAreDirty = false;
             }
         }
+
+		///////////////////////////////////////////////////////////////////////////
 
         private void AddToCounter(PlayerID? player, CounterType type, int delta, TCounterContext context)
         {
@@ -120,6 +143,8 @@ namespace SAB
 
             OnValueChanged(type, delta, context);
         }
+
+		///////////////////////////////////////////////////////////////////////////
 
         public void AddToCounters(PlayerID? player, CounterType type, int delta, TCounterContext context = NO_CONTEXT)
         {
@@ -154,6 +179,8 @@ namespace SAB
             }
         }
 
+		///////////////////////////////////////////////////////////////////////////
+
         public CounterValue GetCounterValue(PlayerID? player, CounterType type, TCounterContext contextObject = NO_CONTEXT)
         {
             CounterValue fallbackValue = new CounterValue();
@@ -180,11 +207,15 @@ namespace SAB
             return value;
         }
 
+		///////////////////////////////////////////////////////////////////////////
+
         // Here we can trigger CounterType specific stuff
         private void OnValueChanged(CounterType type, int delta, TCounterContext context = NO_CONTEXT)
         {
             countersAreDirty = true;
         }
+
+		///////////////////////////////////////////////////////////////////////////
 
         public static CounterManager instance
         {
