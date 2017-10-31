@@ -1,9 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace SAB
 {
+	///////////////////////////////////////////////////////////////////////////
 
     public enum ItemType
     {
@@ -19,6 +21,8 @@ namespace SAB
         WeaponRailgun		= 101,
 		WeaponTowerDefault	= 102,
     }
+	
+	///////////////////////////////////////////////////////////////////////////
 
     public enum ItemUsageCategory
     {
@@ -28,6 +32,8 @@ namespace SAB
         UsableItem = 3,     //< e.g. grenade
         Weapon = 4,     //< e.g. shotgun
     }
+	
+	///////////////////////////////////////////////////////////////////////////
 
     [System.Serializable]
     public struct ItemDrop
@@ -37,22 +43,30 @@ namespace SAB
         public int minDropAmount;
         public int maxDropAmount;
     }
+	
+	///////////////////////////////////////////////////////////////////////////
 
     public class ItemManager : MonoBehaviour
     {
-        [SerializeField]
-        private ItemData[] allItemDatas;
+        [FormerlySerializedAs("allItemDatas")]
+        [SerializeField] private ItemData[] m_AllItemDatas;
 
-		public float itemFadeOutTime = 10.0f;
+		[SerializeField] private float m_ItemFadeOutTime = 20.0f;
+
+		public float itemFadeOutTime { get { return m_ItemFadeOutTime; } }
+
+		///////////////////////////////////////////////////////////////////////////
 
         void Start()
         {
             InitItemDatasAndStartGoods();
         }
 
+		///////////////////////////////////////////////////////////////////////////
+
         void InitItemDatasAndStartGoods()
         {
-            foreach (ItemData itemData in allItemDatas)
+            foreach (ItemData itemData in m_AllItemDatas)
             {
                 // 1) store into map
                 if (itemDataMap.ContainsKey(itemData.itemType))
@@ -83,11 +97,15 @@ namespace SAB
             }
         }
 
+		///////////////////////////////////////////////////////////////////////////
+
         void Awake()
         {
             instance = this;
             itemDataMap = new Dictionary<ItemType, ItemData>();
         }
+
+		///////////////////////////////////////////////////////////////////////////
 
         public ItemData GetItemInfos(ItemType itemType)
         {
@@ -100,10 +118,14 @@ namespace SAB
             return outItemData;
         }
 
+		///////////////////////////////////////////////////////////////////////////
+
         public static ItemManager instance
         {
             get; private set;
         }
+
+		///////////////////////////////////////////////////////////////////////////
 
         public Dictionary<ItemType, ItemData> itemDataMap
         {

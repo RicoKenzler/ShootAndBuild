@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Audio;
+using UnityEngine.Serialization;
 
 namespace SAB
 {
@@ -27,86 +28,90 @@ namespace SAB
 		///////////////////////////////////////////////////////////////////////////	
 		// Volumes
 		///////////////////////////////////////////////////////////////////////////	
-		private const float MusicGroupVolumeMuted   = -80.0f;
-		public  float		MusicGroupVolumeDefault = 0.0f;
+		private const float MUSIC_GROUP_VOLUME_MUTED	= -80.0f;
+		public  float		m_MusicGroupVolumeDefault	= -4.8f;
 
-		private const float TrackVolumeMuted		= 0.0f;
-		private const float TrackVolumeDefault		= 1.0f;
+		private const float TRACK_VOLUME_MUTED			= 0.0f;
+		private const float TRACK_VOLUME_DEFAULT		= 1.0f;
 
 		///////////////////////////////////////////////////////////////////////////	
 		// Mixer & Tracks
 		///////////////////////////////////////////////////////////////////////////	
-		public AudioMixer		AudioMixer;
-		public ModularTrack[]	MusicTracks;
-		private AudioMixerGroup MusicMixerGroup;
+		[SerializeField] private AudioMixer			m_AudioMixer;
+
+		[FormerlySerializedAs("MusicTracks")]
+		[SerializeField] private ModularTrack[]		m_MusicTracks;
+		private					 AudioMixerGroup	m_MusicMixerGroup;
 
 		///////////////////////////////////////////////////////////////////////////	
 		// Combat Mood Parameter
 		///////////////////////////////////////////////////////////////////////////	
-		public float keepCombatStateDuration = 1.0f;
-		public float combatFadeInDuration    = 2.0f;
-		public float combatFadeOutDuration   = 3.0f;
+		[SerializeField] private float m_KeepCombatStateDuration = 1.0f;
+		[SerializeField] private float m_CombatFadeInDuration    = 2.0f;
+		[SerializeField] private float m_CombatFadeOutDuration   = 4.0f;
 
 		///////////////////////////////////////////////////////////////////////////	
 		// Pause Parameter
 		///////////////////////////////////////////////////////////////////////////	
-		public float pauseFadeInDuration	 = 1.0f;
-		public float pauseFadeOutDuration	 = 0.5f;
+		[SerializeField] private float m_PauseFadeInDuration	 = 3.0f;
+		[SerializeField] private float m_PauseFadeOutDuration	 = 1.0f;
 		
 		///////////////////////////////////////////////////////////////////////////	
 		// Danger Parameter
 		///////////////////////////////////////////////////////////////////////////	
-		public float keepDangerDuration		 = 3.0f;
-		public float dangerFadeInDuration    = 0.3f;
-		public float dangerFadeOutDuration   = 3.0f;
+		[SerializeField] private float m_KeepDangerDuration		= 1.0f;
+		[SerializeField] private float m_DangerFadeInDuration	= 0.3f;
+		[SerializeField] private float m_DangerFadeOutDuration	= 3.0f;
 
 		///////////////////////////////////////////////////////////////////////////	
 		// Sources for Music Tracks
 		///////////////////////////////////////////////////////////////////////////	
-		private AudioSource	baseTrackSource;
-		private AudioSource	calmSource;
-		private AudioSource	combatSource;
+		private AudioSource	m_BaseTrackSource;
+		private AudioSource	m_CalmSource;
+		private AudioSource	m_CombatSource;
 
-		private AudioSource positiveBuffLoopSource;
-		private AudioSource negativeBuffLoopSource;
-		private AudioSource dangerLoopSource;
+		private AudioSource m_PositiveBuffLoopSource;
+		private AudioSource m_NegativeBuffLoopSource;
+		private AudioSource m_DangerLoopSource;
 
 		///////////////////////////////////////////////////////////////////////////	
 		// Combat State
 		///////////////////////////////////////////////////////////////////////////	
-		private float	lastCombatTime	= 0.0f;
-		private bool	isInCombat		= false;
-		private float	combatAmount	= 0.001f;
+		private float	m_LastCombatTime	= 0.0f;
+		private bool	m_IsInCombat		= false;
+		private float	m_CombatAmount		= 0.001f;
 
 		///////////////////////////////////////////////////////////////////////////	
 		// Pause State
 		///////////////////////////////////////////////////////////////////////////	
-		private float pauseAmount = 0.0f;
+		private float m_PauseAmount = 0.0f;
 
 		///////////////////////////////////////////////////////////////////////////	
 		// Danger State
 		///////////////////////////////////////////////////////////////////////////	
-		private float lastDangerTime	= 0.0f;
-		private bool  isInDanger		= false;
-		private float dangerAmount		= 0.001f;
+		private float m_LastDangerTime	= 0.0f;
+		private bool  m_IsInDanger		= false;
+		private float m_DangerAmount		= 0.001f;
 
 		///////////////////////////////////////////////////////////////////////////	
 		// Buff-Music State
 		///////////////////////////////////////////////////////////////////////////	
-		private int playerPositiveBuffCount = 0;
-		private int playerNegativeBuffCount = 0;
+		private int m_PlayerPositiveBuffCount = 0;
+		private int m_PlayerNegativeBuffCount = 0;
 
 		///////////////////////////////////////////////////////////////////////////	
 		// Playlist
 		///////////////////////////////////////////////////////////////////////////	
-		int			currentTrackIndex = -1;
-		List<int>	currentPlaylistIndices = new List<int>();
+		int			m_CurrentTrackIndex = -1;
+		List<int>	m_CurrentPlaylistIndices = new List<int>();
+
+		///////////////////////////////////////////////////////////////////////////
 
 		public float LastCombatTime
 		{
 			get
 			{
-				return lastCombatTime;
+				return m_LastCombatTime;
 			}
 		}
 
@@ -129,23 +134,23 @@ namespace SAB
 				audioSources[i] = gameObject.AddComponent<AudioSource>();
 			}
 
-			MusicMixerGroup = AudioMixer.FindMatchingGroups("Music")[0];
+			m_MusicMixerGroup = m_AudioMixer.FindMatchingGroups("Music")[0];
 			
-			baseTrackSource			= audioSources[0];
-			calmSource				= audioSources[1];
-			combatSource			= audioSources[2];
-			positiveBuffLoopSource	= audioSources[3];
-			negativeBuffLoopSource	= audioSources[4];
-			dangerLoopSource		= audioSources[5];
+			m_BaseTrackSource			= audioSources[0];
+			m_CalmSource				= audioSources[1];
+			m_CombatSource			= audioSources[2];
+			m_PositiveBuffLoopSource	= audioSources[3];
+			m_NegativeBuffLoopSource	= audioSources[4];
+			m_DangerLoopSource		= audioSources[5];
 
-			baseTrackSource.outputAudioMixerGroup			= MusicMixerGroup;
-			calmSource.outputAudioMixerGroup				= MusicMixerGroup;
-			combatSource.outputAudioMixerGroup				= MusicMixerGroup;
-			positiveBuffLoopSource.outputAudioMixerGroup	= MusicMixerGroup;
-			negativeBuffLoopSource.outputAudioMixerGroup	= MusicMixerGroup;
-			dangerLoopSource.outputAudioMixerGroup			= MusicMixerGroup;
+			m_BaseTrackSource.outputAudioMixerGroup			= m_MusicMixerGroup;
+			m_CalmSource.outputAudioMixerGroup				= m_MusicMixerGroup;
+			m_CombatSource.outputAudioMixerGroup				= m_MusicMixerGroup;
+			m_PositiveBuffLoopSource.outputAudioMixerGroup	= m_MusicMixerGroup;
+			m_NegativeBuffLoopSource.outputAudioMixerGroup	= m_MusicMixerGroup;
+			m_DangerLoopSource.outputAudioMixerGroup			= m_MusicMixerGroup;
 			
-			currentPlaylistIndices = Enumerable.Range(0,MusicTracks.Length).ToList();
+			m_CurrentPlaylistIndices = Enumerable.Range(0,m_MusicTracks.Length).ToList();
 
 			NextTrack();
 		}
@@ -154,16 +159,16 @@ namespace SAB
 
 		public void SignalIsInCombat()
 		{
-			lastCombatTime = Time.time;
-			isInCombat = true;
+			m_LastCombatTime = Time.time;
+			m_IsInCombat = true;
 		}
 
 		///////////////////////////////////////////////////////////////////////////
 
 		public void SignalIsDanger()
 		{
-			lastDangerTime = Time.time;
-			isInDanger = true;
+			m_LastDangerTime = Time.time;
+			m_IsInDanger = true;
 		}
 
 		///////////////////////////////////////////////////////////////////////////
@@ -172,14 +177,14 @@ namespace SAB
 		{
 			if (CheatManager.instance.disableMusic)
 			{
-				MusicMixerGroup.audioMixer.SetFloat("MusicVolume", MusicGroupVolumeMuted);
+				m_MusicMixerGroup.audioMixer.SetFloat("MusicVolume", MUSIC_GROUP_VOLUME_MUTED);
 			}
 			else
 			{
-				MusicMixerGroup.audioMixer.SetFloat("MusicVolume", MusicGroupVolumeDefault);
+				m_MusicMixerGroup.audioMixer.SetFloat("MusicVolume", m_MusicGroupVolumeDefault);
 			}
 
-			if (!baseTrackSource.isPlaying)
+			if (!m_BaseTrackSource.isPlaying)
 			{
 				NextTrack();
 			}
@@ -200,13 +205,13 @@ namespace SAB
 		{
 			if (GameManager.Instance.Status == GameStatus.Running)
 			{
-				pauseAmount -= Time.unscaledDeltaTime / (pauseFadeOutDuration + 0.001f);
-				pauseAmount = Mathf.Max(pauseAmount, 0.0f);
+				m_PauseAmount -= Time.unscaledDeltaTime / (m_PauseFadeOutDuration + 0.001f);
+				m_PauseAmount = Mathf.Max(m_PauseAmount, 0.0f);
 			}
 			else
 			{
-				pauseAmount += Time.unscaledDeltaTime / (pauseFadeInDuration + 0.001f);
-				pauseAmount = Mathf.Min(pauseAmount, 1.0f);
+				m_PauseAmount += Time.unscaledDeltaTime / (m_PauseFadeInDuration + 0.001f);
+				m_PauseAmount = Mathf.Min(m_PauseAmount, 1.0f);
 			}
 		}
 
@@ -214,52 +219,52 @@ namespace SAB
 
 		ModularTrack GetCurrentTrack()
 		{
-			int realIndex = currentPlaylistIndices[currentTrackIndex];
-			return MusicTracks[realIndex];
+			int realIndex = m_CurrentPlaylistIndices[m_CurrentTrackIndex];
+			return m_MusicTracks[realIndex];
 		}
 
 		///////////////////////////////////////////////////////////////////////////
 
 		public void NextTrack()
 		{
-			baseTrackSource.Stop();
-			calmSource.Stop();
-			combatSource.Stop();
-			positiveBuffLoopSource.Stop();
-			negativeBuffLoopSource.Stop();
-			dangerLoopSource.Stop();
+			m_BaseTrackSource.Stop();
+			m_CalmSource.Stop();
+			m_CombatSource.Stop();
+			m_PositiveBuffLoopSource.Stop();
+			m_NegativeBuffLoopSource.Stop();
+			m_DangerLoopSource.Stop();
 
-			int oldTrackIndex = currentTrackIndex;
-			currentTrackIndex = (currentTrackIndex + 1) % MusicTracks.Length;
+			int oldTrackIndex = m_CurrentTrackIndex;
+			m_CurrentTrackIndex = (m_CurrentTrackIndex + 1) % m_MusicTracks.Length;
 
-			if (currentTrackIndex == 0)
+			if (m_CurrentTrackIndex == 0)
 			{
 				// shuffle
-				currentPlaylistIndices = currentPlaylistIndices.OrderBy(a => Random.Range(0, 10000)).ToList();
+				m_CurrentPlaylistIndices = m_CurrentPlaylistIndices.OrderBy(a => Random.Range(0, 10000)).ToList();
 
 				// make sure we do not have the same song twice in a row
-				if (currentPlaylistIndices.Count >= 2 && currentPlaylistIndices[0] == oldTrackIndex)
+				if (m_CurrentPlaylistIndices.Count >= 2 && m_CurrentPlaylistIndices[0] == oldTrackIndex)
 				{
-					int swapWithIndex = currentPlaylistIndices.Count - 1;
-					currentPlaylistIndices[0] = currentPlaylistIndices[swapWithIndex];
-					currentPlaylistIndices[swapWithIndex] = oldTrackIndex;
+					int swapWithIndex = m_CurrentPlaylistIndices.Count - 1;
+					m_CurrentPlaylistIndices[0] = m_CurrentPlaylistIndices[swapWithIndex];
+					m_CurrentPlaylistIndices[swapWithIndex] = oldTrackIndex;
 				}
 			}
 
 			ModularTrack currentTrack = GetCurrentTrack();
 
-			baseTrackSource.clip		= currentTrack.BaseTrack;
-			calmSource.clip				= currentTrack.CalmTrack;
-			combatSource.clip			= currentTrack.CombatTrack;
-			positiveBuffLoopSource.clip	= currentTrack.PositiveBuffLoop;
-			negativeBuffLoopSource.clip	= currentTrack.NegativeBuffLoop;
-			dangerLoopSource.clip		= currentTrack.DangerLoop;
+			m_BaseTrackSource.clip		= currentTrack.BaseTrack;
+			m_CalmSource.clip				= currentTrack.CalmTrack;
+			m_CombatSource.clip			= currentTrack.CombatTrack;
+			m_PositiveBuffLoopSource.clip	= currentTrack.PositiveBuffLoop;
+			m_NegativeBuffLoopSource.clip	= currentTrack.NegativeBuffLoop;
+			m_DangerLoopSource.clip		= currentTrack.DangerLoop;
 
-			baseTrackSource.loop		= false;
-			calmSource.loop				= false;
-			combatSource.loop			= false;
-			positiveBuffLoopSource.loop	= true;
-			negativeBuffLoopSource.loop	= true;
+			m_BaseTrackSource.loop		= false;
+			m_CalmSource.loop				= false;
+			m_CombatSource.loop			= false;
+			m_PositiveBuffLoopSource.loop	= true;
+			m_NegativeBuffLoopSource.loop	= true;
 
 			if (currentTrack.BaseTrack.length != currentTrack.CalmTrack.length 
 			 || currentTrack.BaseTrack.length != currentTrack.CombatTrack.length)
@@ -267,9 +272,9 @@ namespace SAB
 				Debug.Log("Music Tracks do not have the same length: " + currentTrack.BaseTrack.length + " " + currentTrack.CalmTrack.length + " " + currentTrack.CombatTrack.length);
 			}
 
-			baseTrackSource.Play();
-			calmSource.Play();
-			combatSource.Play();
+			m_BaseTrackSource.Play();
+			m_CalmSource.Play();
+			m_CombatSource.Play();
 		}
 
 		///////////////////////////////////////////////////////////////////////////
@@ -289,51 +294,51 @@ namespace SAB
 
 		private void TickMoodFades()
 		{
-			if (isInCombat)
+			if (m_IsInCombat)
 			{
-				combatAmount += Time.unscaledDeltaTime * (1.0f / (combatFadeInDuration + float.Epsilon));
+				m_CombatAmount += Time.unscaledDeltaTime * (1.0f / (m_CombatFadeInDuration + float.Epsilon));
 			}
 			else
 			{
-				combatAmount -= Time.unscaledDeltaTime * (1.0f / (combatFadeOutDuration + float.Epsilon));
+				m_CombatAmount -= Time.unscaledDeltaTime * (1.0f / (m_CombatFadeOutDuration + float.Epsilon));
 			}
 
-			combatAmount = Mathf.Clamp(combatAmount, 0.0f, 1.0f);
+			m_CombatAmount = Mathf.Clamp(m_CombatAmount, 0.0f, 1.0f);
 
-			calmSource.volume	= LinearToLogarithmic(1.0f - combatAmount);
-			combatSource.volume = LinearToLogarithmic(combatAmount);
+			m_CalmSource.volume	= LinearToLogarithmic(1.0f - m_CombatAmount);
+			m_CombatSource.volume = LinearToLogarithmic(m_CombatAmount);
 
 			// pause will let calm/combat track fade out
-			calmSource.volume	*= (1.0f - pauseAmount);
-			combatSource.volume *= (1.0f - pauseAmount);
+			m_CalmSource.volume	*= (1.0f - m_PauseAmount);
+			m_CombatSource.volume *= (1.0f - m_PauseAmount);
 		}
 
 		///////////////////////////////////////////////////////////////////////////
 
 		private void TickDangerVolume()
 		{
-			if (isInDanger)
+			if (m_IsInDanger)
 			{
-				if (dangerAmount == 1.0f)
+				if (m_DangerAmount == 1.0f)
 				{
 					return;
 				}
 
-				dangerAmount += Time.unscaledDeltaTime * (1.0f / (dangerFadeInDuration + float.Epsilon));
+				m_DangerAmount += Time.unscaledDeltaTime * (1.0f / (m_DangerFadeInDuration + float.Epsilon));
 			}
 			else
 			{
-				if (dangerAmount == 0.0f)
+				if (m_DangerAmount == 0.0f)
 				{
 					return;
 				}
 
-				dangerAmount -= Time.unscaledDeltaTime * (1.0f / (dangerFadeOutDuration + float.Epsilon));
+				m_DangerAmount -= Time.unscaledDeltaTime * (1.0f / (m_DangerFadeOutDuration + float.Epsilon));
 			}
 
-			dangerAmount = Mathf.Clamp(dangerAmount, 0.0f, 1.0f);
+			m_DangerAmount = Mathf.Clamp(m_DangerAmount, 0.0f, 1.0f);
 
-			dangerLoopSource.volume	= dangerAmount;
+			m_DangerLoopSource.volume	= m_DangerAmount;
 		}
 
 		///////////////////////////////////////////////////////////////////////////
@@ -342,7 +347,7 @@ namespace SAB
 		{
 			additionalLoop.Stop();
 		
-			double currentPositionWithinTrack = (double) baseTrackSource.time;
+			double currentPositionWithinTrack = (double) m_BaseTrackSource.time;
 			double beatsPassed = currentPositionWithinTrack * ((double) GetCurrentTrack().BPM / 60.0);
 
 			// all 8 beats the loop may start
@@ -359,13 +364,13 @@ namespace SAB
 		{
 			if (isPositive)
 			{
-				playerPositiveBuffCount += delta;
-				Debug.Assert(playerPositiveBuffCount >= 0);
+				m_PlayerPositiveBuffCount += delta;
+				Debug.Assert(m_PlayerPositiveBuffCount >= 0);
 			}
 			else
 			{
-				playerNegativeBuffCount += delta;
-				Debug.Assert(playerNegativeBuffCount >= 0);
+				m_PlayerNegativeBuffCount += delta;
+				Debug.Assert(m_PlayerNegativeBuffCount >= 0);
 			}
 		
 			UpdateAllLoops();
@@ -376,52 +381,52 @@ namespace SAB
 		void UpdateAllLoops()
 		{
 			// Positive Buffs
-			if (playerPositiveBuffCount > 0 && !positiveBuffLoopSource.isPlaying)
+			if (m_PlayerPositiveBuffCount > 0 && !m_PositiveBuffLoopSource.isPlaying)
 			{
-				StartAdditionalLoop(positiveBuffLoopSource);
+				StartAdditionalLoop(m_PositiveBuffLoopSource);
 			}
-			else if (playerPositiveBuffCount == 0)
+			else if (m_PlayerPositiveBuffCount == 0)
 			{
-				positiveBuffLoopSource.Stop();
+				m_PositiveBuffLoopSource.Stop();
 			}
 
 			// Negative Buffs
-			if (playerNegativeBuffCount > 0 && !negativeBuffLoopSource.isPlaying)
+			if (m_PlayerNegativeBuffCount > 0 && !m_NegativeBuffLoopSource.isPlaying)
 			{
-				StartAdditionalLoop(negativeBuffLoopSource);
+				StartAdditionalLoop(m_NegativeBuffLoopSource);
 			}
-			else if (playerNegativeBuffCount == 0)
+			else if (m_PlayerNegativeBuffCount == 0)
 			{
-				negativeBuffLoopSource.Stop();
+				m_NegativeBuffLoopSource.Stop();
 			}
 
 			// Danger
-			if (dangerAmount > 0.0f && !dangerLoopSource.isPlaying)
+			if (m_DangerAmount > 0.0f && !m_DangerLoopSource.isPlaying)
             {
-				StartAdditionalLoop(dangerLoopSource);
+				StartAdditionalLoop(m_DangerLoopSource);
 			}
-			else if (dangerAmount == 0.0f)
+			else if (m_DangerAmount == 0.0f)
 			{
-				dangerLoopSource.Stop();
+				m_DangerLoopSource.Stop();
 			}
 
-			positiveBuffLoopSource.volume	= 1.0f - pauseAmount;
-			negativeBuffLoopSource.volume	= 1.0f - pauseAmount;
-			dangerLoopSource.volume			= 1.0f - pauseAmount;
+			m_PositiveBuffLoopSource.volume	= 1.0f - m_PauseAmount;
+			m_NegativeBuffLoopSource.volume	= 1.0f - m_PauseAmount;
+			m_DangerLoopSource.volume			= 1.0f - m_PauseAmount;
 		}
 
 		///////////////////////////////////////////////////////////////////////////
 
 		void TickCombatState()
 		{
-			if (!isInCombat)
+			if (!m_IsInCombat)
 			{
 				return;
 			}
 
-			if (Time.time > lastCombatTime + keepCombatStateDuration)
+			if (Time.time > m_LastCombatTime + m_KeepCombatStateDuration)
 			{
-				isInCombat = false;
+				m_IsInCombat = false;
 			}
 		}
 
@@ -429,14 +434,14 @@ namespace SAB
 
 		void TickDangerState()
 		{
-			if (!isInDanger)
+			if (!m_IsInDanger)
 			{
 				return;
 			} 
 
-			if (Time.time > lastDangerTime + keepDangerDuration)
+			if (Time.time > m_LastDangerTime + m_KeepDangerDuration)
 			{
-				isInDanger = false;
+				m_IsInDanger = false;
 				UpdateAllLoops();
 			}
 		}

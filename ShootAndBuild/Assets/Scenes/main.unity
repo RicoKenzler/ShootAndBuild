@@ -20119,7 +20119,7 @@ RectTransform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 960664154}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -532.11426, z: 0}
+  m_LocalPosition: {x: 0, y: -786.5807, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1202426837}
@@ -20787,7 +20787,7 @@ RectTransform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 984237150}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 960, y: 532.11426, z: 0}
+  m_LocalPosition: {x: 960.00006, y: 786.5807, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1650187685}
@@ -25383,8 +25383,8 @@ RectTransform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1202426836}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 106, y: 47.5, z: 0}
-  m_LocalScale: {x: 0.36458334, y: 0.36458334, z: 0.36458334}
+  m_LocalPosition: {x: -11.5, y: 44, z: 0}
+  m_LocalScale: {x: 0.24218749, y: 0.24218749, z: 0.24218749}
   m_Children:
   - {fileID: 984237151}
   - {fileID: 960664155}
@@ -27370,7 +27370,7 @@ RectTransform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1290277512}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 399.0857, z: 0}
+  m_LocalPosition: {x: 0, y: 589.93555, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1665516964}
@@ -29396,7 +29396,7 @@ RectTransform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1403535520}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 106, y: 47.5, z: 0}
+  m_LocalPosition: {x: -11.5, y: 44, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1752819847}
@@ -39766,9 +39766,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 19173e34b7906a542a67cef8c8f8ece7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MusicGroupVolumeDefault: -4.8
-  AudioMixer: {fileID: 24100000, guid: 4bbc8c941e664a1458add2f014bede89, type: 2}
-  MusicTracks:
+  m_MusicGroupVolumeDefault: -4.8
+  m_AudioMixer: {fileID: 24100000, guid: 4bbc8c941e664a1458add2f014bede89, type: 2}
+  m_MusicTracks:
   - BaseTrack: {fileID: 8300000, guid: 3ea9f148670af0a4ca6a84ad27a14763, type: 3}
     CalmTrack: {fileID: 8300000, guid: 6a96682ff588ed64e9fe2d04490420c3, type: 3}
     CombatTrack: {fileID: 8300000, guid: bdae79ea04c5d3d4da90c3e63bd590a9, type: 3}
@@ -39797,14 +39797,14 @@ MonoBehaviour:
     NegativeBuffLoop: {fileID: 8300000, guid: c9dd16fe679581f42b09c2fb1c0d907b, type: 3}
     DangerLoop: {fileID: 8300000, guid: a48be70226a1ec04cb70b8d492cc36a9, type: 3}
     BPM: 110
-  keepCombatStateDuration: 1
-  combatFadeInDuration: 2
-  combatFadeOutDuration: 4
-  pauseFadeInDuration: 3
-  pauseFadeOutDuration: 1
-  keepDangerDuration: 1
-  dangerFadeInDuration: 0.3
-  dangerFadeOutDuration: 3
+  m_KeepCombatStateDuration: 1
+  m_CombatFadeInDuration: 2
+  m_CombatFadeOutDuration: 4
+  m_PauseFadeInDuration: 3
+  m_PauseFadeOutDuration: 1
+  m_KeepDangerDuration: 1
+  m_DangerFadeInDuration: 0.3
+  m_DangerFadeOutDuration: 3
 --- !u!1 &1916314737
 GameObject:
   m_ObjectHideFlags: 0
