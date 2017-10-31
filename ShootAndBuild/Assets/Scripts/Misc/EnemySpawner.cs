@@ -25,13 +25,7 @@ namespace SAB.Spawn
 
 		///////////////////////////////////////////////////////////////////////////
 
-        public string ID
-        {
-            get
-            {
-                return this.gameObject.name;
-            }
-        }
+        public string ID { get { return this.gameObject.name; } }
 
         ///////////////////////////////////////////////////////////////////////////
 

@@ -72,7 +72,7 @@ namespace SAB
 
         bool IsPlayerAlive()
         {
-            return m_AssignedAttackable.Health > 0;
+            return m_AssignedAttackable.health > 0;
         }
 
 		///////////////////////////////////////////////////////////////////////////
@@ -97,8 +97,8 @@ namespace SAB
 
         private void UpdateHealthBar(bool forceImmediateUpdate = false)
         {
-            int newHealth = m_AssignedAttackable.Health;
-            float newHealthRelative = (float)m_AssignedAttackable.Health / (float)m_AssignedAttackable.maxHealth;
+            int newHealth = m_AssignedAttackable.health;
+            float newHealthRelative = (float)m_AssignedAttackable.health / (float)m_AssignedAttackable.maxHealth;
 
             if (!forceImmediateUpdate && m_DisplayedHealthText == newHealth && newHealthRelative == m_DisplayedHealthRelative)
             {
@@ -185,7 +185,7 @@ namespace SAB
 				}
             }
 
-            bool weaponUsable = (IsPlayerAlive() && activeWeapon && (activeWeapon.Cooldown < 0.1f));
+            bool weaponUsable = (IsPlayerAlive() && activeWeapon && (activeWeapon.cooldown < 0.1f));
 
             m_ActiveWeaponImage.color = weaponUsable ? ACTIVATED_COLOR_TINT : DEACTIVATED_COLOR_TINT;
         }

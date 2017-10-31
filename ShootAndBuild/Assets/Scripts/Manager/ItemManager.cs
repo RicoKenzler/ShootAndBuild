@@ -53,7 +53,12 @@ namespace SAB
 
 		[SerializeField] private float m_ItemFadeOutTime = 20.0f;
 
+		///////////////////////////////////////////////////////////////////////////
+
+		public Dictionary<ItemType, ItemData> itemDataMap	{ get; private set; }
 		public float itemFadeOutTime { get { return m_ItemFadeOutTime; } }
+
+		public static ItemManager instance	{ get; private set; }
 
 		///////////////////////////////////////////////////////////////////////////
 
@@ -117,20 +122,5 @@ namespace SAB
 
             return outItemData;
         }
-
-		///////////////////////////////////////////////////////////////////////////
-
-        public static ItemManager instance
-        {
-            get; private set;
-        }
-
-		///////////////////////////////////////////////////////////////////////////
-
-        public Dictionary<ItemType, ItemData> itemDataMap
-        {
-            get; private set;
-        }
-
     }
 }

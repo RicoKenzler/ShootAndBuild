@@ -27,28 +27,28 @@ namespace SAB
 		{
             string winString = "";
 
-			switch (GameManager.Instance.winCondition)
+			switch (GameManager.instance.winCondition)
             {
                 case WinCondition.MoneyTotal:
                     winString += "Gather Money\n";
-                    winString += GameManager.Instance.GetCurrentWinConditionContext() + " / " + GameManager.Instance.winConditionContextValue + "\n\n";
+                    winString += GameManager.instance.GetCurrentWinConditionContext() + " / " + GameManager.instance.winConditionContextValue + "\n\n";
                     break;
             }
 
 			string loseString = "";
 
-            switch (GameManager.Instance.loseCondition)
+            switch (GameManager.instance.loseCondition)
             {
                 case LoseCondition.Default:
                     // nothing special to draw
                     break;
                 case LoseCondition.DestroyObject:
-                    if (GameManager.Instance.loseConditionContextObject)
+                    if (GameManager.instance.loseConditionContextObject)
                     {
-                        Attackable attackable = GameManager.Instance.loseConditionContextObject.GetComponent<Attackable>();
+                        Attackable attackable = GameManager.instance.loseConditionContextObject.GetComponent<Attackable>();
 
-                        loseString += GameManager.Instance.loseConditionContextObject.name + "\n";
-                        loseString += attackable.Health + " / " + attackable.maxHealth + " HP";
+                        loseString += GameManager.instance.loseConditionContextObject.name + "\n";
+                        loseString += attackable.health + " / " + attackable.maxHealth + " HP";
                     }
                     else
                     {

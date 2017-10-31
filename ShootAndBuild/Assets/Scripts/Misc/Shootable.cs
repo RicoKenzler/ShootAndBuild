@@ -13,20 +13,15 @@ namespace SAB
         
         ///////////////////////////////////////////////////////////////////////////
 
-		public WeaponData CurrentWeapon
-		{
-			get; private set;
-		}
-
-		///////////////////////////////////////////////////////////////////////////
-
-		public float Cooldown
+		public WeaponData currentWeapon { get; private set; }
+		
+		public float cooldown
         {
             get
             {
-                if (CurrentWeapon != null)
+                if (currentWeapon != null)
                 {
-                    return CurrentWeapon.Cooldown;
+                    return currentWeapon.cooldown;
                 }
 
                 return float.MaxValue;
@@ -34,20 +29,13 @@ namespace SAB
         }
 
         ///////////////////////////////////////////////////////////////////////////
-        
-        void Awake()
-        {
-
-        }
-
-        ///////////////////////////////////////////////////////////////////////////
 		
         void Update()
         {
             //TODO move to physics timestep to be more precise
-			if (CurrentWeapon)
+			if (currentWeapon)
 			{
-				CurrentWeapon.OnUpdate();
+				currentWeapon.OnUpdate();
 			}
         }
 
@@ -55,9 +43,9 @@ namespace SAB
 
         public void Shoot(Quaternion? projectileDirection = null)
         {
-			if (CurrentWeapon)
+			if (currentWeapon)
 			{
-				CurrentWeapon.TryShoot(this, transform.position, projectileDirection.HasValue ? projectileDirection.Value : this.transform.rotation);
+				currentWeapon.TryShoot(this, transform.position, projectileDirection.HasValue ? projectileDirection.Value : this.transform.rotation);
 			}
         }
 
@@ -73,9 +61,9 @@ namespace SAB
                 weapon.Init(this);
                 m_Arsenal.Add(weapon);
 
-                if (setAsCurrent || !this.CurrentWeapon)
+                if (setAsCurrent || !this.currentWeapon)
                 {
-                    this.CurrentWeapon = m_Arsenal.Last();
+                    this.currentWeapon = m_Arsenal.Last();
                 }
 
             } else
@@ -102,7 +90,7 @@ namespace SAB
                     m_CurrentWeaponIndex = m_Arsenal.Count - 1;
                 }
 
-                CurrentWeapon = m_Arsenal[m_CurrentWeaponIndex];
+                currentWeapon = m_Arsenal[m_CurrentWeaponIndex];
 
                 return true;        
             }

@@ -31,32 +31,33 @@ namespace SAB
         public float restDuration;
         public float restCooldown;
 
-        private bool    isResting;
-        private float   timeUntilNextStatusChange;
+		///////////////////////////////////////////////////////////////////////////
+
+        private bool    m_IsResting;
+        private float   m_TimeUntilNextStatusChange;
+
+		///////////////////////////////////////////////////////////////////////////
+
+        public bool isResting { get { return m_IsResting; } }
+
+		///////////////////////////////////////////////////////////////////////////
 
         public bool UsesResting()
         {
             return restDuration > 0.0f;
         }
 
-        public bool IsResting
-        {
-            get
-            {
-                return isResting;
-            }
-        }
 
         private void StartResting()
         {
-            isResting = true;
-            timeUntilNextStatusChange = restDuration * Random.Range(0.8f, 1.3f);
+            m_IsResting = true;
+            m_TimeUntilNextStatusChange = restDuration * Random.Range(0.8f, 1.3f);
         }
 
         private void EndResting()
         {
-            isResting = false;
-            timeUntilNextStatusChange = restCooldown * Random.Range(0.8f, 1.3f);
+            m_IsResting = false;
+            m_TimeUntilNextStatusChange = restCooldown * Random.Range(0.8f, 1.3f);
         }
 
         public void Init(bool startResting)
@@ -78,11 +79,11 @@ namespace SAB
                 return;
             }
 
-            timeUntilNextStatusChange -= Time.deltaTime;
+            m_TimeUntilNextStatusChange -= Time.deltaTime;
 
-            if (timeUntilNextStatusChange <= 0.0f)
+            if (m_TimeUntilNextStatusChange <= 0.0f)
             {
-                if (isResting)
+                if (m_IsResting)
                 {
                     EndResting();
                 }
@@ -259,9 +260,9 @@ namespace SAB
                     break;
 
                 case TargetPreference.QuestBuilding:
-                    if (GameManager.Instance.loseCondition == LoseCondition.DestroyObject)
+                    if (GameManager.instance.loseCondition == LoseCondition.DestroyObject)
                     {
-                        bestTarget = GameManager.Instance.loseConditionContextObject;
+                        bestTarget = GameManager.instance.loseConditionContextObject;
                     }
                     break;
 

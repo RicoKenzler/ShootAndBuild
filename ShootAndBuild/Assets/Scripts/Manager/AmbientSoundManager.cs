@@ -113,16 +113,20 @@ namespace SAB
 
 		///////////////////////////////////////////////////////////////////////////
 
+		public static AmbientSoundManager instance	{ get; private set; }
+
+		///////////////////////////////////////////////////////////////////////////
+
 		void Awake()
 		{
-			Instance = this;
+			instance = this;
 		}
 
 		///////////////////////////////////////////////////////////////////////////	
 
 		void Start() 
 		{
-			Debug.Assert(m_TerrainSizeWS == TerrainManager.Instance.terrainSizeWS, "Please Regenerate Map!");
+			Debug.Assert(m_TerrainSizeWS == TerrainManager.instance.terrainSizeWS, "Please Regenerate Map!");
 
 			m_AmbientMixerGroup = m_AudioMixer.FindMatchingGroups("Ambient")[0];
 
@@ -179,8 +183,8 @@ namespace SAB
 			}
 
 			// 1) Get sub-listener positions
-			Vector3 listenerPosition	= CameraController.Instance.GetListenerPosition();
-			float	listenerWidth		= CameraController.Instance.GetListenerWidth();
+			Vector3 listenerPosition	= CameraController.instance.GetListenerPosition();
+			float	listenerWidth		= CameraController.instance.GetListenerWidth();
 
 			listenerWidth = Mathf.Max(listenerWidth, 10.0f);
 
@@ -521,13 +525,6 @@ namespace SAB
 			}
 
 			DebugHelper.DrawBufferedTriangles();
-		}
-
-		///////////////////////////////////////////////////////////////////////////	
-
-		public static AmbientSoundManager Instance
-		{
-			get; private set;
 		}
 
 		///////////////////////////////////////////////////////////////////////////	

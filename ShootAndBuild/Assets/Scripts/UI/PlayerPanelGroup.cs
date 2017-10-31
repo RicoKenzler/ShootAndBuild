@@ -17,6 +17,10 @@ namespace SAB
 
 		///////////////////////////////////////////////////////////////////////////
 
+		public static PlayerPanelGroup instance { get; private set; }
+
+		///////////////////////////////////////////////////////////////////////////
+
         void Awake()
         {
             instance = this;
@@ -49,13 +53,6 @@ namespace SAB
             m_PlayerPanels.TryGetValue(playerID, out outPanel);
 
             return outPanel;
-        }
-
-		///////////////////////////////////////////////////////////////////////////
-
-        public static PlayerPanelGroup instance
-        {
-            get; private set;
         }
     }
 }

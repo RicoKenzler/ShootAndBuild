@@ -18,6 +18,8 @@ namespace SAB
 		public Terrain.RegionMapTransformation	regionMapTransformation	{ get { return m_RegionMapTransformation; }}
 		public Vector2							terrainSizeWS			{ get { return m_TerrainSizeWS; }}
 
+		public static TerrainManager instance	{ get; private set; }
+
 		///////////////////////////////////////////////////////////////////////////
 
 		public void ReplaceTerrain(UnityEngine.Terrain newTerrain, Terrain.RegionTile[,] regionGrid, Vector2 terrainSizeWS)
@@ -49,7 +51,7 @@ namespace SAB
 
 		void Awake()
 		{
-			Instance = this; 
+			instance = this; 
 		}
 
 		///////////////////////////////////////////////////////////////////////////
@@ -80,13 +82,6 @@ namespace SAB
 		public Terrain.RegionTile GetRegionAt(float xWS, float zWS)
 		{
 			return new SAB.Terrain.RegionTile();
-		}
-
-		///////////////////////////////////////////////////////////////////////////
-
-		public static TerrainManager Instance
-		{
-			get; private set;
 		}
 	}
 }

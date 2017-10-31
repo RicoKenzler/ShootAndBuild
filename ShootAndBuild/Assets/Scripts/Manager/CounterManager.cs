@@ -42,21 +42,16 @@ namespace SAB
 
 		///////////////////////////////////////////////////////////////////////////
 
-        public bool countersAreDirty
-        {
-            get; private set;
-        }
-
+        public bool countersAreDirty				{ get; private set; }
+		public static CounterManager instance	{ get; private set; }
+		
 		///////////////////////////////////////////////////////////////////////////
 
         // example:
         // If we kill an enemy, we increment
         // [KilledEnemies][specificType]++		//< counts kills of specific types
         // [KilledEnemies][null]++				//< counts sum of all kills / unspecific kills
-        public Dictionary<CounterType, Dictionary<TCounterContext, CounterValue>>[] counters
-        {
-            get; private set;
-        }
+        public Dictionary<CounterType, Dictionary<TCounterContext, CounterValue>>[] counters { get; private set; }
 
 		///////////////////////////////////////////////////////////////////////////
 
@@ -213,13 +208,6 @@ namespace SAB
         private void OnValueChanged(CounterType type, int delta, TCounterContext context = NO_CONTEXT)
         {
             countersAreDirty = true;
-        }
-
-		///////////////////////////////////////////////////////////////////////////
-
-        public static CounterManager instance
-        {
-            get; private set;
         }
     }
 

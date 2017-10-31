@@ -29,6 +29,7 @@ namespace SAB
 
 		public KillingSpreeDefinition[] killingSpreeDefinitions { get { return m_KillingSpreeDefinitions; } }
 		public float					killingSpreeInterval	{ get { return m_KillingSpreeInterval; } }
+		public static KillCounters		instance				{ get; private set; }
 
 		///////////////////////////////////////////////////////////////////////////
 
@@ -70,11 +71,6 @@ namespace SAB
 
                 m_KillCounters[(int)playerID].OnCountersChanged(Time.time, killCount);
             }
-        }
-
-        public static KillCounters instance
-        {
-            get; private set;
         }
     }
 

@@ -33,8 +33,8 @@ namespace SAB
 
             if (GUILayout.Button("Play near LookAt"))
             {
-				Vector3 pos = CameraController.Instance.GetListenerPosition();
-				pos.y = TerrainManager.Instance.GetInterpolatedHeight(pos.x, pos.z);
+				Vector3 pos = CameraController.instance.GetListenerPosition();
+				pos.y = TerrainManager.instance.GetInterpolatedHeight(pos.x, pos.z);
 
                 pos += new Vector3(2.0f, 0.0f, 0.0f);
                 AudioManager.instance.PlayAudio(audioData, pos);

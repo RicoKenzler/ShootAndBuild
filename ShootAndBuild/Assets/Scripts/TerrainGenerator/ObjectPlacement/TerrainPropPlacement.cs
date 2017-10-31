@@ -62,9 +62,13 @@ namespace SAB.Terrain
 
 		///////////////////////////////////////////////////////////////////////////
 
+		public static TerrainPropPlacement instance { get; private set; }
+
+		///////////////////////////////////////////////////////////////////////////
+
 		void Awake()
 		{
-			Instance = this;
+			instance = this;
 		}
 		
 		///////////////////////////////////////////////////////////////////////////
@@ -260,13 +264,6 @@ namespace SAB.Terrain
 				newObject.transform.localScale = new Vector3(rndScaleX, rndScaleY, rndScaleZ);
 				return;
 			}
-		}
-
-		///////////////////////////////////////////////////////////////////////////
-
-		public static TerrainPropPlacement Instance
-		{
-			get; private set;
 		}
 	}
 }

@@ -16,6 +16,11 @@ namespace SAB
 
 		///////////////////////////////////////////////////////////////////////////
 
+		public Vector3		halfTile { get; private set; }
+        public static Grid	instance { get; private set; }
+
+		///////////////////////////////////////////////////////////////////////////
+
         void Awake()
         {
             instance = this;
@@ -144,20 +149,5 @@ namespace SAB
         {
             return new Vector3(Mathf.Floor(input.x) + halfTile.x, input.y, Mathf.Floor(input.z) + halfTile.z);
         }
-
-		///////////////////////////////////////////////////////////////////////////
-
-        public Vector3 halfTile
-        {
-            get; private set;
-        }
-
-		///////////////////////////////////////////////////////////////////////////
-
-        public static Grid instance
-        {
-            get; private set;
-        }
-
     }
 }

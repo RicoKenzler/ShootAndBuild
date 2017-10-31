@@ -37,7 +37,7 @@ namespace SAB
                 transform.LookAt(nearestEnemy.transform);
             }
 
-            if (shootable.Cooldown <= 0)
+            if (shootable.cooldown <= 0)
             {
 				Vector3 lookatVector = nearestEnemy.transform.position - transform.position;
 

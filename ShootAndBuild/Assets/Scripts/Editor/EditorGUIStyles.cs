@@ -17,18 +17,16 @@ namespace SAB {
             m_Line.padding.top = m_Line.padding.bottom = 1;
         }
 
-        public static GUIStyle EditorLine
-        {
-            get { return m_Line; }
-        }
+        public static GUIStyle editorLine { get { return m_Line; } }
     }
 
+	///////////////////////////////////////////////////////////////////////////
 
     public static class SABEditorGUI
     {
         public static void Seperator()
         {
-            GUILayout.Box(GUIContent.none, SABEditorGUIStyles.EditorLine, GUILayout.ExpandWidth(true), GUILayout.Height(1f));
+            GUILayout.Box(GUIContent.none, SABEditorGUIStyles.editorLine, GUILayout.ExpandWidth(true), GUILayout.Height(1f));
         }
     }
 }

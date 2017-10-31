@@ -36,10 +36,16 @@ namespace SAB
 		[SerializeField] private Text		m_NotificationBarText;
 		[SerializeField] private float		m_NotificationDisplayDuration = 3.0f;
 
+		///////////////////////////////////////////////////////////////////////////
+
 		private Animator    m_NotificationBarAnimator;
 		private float		m_HideNotificationCountdown   = -1.0f;
 
 		Queue<Notification>	m_QueuedTexts = new Queue<Notification>();
+
+		///////////////////////////////////////////////////////////////////////////
+
+		public static NotificationManager instance	{ get; private set; }
 
 		///////////////////////////////////////////////////////////////////////////
 
@@ -112,13 +118,6 @@ namespace SAB
 
 			m_NotificationBarText.color = textColor;
 		}
-
-		///////////////////////////////////////////////////////////////////////////
-
-	    public static NotificationManager instance
-        {
-            get; private set; 
-        }
 	}
 
 }

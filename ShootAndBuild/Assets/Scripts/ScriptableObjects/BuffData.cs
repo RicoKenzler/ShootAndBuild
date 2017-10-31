@@ -31,14 +31,17 @@ namespace SAB
 
 		///////////////////////////////////////////////////////////////////////////
 
+		private float livingTime = 0;
+		private GameObject visualInstance = null;
+
+		///////////////////////////////////////////////////////////////////////////
+
 		public BuffType type				{ get { return m_Type; } }
 		public float	speedMultiplier		{ get { return m_SpeedMultiplier; } }
 		public float	damageMultiplier	{ get { return m_DamageMultiplier; } }
 
-		///////////////////////////////////////////////////////////////////////////
-
-		private float livingTime = 0;
-		private GameObject visualInstance = null;
+		public float	progress	{ get { return livingTime / m_Duration; } }
+		public bool		isFinished	{ get { return progress >= 1.0f; } }
 
 		///////////////////////////////////////////////////////////////////////////
 
@@ -46,20 +49,6 @@ namespace SAB
 		{
 			livingTime += Time.deltaTime;
 			livingTime = Mathf.Clamp(livingTime, 0, m_Duration);
-		}
-
-		///////////////////////////////////////////////////////////////////////////
-
-		public float Progress
-		{
-			get { return livingTime / m_Duration; }
-		}
-
-		///////////////////////////////////////////////////////////////////////////
-
-		public bool IsFinished
-		{
-			get { return Progress >= 1.0f; }
 		}
 
 		///////////////////////////////////////////////////////////////////////////

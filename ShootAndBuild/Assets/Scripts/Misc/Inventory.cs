@@ -31,6 +31,10 @@ namespace SAB
 
 		///////////////////////////////////////////////////////////////////////////
 
+		public static Inventory sharedInventoryInstance { get; private set; }
+
+		///////////////////////////////////////////////////////////////////////////
+
         // ReadOnly Dictionaries are not supported before .Net 4.5
         public Dictionary<ItemType, int> GetItemsReadOnly()
         {
@@ -203,13 +207,6 @@ namespace SAB
             }
 
             return itemAmount;
-        }
-
-		///////////////////////////////////////////////////////////////////////////
-
-        public static Inventory sharedInventoryInstance
-        {
-            get; private set;
         }
     }
 }

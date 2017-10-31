@@ -12,19 +12,8 @@ namespace SAB.Spawn
 		///////////////////////////////////////////////////////////////////////////
 
 		public int completion { get { return m_Completion; } set { m_Completion = value; } }
-
-		///////////////////////////////////////////////////////////////////////////
-
-		public override void Start()
-		{
-			base.Start();
-
-			m_LinkedMonsterSpawn = wave.GetFirstPreviousMonsterSpawn(index);
-		}
-
-		///////////////////////////////////////////////////////////////////////////
-
-		public override bool IsCompleted
+		
+		public override bool isCompleted
 		{
 			get
 			{
@@ -38,6 +27,15 @@ namespace SAB.Spawn
 
 				return p >= m_Completion;
 			}
+		}
+
+		///////////////////////////////////////////////////////////////////////////
+
+		public override void Start()
+		{
+			base.Start();
+
+			m_LinkedMonsterSpawn = wave.GetFirstPreviousMonsterSpawn(index);
 		}
 
 		///////////////////////////////////////////////////////////////////////////

@@ -14,6 +14,10 @@ namespace SAB
 
 		///////////////////////////////////////////////////////////////////////////
 
+		public static AudioManager instance	{ get; private set; }
+
+		///////////////////////////////////////////////////////////////////////////
+
 		void Awake()
 		{
 			instance = this;
@@ -119,13 +123,6 @@ namespace SAB
 			Destroy(audioObject, rndClip.length);
 
 			return audioSource;
-		}
-	
-		///////////////////////////////////////////////////////////////////////////
-
-		public static AudioManager instance
-		{
-			get; private set;
 		}
 	}
 }

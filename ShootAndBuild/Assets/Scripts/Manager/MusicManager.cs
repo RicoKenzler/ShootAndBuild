@@ -107,13 +107,8 @@ namespace SAB
 
 		///////////////////////////////////////////////////////////////////////////
 
-		public float LastCombatTime
-		{
-			get
-			{
-				return m_LastCombatTime;
-			}
-		}
+		public float LastCombatTime			{ get { return m_LastCombatTime; } }
+		public static MusicManager instance	{ get; private set; }
 
 		///////////////////////////////////////////////////////////////////////////
 
@@ -203,7 +198,7 @@ namespace SAB
 
 		private void TickPauseState()
 		{
-			if (GameManager.Instance.Status == GameStatus.Running)
+			if (GameManager.instance.Status == GameStatus.Running)
 			{
 				m_PauseAmount -= Time.unscaledDeltaTime / (m_PauseFadeOutDuration + 0.001f);
 				m_PauseAmount = Mathf.Max(m_PauseAmount, 0.0f);
@@ -444,13 +439,6 @@ namespace SAB
 				m_IsInDanger = false;
 				UpdateAllLoops();
 			}
-		}
-
-		///////////////////////////////////////////////////////////////////////////
-
-		public static MusicManager instance
-		{
-			get; private set;
 		}
 	}
 }

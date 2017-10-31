@@ -113,7 +113,7 @@ namespace SAB
                 // 5 a) Move
                 Vector3 desiredForce = modifiedDirectionTowardsTarget * m_Speed;
 
-                if (m_RestingInfo.IsResting)
+                if (m_RestingInfo.isResting)
                 {
                     // 5 a1) Fade out moving to rest
                     TryStartAnim(IDLE_ANIM_NAME);

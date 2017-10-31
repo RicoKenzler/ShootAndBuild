@@ -44,6 +44,9 @@ namespace SAB
 		public Faction	faction		{ get { return m_Faction;		} set { m_Faction = value; } }
 		public int		maxHealth	{ get { return m_MaxHealth;		} }
 
+		public int		health				{ get { return currentHealth; } }
+		public float	healthNormalized	{ get { return (float)this.currentHealth / (float)this.m_MaxHealth; } }
+
 		///////////////////////////////////////////////////////////////////////////
 
 		public delegate void PlayerDiesEvent(PlayerID id);
@@ -256,7 +259,7 @@ namespace SAB
 				buffable.AddBuffs(buffs);
 			}
 
-			if (GameManager.Instance.loseCondition == LoseCondition.DestroyObject && GameManager.Instance.loseConditionContextObject == gameObject)
+			if (GameManager.instance.loseCondition == LoseCondition.DestroyObject && GameManager.instance.loseConditionContextObject == gameObject)
 			{
 				MusicManager.instance.SignalIsDanger();
 			}
@@ -363,20 +366,6 @@ namespace SAB
 		private void PlaySpawnSound()
 		{
 			AudioManager.instance.PlayAudio(m_SpawnSound, transform.position);
-		}
-
-		///////////////////////////////////////////////////////////////////////////
-
-		public int Health
-		{
-			get { return currentHealth; }
-		}
-
-		///////////////////////////////////////////////////////////////////////////
-
-		public float HealthNormalized
-		{
-			get { return (float)this.currentHealth / (float)this.m_MaxHealth; }
 		}
 	}
 }

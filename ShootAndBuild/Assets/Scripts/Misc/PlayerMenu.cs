@@ -21,14 +21,11 @@ namespace SAB
 
 		///////////////////////////////////////////////////////////////////////////
 
-		public InventorySelectionCategory activeSelectionCategory { get { return m_ActiveSelectionCategory; } }
-
-		///////////////////////////////////////////////////////////////////////////
-
-        public float lastMenuInteractionTime
-        {
-            get; private set;
-        }
+		public InventorySelectionCategory	activeSelectionCategory		{ get { return m_ActiveSelectionCategory; } }
+        public float						lastMenuInteractionTime		{ get; private set; }
+		public ItemType						activeItemType				{ get; private set; }
+        public Building						activeBuildingPrefab		{ get; private set; }
+		public WeaponData					activeWeapon				{ get { return shootable.currentWeapon; } }
 
 		///////////////////////////////////////////////////////////////////////////
 
@@ -222,30 +219,6 @@ namespace SAB
             AudioManager.instance.PlayAudio(positiveOrder ? m_MenuSelectionRightSound : m_MenuSelectionLeftSound);
 
             lastMenuInteractionTime = Time.time;
-        }
-
-		///////////////////////////////////////////////////////////////////////////
-
-        public ItemType activeItemType
-        {
-            get; private set;
-        }
-
-		///////////////////////////////////////////////////////////////////////////
-
-        public Building activeBuildingPrefab
-        {
-            get; private set;
-        }
-
-		///////////////////////////////////////////////////////////////////////////
-
-		public WeaponData activeWeapon
-		{
-			get
-			{
-				return shootable.CurrentWeapon;
-			}
-		}
+        }	
     }
 }

@@ -119,39 +119,33 @@ namespace SAB
 
 		///////////////////////////////////////////////////////////////////////////
 
-        private int layerMask;
-        private float cooldown = 0f;
+        private int m_LayerMask;
+        private float m_Cooldown = 0f;
 
-        private RaycastHit[] hits = new RaycastHit[20];
+        private RaycastHit[] m_Hits = new RaycastHit[20];
 
-        private Shootable owner;
+        private Shootable m_Owner;
 
         ///////////////////////////////////////////////////////////////////////////
 
-        public float Cooldown
-        {
-            get
-            {
-                return cooldown;
-            }
-        }
+        public float cooldown { get { return m_Cooldown; } }
 
         ///////////////////////////////////////////////////////////////////////////
 
         // see if we need this
         public void Init(Shootable _owner)
         {
-            this.cooldown = 0;
-            this.owner = _owner;
+            this.m_Cooldown = 0;
+            this.m_Owner = _owner;
             //TODO put important layers and combinations into some sort of static layermanager
-            layerMask = (1 << 0) | (1 << 9);
+            m_LayerMask = (1 << 0) | (1 << 9);
         }
 
         ///////////////////////////////////////////////////////////////////////////
 
         public void TryShoot(Shootable _owner, Vector3 _origin, Quaternion _direction)
         {
-            if (cooldown > 0.0f)
+            if (m_Cooldown > 0.0f)
             {
                 return;
             }
@@ -173,9 +167,9 @@ namespace SAB
 					float speed = m_ProjectileSpeed + Random.Range(-m_ProjectileSpeed * m_ProjectileRandomSpeed, m_ProjectileSpeed * m_ProjectileRandomSpeed);
 
                     Projectile proj = projectileGo.GetComponent<Projectile>();
-                    proj.Direction = new Vector3(0.0f, 0.0f, 1.0f);
-                    proj.Owner = _owner;
-                    proj.Damage = m_Damage;
+                    proj.direction = new Vector3(0.0f, 0.0f, 1.0f);
+                    proj.owner = _owner;
+                    proj.damage = m_Damage;
 					proj.Init(speed, m_Range, new List<BuffData>(m_Buffs), m_RicochetEffect);
 
                     //TODO range of projectile
@@ -191,45 +185,45 @@ namespace SAB
                     Quaternion dir = _direction * Quaternion.AngleAxis(Random.Range(-m_Spread * 0.5f, m_Spread * 0.5f), Vector3.up);
 
                     //this is shit!
-                    for(int r = 0; r < hits.Length; ++r)
+                    for(int r = 0; r < m_Hits.Length; ++r)
                     {
-                        hits[r].distance = float.MaxValue;
+                        m_Hits[r].distance = float.MaxValue;
                     }
 
                     //raycast goes here
-                    int hitCount = Physics.RaycastNonAlloc(_origin, dir * Vector3.forward, hits, m_Range, layerMask, QueryTriggerInteraction.Ignore);
+                    int hitCount = Physics.RaycastNonAlloc(_origin, dir * Vector3.forward, m_Hits, m_Range, m_LayerMask, QueryTriggerInteraction.Ignore);
 
                     int damageToDeal = m_Damage;
 
                     Debug.DrawLine(_origin, _origin + dir * (Vector3.forward * m_Range), Color.magenta, 1f);
 
-                    hits = hits.OrderBy(h => h.distance).ToArray(); //seems like the most unefficient way to do it
+                    m_Hits = m_Hits.OrderBy(h => h.distance).ToArray(); //seems like the most unefficient way to do it
 
                     if (m_DamageType == DamageType.Direct)
                     {
                         Attackable attackable = null;
                         for (int h = 0; h < hitCount; ++h)
                         {
-                            if (hits[h].transform != null && hits[h].transform.gameObject.layer == 0)
+                            if (m_Hits[h].transform != null && m_Hits[h].transform.gameObject.layer == 0)
                             {
                                 //display ricochet effect
                                 if (m_RicochetEffect != null)
                                 {
-                                    Debug.DrawLine(hits[h].point, hits[h].point + hits[h].normal * 2f, Color.green, 5f);
-                                    ParticleManager.instance.SpawnParticle(m_RicochetEffect, ParticleManager.instance.gameObject, hits[h].point, 
-                                                                                Quaternion.LookRotation(hits[h].normal, Vector3.up), false, 2.0f, false, false);
+                                    Debug.DrawLine(m_Hits[h].point, m_Hits[h].point + m_Hits[h].normal * 2f, Color.green, 5f);
+                                    ParticleManager.instance.SpawnParticle(m_RicochetEffect, ParticleManager.instance.gameObject, m_Hits[h].point, 
+                                                                                Quaternion.LookRotation(m_Hits[h].normal, Vector3.up), false, 2.0f, false, false);
 
                                 }
                                 break;
                             }
 
-                            if (hits[h].rigidbody != null)
+                            if (m_Hits[h].rigidbody != null)
                             {
                                 //Debug.Log(hits[h].rigidbody.gameObject.name);
-                                attackable = hits[h].rigidbody.GetComponent<Attackable>();
+                                attackable = m_Hits[h].rigidbody.GetComponent<Attackable>();
                                 if (attackable != null)
                                 {
-                                    damageToDeal -= attackable.DealDamage(damageToDeal, owner.gameObject, owner.gameObject, m_Buffs);
+                                    damageToDeal -= attackable.DealDamage(damageToDeal, m_Owner.gameObject, m_Owner.gameObject, m_Buffs);
 
 									// je: I find it more appropriate, when damage is not consumed
 									damageToDeal = m_Damage;
@@ -244,7 +238,7 @@ namespace SAB
                         }
                     } else if (m_DamageType == DamageType.Area)
                     {
-                        if (hitCount > 0 && hits[0].rigidbody != null)
+                        if (hitCount > 0 && m_Hits[0].rigidbody != null)
                         {
                              // do area damage at psotion of first hit
                         }
@@ -254,18 +248,18 @@ namespace SAB
             }
 
             //recoil
-            Movable movable = owner.gameObject.GetComponent<Movable>();
+            Movable movable = m_Owner.gameObject.GetComponent<Movable>();
             if (movable != null)
             {
                 movable.impulseForce = _direction * (-Vector3.forward * m_RecoilForce);
             }
 
 
-            cooldown = m_CoolDownTime;
+            m_Cooldown = m_CoolDownTime;
 
             //sound
             AudioManager.instance.PlayAudio(m_ShootSound, _origin);
-			CameraController.Instance.AddCameraShake(m_ShakeParams);
+			CameraController.instance.AddCameraShake(m_ShakeParams);
 
             //muzzleflash
             if (m_MuzzleFlashEffect != null)
@@ -279,9 +273,9 @@ namespace SAB
         //TODO move to physics timestep
         public void OnUpdate()
         {
-            if (cooldown > 0.0f)
+            if (m_Cooldown > 0.0f)
             {
-                cooldown = Mathf.Max(cooldown - Time.deltaTime, 0.0f);
+                m_Cooldown = Mathf.Max(m_Cooldown - Time.deltaTime, 0.0f);
             }
         }
     }

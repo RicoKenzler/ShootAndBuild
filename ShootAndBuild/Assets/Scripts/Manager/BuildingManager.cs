@@ -8,6 +8,14 @@ namespace SAB
 
     public class BuildingManager : MonoBehaviour
     {
+
+		///////////////////////////////////////////////////////////////////////////
+
+		public static BuildingManager instance	{ get; private set; }
+        public List<Building> allBuildings		{ get; private set; }
+
+		///////////////////////////////////////////////////////////////////////////
+
         void Awake()
         {
             instance = this;
@@ -27,20 +35,6 @@ namespace SAB
             {
                 allBuildings.Add(building);
             }
-        }
-
-		///////////////////////////////////////////////////////////////////////////
-
-        public static BuildingManager instance
-        {
-            get; private set;
-        }
-
-		///////////////////////////////////////////////////////////////////////////
-
-        public List<Building> allBuildings
-        {
-            get; private set;
         }
     }
 }

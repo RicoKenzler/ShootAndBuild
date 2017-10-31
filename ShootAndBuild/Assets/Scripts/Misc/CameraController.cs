@@ -38,19 +38,20 @@ namespace SAB
 		///////////////////////////////////////////////////////////////////////////
 
 		public CameraShakeParams testShakeParams { get { return m_TestShakeParams; } }
+		public static CameraController instance { get; private set; }
 
 		///////////////////////////////////////////////////////////////////////////
 
         void Awake()
         {
-            Instance = this;
+            instance = this;
         }
 
 		///////////////////////////////////////////////////////////////////////////
 
         void Start()
         {
-			Vector3 terrainCenter = TerrainManager.Instance.GetTerrainCenter3D(); 
+			Vector3 terrainCenter = TerrainManager.instance.GetTerrainCenter3D(); 
 
 			m_LastPlayerSphereCenter = terrainCenter + new Vector3(0.0f, 10.0f, 0.0f);
 
@@ -145,14 +146,7 @@ namespace SAB
 
 			m_CameraShakes.StartNewShake(shakeParams);
 		}
-
-		///////////////////////////////////////////////////////////////////////////
-
-        public static CameraController Instance
-        {
-            get; private set;
-        }
-
+		
 		///////////////////////////////////////////////////////////////////////////
 
 		public Vector3 GetCameraShakeOffset()

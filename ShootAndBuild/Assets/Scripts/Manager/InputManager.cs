@@ -51,10 +51,16 @@ namespace SAB
     {
         [SerializeField] InputMethod m_DebugKeyboardEmulates = InputMethod.Keyboard;
 
+		///////////////////////////////////////////////////////////////////////////
+
         private Dictionary<PlayerID, InputPlayer> m_ActivePlayersById = new Dictionary<PlayerID, InputPlayer>();
         private Dictionary<InputMethod, PlayerID> m_InputMethodToPlayerID = new Dictionary<InputMethod, PlayerID>();
 
         private const float TRIGGER_DOWN_THRESHOLD = 0.3f;
+
+		///////////////////////////////////////////////////////////////////////////
+
+		public static InputManager instance	{ get; private set; }
 
 		///////////////////////////////////////////////////////////////////////////
 
@@ -136,7 +142,7 @@ namespace SAB
 
 			///////////////////////////////////////////////////////////////////////////
 
-			public InputMethod inputMethod { get { return m_InputMethod; } set { m_InputMethod = value; } }
+			public InputMethod inputMethod		{ get { return m_InputMethod; } set { m_InputMethod = value; } }
 
 			///////////////////////////////////////////////////////////////////////////
 
@@ -561,13 +567,6 @@ namespace SAB
             }
 
             return false;
-        }
-		
-		///////////////////////////////////////////////////////////////////////////
-
-        public static InputManager instance
-        {
-            get; private set;
         }
     }
 }

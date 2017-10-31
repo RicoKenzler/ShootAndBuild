@@ -80,7 +80,7 @@ namespace SAB
         {
             foreach (var m in m_ChildsRenderer.materials)
             {
-                m.color = Color.Lerp(new Color(0.5f, 0.0f, 0.0f), Color.white, m_Attackable.HealthNormalized);
+                m.color = Color.Lerp(new Color(0.5f, 0.0f, 0.0f), Color.white, m_Attackable.healthNormalized);
             }
         }
     }

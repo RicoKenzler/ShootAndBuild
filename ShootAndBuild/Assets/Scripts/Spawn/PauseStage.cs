@@ -18,6 +18,16 @@ namespace SAB.Spawn
 
 		///////////////////////////////////////////////////////////////////////////
 
+		public override bool isCompleted
+		{
+			get
+			{
+				return m_TimeLeft == 0;
+			}
+		}
+
+		///////////////////////////////////////////////////////////////////////////
+
 		public override void Start()
 		{
 			m_TimeLeft = m_Duration;
@@ -33,16 +43,6 @@ namespace SAB.Spawn
 			if (m_TimeLeft < 0)
 			{
 				m_TimeLeft = 0;
-			}
-		}
-
-		///////////////////////////////////////////////////////////////////////////
-
-		public override bool IsCompleted
-		{
-			get
-			{
-				return m_TimeLeft == 0;
 			}
 		}
 

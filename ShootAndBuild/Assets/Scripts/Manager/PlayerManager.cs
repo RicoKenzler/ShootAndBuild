@@ -31,11 +31,17 @@ namespace SAB
         [SerializeField] private GameObject m_PlayerPrefab;
         [SerializeField] private AudioData	m_SpawnFailSound;
 
-        private const ButtonType m_SpawnButton = ButtonType.Taunt;
+		///////////////////////////////////////////////////////////////////////////
+
+        private const ButtonType SPAWN_BUTTON = ButtonType.Taunt;
+
+        private Dictionary<PlayerID, Player> m_ActivePlayersById = new Dictionary<PlayerID, Player>();
 
 		///////////////////////////////////////////////////////////////////////////
 
-        private Dictionary<PlayerID, Player> m_ActivePlayersById = new Dictionary<PlayerID, Player>();
+		
+        public List<InputController> allAlivePlayers { get; private set; }
+        public static PlayerManager instance { get; private set; }
 
 		///////////////////////////////////////////////////////////////////////////
 
@@ -58,7 +64,7 @@ namespace SAB
 
         private void TrySpawnNewPlayers()
         {
-            InputMethod? buttonPresser = InputManager.instance.IsButtonDownForUnusedInputMethod(m_SpawnButton);
+            InputMethod? buttonPresser = InputManager.instance.IsButtonDownForUnusedInputMethod(SPAWN_BUTTON);
 
             if (!buttonPresser.HasValue)
             {
@@ -121,7 +127,7 @@ namespace SAB
                     continue;
                 }
 
-                if (InputManager.instance.WasButtonJustPressed(playerPair.Key, m_SpawnButton))
+                if (InputManager.instance.WasButtonJustPressed(playerPair.Key, SPAWN_BUTTON))
                 {
                     if (!TrySpendLife())
                     {
@@ -176,7 +182,7 @@ namespace SAB
 		private Vector3 GetRandomPlayerSpawnPosition()
 		{
 			float randRadius = 5.0f;
-			Vector2 spawnCircleCenter = TerrainManager.Instance.GetTerrainCenter2D();
+			Vector2 spawnCircleCenter = TerrainManager.instance.GetTerrainCenter2D();
 			Vector3 rndSpawnOffset = new Vector3(Random.Range(-randRadius, randRadius), 0.0f, Random.Range(-randRadius, randRadius));
 
             return new Vector3(spawnCircleCenter.x, 0.0f, spawnCircleCenter.y) + rndSpawnOffset;
@@ -216,20 +222,6 @@ namespace SAB
             }
 
             return m_ActivePlayersById[playerID];
-        }
-
-		///////////////////////////////////////////////////////////////////////////
-
-        public List<InputController> allAlivePlayers
-        {
-            get; private set;
-        }
-
-		///////////////////////////////////////////////////////////////////////////
-
-        public static PlayerManager instance
-        {
-            get; private set;
         }
     }
 }

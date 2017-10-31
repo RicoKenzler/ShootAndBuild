@@ -52,13 +52,6 @@ namespace SAB.Spawn
 
     public class SpawnManager : MonoBehaviour
     {
-        public static SpawnManager instance
-        {
-            get; private set;
-        }
-
-        ///////////////////////////////////////////////////////////////////////////
-
         private float m_WaveTimer = 0;
         private int m_CurrentWaveIndex = -1;
 
@@ -90,6 +83,10 @@ namespace SAB.Spawn
 
 		///////////////////////////////////////////////////////////////////////////
 
+        public static SpawnManager instance { get; private set; }
+
+        ///////////////////////////////////////////////////////////////////////////
+
         void Awake()
         {
             instance = this;
@@ -111,7 +108,7 @@ namespace SAB.Spawn
 				return;
 			}
 
-            if (GameManager.Instance.Status == GameStatus.Running)
+            if (GameManager.instance.Status == GameStatus.Running)
 			{
                 if (this.m_Waves == null || this.m_Waves.Count == 0)
                 {

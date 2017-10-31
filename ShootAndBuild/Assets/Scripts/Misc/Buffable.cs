@@ -5,6 +5,10 @@ namespace SAB
 {
 	public class Buffable : MonoBehaviour
 	{
+		public List<BuffData> buffs { get; private set; }
+
+		///////////////////////////////////////////////////////////////////////////
+
 		void Awake()
 		{
 			buffs = new List<BuffData>();
@@ -21,12 +25,12 @@ namespace SAB
 
 			foreach (BuffData buff in buffs)
 			{
-				if (buff.IsFinished)
+				if (buff.isFinished)
 				{
 					buff.OnRemove(gameObject);
 				}
 			}
-			buffs.RemoveAll(x => x.IsFinished);
+			buffs.RemoveAll(x => x.isFinished);
 		}
 
 		///////////////////////////////////////////////////////////////////////////
@@ -35,13 +39,6 @@ namespace SAB
 		{
 			buffs.ForEach(x => x.OnRemove(gameObject));
 			buffs.Clear();
-		}
-
-		///////////////////////////////////////////////////////////////////////////
-
-		public List<BuffData> buffs
-		{
-			get; private set;
 		}
 
 		///////////////////////////////////////////////////////////////////////////

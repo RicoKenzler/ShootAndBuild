@@ -62,23 +62,14 @@ namespace SAB
 
 		///////////////////////////////////////////////////////////////////////////
 
-        public GameStatus Status
-        {
-            get {  return this.m_gameStatus; }
-        }
-
-		///////////////////////////////////////////////////////////////////////////
-
-        public static GameManager Instance
-        {
-            get; private set;
-        }
+        public GameStatus Status { get {  return this.m_gameStatus; }  }
+        public static GameManager instance	{ get; private set; }
 
 		///////////////////////////////////////////////////////////////////////////
 
         void Awake()
         {
-            Instance = this;
+            instance = this;
         }
 
 		///////////////////////////////////////////////////////////////////////////
@@ -153,7 +144,7 @@ namespace SAB
                     if (m_LoseConditionContextObject)
                     {
                         Attackable loseConditionAttackable = m_LoseConditionContextObject.GetComponent<Attackable>();
-                        return loseConditionAttackable.Health;
+                        return loseConditionAttackable.health;
                     }
                     else
                     {
@@ -222,7 +213,7 @@ namespace SAB
                 m_gameStatus = GameStatus.Running;
             }
 
-            CameraController.Instance.GetComponent<UnityStandardAssets.ImageEffects.Blur>().enabled = (m_gameStatus == GameStatus.Paused);
+            CameraController.instance.GetComponent<UnityStandardAssets.ImageEffects.Blur>().enabled = (m_gameStatus == GameStatus.Paused);
         }
 
 		///////////////////////////////////////////////////////////////////////////

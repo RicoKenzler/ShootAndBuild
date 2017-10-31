@@ -19,6 +19,8 @@ namespace SAB.Spawn
 
 		public List<SpawnWave> waves { get { return m_Waves; } }
 		
+		public static SpawnManagerPrototype instance { get; private set; }
+
         ///////////////////////////////////////////////////////////////////////////
 
 
@@ -38,22 +40,15 @@ namespace SAB.Spawn
 
 			SpawnWave wave = m_Waves[m_WaveIndex];
 
-			if (!wave.IsCompleted)
+			if (!wave.isCompleted)
 			{
 				wave.Update();
 			}
 
-			if (wave.IsCompleted)
+			if (wave.isCompleted)
 			{
 				m_WaveIndex++;
 			}
-		}
-
-		///////////////////////////////////////////////////////////////////////////
-
-		public static SpawnManagerPrototype instance
-		{
-			get; private set;
 		}
 	}
 }

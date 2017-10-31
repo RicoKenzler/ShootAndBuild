@@ -6,6 +6,11 @@ namespace SAB
 {
     public class EnemyManager : MonoBehaviour
     {
+		public static EnemyManager instance			{ get; private set; }
+        public List<EnemyBehaviourBase> allEnemies	{ get; private set; }
+
+		///////////////////////////////////////////////////////////////////////////
+
         void Awake()
         {
             instance = this;
@@ -25,20 +30,6 @@ namespace SAB
             {
                 allEnemies.Add(behaviour);
             }
-        }
-
-		///////////////////////////////////////////////////////////////////////////
-
-        public static EnemyManager instance
-        {
-            get; private set;
-        }
-
-		///////////////////////////////////////////////////////////////////////////
-
-        public List<EnemyBehaviourBase> allEnemies
-        {
-            get; private set;
         }
 
 		///////////////////////////////////////////////////////////////////////////

@@ -51,7 +51,7 @@ namespace SAB
             uiPos.y += m_yOffset;
             rect.anchoredPosition = uiPos;
 
-            float exactHealthFactor = m_Target.Health / (float)m_Target.maxHealth;
+            float exactHealthFactor = m_Target.health / (float)m_Target.maxHealth;
             float smoothedHealthFactor = Mathf.Lerp(m_LastDisplayedHealthFactor, exactHealthFactor, 1.0f - m_HealthSmoothAmount);
 
             m_LastDisplayedHealthFactor = smoothedHealthFactor;

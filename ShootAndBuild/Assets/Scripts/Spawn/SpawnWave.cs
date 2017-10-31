@@ -25,14 +25,20 @@ namespace SAB.Spawn
 		public List<PauseStage>			pauseStages			{ get { return m_PauseStages;		 }}
 		public List<CompletionStage>	completionStages	{ get { return m_CompletionStages;	 }}
 		public List<RewardStage>		rewardStages		{ get { return m_RewardStages;		 }}
-												
+		
+		///////////////////////////////////////////////////////////////////////////
+
+		public bool isCompleted
+		{
+			get { return m_StageIndex >= m_Stages.Count; }
+		}						
 		
         ///////////////////////////////////////////////////////////////////////////
 
 
 		public void Update()
 		{
-			if (IsCompleted)
+			if (isCompleted)
 			{
 				return;
 			}
@@ -44,22 +50,15 @@ namespace SAB.Spawn
 				stage.Start();
 			}
 
-			if (!stage.IsCompleted)
+			if (!stage.isCompleted)
 			{
 				stage.Update();
 			}
 
-			if (stage.IsCompleted)
+			if (stage.isCompleted)
 			{
 				m_StageIndex++;
 			}
-		}
-
-		///////////////////////////////////////////////////////////////////////////
-
-		public bool IsCompleted
-		{
-			get { return m_StageIndex >= m_Stages.Count; }
 		}
 
 		///////////////////////////////////////////////////////////////////////////

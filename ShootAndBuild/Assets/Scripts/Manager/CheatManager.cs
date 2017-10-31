@@ -50,18 +50,13 @@ namespace SAB
 		public bool disableMusic		{ get { return m_DisableMusic; } }
 		public bool disableVibration	{ get { return m_DisableVibration ; } }
 
+		public static CheatManager instance	{ get; private set; }
+
 		///////////////////////////////////////////////////////////////////////////
 
 		void Awake()
 		{
 			instance = this;
-		}
-		
-		///////////////////////////////////////////////////////////////////////////
-
-		public static CheatManager instance
-		{
-			get; private set;
 		}
 	}
 }

@@ -11,10 +11,7 @@ public class ParticleManager : MonoBehaviour
 
 	///////////////////////////////////////////////////////////////////////////
 
-	public static ParticleManager instance
-    {
-        get; private set;
-    }
+	public static ParticleManager instance	{ get; private set; }
 
 	///////////////////////////////////////////////////////////////////////////
 

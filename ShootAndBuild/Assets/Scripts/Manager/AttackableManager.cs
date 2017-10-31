@@ -7,6 +7,14 @@ namespace SAB
 
     public class AttackableManager : MonoBehaviour
     {
+		
+		///////////////////////////////////////////////////////////////////////////
+
+        public static AttackableManager instance	{ get; private set; }
+        public List<Attackable> allAttackables		{ get; private set; }
+        
+		///////////////////////////////////////////////////////////////////////////
+
         void Awake()
         {
             instance = this;
@@ -26,20 +34,6 @@ namespace SAB
             {
                 allAttackables.Add(behaviour);
             }
-        }
-
-		///////////////////////////////////////////////////////////////////////////
-
-        public static AttackableManager instance
-        {
-            get; private set;
-        }
-
-		///////////////////////////////////////////////////////////////////////////
-
-        public List<Attackable> allAttackables
-        {
-            get; private set;
         }
     }
 }

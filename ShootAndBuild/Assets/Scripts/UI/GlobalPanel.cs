@@ -20,6 +20,10 @@ namespace SAB
 
 		///////////////////////////////////////////////////////////////////////////
 
+		public static GlobalPanel instance { get; private set; }
+
+		///////////////////////////////////////////////////////////////////////////
+
         void Awake()
         {
             instance = this;
@@ -72,13 +76,6 @@ namespace SAB
         public void HighlightLifes()
         {
             m_LifesAmountAnimator.SetTrigger("Grow");
-        }
-
-		///////////////////////////////////////////////////////////////////////////
-
-        public static GlobalPanel instance
-        {
-            get; private set;
         }
     }
 }

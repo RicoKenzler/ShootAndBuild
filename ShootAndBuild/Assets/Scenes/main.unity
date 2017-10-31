@@ -14378,8 +14378,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8946859b2790849489574bbfc942af2a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  XpBar: {fileID: 1377052572}
-  XpBarAnimator: {fileID: 0}
+  m_XpBar: {fileID: 1377052572}
 --- !u!95 &722554583
 Animator:
   serializedVersion: 3

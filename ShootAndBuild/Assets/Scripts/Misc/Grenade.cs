@@ -129,7 +129,7 @@ namespace SAB
             ParticleManager.instance.SpawnParticle(m_ExplosionParticles.gameObject, gameObject, transform.position, null, false, 10.0f, false, false);
             AudioManager.instance.PlayAudio(m_ExplosionSound, selfPos);
             InputManager.instance.SetVibrationAll(0.1f, 0.1f, 0.5f);
-			CameraController.Instance.AddCameraShake(m_ExplosionShake);
+			CameraController.instance.AddCameraShake(m_ExplosionShake);
 
             Destroy(gameObject);
         }

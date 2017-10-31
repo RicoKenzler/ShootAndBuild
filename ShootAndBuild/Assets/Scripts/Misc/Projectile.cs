@@ -27,6 +27,22 @@ namespace SAB
 
 		///////////////////////////////////////////////////////////////////////////
 
+		public Vector3	direction	{ get; set; }
+		public int		damage		{ get; set; }
+
+		public Shootable owner {
+
+			get { return m_Owner; } 
+
+			set
+			{
+				m_Owner = value;
+				m_OwnerFaction = m_Owner.GetComponent<Attackable>().faction;
+			}
+		}
+
+		///////////////////////////////////////////////////////////////////////////
+
 		public void Init(float speed, float range, List<BuffData> buffs, GameObject riccochetEffect)
 		{
 			m_Speed				= speed;
@@ -47,7 +63,7 @@ namespace SAB
 		void Update()
 		{
 			float delta = Time.deltaTime * m_Speed;
-			transform.Translate(delta * Direction);
+			transform.Translate(delta * direction);
 
 			if ((m_StartPos - transform.position).sqrMagnitude > m_Range * m_Range)
 			{
@@ -82,40 +98,10 @@ namespace SAB
 			
 			if (targetAttackable != null)
 			{
-				targetAttackable.DealDamage(Damage, gameObject, m_Owner ? m_Owner.gameObject : null, m_Buffs);
+				targetAttackable.DealDamage(damage, gameObject, m_Owner ? m_Owner.gameObject : null, m_Buffs);
 			}
 
 			Destroy(gameObject);
-		}
-
-		///////////////////////////////////////////////////////////////////////////
-
-		public Vector3 Direction
-		{
-			get; set;
-		}
-
-		///////////////////////////////////////////////////////////////////////////
-
-		public int Damage
-		{
-			get; set;
-		}
-
-		///////////////////////////////////////////////////////////////////////////
-
-		public Shootable Owner
-		{
-			get
-			{
-				return m_Owner;
-			}
-
-			set
-			{
-				m_Owner = value;
-				m_OwnerFaction = m_Owner.GetComponent<Attackable>().faction;
-			}
 		}
 	}
 }

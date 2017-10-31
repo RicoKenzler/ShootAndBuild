@@ -24,6 +24,14 @@ namespace SAB.Spawn
 		public List<SpawnMob>	monsters { get { return m_Monsters; } set { m_Monsters = monsters; } }
 		public float			duration { get { return m_Duration; } set { m_Duration = duration; } }
 
+		public override bool isCompleted
+		{
+			get
+			{
+				return m_NumOfMonstersToSpawn == m_NumOfSpawnedMonsters;
+			}
+		}
+
 		///////////////////////////////////////////////////////////////////////////
 
 		public override void Start()
@@ -77,16 +85,6 @@ namespace SAB.Spawn
 			}
 
 			m_LifeTime += Time.deltaTime;
-		}
-
-		///////////////////////////////////////////////////////////////////////////
-
-		public override bool IsCompleted
-		{
-			get
-			{
-				return m_NumOfMonstersToSpawn == m_NumOfSpawnedMonsters;
-			}
 		}
 
 		///////////////////////////////////////////////////////////////////////////

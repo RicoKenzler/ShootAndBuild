@@ -11,6 +11,10 @@ namespace SAB
 
 		///////////////////////////////////////////////////////////////////////////
 
+		public static HealthBarManager instance	{ get; private set; }
+
+		///////////////////////////////////////////////////////////////////////////
+
         void Awake()
         {
             instance = this;
@@ -54,13 +58,6 @@ namespace SAB
                     // no return: currently we add a hacky background bar in addition
                 }
             }
-        }
-		
-		///////////////////////////////////////////////////////////////////////////
-
-        public static HealthBarManager instance
-        {
-            get; private set;
         }
     }
 }

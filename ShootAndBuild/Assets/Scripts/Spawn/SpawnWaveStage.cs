@@ -43,7 +43,7 @@ namespace SAB.Spawn
 
 		///////////////////////////////////////////////////////////////////////////
 
-		public virtual bool IsCompleted
+		public virtual bool isCompleted
 		{
 			get
 			{
