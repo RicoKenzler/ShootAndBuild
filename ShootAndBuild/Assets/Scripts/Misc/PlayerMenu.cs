@@ -6,23 +6,31 @@ namespace SAB
 {
     public class PlayerMenu : MonoBehaviour
     {
-        public AudioData menuSelectionRightSound;
-        public AudioData menuSelectionLeftSound;
-        public AudioData menuSelectionUpSound;
-        public AudioData menuSelectionDownSound;
-        public AudioData menuSelectionFailedSound;
+        [SerializeField] private AudioData m_MenuSelectionRightSound;
+        [SerializeField] private AudioData m_MenuSelectionLeftSound;
+        [SerializeField] private AudioData m_MenuSelectionUpSound;
+        [SerializeField] private AudioData m_MenuSelectionDownSound;
+        [SerializeField] private AudioData m_MenuSelectionFailedSound;
 
-        [System.NonSerialized]
-        public InventorySelectionCategory activeSelectionCategory = InventorySelectionCategory.Item;
-
+		///////////////////////////////////////////////////////////////////////////
+      
+        private InventorySelectionCategory m_ActiveSelectionCategory = InventorySelectionCategory.Item;
         private Inventory inventory;
         private Builder builder;
         private Shootable shootable;
+
+		///////////////////////////////////////////////////////////////////////////
+
+		public InventorySelectionCategory activeSelectionCategory { get { return m_ActiveSelectionCategory; } }
+
+		///////////////////////////////////////////////////////////////////////////
 
         public float lastMenuInteractionTime
         {
             get; private set;
         }
+
+		///////////////////////////////////////////////////////////////////////////
 
         void Awake()
         {
@@ -33,6 +41,8 @@ namespace SAB
             lastMenuInteractionTime = 0.0f;
             activeItemType = ItemType.None;
         }
+
+		///////////////////////////////////////////////////////////////////////////
 
         void InitActiveItemType()
         {
@@ -57,6 +67,8 @@ namespace SAB
             }
         }
 
+		///////////////////////////////////////////////////////////////////////////
+
         void InitActiveBuildingType()
         {
             if (builder.buildingPrefabs.Count == 0)
@@ -69,16 +81,15 @@ namespace SAB
             }
         }
 
+		///////////////////////////////////////////////////////////////////////////
+
         void Start()
         {
             InitActiveItemType();
             InitActiveBuildingType();
         }
-
-        void Update()
-        {
-
-        }
+		
+		///////////////////////////////////////////////////////////////////////////
 
         private bool TryCycleThroughItems(bool positiveOrder)
         {
@@ -86,11 +97,14 @@ namespace SAB
             return false;
         }
 
+		///////////////////////////////////////////////////////////////////////////
+
         private bool TryCycleThroughWeapons(bool positiveOrder)
         {
-
             return shootable.CycleWeapons(positiveOrder);
         }
+
+		///////////////////////////////////////////////////////////////////////////
 
         private bool TryCycleThroughBuildings(bool positiveOrder)
         {
@@ -159,11 +173,13 @@ namespace SAB
             }
         }
 
+		///////////////////////////////////////////////////////////////////////////
+
         public void CycleThroughCategory(bool positiveOrder)
         {
             bool success = false;
 
-            switch (activeSelectionCategory)
+            switch (m_ActiveSelectionCategory)
             {
                 case InventorySelectionCategory.Item:
                     success = TryCycleThroughItems(positiveOrder);
@@ -178,43 +194,51 @@ namespace SAB
 
             if (success)
             {
-                AudioManager.instance.PlayAudio(positiveOrder ? menuSelectionUpSound : menuSelectionDownSound);
+                AudioManager.instance.PlayAudio(positiveOrder ? m_MenuSelectionUpSound : m_MenuSelectionDownSound);
             }
             else
             {
-                AudioManager.instance.PlayAudio(menuSelectionFailedSound);
+                AudioManager.instance.PlayAudio(m_MenuSelectionFailedSound);
             }
 
             lastMenuInteractionTime = Time.time;
         }
+
+		///////////////////////////////////////////////////////////////////////////
 
         public void ChangeSelectionCategory(bool positiveOrder)
         {
-            activeSelectionCategory += positiveOrder ? 1 : -1;
+            m_ActiveSelectionCategory += positiveOrder ? 1 : -1;
 
-            if (activeSelectionCategory >= InventorySelectionCategory.Count)
+            if (m_ActiveSelectionCategory >= InventorySelectionCategory.Count)
             {
-                activeSelectionCategory = 0;
+                m_ActiveSelectionCategory = 0;
             }
-            else if (activeSelectionCategory < 0)
+            else if (m_ActiveSelectionCategory < 0)
             {
-                activeSelectionCategory = InventorySelectionCategory.Count - 1;
+                m_ActiveSelectionCategory = InventorySelectionCategory.Count - 1;
             }
 
-            AudioManager.instance.PlayAudio(positiveOrder ? menuSelectionRightSound : menuSelectionLeftSound);
+            AudioManager.instance.PlayAudio(positiveOrder ? m_MenuSelectionRightSound : m_MenuSelectionLeftSound);
 
             lastMenuInteractionTime = Time.time;
         }
+
+		///////////////////////////////////////////////////////////////////////////
 
         public ItemType activeItemType
         {
             get; private set;
         }
 
+		///////////////////////////////////////////////////////////////////////////
+
         public Building activeBuildingPrefab
         {
             get; private set;
         }
+
+		///////////////////////////////////////////////////////////////////////////
 
 		public WeaponData activeWeapon
 		{

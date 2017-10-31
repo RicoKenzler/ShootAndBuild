@@ -1,50 +1,73 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace SAB
 {
 	public class Projectile : MonoBehaviour
 	{
 		[Tooltip("Speed in units per second")]
-		public float speed = 5;
+		[FormerlySerializedAs("speed")]
+		[SerializeField] private float m_Speed = 5;
 
-		public float range;
+		[FormerlySerializedAs("range")]
+		[SerializeField] private float m_Range;
 
-		public List<BuffData> buffs;
+		[FormerlySerializedAs("buffs")]
+		[SerializeField] private List<BuffData> m_Buffs;
 
-		public GameObject ricochetEffect;
+		[FormerlySerializedAs("ricochetEffect")]
+		[SerializeField] private GameObject m_RicochetEffect;
 
-		private Vector3 startPos;
-		private Shootable owner;
-		private Faction ownerFaction;   //< remember faction separately as Owner could have died when we need the info
+		///////////////////////////////////////////////////////////////////////////
+
+		private Vector3		m_StartPos;
+		private Shootable	m_Owner;
+		private Faction		m_OwnerFaction;   //< remember faction separately as Owner could have died when we need the info
+
+		///////////////////////////////////////////////////////////////////////////
+
+		public void Init(float speed, float range, List<BuffData> buffs, GameObject riccochetEffect)
+		{
+			m_Speed				= speed;
+			m_Range				= range;
+			m_Buffs				= buffs;
+			m_RicochetEffect	= riccochetEffect;
+		}
+
+		///////////////////////////////////////////////////////////////////////////
 
 		void Start()
 		{
-			startPos = transform.position;
+			m_StartPos = transform.position;
 		}
+
+		///////////////////////////////////////////////////////////////////////////
 
 		void Update()
 		{
-			float delta = Time.deltaTime * speed;
+			float delta = Time.deltaTime * m_Speed;
 			transform.Translate(delta * Direction);
 
-			if ((startPos - transform.position).sqrMagnitude > range * range)
+			if ((m_StartPos - transform.position).sqrMagnitude > m_Range * m_Range)
 			{
 				Destroy(gameObject);
 			}
 		}
 
+		///////////////////////////////////////////////////////////////////////////
+
 		void OnTriggerEnter(Collider other)
 		{
 			// we are immune to our own projectiles
-			if (owner && (owner.gameObject == other.gameObject))
+			if (m_Owner && (m_Owner.gameObject == other.gameObject))
 			{
 				return;
 			}
 
 			Attackable targetAttackable = other.GetComponent<Attackable>();
 
-			if (targetAttackable && (targetAttackable.faction == ownerFaction))
+			if (targetAttackable && (targetAttackable.faction == m_OwnerFaction))
 			{
 				// no friendly fire
 				return;
@@ -53,39 +76,45 @@ namespace SAB
 			if (other.gameObject.layer == 0)
 			{
 				//might work better in oncollision enter with collision normal
-				ParticleManager.instance.SpawnParticle(ricochetEffect, ParticleManager.instance.gameObject, this.transform.position,
+				ParticleManager.instance.SpawnParticle(m_RicochetEffect, ParticleManager.instance.gameObject, this.transform.position,
 											Quaternion.LookRotation(this.transform.forward * -1f, Vector3.up), false, 2.0f, false, false);
 			}
 			
 			if (targetAttackable != null)
 			{
-				targetAttackable.DealDamage(Damage, gameObject, owner ? owner.gameObject : null, buffs);
+				targetAttackable.DealDamage(Damage, gameObject, m_Owner ? m_Owner.gameObject : null, m_Buffs);
 			}
 
 			Destroy(gameObject);
 		}
+
+		///////////////////////////////////////////////////////////////////////////
 
 		public Vector3 Direction
 		{
 			get; set;
 		}
 
+		///////////////////////////////////////////////////////////////////////////
+
 		public int Damage
 		{
 			get; set;
 		}
 
+		///////////////////////////////////////////////////////////////////////////
+
 		public Shootable Owner
 		{
 			get
 			{
-				return owner;
+				return m_Owner;
 			}
 
 			set
 			{
-				owner = value;
-				ownerFaction = owner.GetComponent<Attackable>().faction;
+				m_Owner = value;
+				m_OwnerFaction = m_Owner.GetComponent<Attackable>().faction;
 			}
 		}
 	}

@@ -7,11 +7,9 @@ namespace SAB
 
 	public class Shootable : MonoBehaviour
     {
-        public WeaponData defaultWeapon;
+        private List<WeaponData> m_Arsenal = new List<WeaponData>();
 
-        private List<WeaponData> arsenal = new List<WeaponData>();
-
-        int currentWeaponIndex = 0;
+        private int m_CurrentWeaponIndex = 0;
         
         ///////////////////////////////////////////////////////////////////////////
 
@@ -39,10 +37,7 @@ namespace SAB
         
         void Awake()
         {
-			if (defaultWeapon)
-			{
-				AddWeapon(defaultWeapon, true);
-			}
+
         }
 
         ///////////////////////////////////////////////////////////////////////////
@@ -60,24 +55,27 @@ namespace SAB
 
         public void Shoot(Quaternion? projectileDirection = null)
         {
-            CurrentWeapon.TryShoot(this, transform.position, projectileDirection.HasValue ? projectileDirection.Value : this.transform.rotation);
+			if (CurrentWeapon)
+			{
+				CurrentWeapon.TryShoot(this, transform.position, projectileDirection.HasValue ? projectileDirection.Value : this.transform.rotation);
+			}
         }
 
         ///////////////////////////////////////////////////////////////////////////
 
         public void AddWeapon(WeaponData _newWeapon, bool setAsCurrent = false)
         {
-            if ( !arsenal.Any(w => w.weaponID == _newWeapon.weaponID) )
+            if ( !m_Arsenal.Any(w => w.weaponID == _newWeapon.weaponID) )
 			{
                 //Debug.Log("picked up " + _newWeapon.weaponID.ToString());
                 //weapon is not contained -> add
                 WeaponData weapon = Instantiate(_newWeapon);
                 weapon.Init(this);
-                arsenal.Add(weapon);
+                m_Arsenal.Add(weapon);
 
-                if (setAsCurrent)
+                if (setAsCurrent || !this.CurrentWeapon)
                 {
-                    this.CurrentWeapon = arsenal.Last();
+                    this.CurrentWeapon = m_Arsenal.Last();
                 }
 
             } else
@@ -92,19 +90,19 @@ namespace SAB
 
         public bool CycleWeapons(bool positiveOrder)
         {
-            if (arsenal.Count > 1)
+            if (m_Arsenal.Count > 1)
             {
-                currentWeaponIndex += positiveOrder ? 1 : -1;
+                m_CurrentWeaponIndex += positiveOrder ? 1 : -1;
 
-                if (currentWeaponIndex >= arsenal.Count)
+                if (m_CurrentWeaponIndex >= m_Arsenal.Count)
                 {
-                    currentWeaponIndex = 0;
-                } else if (currentWeaponIndex < 0)
+                    m_CurrentWeaponIndex = 0;
+                } else if (m_CurrentWeaponIndex < 0)
                 {
-                    currentWeaponIndex = arsenal.Count - 1;
+                    m_CurrentWeaponIndex = m_Arsenal.Count - 1;
                 }
 
-                CurrentWeapon = arsenal[currentWeaponIndex];
+                CurrentWeapon = m_Arsenal[m_CurrentWeaponIndex];
 
                 return true;        
             }

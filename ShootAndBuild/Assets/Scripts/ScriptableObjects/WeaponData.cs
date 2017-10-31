@@ -131,14 +131,14 @@ namespace SAB
                     projectileGo.transform.position = _origin;
                     projectileGo.transform.rotation = dir;
 
+					float speed = projectileSpeed + Random.Range(-projectileSpeed * projectileRandomSpeed, projectileSpeed * projectileRandomSpeed);
+
                     Projectile proj = projectileGo.GetComponent<Projectile>();
                     proj.Direction = new Vector3(0.0f, 0.0f, 1.0f);
                     proj.Owner = _owner;
                     proj.Damage = damage;
-                    proj.speed = projectileSpeed + Random.Range(-projectileSpeed * projectileRandomSpeed, projectileSpeed * projectileRandomSpeed);
-                    proj.range = range;
-                    proj.ricochetEffect = ricochetEffect;
-					proj.buffs.AddRange(buffs);
+					proj.Init(speed, range, new List<BuffData>(buffs), ricochetEffect);
+
                     //TODO range of projectile
                     //TODO damage type to projectile
                 }

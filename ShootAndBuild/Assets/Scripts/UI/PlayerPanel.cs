@@ -177,7 +177,7 @@ namespace SAB
 				}
             }
 
-            bool weaponUsable = (IsPlayerAlive() && (activeWeapon.Cooldown < 0.1f));
+            bool weaponUsable = (IsPlayerAlive() && activeWeapon && (activeWeapon.Cooldown < 0.1f));
 
             activeWeaponImage.color = weaponUsable ? activatedColorTint : deactivatedColorTint;
         }
