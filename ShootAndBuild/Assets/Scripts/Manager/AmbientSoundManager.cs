@@ -414,7 +414,7 @@ namespace SAB
 			audioSource.Play();
 
 			m_CurPlayingSoundTypes[audioSourceIndex]	= ambientType;
-			m_SourceMaxVolume[audioSourceIndex]		= ambientSoundData.VolumeFactor;
+			m_SourceMaxVolume[audioSourceIndex]			= ambientSoundData.volumeFactor;
 		}
 
 		///////////////////////////////////////////////////////////////////////////	

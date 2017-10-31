@@ -2,16 +2,22 @@
 
 namespace SAB
 {
-
     public class TowerBehaviour : MonoBehaviour
     {
+        [SerializeField] private bool m_TurnTowardsEnemy = false;
+
+		///////////////////////////////////////////////////////////////////////////
+
         private Shootable shootable;
-        public bool turnTowardsEnemy = false;
+
+		///////////////////////////////////////////////////////////////////////////
 
         void Awake()
         {
             shootable = GetComponent<Shootable>();
         }
+
+		///////////////////////////////////////////////////////////////////////////
 
         void Update()
         {
@@ -26,7 +32,7 @@ namespace SAB
                 return;
             }
 
-            if (turnTowardsEnemy)
+            if (m_TurnTowardsEnemy)
             {
                 transform.LookAt(nearestEnemy.transform);
             }
@@ -43,6 +49,8 @@ namespace SAB
                 shootable.Shoot(rotationToEnemy);
             }
         }
+
+		///////////////////////////////////////////////////////////////////////////
 
         private GameObject GetNearestEnemy()
         {

@@ -2153,7 +2153,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b85794b3d4575d744aec20967ba0e00d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  defaultWeapon: {fileID: 11400000, guid: 5f0046e4e67f23e418f008cfe1549022, type: 2}
 --- !u!114 &114038263645953718
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2165,9 +2164,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c9156fcae1fadac40b8e5284012b6e71, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_StartGold: 10
-  m_StartLives: 4
-  m_StartGrenades: 4
   m_NotEnoughResourcesSound: {fileID: 11400000, guid: 4a296f9be14238049812b642393e3ba8,
     type: 2}
 --- !u!114 &114039302743832264
@@ -2191,7 +2187,8 @@ MonoBehaviour:
     type: 2}
   m_DamageParticles: {fileID: 198000011143922816, guid: e5a3d6da48298a0458c1990f58c27069,
     type: 2}
-  m_BloodDecal: {fileID: 0}
+  m_BloodDecal: {fileID: 114453302406263870, guid: 64a24b6f7f4c34f4b9910eebd9adb72c,
+    type: 2}
 --- !u!114 &114190577841373536
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2257,10 +2254,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e541f4e3bb45a44a902e2a3307ed9c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  projectilePrefab: {fileID: 1996455648613418, guid: 02f11bb25c102a64bbb91a3b977a0668,
+  m_ProjectilePrefab: {fileID: 1996455648613418, guid: 02f11bb25c102a64bbb91a3b977a0668,
     type: 2}
-  throwSound: {fileID: 11400000, guid: 1bed37748b4451249a60bf6322d827d8, type: 2}
-  throwStrength: 10
+  m_ThrowSound: {fileID: 11400000, guid: 1bed37748b4451249a60bf6322d827d8, type: 2}
+  m_ThrowStrength: 10
 --- !u!114 &114573611399926386
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2272,15 +2269,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 678ca468ae418614396bcd0fd0220ff2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  menuSelectionRightSound: {fileID: 11400000, guid: af72c869f519b7d4baf1938b3b66441e,
+  m_MenuSelectionRightSound: {fileID: 11400000, guid: af72c869f519b7d4baf1938b3b66441e,
     type: 2}
-  menuSelectionLeftSound: {fileID: 11400000, guid: 29f1f032e5f850a40b9befe73c1a5e4c,
+  m_MenuSelectionLeftSound: {fileID: 11400000, guid: 29f1f032e5f850a40b9befe73c1a5e4c,
     type: 2}
-  menuSelectionUpSound: {fileID: 11400000, guid: 05fcc0a93575f704b851805694016193,
+  m_MenuSelectionUpSound: {fileID: 11400000, guid: 05fcc0a93575f704b851805694016193,
     type: 2}
-  menuSelectionDownSound: {fileID: 11400000, guid: dabf79b88ab230641bbc330e2a9ce112,
+  m_MenuSelectionDownSound: {fileID: 11400000, guid: dabf79b88ab230641bbc330e2a9ce112,
     type: 2}
-  menuSelectionFailedSound: {fileID: 11400000, guid: bf53d8aea4ff9924b8a38cebe5ab5649,
+  m_MenuSelectionFailedSound: {fileID: 11400000, guid: bf53d8aea4ff9924b8a38cebe5ab5649,
     type: 2}
 --- !u!114 &114673583163577024
 MonoBehaviour:
@@ -2304,8 +2301,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1edf2b43cee39940aecf9e8663570fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tauntSound: {fileID: 11400000, guid: 9ab5ab4b327c99446904180d017c3795, type: 2}
-  singSound: {fileID: 11400000, guid: b44c8e0384bd9c54fa939cb4373fbb3f, type: 2}
+  m_TauntSound: {fileID: 11400000, guid: 9ab5ab4b327c99446904180d017c3795, type: 2}
+  m_SingSound: {fileID: 11400000, guid: b44c8e0384bd9c54fa939cb4373fbb3f, type: 2}
 --- !u!136 &136200064567154072
 CapsuleCollider:
   m_ObjectHideFlags: 1

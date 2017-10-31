@@ -5,25 +5,25 @@ namespace SAB
 
     public class Throwable : MonoBehaviour
     {
-        public GameObject projectilePrefab;
+        [SerializeField] private GameObject m_ProjectilePrefab;
+        [SerializeField] private AudioData	m_ThrowSound;
+		[SerializeField] private float		m_ThrowStrength = 10;
 
-        public AudioData throwSound;
-
-		public float throwStrength = 10;
+		///////////////////////////////////////////////////////////////////////////
 
         public void Throw()
         {
             GameObject projectileContainer = GameObject.Find("Projectiles");
 
-            GameObject instance = Instantiate(projectilePrefab, projectileContainer.transform);
+            GameObject instance = Instantiate(m_ProjectilePrefab, projectileContainer.transform);
             instance.transform.position = transform.position + transform.forward * 0.5f;
             instance.GetComponent<Grenade>().owner = this;
 			instance.GetComponent<Grenade>().ownerFaction = GetComponent<Attackable>().faction;
 
             Rigidbody body = instance.GetComponent<Rigidbody>();
-            body.velocity = transform.forward * throwStrength;
+            body.velocity = transform.forward * m_ThrowStrength;
 
-            AudioManager.instance.PlayAudio(throwSound, instance.transform.position);
+            AudioManager.instance.PlayAudio(m_ThrowSound, instance.transform.position);
         }
     }
 }

@@ -6,28 +6,31 @@ namespace SAB
 {
     public class TauntController : MonoBehaviour
     {
+        [SerializeField] private AudioData m_TauntSound;
+        [SerializeField] private AudioData m_SingSound;
 
-        public AudioData tauntSound;
-        public AudioData singSound;
+		///////////////////////////////////////////////////////////////////////////
 
-        private InputController inputController;
+        private InputController m_InputController;
+        private int m_TauntStep = 0;
 
-        private int tauntStep = 0;
+		///////////////////////////////////////////////////////////////////////////
 
-        // Use this for initialization
         void Start()
         {
-            inputController = GetComponent<InputController>();
+            m_InputController = GetComponent<InputController>();
         }
-		
+
+		///////////////////////////////////////////////////////////////////////////
+
         public void PlayTaunt()
         {
-            PlayerID playerID = inputController.playerID;
+            PlayerID playerID = m_InputController.playerID;
 
             if (playerID == PlayerID.Player1)
             {
                 // Player1: Fart
-                AudioManager.instance.PlayAudio(tauntSound, transform.position);
+                AudioManager.instance.PlayAudio(m_TauntSound, transform.position);
                 return;
             }
 
@@ -49,15 +52,14 @@ namespace SAB
             int[] steps = playerID == PlayerID.Player2 ? mozartSteps : marioSteps;
 
             // map halftone steps to pitch
-            int index = tauntStep % steps.Length;
+            int index = m_TauntStep % steps.Length;
             int pitchHalftoneDelta = steps[index];
 
             float pitch = AudioManager.instance.SemitoneToPitch(pitchHalftoneDelta);
 
-            AudioManager.instance.PlayAudio(singSound, transform.position, pitch);
+            AudioManager.instance.PlayAudio(m_SingSound, transform.position, pitch);
 
-            tauntStep++;
+            m_TauntStep++;
         }
-
     }
 }

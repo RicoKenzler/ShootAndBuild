@@ -9,13 +9,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 28c366e8515bf604f8886397796bb0e6, type: 3}
-  m_Name: WeaponRailgung
+  m_Name: WeaponRailgun
   m_EditorClassIdentifier: 
   itemType: 101
   usageCategory: 4
   usagePrefab: {fileID: 0}
   isShared: 0
-  initialCount: 4
+  initialCount: 1
   useOnCollect: 0
   icon: {fileID: 21300000, guid: ebaeb2af4cecf6e4fae59cf35b1a1951, type: 3}
   weaponData: {fileID: 11400000, guid: 08be5cf1606a7ad4fb6a348a780576ba, type: 2}
