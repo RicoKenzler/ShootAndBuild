@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace SAB
 {
@@ -11,19 +12,39 @@ namespace SAB
 
 	public class Attackable : MonoBehaviour
 	{
-		public int maxHealth = 10;
-		public bool showHealthBar = true;
-		public Faction faction = Faction.Enemy;
+		[FormerlySerializedAs("maxHealth")]
+		[SerializeField] private int		m_MaxHealth		= 10;
 
-		public ItemDrop[] itemDrops;
+		[FormerlySerializedAs("showHealthBar")]
+		[SerializeField] private bool		m_ShowHealthBar	= true;
 
-		public AudioData dieSound;
-		public AudioData spawnSound;
+		[FormerlySerializedAs("faction")]
+		[SerializeField] private Faction	m_Faction		= Faction.Enemy;
 
-		public ParticleSystem dieParticles;
-		public ParticleSystem damageParticles;
+		[FormerlySerializedAs("itemDrops")]
+		[SerializeField] private ItemDrop[] m_ItemDrops;
 
-		public BloodDecal bloodDecal;
+		[FormerlySerializedAs("dieSound")]
+		[SerializeField] private AudioData	m_DieSound;
+
+		[FormerlySerializedAs("spawnSound")]
+		[SerializeField] private AudioData	m_SpawnSound;
+
+		[FormerlySerializedAs("dieParticles")]
+		[SerializeField] private ParticleSystem m_DieParticles;
+
+		[FormerlySerializedAs("damageParticles")]
+		[SerializeField] private ParticleSystem m_DamageParticles;
+
+		[FormerlySerializedAs("bloodDecal")]
+		[SerializeField] private BloodDecal m_BloodDecal;
+
+		///////////////////////////////////////////////////////////////////////////
+
+		public Faction	faction		{ get { return m_Faction;		} set { m_Faction = value; } }
+		public int		maxHealth	{ get { return m_MaxHealth;		} }
+
+		///////////////////////////////////////////////////////////////////////////
 
 		public delegate void PlayerDiesEvent(PlayerID id);
 		public event PlayerDiesEvent PlayerDies;
@@ -39,6 +60,8 @@ namespace SAB
 
 		private Buffable buffable;
 
+		///////////////////////////////////////////////////////////////////////////
+
         void Start()
 		{
 			Heal();
@@ -49,11 +72,15 @@ namespace SAB
 			inputController = GetComponent<InputController>();
 		}
 
+		///////////////////////////////////////////////////////////////////////////
+
 		public void Heal(float relativeAmount = 1.0f)
 		{
-			currentHealth += (int)Mathf.Round(maxHealth * relativeAmount);
-			currentHealth = Mathf.Min(currentHealth, maxHealth);
+			currentHealth += (int)Mathf.Round(m_MaxHealth * relativeAmount);
+			currentHealth = Mathf.Min(currentHealth, m_MaxHealth);
 		}
+
+		///////////////////////////////////////////////////////////////////////////
 
         void OnEnable()
 		{
@@ -61,15 +88,19 @@ namespace SAB
 			AttackableManager.instance.RegisterAttackable(this, false);
 		}
 
+		///////////////////////////////////////////////////////////////////////////
+
 		void OnDisable()
 		{
 			RegisterHealthBar(true);
 			AttackableManager.instance.RegisterAttackable(this, true);
 		}
 
+		///////////////////////////////////////////////////////////////////////////
+
 		public void RegisterHealthBar(bool unregister = false)
 		{
-			if (!showHealthBar)
+			if (!m_ShowHealthBar)
 			{
 				return;
 			}
@@ -84,23 +115,25 @@ namespace SAB
 			}
 		}
 
+		///////////////////////////////////////////////////////////////////////////
+
 		private void Die(GameObject damageDealerMedium, GameObject damageDealerActor)
 		{
 			// Drops
 			DropItems();
 
 			// Audio
-			AudioManager.instance.PlayAudio(dieSound, transform.position);
+			AudioManager.instance.PlayAudio(m_DieSound, transform.position);
 
 			// Particles
-			if (dieParticles)
+			if (m_DieParticles)
 			{
 				Vector3 towardsEnemy = (damageDealerMedium.transform.position - transform.position);
 
 				Quaternion rotationAwayFromEnemy = Quaternion.FromToRotation(new Vector3(0.0f, 0.0f, 1.0f), -towardsEnemy);
 
 				Vector3 posOffset = new Vector3(0.0f, 1.0f, 0.0f);
-				ParticleManager.instance.SpawnParticle(dieParticles.gameObject, gameObject, transform.position + posOffset, rotationAwayFromEnemy, false, 10.0f, true, false);
+				ParticleManager.instance.SpawnParticle(m_DieParticles.gameObject, gameObject, transform.position + posOffset, rotationAwayFromEnemy, false, 10.0f, true, false);
 			}
 
 			// Player Counter
@@ -133,27 +166,29 @@ namespace SAB
 			{
 				DieAnimation ani = gameObject.AddComponent<DieAnimation>();
 
-				if (bloodDecal)
+				if (m_BloodDecal)
 				{
-					ani.ShowBloodDecal(bloodDecal.gameObject);
+					ani.ShowBloodDecal(m_BloodDecal.gameObject);
 				}
 			}
 		}
+
+		///////////////////////////////////////////////////////////////////////////
 
 		private void DropItems()
 		{
 			int itemToDrop = -1;
 			float lowestProbability = 1.0f;
 
-			for (int i = 0; i < itemDrops.Length; ++i)
+			for (int i = 0; i < m_ItemDrops.Length; ++i)
 			{
-				if (itemDrops[i].dropProbability > lowestProbability)
+				if (m_ItemDrops[i].dropProbability > lowestProbability)
 				{
 					// give lower probabilities higher prio, such that shitty items do not suppres rare items
 					continue;
 				}
 
-				if ((Random.Range(0.0f, 1.0f) <= itemDrops[i].dropProbability))
+				if ((Random.Range(0.0f, 1.0f) <= m_ItemDrops[i].dropProbability))
 				{
 					itemToDrop = i;
 				}
@@ -164,7 +199,7 @@ namespace SAB
 				return;
 			}
 
-			ItemDrop bestItemDrop = itemDrops[itemToDrop];
+			ItemDrop bestItemDrop = m_ItemDrops[itemToDrop];
 
 			int itemAmount = Random.Range(bestItemDrop.minDropAmount, bestItemDrop.maxDropAmount);
 
@@ -188,17 +223,16 @@ namespace SAB
 			newCollectable.amount = itemAmount;
 		}
 
+		///////////////////////////////////////////////////////////////////////////
+
 		public void DealLethalDamage(GameObject damageDealerMedium, GameObject damageDealerActor)
 		{
 			DealDamage(currentHealth, damageDealerMedium, damageDealerActor);
 		}
 
-        /// <summary>
+		///////////////////////////////////////////////////////////////////////////
+
         /// reduces health of attackable, triggers effects etc
-        /// </summary>
-        /// <param name="damage"></param>
-        /// <param name="damageDealerMedium"></param>
-        /// <param name="damageDealerActor"></param>
         /// <returns>the damage actually dealt</returns>
 		public int DealDamage(int damage, GameObject damageDealerMedium, GameObject damageDealerActor, List<BuffData> buffs = null)
 		{
@@ -208,7 +242,7 @@ namespace SAB
 
 			if (CheatManager.instance.ultraHighDamage)
 			{
-				damage = maxHealth + 100000;
+				damage = m_MaxHealth + 100000;
 			}
 
 			Buffable buffableActor = damageDealerActor ? damageDealerActor.GetComponent<Buffable>() : null;
@@ -242,7 +276,7 @@ namespace SAB
 			if (inputController)
 			{
 				// vibrate for taking damage
-				float damagePercentage = (float)damage / (float)maxHealth;
+				float damagePercentage = (float)damage / (float)m_MaxHealth;
 				float vibrationAmount;
 
 				if (currentHealth == 0)
@@ -281,7 +315,7 @@ namespace SAB
 				InputManager.instance.SetVibration(inputController.playerID, leftAmount, rightAmount, 0.3f);
 			}
 
-			if (damageParticles)
+			if (m_DamageParticles)
 			{
 				Vector3 towardsEnemy = (damageDealerMedium.transform.position - transform.position);
 
@@ -289,7 +323,7 @@ namespace SAB
 
 				Vector3 posOffset = new Vector3(0.0f, 1.0f, 0.0f);
 
-				ParticleManager.instance.SpawnParticle(damageParticles.gameObject, gameObject, transform.position + posOffset, rotationTowardsEnemy, false, 3.0f, true, true);
+				ParticleManager.instance.SpawnParticle(m_DamageParticles.gameObject, gameObject, transform.position + posOffset, rotationTowardsEnemy, false, 3.0f, true, true);
 			}
 
 			if (currentHealth <= 0)
@@ -309,6 +343,8 @@ namespace SAB
             return damageDealt;
 		}
 
+		///////////////////////////////////////////////////////////////////////////
+
 		public void OnRespawn(Vector3 position)
 		{
 			// Prepare respawn
@@ -322,19 +358,25 @@ namespace SAB
 			PlaySpawnSound();
 		}
 
+		///////////////////////////////////////////////////////////////////////////
+
 		private void PlaySpawnSound()
 		{
-			AudioManager.instance.PlayAudio(spawnSound, transform.position);
+			AudioManager.instance.PlayAudio(m_SpawnSound, transform.position);
 		}
+
+		///////////////////////////////////////////////////////////////////////////
 
 		public int Health
 		{
 			get { return currentHealth; }
 		}
 
+		///////////////////////////////////////////////////////////////////////////
+
 		public float HealthNormalized
 		{
-			get { return (float)this.currentHealth / (float)this.maxHealth; }
+			get { return (float)this.currentHealth / (float)this.m_MaxHealth; }
 		}
 	}
 }

@@ -2,29 +2,32 @@
 
 namespace SAB
 {
-
     public class Blockable : MonoBehaviour
     {
-        private static Vector3 invalidPosition = new Vector3(float.NegativeInfinity, float.NegativeInfinity, float.NegativeInfinity);
-        private Vector3 lastPosition = invalidPosition;
+        private static Vector3 INVALID_POSITION = new Vector3(float.NegativeInfinity, float.NegativeInfinity, float.NegativeInfinity);
+        private Vector3 m_LastPosition = INVALID_POSITION;
+
+		///////////////////////////////////////////////////////////////////////////
 
         void Update()
         {
-            if (lastPosition != invalidPosition)
+            if (m_LastPosition != INVALID_POSITION)
             {
-                Grid.instance.Free(gameObject, lastPosition);
+                Grid.instance.Free(gameObject, m_LastPosition);
             }
 
-            lastPosition = transform.position;
+            m_LastPosition = transform.position;
             Grid.instance.Reserve(gameObject, transform.position);
         }
+
+		///////////////////////////////////////////////////////////////////////////
 
         // Frees the position if the Gameobjects dies, or gets disabled
         void OnDisable()
         {
-            if (lastPosition != invalidPosition)
+            if (m_LastPosition != INVALID_POSITION)
             {
-                Grid.instance.Free(gameObject, lastPosition);
+                Grid.instance.Free(gameObject, m_LastPosition);
             }
         }
     }

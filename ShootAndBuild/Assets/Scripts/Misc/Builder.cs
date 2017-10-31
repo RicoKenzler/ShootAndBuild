@@ -1,34 +1,38 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.Serialization;
 
 namespace SAB
 {
-
     public class Builder : MonoBehaviour
     {
-        public List<Building> buildingPrefabs;
-        public float distance = 2;
+		[FormerlySerializedAs("buildingPrefabs")]
+        [SerializeField] private List<Building> m_BuildingPrefabs;
+        [SerializeField] private float			m_Distance		= 1.5f;
 
-        public AudioData buildSound;
-        public ParticleSystem buildEffect;
+        [SerializeField] private AudioData		m_BuildSound;
+        [SerializeField] private ParticleSystem m_BuildEffect;
 
-        public AudioData noSpaceSound;
+        [SerializeField] private AudioData		m_NoSpaceSound;
 
         private PlayerMenu playerMenu;
+		
+		///////////////////////////////////////////////////////////////////////////
 
-        void Awake()
-        {
+		public List<Building> buildingPrefabs { get { return m_BuildingPrefabs; } }
 
-        }
+		///////////////////////////////////////////////////////////////////////////
 
         private void Start()
         {
             playerMenu = GetComponent<PlayerMenu>();
         }
 
+		///////////////////////////////////////////////////////////////////////////
+
         public void TryBuild()
         {
-            Vector3 pos = transform.position + transform.rotation * (distance * Vector3.forward);
+            Vector3 pos = transform.position + transform.rotation * (m_Distance * Vector3.forward);
             pos = Grid.instance.ToTileCenter(pos);
 
             Building activeBuilding = playerMenu.activeBuildingPrefab;
@@ -48,12 +52,14 @@ namespace SAB
 
             if (!Grid.instance.IsFree(activeBuilding.gameObject, pos))
             {
-                AudioManager.instance.PlayAudio(noSpaceSound);
+                AudioManager.instance.PlayAudio(m_NoSpaceSound);
                 return;
             }
 
             Build(activeBuilding, pos);
         }
+
+		///////////////////////////////////////////////////////////////////////////
 
         private void Build(Building buildingPrefab, Vector3 pos)
         {
@@ -61,13 +67,13 @@ namespace SAB
             newTower.transform.position = pos;
             newTower.GetComponent<Attackable>().faction = GetComponent<Attackable>().faction;
 
-            AudioManager.instance.PlayAudio(buildSound, transform.position);
+            AudioManager.instance.PlayAudio(m_BuildSound, transform.position);
 
             buildingPrefab.Pay();
 
-            if (buildEffect)
+            if (m_BuildEffect)
             {
-                ParticleManager.instance.SpawnParticle(buildEffect.gameObject, newTower, newTower.transform.position, null, false, 6.0f, true, false);
+                ParticleManager.instance.SpawnParticle(m_BuildEffect.gameObject, newTower, newTower.transform.position, null, false, 6.0f, true, false);
             }
         }
     }

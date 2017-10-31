@@ -3,27 +3,28 @@ using UnityEngine;
 
 public class BloodDecal : MonoBehaviour
 {
-	private static Queue<BloodDecal> decals = new Queue<BloodDecal>();
-	private static int decalNum = 0;
-	private const int maxDecals = 1000;
-	private const float fadeTime = 1.0f;
+	private static Queue<BloodDecal> s_Decals = new Queue<BloodDecal>();
+	private static int s_decalNum = 0;
+	private const int MAX_DECAL_COUNT = 1000;
+	private const float DECAL_FADE_TIME = 1.0f;
 
-	private float progress = 0.0f;
-	private bool fadeOut = false;
-	private bool fadeIn = false;
+	private float m_Progress	= 0.0f;
+	private bool m_FadeOut		= false;
+	private bool m_FadeIn		= false;
 
+	///////////////////////////////////////////////////////////////////////////
 
 	void Start()
 	{
-		while (decals.Count > maxDecals)
+		while (s_Decals.Count > MAX_DECAL_COUNT)
 		{
-			BloodDecal decal = decals.Dequeue();
+			BloodDecal decal = s_Decals.Dequeue();
 			decal.Vanish();
 		}
 
-		decals.Enqueue(this);
+		s_Decals.Enqueue(this);
 
-		fadeIn = true;
+		m_FadeIn = true;
 
 		transform.localScale = Vector3.zero;
 
@@ -33,44 +34,48 @@ public class BloodDecal : MonoBehaviour
 		renderer.material.mainTextureOffset = new Vector2(x, y);
 		
 		Vector3 pos = transform.localPosition;
-		pos.y = 0.05f + 0.000001f * decalNum;
+		pos.y = 0.05f + 0.000001f * s_decalNum;
 		transform.localPosition = pos;
 
 		transform.Rotate(Vector3.up, Random.Range(0.0f, 360.0f));
 
-		decalNum = (decalNum + 1) % maxDecals;
+		s_decalNum = (s_decalNum + 1) % MAX_DECAL_COUNT;
 	}
+
+	///////////////////////////////////////////////////////////////////////////
 
 	void Update()
 	{
-		if (fadeIn)
+		if (m_FadeIn)
 		{
-			progress += Time.deltaTime / fadeTime;
-			progress = Mathf.Clamp01(progress);
-			transform.localScale = Vector3.one * progress;
+			m_Progress += Time.deltaTime / DECAL_FADE_TIME;
+			m_Progress = Mathf.Clamp01(m_Progress);
+			transform.localScale = Vector3.one * m_Progress;
 
-			if (progress == 1.0f)
+			if (m_Progress == 1.0f)
 			{
-				fadeIn = false;
+				m_FadeIn = false;
 			}
 		}
 
-		if (fadeOut)
+		if (m_FadeOut)
 		{
-			progress -= Time.deltaTime / fadeTime;
-			progress = Mathf.Clamp01(progress);
-			transform.localScale = Vector3.one * progress;
+			m_Progress -= Time.deltaTime / DECAL_FADE_TIME;
+			m_Progress = Mathf.Clamp01(m_Progress);
+			transform.localScale = Vector3.one * m_Progress;
 
-			if (progress == 0.0f)
+			if (m_Progress == 0.0f)
 			{
 				Destroy(gameObject);
 			}
 		}
 	}
 
+	///////////////////////////////////////////////////////////////////////////
+
 	private void Vanish()
 	{
-		fadeIn = false;
-		fadeOut = true;
+		m_FadeIn = false;
+		m_FadeOut = true;
 	}
 }

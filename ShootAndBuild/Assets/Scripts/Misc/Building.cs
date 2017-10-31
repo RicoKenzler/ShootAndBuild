@@ -4,7 +4,6 @@ using UnityEngine;
 
 namespace SAB
 {
-
     public class Building : MonoBehaviour
     {
         public int costs = 10;
