@@ -1,33 +1,46 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.Serialization;
 
 namespace SAB
 {
-
     public class Collectable : MonoBehaviour
     {
-        public float collectRadius = 1.1f;
-        public AudioData collectSound;
-        public AudioData dropSound;
+		[FormerlySerializedAs("collectRadius")]
+        [SerializeField] private float m_CollectRadius = 1.1f;
 
-        public ItemType itemType = ItemType.Gold;
+		[FormerlySerializedAs("collectSound")]
+        [SerializeField] private AudioData m_CollectSound;
 
-        [System.NonSerialized]
-        public int amount = 1;
+		[FormerlySerializedAs("dropSound")]
+        [SerializeField] private AudioData m_DropSound;
 
-		public  bool vanishesAfterTimeout = true;
-		private float spawnTime = 0.0f;
-		private Material material;
-		private Color    defaultColor;
+		[FormerlySerializedAs("itemType")]
+        [SerializeField] private ItemType m_ItemType = ItemType.Gold;
+
+		///////////////////////////////////////////////////////////////////////////
+
+		private float		m_SpawnTime = 0.0f;
+		private Material	m_Material;
+		private Color		m_DefaultColor;
+        private int			m_Amount = 1;
+
+		///////////////////////////////////////////////////////////////////////////
+
+		public int amount { get { return m_Amount; } set { m_Amount = value; } }
+
+		///////////////////////////////////////////////////////////////////////////
 
         void Start()
         {
-			material = GetComponentInChildren<Renderer>().material;
-			defaultColor = material.color;
+			m_Material = GetComponentInChildren<Renderer>().material;
+			m_DefaultColor = m_Material.color;
 
-            AudioManager.instance.PlayAudio(dropSound, transform.position);
-			spawnTime = Time.time;
+            AudioManager.instance.PlayAudio(m_DropSound, transform.position);
+			m_SpawnTime = Time.time;
         }
+
+		///////////////////////////////////////////////////////////////////////////
 
         void Update()
         {
@@ -42,7 +55,7 @@ namespace SAB
                 Vector3 differenceVector = (player.transform.position - selfPosition);
                 differenceVector.y = 0.0f;
 
-                if (differenceVector.sqrMagnitude <= (collectRadius * collectRadius))
+                if (differenceVector.sqrMagnitude <= (m_CollectRadius * m_CollectRadius))
                 {
                     OnCollect(player.GetComponent<InputController>());
                     return;
@@ -56,7 +69,7 @@ namespace SAB
                 transform.position = selfPosition;
             }
 
-			float lifetimeLeft = (spawnTime + ItemManager.instance.itemFadeOutTime) - Time.time;
+			float lifetimeLeft = (m_SpawnTime + ItemManager.instance.itemFadeOutTime) - Time.time;
 
 			const float START_FADE_BEFORE_END = 7.0f;
 			if (lifetimeLeft < START_FADE_BEFORE_END)
@@ -74,10 +87,10 @@ namespace SAB
 				float alpha = Mathf.Lerp(alphaWithoutSin * 0.5f, alphaWithoutSin, cosAlpha);
 				alpha = Mathf.Lerp(0, alphaWithoutSin, cosAlpha);
 
-				Color newColor = defaultColor;
-				newColor.a = Mathf.Lerp(0.0f, defaultColor.a, alpha);
+				Color newColor = m_DefaultColor;
+				newColor.a = Mathf.Lerp(0.0f, m_DefaultColor.a, alpha);
 
-				material.color = newColor;
+				m_Material.color = newColor;
 			}
 
 			if (lifetimeLeft <= 0.0f)
@@ -86,19 +99,23 @@ namespace SAB
 			}
         }
 
+		///////////////////////////////////////////////////////////////////////////
+
         public float targetHeight
         {
             get; set;
         }
 
+		///////////////////////////////////////////////////////////////////////////
+
         private void OnCollect(InputController player)
         {
-            AudioManager.instance.PlayAudio(collectSound, transform.position);
+            AudioManager.instance.PlayAudio(m_CollectSound, transform.position);
 
-            ItemData itemData = ItemManager.instance.GetItemInfos(itemType);
+            ItemData itemData = ItemManager.instance.GetItemInfos(m_ItemType);
 
             Inventory inventory = itemData.isShared ? Inventory.sharedInventoryInstance : player.gameObject.GetComponent<Inventory>();
-            inventory.AddItem(itemType, amount);
+            inventory.AddItem(m_ItemType, m_Amount);
 
             Destroy(gameObject);
         }

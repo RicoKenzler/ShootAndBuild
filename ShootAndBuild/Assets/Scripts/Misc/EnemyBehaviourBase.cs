@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace SAB
 {
-
     public enum EnemyType
     {
         None = 0,
@@ -13,6 +13,8 @@ namespace SAB
         Knight = 5,
     }
 
+	///////////////////////////////////////////////////////////////////////////
+
     public enum TargetPreference
     {
         Human,
@@ -20,6 +22,8 @@ namespace SAB
         QuestBuilding,
         None,
     }
+
+	///////////////////////////////////////////////////////////////////////////
 
     [System.Serializable]
     public struct RestingInfo
@@ -90,47 +94,65 @@ namespace SAB
         }
     }
 
+	///////////////////////////////////////////////////////////////////////////
+
     public abstract class EnemyBehaviourBase : MonoBehaviour
     {
-        public EnemyType type;
+		[FormerlySerializedAs("type")]
+        [SerializeField] protected EnemyType	m_Type;
 
-        public float speed			= 10;
-        public float attackDistance = 1;
-        public float attackCooldown = 1;
-        public int damage			= 1;
-        public AudioData hitSound;
+		[FormerlySerializedAs("speed")]
+        [SerializeField] protected float		m_Speed			= 10;
+		[FormerlySerializedAs("attackDistance")]
+        [SerializeField] protected float		m_AttackDistance = 1;
+		[FormerlySerializedAs("attackCooldown")]
+        [SerializeField] protected float		m_AttackCooldown = 1;
+		[FormerlySerializedAs("damage")]
+        [SerializeField] protected int			m_Damage		= 1;
+		[FormerlySerializedAs("hitSound")]
+        [SerializeField] protected AudioData	m_HitSound;
 
-        public TargetPreference targetPreference = TargetPreference.None;
+		[FormerlySerializedAs("targetPreference")]
+        [SerializeField] protected TargetPreference	m_TargetPreference = TargetPreference.None;
 
-        public RestingInfo restingInfo;
+		[FormerlySerializedAs("restingInfo")]
+        [SerializeField] protected RestingInfo		m_RestingInfo;
 
-		public BuffData buffOnAttack;
-		public float buffOnAttackProbability = 0.2f;
+		[FormerlySerializedAs("buffOnAttack")]
+		[SerializeField] protected BuffData			m_BuffOnAttack;
+		[FormerlySerializedAs("buffOnAttackProbability")]
+		[SerializeField] protected float			m_BuffOnAttackProbability = 0.2f;
 
-        protected float currentAttackCooldown = 0;
+		///////////////////////////////////////////////////////////////////////////
 
-        protected Animation animationController;
-        protected Movable movable;
+        protected float		m_CurrentAttackCooldown = 0;
+        protected Animation m_AnimationController;
+        protected Movable	m_Movable;
 
+		///////////////////////////////////////////////////////////////////////////
 
-		protected string idleAnimName		= "idle";
-		protected string walkAnimName		= "walk";
-		protected string attackAnimName		= "attack";
+		protected const string IDLE_ANIM_NAME	= "idle";
+		protected const string WALK_ANIM_NAME	= "walk";
+		protected const string ATTACK_ANIM_NAME	= "attack";
+
+		///////////////////////////////////////////////////////////////////////////
+
+		public EnemyType type { get { return m_Type; } }
 
 		///////////////////////////////////////////////////////////////////////////
 
 		protected void TryStartAnim(string animName, float speed = 1.0f, bool suppressedByAttack = true)
 		{
-            if (suppressedByAttack && animationController.IsPlaying(attackAnimName))
+            if (suppressedByAttack && m_AnimationController.IsPlaying(ATTACK_ANIM_NAME))
             {
 				return;
 			}
 
-            AnimationState animationState = animationController[animName];
+            AnimationState animationState = m_AnimationController[animName];
             if (animationState)
             {
                 animationState.speed = speed;
-			    animationController.Play(animName);
+			    m_AnimationController.Play(animName);
             }
             else
             {
@@ -142,17 +164,17 @@ namespace SAB
 
 		protected virtual void Awake()
 		{
-			animationController = GetComponentInChildren<Animation>();
-			movable = GetComponent<Movable>();
+			m_AnimationController = GetComponentInChildren<Animation>();
+			m_Movable = GetComponent<Movable>();
 		}
 
 		///////////////////////////////////////////////////////////////////////////
 
         protected virtual void Start()
         {
-            restingInfo.Init(false);
+            m_RestingInfo.Init(false);
 
-            TryStartAnim(idleAnimName);
+            TryStartAnim(IDLE_ANIM_NAME);
 			
             EnemyManager.instance.RegisterEnemy(this, false);
             transform.SetParent(EnemyManager.instance.transform);
@@ -226,7 +248,7 @@ namespace SAB
 
             GameObject bestTarget = null;
             
-            switch (targetPreference)
+            switch (m_TargetPreference)
             {
                 case TargetPreference.Buildings:
                     bestTarget = nearestBuilding ? nearestBuilding : nearestPlayer;
@@ -247,7 +269,7 @@ namespace SAB
                     break;
             }
 
-            if (nearestTarget && nearestDistanceSq <= (attackDistance * attackDistance))
+            if (nearestTarget && nearestDistanceSq <= (m_AttackDistance * m_AttackDistance))
             {
                 // even if we have a preference, we should attack proximite targets
                 bestTarget = nearestTarget;
@@ -303,25 +325,25 @@ namespace SAB
 
 		protected void TryPerformInstantAttack(GameObject target)
 		{
-            if (currentAttackCooldown > 0)
+            if (m_CurrentAttackCooldown > 0)
             {
 				return;
 			}
 
-            currentAttackCooldown = attackCooldown;
-            target.GetComponent<Attackable>().DealDamage(damage, gameObject, gameObject);
+            m_CurrentAttackCooldown = m_AttackCooldown;
+            target.GetComponent<Attackable>().DealDamage(m_Damage, gameObject, gameObject);
 
-			TryStartAnim(attackAnimName, 4.0f, false);
+			TryStartAnim(ATTACK_ANIM_NAME, 4.0f, false);
 					
-            AudioManager.instance.PlayAudio(hitSound, transform.position);
+            AudioManager.instance.PlayAudio(m_HitSound, transform.position);
 
-			if (buffOnAttack && Random.Range(0.0001f, 1.0f) <= buffOnAttackProbability)
+			if (m_BuffOnAttack && Random.Range(0.0001f, 1.0f) <= m_BuffOnAttackProbability)
 			{
 				Buffable targetBuffable = target.GetComponent<Buffable>();
 
 				if (targetBuffable)
 				{
-					targetBuffable.AddBuff(buffOnAttack);
+					targetBuffable.AddBuff(m_BuffOnAttack);
 				}
 			}
 		}
@@ -339,9 +361,9 @@ namespace SAB
             }
 
 			// 1) Attack Cooldown
-            if (currentAttackCooldown > 0)
+            if (m_CurrentAttackCooldown > 0)
             {
-                currentAttackCooldown = Mathf.Max(currentAttackCooldown - Time.deltaTime, 0);
+                m_CurrentAttackCooldown = Mathf.Max(m_CurrentAttackCooldown - Time.deltaTime, 0);
             }
 
 			// 2) Trigger Combat music
@@ -358,12 +380,12 @@ namespace SAB
 			}
 			
             // 3) Tick Resting
-            restingInfo.Tick();
+            m_RestingInfo.Tick();
 
 			// 3) Main Update of Sub-Class
 			OnUpdate();
             
-			TryStartAnim(walkAnimName);
+			TryStartAnim(WALK_ANIM_NAME);
         }
 
 		///////////////////////////////////////////////////////////////////////////

@@ -48,9 +48,9 @@ namespace SAB
             if (!nearestTarget)
             {
                 // No target: Idle around
-                TryStartAnim(idleAnimName);
+                TryStartAnim(IDLE_ANIM_NAME);
 
-                movable.moveForce = Vector2.zero;
+                m_Movable.moveForce = Vector2.zero;
                 return;
             }
 			
@@ -94,27 +94,27 @@ namespace SAB
             // 4) apply rotation
             transform.rotation = Quaternion.LookRotation(modifiedDirectionTowardsTarget);
 
-            if (distToTarget > attackDistance)
+            if (distToTarget > m_AttackDistance)
             {
                 // 5 a) Move
-                Vector3 desiredForce = modifiedDirectionTowardsTarget * speed;
+                Vector3 desiredForce = modifiedDirectionTowardsTarget * m_Speed;
 
-                if (restingInfo.IsResting)
+                if (m_RestingInfo.IsResting)
                 {
                     // 5 a1) Fade out moving to rest
-                    TryStartAnim(idleAnimName);
-                    movable.moveForce = movable.moveForce * 0.8f;
+                    TryStartAnim(IDLE_ANIM_NAME);
+                    m_Movable.moveForce = m_Movable.moveForce * 0.8f;
                 }
                 else
                 {
                     // 5 a2) Move
-                    movable.moveForce = desiredForce; 
+                    m_Movable.moveForce = desiredForce; 
                 }
             }
             else
             {
                 // 5 b) Attack
-				movable.moveForce = Vector2.zero;
+				m_Movable.moveForce = Vector2.zero;
 
                 TryPerformInstantAttack(nearestTarget);
             }

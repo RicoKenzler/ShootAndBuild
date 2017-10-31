@@ -190,12 +190,16 @@ namespace SAB
 		private List<CameraShake>	ActiveShakes	= new List<CameraShake>();
 		public Vector2				OffsetSum		= Vector2.zero;
 
+		///////////////////////////////////////////////////////////////////////////
+
 		public void StartNewShake(CameraShakeParams shakeParams)
 		{
 			CameraShake newShake = new CameraShake(shakeParams);
 
 			ActiveShakes.Add(newShake);
 		}
+
+		///////////////////////////////////////////////////////////////////////////
 
 		public void TickOffset()
 		{
@@ -216,9 +220,11 @@ namespace SAB
 	class CameraShake
 	{
 		public CameraShakeParams ShakeParams;
-		
+
 		public float	DurationLeft;
 		public Vector2	Offset;
+
+		///////////////////////////////////////////////////////////////////////////
 
 		public CameraShake(CameraShakeParams shakeParams)
 		{
@@ -226,6 +232,8 @@ namespace SAB
 			DurationLeft	= shakeParams.Duration;
 			Offset			= (Random.insideUnitCircle * shakeParams.Strength) * (1.0f - ShakeParams.Smoothness);
 		}
+
+		///////////////////////////////////////////////////////////////////////////
 
 		public void TickShake()
 		{

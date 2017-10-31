@@ -2,12 +2,15 @@
 
 public class DieAnimation : MonoBehaviour
 {
-	private const float sinkDelay = 5.0f;
-	private const float sinkDuration = 5.0f;
-	private float timeSinceStart = 0.0f;
-	private Vector3 startPos;
-	private Vector3 objectSize;
-	private Collider colliderRef;
+	private const float SINK_DELAY = 5.0f;
+	private const float SINK_DURATION = 5.0f;
+
+	private float m_TimeSinceStart = 0.0f;
+	private Vector3 m_StartPos;
+	private Vector3 m_ObjectSize;
+	private Collider m_ColliderRef;
+
+	///////////////////////////////////////////////////////////////////////////
 
 	void Start()
 	{
@@ -19,34 +22,38 @@ public class DieAnimation : MonoBehaviour
 			}
 		}
 
-		startPos = transform.position;
+		m_StartPos = transform.position;
 
-		colliderRef = GetComponent<Collider>();
-		objectSize = colliderRef.bounds.size;
-		colliderRef.enabled = false;
+		m_ColliderRef = GetComponent<Collider>();
+		m_ObjectSize = m_ColliderRef.bounds.size;
+		m_ColliderRef.enabled = false;
 
 		GetComponent<Rigidbody>().velocity = Vector3.zero;
 
 		GetComponentInChildren<Animation>().Play("die");
 	}
 
+	///////////////////////////////////////////////////////////////////////////
+
 	void Update()
 	{
-		timeSinceStart += Time.deltaTime;
+		m_TimeSinceStart += Time.deltaTime;
 
-		if (timeSinceStart > sinkDelay)
+		if (m_TimeSinceStart > SINK_DELAY)
 		{
-			float p = (timeSinceStart - sinkDelay) / sinkDuration;
-			float offset = objectSize.y * p;
-			Vector3 pos = startPos;
+			float p = (m_TimeSinceStart - SINK_DELAY) / SINK_DURATION;
+			float offset = m_ObjectSize.y * p;
+			Vector3 pos = m_StartPos;
 			pos.y -= offset;
 			transform.position = pos;
 		}
-		if (timeSinceStart > sinkDelay + sinkDuration)
+		if (m_TimeSinceStart > SINK_DELAY + SINK_DURATION)
 		{
 			Destroy(gameObject);
 		}
 	}
+
+	///////////////////////////////////////////////////////////////////////////
 
 	public void ShowBloodDecal(GameObject decal)
 	{
