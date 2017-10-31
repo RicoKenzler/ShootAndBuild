@@ -8,20 +8,27 @@ namespace SAB.Spawn
 	[Serializable]
 	public class SpawnWave : ISerializationCallbackReceiver
 	{
-		public List<SpawnWaveStage> stages = new List<SpawnWaveStage>();
-
-		[SerializeField]
-		private List<MonsterSpawnStage> spawnStages = new List<MonsterSpawnStage>();
-		[SerializeField]
-		private List<PauseStage> pauseStages = new List<PauseStage>();
-		[SerializeField]
-		private List<CompletionStage> completionStages = new List<CompletionStage>();
-		[SerializeField]
-		private List<RewardStage> rewardStages = new List<RewardStage>();
-
-		private int stageIndex = 0;
+		[SerializeField] private List<SpawnWaveStage>		m_Stages			= new List<SpawnWaveStage>();
+		[SerializeField] private List<MonsterSpawnStage>	m_SpawnStages		= new List<MonsterSpawnStage>();
+		[SerializeField] private List<PauseStage>			m_PauseStages		= new List<PauseStage>();
+		[SerializeField] private List<CompletionStage>		m_CompletionStages	= new List<CompletionStage>();
+		[SerializeField] private List<RewardStage>			m_RewardStages		= new List<RewardStage>();
 
 		///////////////////////////////////////////////////////////////////////////
+
+		private int m_StageIndex = 0;
+
+		///////////////////////////////////////////////////////////////////////////
+
+		public List<SpawnWaveStage>		stages				{ get { return m_Stages;			 }}
+		public List<MonsterSpawnStage>	spawnStages			{ get { return m_SpawnStages;		 }}
+		public List<PauseStage>			pauseStages			{ get { return m_PauseStages;		 }}
+		public List<CompletionStage>	completionStages	{ get { return m_CompletionStages;	 }}
+		public List<RewardStage>		rewardStages		{ get { return m_RewardStages;		 }}
+												
+		
+        ///////////////////////////////////////////////////////////////////////////
+
 
 		public void Update()
 		{
@@ -30,7 +37,7 @@ namespace SAB.Spawn
 				return;
 			}
 
-			SpawnWaveStage stage = stages[stageIndex];
+			SpawnWaveStage stage = m_Stages[m_StageIndex];
 
 			if (!stage.isStarted)
 			{
@@ -44,7 +51,7 @@ namespace SAB.Spawn
 
 			if (stage.IsCompleted)
 			{
-				stageIndex++;
+				m_StageIndex++;
 			}
 		}
 
@@ -52,7 +59,7 @@ namespace SAB.Spawn
 
 		public bool IsCompleted
 		{
-			get { return stageIndex >= stages.Count; }
+			get { return m_StageIndex >= m_Stages.Count; }
 		}
 
 		///////////////////////////////////////////////////////////////////////////
@@ -73,31 +80,31 @@ namespace SAB.Spawn
 
 		private void Serialize()
 		{
-			spawnStages.Clear();
-			pauseStages.Clear();
-			completionStages.Clear();
-			rewardStages.Clear();
+			m_SpawnStages.Clear();
+			m_PauseStages.Clear();
+			m_CompletionStages.Clear();
+			m_RewardStages.Clear();
 
-			for (int i = 0; i < stages.Count; ++i)
+			for (int i = 0; i < m_Stages.Count; ++i)
 			{
-				SpawnWaveStage stage = stages[i];
+				SpawnWaveStage stage = m_Stages[i];
 				stage.index = i;
 
 				if (stage is MonsterSpawnStage)
 				{
-					spawnStages.Add(stage as MonsterSpawnStage);
+					m_SpawnStages.Add(stage as MonsterSpawnStage);
 				}
 				else if (stage is PauseStage)
 				{
-					pauseStages.Add(stage as PauseStage);
+					m_PauseStages.Add(stage as PauseStage);
 				}
 				else if (stage is CompletionStage)
 				{
-					completionStages.Add(stage as CompletionStage);
+					m_CompletionStages.Add(stage as CompletionStage);
 				}
 				else if (stage is RewardStage)
 				{
-					rewardStages.Add(stage as RewardStage);
+					m_RewardStages.Add(stage as RewardStage);
 				}
 			}
 		}
@@ -106,16 +113,16 @@ namespace SAB.Spawn
 
 		private void Deserialize()
 		{
-			stages.Clear();
+			m_Stages.Clear();
 
-			stages.AddRange(spawnStages.ConvertAll(p => p as SpawnWaveStage));
-			stages.AddRange(pauseStages.ConvertAll(p => p as SpawnWaveStage));
-			stages.AddRange(completionStages.ConvertAll(p => p as SpawnWaveStage));
-			stages.AddRange(rewardStages.ConvertAll(p => p as SpawnWaveStage));
+			m_Stages.AddRange(m_SpawnStages.ConvertAll(p => p as SpawnWaveStage));
+			m_Stages.AddRange(m_PauseStages.ConvertAll(p => p as SpawnWaveStage));
+			m_Stages.AddRange(m_CompletionStages.ConvertAll(p => p as SpawnWaveStage));
+			m_Stages.AddRange(m_RewardStages.ConvertAll(p => p as SpawnWaveStage));
 
-			stages = stages.OrderBy(p => p.index).ToList();
+			m_Stages = m_Stages.OrderBy(p => p.index).ToList();
 
-			stages.ForEach(p => p.wave = this);
+			m_Stages.ForEach(p => p.wave = this);
 		}
 
 		///////////////////////////////////////////////////////////////////////////
@@ -124,9 +131,9 @@ namespace SAB.Spawn
 		{
 			for (int i = index - 1; i <= index; --i)
 			{
-				if (stages[i] is MonsterSpawnStage)
+				if (m_Stages[i] is MonsterSpawnStage)
 				{
-					return stages[i] as MonsterSpawnStage;
+					return m_Stages[i] as MonsterSpawnStage;
 				}
 			}
 

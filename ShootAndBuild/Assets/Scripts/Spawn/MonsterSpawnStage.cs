@@ -8,14 +8,21 @@ namespace SAB.Spawn
 	[Serializable]
 	public class MonsterSpawnStage : SpawnWaveStage
 	{
-		public List<SpawnMob> monsters = new List<SpawnMob>();
-		public float duration = 0;
+		[SerializeField] private List<SpawnMob> m_Monsters = new List<SpawnMob>();
+		[SerializeField] private float			m_Duration = 0;
 
-		private int numOfSpawnedMonsters = 0;
-		private int numOfMonstersToSpawn = 0;
-		private int numOfDeadMonsters = 0;
-		private float lifeTime = 0;
-		private List<GameObject> monstersToSpawn = new List<GameObject>();
+		///////////////////////////////////////////////////////////////////////////
+
+		private int m_NumOfSpawnedMonsters = 0;
+		private int m_NumOfMonstersToSpawn = 0;
+		private int m_NumOfDeadMonsters = 0;
+		private float m_LifeTime = 0;
+		private List<GameObject> m_MonstersToSpawn = new List<GameObject>();
+
+		///////////////////////////////////////////////////////////////////////////
+
+		public List<SpawnMob>	monsters { get { return m_Monsters; } set { m_Monsters = monsters; } }
+		public float			duration { get { return m_Duration; } set { m_Duration = duration; } }
 
 		///////////////////////////////////////////////////////////////////////////
 
@@ -23,31 +30,31 @@ namespace SAB.Spawn
 		{
 			base.Start();
 
-			if (duration == 0)
+			if (m_Duration == 0)
 			{
-				foreach (SpawnMob mob in monsters)
+				foreach (SpawnMob mob in m_Monsters)
 				{
 					for (int i = 0; i < mob.count; ++i)
 					{
 						SpawnMonster(mob.enemy);
 					}
 
-					numOfMonstersToSpawn += mob.count;
+					m_NumOfMonstersToSpawn += mob.count;
 				}
             }
 			else
 			{
-				foreach (SpawnMob mob in monsters)
+				foreach (SpawnMob mob in m_Monsters)
 				{
 					for (int i = 0; i < mob.count; ++i)
 					{
-						monstersToSpawn.Add(mob.enemy);
+						m_MonstersToSpawn.Add(mob.enemy);
 					}
 				}
 
-				numOfMonstersToSpawn = monstersToSpawn.Count;
+				m_NumOfMonstersToSpawn = m_MonstersToSpawn.Count;
 
-				monstersToSpawn = monstersToSpawn.OrderBy(a => Guid.NewGuid()).ToList();
+				m_MonstersToSpawn = m_MonstersToSpawn.OrderBy(a => Guid.NewGuid()).ToList();
 			}
 		}
 
@@ -57,19 +64,19 @@ namespace SAB.Spawn
 		{
 			base.Update();
 
-			float p = lifeTime / duration;
+			float p = m_LifeTime / m_Duration;
 			p = Mathf.Clamp01(p);
 
-			int targetIndex = Mathf.FloorToInt(p * numOfMonstersToSpawn);
-			int curIndex = numOfMonstersToSpawn - monstersToSpawn.Count;
+			int targetIndex = Mathf.FloorToInt(p * m_NumOfMonstersToSpawn);
+			int curIndex = m_NumOfMonstersToSpawn - m_MonstersToSpawn.Count;
 
 			for (int i = 0; i < targetIndex - curIndex; ++i)
 			{
-				SpawnMonster(monstersToSpawn[0]);
-				monstersToSpawn.RemoveAt(0);
+				SpawnMonster(m_MonstersToSpawn[0]);
+				m_MonstersToSpawn.RemoveAt(0);
 			}
 
-			lifeTime += Time.deltaTime;
+			m_LifeTime += Time.deltaTime;
 		}
 
 		///////////////////////////////////////////////////////////////////////////
@@ -78,7 +85,7 @@ namespace SAB.Spawn
 		{
 			get
 			{
-				return numOfMonstersToSpawn == numOfSpawnedMonsters;
+				return m_NumOfMonstersToSpawn == m_NumOfSpawnedMonsters;
 			}
 		}
 
@@ -102,7 +109,7 @@ namespace SAB.Spawn
 			spawnPosition.y = spawner.transform.position.y;
 
 			GameObject enemyInstance = GameObject.Instantiate(monster, spawnPosition, Quaternion.identity);
-			enemyInstance.name = spawner.name + " " + numOfSpawnedMonsters;
+			enemyInstance.name = spawner.name + " " + m_NumOfSpawnedMonsters;
 
 			Attackable attackable = enemyInstance.GetComponent<Attackable>();
 			if (attackable)
@@ -110,7 +117,7 @@ namespace SAB.Spawn
 				attackable.OnAttackableDies += OnAttackableDies;
 			}
 
-			numOfSpawnedMonsters++;
+			m_NumOfSpawnedMonsters++;
 		}
 
 		///////////////////////////////////////////////////////////////////////////
@@ -119,14 +126,14 @@ namespace SAB.Spawn
 		{
 			attackable.OnAttackableDies -= OnAttackableDies;
 
-			numOfDeadMonsters++;
+			m_NumOfDeadMonsters++;
 		}
 
 		///////////////////////////////////////////////////////////////////////////
 
 		public float GetProgress()
 		{
-			return Mathf.Clamp01(numOfDeadMonsters / numOfSpawnedMonsters);
+			return Mathf.Clamp01(m_NumOfDeadMonsters / m_NumOfSpawnedMonsters);
 		}
 
 		///////////////////////////////////////////////////////////////////////////

@@ -1,17 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace SAB.Spawn
 {
 	[Serializable]
 	public class SpawnManagerPrototype : MonoBehaviour
 	{
-		public List<SpawnWave> waves = new List<SpawnWave>();
+		[FormerlySerializedAs("waves")]
+		[SerializeField] private List<SpawnWave> m_Waves = new List<SpawnWave>();
 
-		private int waveIndex = 0;
+        ///////////////////////////////////////////////////////////////////////////
+
+		private int m_WaveIndex = 0;
 
 		///////////////////////////////////////////////////////////////////////////
+
+		public List<SpawnWave> waves { get { return m_Waves; } }
+		
+        ///////////////////////////////////////////////////////////////////////////
+
 
 		void Awake()
 		{
@@ -22,12 +31,12 @@ namespace SAB.Spawn
 
 		void Update()
 		{
-			if (waveIndex >= waves.Count)
+			if (m_WaveIndex >= m_Waves.Count)
 			{
 				return;
 			}
 
-			SpawnWave wave = waves[waveIndex];
+			SpawnWave wave = m_Waves[m_WaveIndex];
 
 			if (!wave.IsCompleted)
 			{
@@ -36,7 +45,7 @@ namespace SAB.Spawn
 
 			if (wave.IsCompleted)
 			{
-				waveIndex++;
+				m_WaveIndex++;
 			}
 		}
 

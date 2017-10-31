@@ -1,12 +1,17 @@
 ﻿using System;
+using UnityEngine;
 
 namespace SAB.Spawn
 {
 	[Serializable]
 	public class CompletionStage : SpawnWaveStage
 	{
-		public int completion = 0;
-		private MonsterSpawnStage linkedMonsterSpawn = null;
+		[SerializeField] private int m_Completion = 0;
+		private MonsterSpawnStage m_LinkedMonsterSpawn = null;
+
+		///////////////////////////////////////////////////////////////////////////
+
+		public int completion { get { return m_Completion; } set { m_Completion = value; } }
 
 		///////////////////////////////////////////////////////////////////////////
 
@@ -14,7 +19,7 @@ namespace SAB.Spawn
 		{
 			base.Start();
 
-			linkedMonsterSpawn = wave.GetFirstPreviousMonsterSpawn(index);
+			m_LinkedMonsterSpawn = wave.GetFirstPreviousMonsterSpawn(index);
 		}
 
 		///////////////////////////////////////////////////////////////////////////
@@ -23,15 +28,15 @@ namespace SAB.Spawn
 		{
 			get
 			{
-				if (linkedMonsterSpawn == null)
+				if (m_LinkedMonsterSpawn == null)
 				{
 					return true;
 				}
 
-				float p = linkedMonsterSpawn.GetProgress();
+				float p = m_LinkedMonsterSpawn.GetProgress();
 				p *= 100.0f;
 
-				return p >= completion;
+				return p >= m_Completion;
 			}
 		}
 

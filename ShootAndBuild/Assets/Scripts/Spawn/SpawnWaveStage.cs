@@ -6,8 +6,8 @@ namespace SAB.Spawn
 	[Serializable]
 	public class SpawnMob
 	{
-		public GameObject enemy;
-		public int count;
+		public GameObject	enemy;
+		public int			count;
 	}
 
 	///////////////////////////////////////////////////////////////////////////
@@ -15,17 +15,24 @@ namespace SAB.Spawn
 	[Serializable]
 	public class SpawnWaveStage
 	{
-		public int index = 0;
-		public bool isStarted = false;
+		[SerializeField] private int	m_Index = 0;
+		[SerializeField] private bool	m_IsStarted = false;
 
-		[NonSerialized]
-		public SpawnWave wave = null;
+		///////////////////////////////////////////////////////////////////////////
+
+		private SpawnWave m_Wave = null;
+
+		///////////////////////////////////////////////////////////////////////////
+
+		public int index		{ get { return m_Index; } set { m_Index = value; } }
+		public bool isStarted	{ get { return m_IsStarted; } }
+		public SpawnWave wave	{ get { return m_Wave; } set { m_Wave = value; } }
 
 		///////////////////////////////////////////////////////////////////////////
 
 		public virtual void Start()
 		{
-			isStarted = true;
+			m_IsStarted = true;
 		}
 
 		///////////////////////////////////////////////////////////////////////////

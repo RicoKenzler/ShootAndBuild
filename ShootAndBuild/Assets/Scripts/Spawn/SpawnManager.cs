@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace SAB.Spawn
 {
@@ -35,12 +36,15 @@ namespace SAB.Spawn
     {
         public SpawnPropabilityBlock()
         {
-            this.enemies = new List<EnemyType>();
-            this.spawnRate = new List<float>();
+            this.m_Enemies = new List<EnemyType>();
+            this.m_SpawnRate = new List<float>();
         }
 
-        public List<EnemyType> enemies;
-        public List<float> spawnRate;
+        [SerializeField] private List<EnemyType>	m_Enemies;
+        [SerializeField] private List<float>		m_SpawnRate;
+
+		public List<EnemyType>	enemies		{ get { return m_Enemies; }		set { m_Enemies = value; } }
+		public List<float>		spawnRate	{ get { return m_SpawnRate; }	set { m_SpawnRate = value; } }
 
     }
 
@@ -48,7 +52,6 @@ namespace SAB.Spawn
 
     public class SpawnManager : MonoBehaviour
     {
-
         public static SpawnManager instance
         {
             get; private set;
@@ -56,42 +59,45 @@ namespace SAB.Spawn
 
         ///////////////////////////////////////////////////////////////////////////
 
-        private float waveTimer = 0;
-        private int currentWaveIndex = -1;
+        private float m_WaveTimer = 0;
+        private int m_CurrentWaveIndex = -1;
 
         ///////////////////////////////////////////////////////////////////////////
 
-        //[HideInInspector]
-        public List<EnemyWave> waves;
+		[FormerlySerializedAs("waves")]
+        [SerializeField] private List<EnemyWave> m_Waves;
 
         ///////////////////////////////////////////////////////////////////////////
 
-        public EnemySpawner[] spawners;
+		[FormerlySerializedAs("spawners")]
+        [SerializeField] private EnemySpawner[] m_Spawners;
 
         //TODO write editor and match with enemy type enum
-        public EnemyBehaviourBase[] enemyTemplates;
+		[FormerlySerializedAs("enemyTemplates")]
+        [SerializeField] private EnemyBehaviourBase[] m_EnemyTemplates;
 
-		public AudioData newWaveSound;
-		public AudioData finishedWaveSound;
+		[FormerlySerializedAs("newWaveSound")]
+		[SerializeField] private AudioData m_NewWaveSound;
+
+		[FormerlySerializedAs("finishedWaveSound")]
+		[SerializeField] private AudioData m_FinishedWaveSound;
 
         ///////////////////////////////////////////////////////////////////////////
+
+		public List<EnemyWave> waves				{ get { return m_Waves; } }
+		public EnemySpawner[] spawners				{ get { return m_Spawners; } }
+		public EnemyBehaviourBase[] enemyTemplates	{ get { return m_EnemyTemplates; }  set { m_EnemyTemplates = value; }}
+
+		///////////////////////////////////////////////////////////////////////////
 
         void Awake()
         {
             instance = this;
 
-            if (spawners == null || spawners.Length == 0)
+            if (m_Spawners == null || m_Spawners.Length == 0)
             {
                 Debug.LogError("No Spawners assigned!");
             }
-        }
-
-        ///////////////////////////////////////////////////////////////////////////
-
-        // Use this for initialization
-        void Start()
-        {
-			
         }
 
         ///////////////////////////////////////////////////////////////////////////
@@ -107,17 +113,17 @@ namespace SAB.Spawn
 
             if (GameManager.Instance.Status == GameStatus.Running)
 			{
-                if (this.waves == null || this.waves.Count == 0)
+                if (this.m_Waves == null || this.m_Waves.Count == 0)
                 {
                     Debug.LogError("no waves setup");
                     return;
                 }
 			}
 
-            waveTimer += Time.deltaTime;
+            m_WaveTimer += Time.deltaTime;
 
             //next wave
-            if (currentWaveIndex == -1 || waveTimer > this.waves[currentWaveIndex].duration)
+            if (m_CurrentWaveIndex == -1 || m_WaveTimer > this.m_Waves[m_CurrentWaveIndex].duration)
             {
                 this.NextWave();
             }
@@ -128,10 +134,10 @@ namespace SAB.Spawn
 
         public void NextWave()
         {
-            currentWaveIndex++;
-            if (currentWaveIndex >= this.waves.Count)
+            m_CurrentWaveIndex++;
+            if (m_CurrentWaveIndex >= this.m_Waves.Count)
             {
-                currentWaveIndex = 0;
+                m_CurrentWaveIndex = 0;
 				NotificationManager.instance.ShowNotification(new Notification("Restarting Waves", NotificationType.NeutralNews));
             }
 
@@ -142,26 +148,26 @@ namespace SAB.Spawn
 
         private void InitWave()
         {
-            waveTimer = 0;
+            m_WaveTimer = 0;
 
 			bool isEmptyWave = true;
 
-            EnemyWave currentWave = this.waves[currentWaveIndex];
-            for (int s = 0; s < this.spawners.Length; s++)
+            EnemyWave currentWave = this.m_Waves[m_CurrentWaveIndex];
+            for (int s = 0; s < this.m_Spawners.Length; s++)
             {
-                this.spawners[s].SetSpawnRate(currentWave.spawnPropability[s]);
+                this.m_Spawners[s].SetSpawnRate(currentWave.spawnPropability[s]);
 				isEmptyWave &= (currentWave.spawnPropability[s].enemies.Count == 0);
             }
 
 			if (isEmptyWave)
 			{
-				AudioManager.instance.PlayAudio(finishedWaveSound);
+				AudioManager.instance.PlayAudio(m_FinishedWaveSound);
 				NotificationManager.instance.ShowNotification(new Notification("Wave End", NotificationType.NeutralNews));
 			}
 			else
 			{
-				AudioManager.instance.PlayAudio(newWaveSound);
-				NotificationManager.instance.ShowNotification(new Notification("Wave " + currentWaveIndex, NotificationType.BadNews));
+				AudioManager.instance.PlayAudio(m_NewWaveSound);
+				NotificationManager.instance.ShowNotification(new Notification("Wave " + m_CurrentWaveIndex, NotificationType.BadNews));
 			}
         }
 
@@ -169,7 +175,7 @@ namespace SAB.Spawn
 
         public GameObject GetEnemyTemplate(EnemyType _type)
         {
-            return this.enemyTemplates[(int)_type].gameObject;
+            return this.m_EnemyTemplates[(int)_type].gameObject;
         }
     }
 }

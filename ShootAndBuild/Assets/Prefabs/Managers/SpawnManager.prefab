@@ -98,7 +98,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1236907863792116}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 20.32, y: 0, z: 22.27}
+  m_LocalPosition: {x: 83.11, y: 0, z: 81.82001}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4088430342554304}
@@ -111,7 +111,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1782630021365796}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -19.19, y: 0, z: 24.35}
+  m_LocalPosition: {x: 43.6, y: 0, z: 83.9}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4088430342554304}
@@ -124,7 +124,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1102659810414132}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.26, y: 0, z: 14.59}
+  m_LocalPosition: {x: 63.05, y: 0, z: 74.14}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4088430342554304}
@@ -141,7 +141,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cdc0d8966b8b8749b4fe34f337cfba6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spawnRadius: 3
+  m_SpawnRadius: 3
 --- !u!114 &114500221820644298
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -153,7 +153,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cdc0d8966b8b8749b4fe34f337cfba6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spawnRadius: 3
+  m_SpawnRadius: 3
 --- !u!114 &114552701511615204
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -165,7 +165,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cdc0d8966b8b8749b4fe34f337cfba6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spawnRadius: 3
+  m_SpawnRadius: 3
 --- !u!114 &114554427420127092
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -177,109 +177,92 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7cd3da48be666ad4ead4634a89a1ad0a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  waves:
+  m_Waves:
   - duration: 5
     spawnPropability:
-    - enemies: 01000000
-      spawnRate:
-      - 2
-    - enemies: 0100000004000000
-      spawnRate:
-      - 2
-      - 0.2
-    - enemies: 01000000
-      spawnRate:
-      - 2
+    - m_Enemies: 010000000100000001000000
+      m_SpawnRate:
+      - 1
+      - 1
+      - 1
+    - m_Enemies: 010000000100000001000000
+      m_SpawnRate:
+      - 1
+      - 1
+      - 1
+    - m_Enemies: 
+      m_SpawnRate: []
   - duration: 30
     spawnPropability:
-    - enemies: 
-      spawnRate: []
-    - enemies: 
-      spawnRate: []
-    - enemies: 
-      spawnRate: []
+    - m_Enemies: 
+      m_SpawnRate: []
+    - m_Enemies: 
+      m_SpawnRate: []
+    - m_Enemies: 
+      m_SpawnRate: []
   - duration: 10
     spawnPropability:
-    - enemies: 0100000002000000
-      spawnRate:
-      - 0.5
-      - 0.2
-    - enemies: 01000000020000000400000005000000
-      spawnRate:
-      - 0.4
-      - 0.2
-      - 0.25
-      - 0.1
-    - enemies: 0100000002000000
-      spawnRate:
-      - 0.5
-      - 0.2
+    - m_Enemies: 02000000
+      m_SpawnRate:
+      - 1
+    - m_Enemies: 03000000
+      m_SpawnRate:
+      - 1
+    - m_Enemies: 
+      m_SpawnRate: []
   - duration: 30
     spawnPropability:
-    - enemies: 
-      spawnRate: []
-    - enemies: 
-      spawnRate: []
-    - enemies: 
-      spawnRate: []
+    - m_Enemies: 
+      m_SpawnRate: []
+    - m_Enemies: 
+      m_SpawnRate: []
+    - m_Enemies: 
+      m_SpawnRate: []
   - duration: 2
     spawnPropability:
-    - enemies: 0300000001000000
-      spawnRate:
-      - 0.5
+    - m_Enemies: 04000000
+      m_SpawnRate:
       - 1
-    - enemies: 030000000100000004000000
-      spawnRate:
-      - 0.5
-      - 1
-      - 0.5
-    - enemies: 0300000002000000
-      spawnRate:
-      - 0.5
-      - 0.5
+    - m_Enemies: 
+      m_SpawnRate: []
+    - m_Enemies: 
+      m_SpawnRate: []
   - duration: 30
     spawnPropability:
-    - enemies: 
-      spawnRate: []
-    - enemies: 
-      spawnRate: []
-    - enemies: 
-      spawnRate: []
+    - m_Enemies: 
+      m_SpawnRate: []
+    - m_Enemies: 
+      m_SpawnRate: []
+    - m_Enemies: 
+      m_SpawnRate: []
   - duration: 5
     spawnPropability:
-    - enemies: 010000000200000003000000
-      spawnRate:
+    - m_Enemies: 05000000
+      m_SpawnRate:
       - 1
-      - 1
-      - 0.2
-    - enemies: 020000000200000005000000
-      spawnRate:
-      - 1
-      - 1
-      - 0.5
-    - enemies: 030000000100000004000000
-      spawnRate:
-      - 0.2
-      - 1
-      - 2
+    - m_Enemies: 
+      m_SpawnRate: []
+    - m_Enemies: 
+      m_SpawnRate: []
   - duration: 300
     spawnPropability:
-    - enemies: 
-      spawnRate: []
-    - enemies: 
-      spawnRate: []
-    - enemies: 
-      spawnRate: []
-  spawners:
+    - m_Enemies: 
+      m_SpawnRate: []
+    - m_Enemies: 
+      m_SpawnRate: []
+    - m_Enemies: 
+      m_SpawnRate: []
+  m_Spawners:
   - {fileID: 114352963834132446}
   - {fileID: 114500221820644298}
   - {fileID: 114552701511615204}
-  enemyTemplates:
+  m_EnemyTemplates:
   - {fileID: 114903628286852534, guid: 9c279ebdb7245324dba9067ca144d265, type: 2}
   - {fileID: 114278665344766292, guid: 3c52e5d3f7f36844085688653d9c73b8, type: 2}
   - {fileID: 114065223908063668, guid: 9ce0e76df95a9ea47a55b4c329d11a4c, type: 2}
   - {fileID: 114065223908063668, guid: 708f9debb04499c49b893c3ca3f07cfb, type: 2}
   - {fileID: 114950192231060640, guid: 666aba011db19844e8ef004e0fe2ce0a, type: 2}
   - {fileID: 114903628286852534, guid: 9c279ebdb7245324dba9067ca144d265, type: 2}
-  newWaveSound: {fileID: 11400000, guid: 258d2559b47d2cb4ca0194814e87ea8a, type: 2}
-  finishedWaveSound: {fileID: 11400000, guid: 5203e19e79ed7b64ba445cd84d0256b6, type: 2}
+  m_NewWaveSound: {fileID: 11400000, guid: 258d2559b47d2cb4ca0194814e87ea8a, type: 2}
+  m_FinishedWaveSound: {fileID: 11400000, guid: 5203e19e79ed7b64ba445cd84d0256b6,
+    type: 2}

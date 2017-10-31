@@ -6,14 +6,21 @@ namespace SAB.Spawn
 	[Serializable]
 	public class PauseStage : SpawnWaveStage
 	{
-		public float duration = 0;
-		private float timeLeft = 0;
+		[SerializeField] private float m_Duration = 0;
+
+		///////////////////////////////////////////////////////////////////////////
+
+		private float m_TimeLeft = 0;
+
+		///////////////////////////////////////////////////////////////////////////
+
+		public float duration { get { return m_Duration; } set { m_Duration = value; } }
 
 		///////////////////////////////////////////////////////////////////////////
 
 		public override void Start()
 		{
-			timeLeft = duration;
+			m_TimeLeft = m_Duration;
 		}
 
 		///////////////////////////////////////////////////////////////////////////
@@ -22,10 +29,10 @@ namespace SAB.Spawn
 		{
 			base.Update();
 
-			timeLeft -= Time.deltaTime;
-			if (timeLeft < 0)
+			m_TimeLeft -= Time.deltaTime;
+			if (m_TimeLeft < 0)
 			{
-				timeLeft = 0;
+				m_TimeLeft = 0;
 			}
 		}
 
@@ -35,7 +42,7 @@ namespace SAB.Spawn
 		{
 			get
 			{
-				return timeLeft == 0;
+				return m_TimeLeft == 0;
 			}
 		}
 

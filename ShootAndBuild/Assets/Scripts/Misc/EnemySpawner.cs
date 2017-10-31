@@ -15,6 +15,10 @@ namespace SAB.Spawn
 		// profit!
         int totalSpawnCount = 0;
 
+		///////////////////////////////////////////////////////////////////////////
+
+		public SpawnPropabilityBlock currentSpawnBlock { get { return m_CurrentSpwanBlock; } }		
+
         ///////////////////////////////////////////////////////////////////////////
 
 		public float spawnRadius { get { return m_SpawnRadius; } }
@@ -27,13 +31,6 @@ namespace SAB.Spawn
             {
                 return this.gameObject.name;
             }
-        }
-
-        ///////////////////////////////////////////////////////////////////////////
-
-        void Start()
-        {
-
         }
 
         ///////////////////////////////////////////////////////////////////////////
