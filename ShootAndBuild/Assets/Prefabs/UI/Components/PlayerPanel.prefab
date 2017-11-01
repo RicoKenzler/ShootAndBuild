@@ -901,9 +901,9 @@ MonoBehaviour:
   m_WeaponSelectionRect: {fileID: 95042686880368708}
   m_ItemSelectionRect: {fileID: 95021404929993986}
   m_BuildingSelectionRect: {fileID: 95872189628408608}
-  useDynamicHealthColor: 0
-  healthBarSmoothness: 0.8
-  timeUntilSelectionFadeout: -1
+  m_UseDynamicHealthColor: 0
+  m_HealthBarSmoothness: 0.8
+  m_TimeUntilSelectionFadeout: -1
 --- !u!114 &114396841195093088
 MonoBehaviour:
   m_ObjectHideFlags: 1

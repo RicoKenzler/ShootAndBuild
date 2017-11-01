@@ -25,7 +25,10 @@ public class MetaManager : MonoBehaviour
 			managerFolder.transform.SetSiblingIndex(0);
 		}
 
-		foreach (GameObject obj in m_ManagerPrefabs)
+		List<GameObject> reversedManagerList = m_ManagerPrefabs;
+		reversedManagerList.Reverse();
+
+		foreach (GameObject obj in reversedManagerList)
 		{
 			GameObject newManager = GameObject.Instantiate(obj);
 			int deleteNameFrom = obj.name.IndexOf("Manager");
@@ -43,7 +46,10 @@ public class MetaManager : MonoBehaviour
 		}
 
 		// 2) Create TopLevel Stuff
-		foreach (GameObject obj in m_TopLevelPrefabs)
+		List<GameObject> reversedTopLevelPrefabs = m_TopLevelPrefabs;
+		reversedTopLevelPrefabs.Reverse();
+
+		foreach (GameObject obj in reversedTopLevelPrefabs)
 		{
 			GameObject newObj = GameObject.Instantiate(obj);
 			newObj.name = obj.name;

@@ -184,9 +184,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6f1766de58349874cb2869cec1d30671, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  BarFillingImage: {fileID: 114147669874446476}
-  TargetPercentage: 0.611
-  Smoothness: 0.85
+  m_BarFillingImage: {fileID: 114147669874446476}
+  m_TargetPercentage: 0.611
+  m_Smoothness: 0.85
 --- !u!222 &222053053493330276
 CanvasRenderer:
   m_ObjectHideFlags: 1

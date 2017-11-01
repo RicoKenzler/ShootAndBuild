@@ -15,7 +15,7 @@ namespace SAB
 
 	///////////////////////////////////////////////////////////////////////////
 
-    public class KillCounters : MonoBehaviour
+    public class KillCounterManager : MonoBehaviour
     {
 		[FormerlySerializedAs("killingSpreeDefinitions")]
         [SerializeField] private KillingSpreeDefinition[]	m_KillingSpreeDefinitions;
@@ -29,7 +29,7 @@ namespace SAB
 
 		public KillingSpreeDefinition[] killingSpreeDefinitions { get { return m_KillingSpreeDefinitions; } }
 		public float					killingSpreeInterval	{ get { return m_KillingSpreeInterval; } }
-		public static KillCounters		instance				{ get; private set; }
+		public static KillCounterManager		instance				{ get; private set; }
 
 		///////////////////////////////////////////////////////////////////////////
 
@@ -103,7 +103,7 @@ namespace SAB
 
             lastKillTime = currentTime;
 
-            if (elapsedTime > KillCounters.instance.killingSpreeInterval)
+            if (elapsedTime > KillCounterManager.instance.killingSpreeInterval)
             {
                 // start new interval
                 lastKillCountBeforeIntervalStart = lastKillCount;
@@ -114,7 +114,7 @@ namespace SAB
 
             lastKillCount = currentKillCount;
 
-            KillingSpreeDefinition[] killingSpreeDefinitions = KillCounters.instance.killingSpreeDefinitions;
+            KillingSpreeDefinition[] killingSpreeDefinitions = KillCounterManager.instance.killingSpreeDefinitions;
 
             int triggerLevel = -1;
 

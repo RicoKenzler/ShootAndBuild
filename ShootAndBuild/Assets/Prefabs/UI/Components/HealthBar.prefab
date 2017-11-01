@@ -67,11 +67,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f19320bf19ce1449a85460e76a844d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  target: {fileID: 0}
-  yOffset: -20
-  isBackgroundDuplicate: 0
-  healthSmoothAmount: 0.9
-  hasDynamicColor: 0
+  m_yOffset: -20
+  m_IsBackgroundDuplicate: 0
+  m_HealthSmoothAmount: 0.9
+  m_HasDynamicColor: 0
 --- !u!222 &222472732960577216
 CanvasRenderer:
   m_ObjectHideFlags: 1
