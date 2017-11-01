@@ -96,6 +96,11 @@ namespace SAB
 
 		///////////////////////////////////////////////////////////////////////////
 		
+		static GameObject s_ProjectileContainer_IfAny = null;
+		const string PROJECTILES_CONTAINER_NAME = "Projectiles";
+
+		///////////////////////////////////////////////////////////////////////////
+
 		public ItemType				weaponID				{ get { return m_WeaponID;				}}
 		public WeaponType			type					{ get { return m_Type;					}}
 		public DamageType			damageType				{ get { return m_DamageType;			}}
@@ -143,6 +148,19 @@ namespace SAB
 
         ///////////////////////////////////////////////////////////////////////////
 
+		public GameObject GetOrCreateProjectilesContainer()
+		{
+			if (!s_ProjectileContainer_IfAny)
+			{
+				s_ProjectileContainer_IfAny = new GameObject();
+				s_ProjectileContainer_IfAny.name = PROJECTILES_CONTAINER_NAME;
+			}
+
+			return s_ProjectileContainer_IfAny;
+		}
+
+		///////////////////////////////////////////////////////////////////////////
+
         public void TryShoot(Shootable _owner, Vector3 _origin, Quaternion _direction)
         {
             if (m_Cooldown > 0.0f)
@@ -159,7 +177,7 @@ namespace SAB
                 {
                     Quaternion dir = _direction * Quaternion.AngleAxis(Random.Range(-m_Spread * 0.5f, m_Spread * 0.5f), Vector3.up);
 
-                    GameObject projectileContainer = GameObject.Find("Projectiles");
+					GameObject projectileContainer = GetOrCreateProjectilesContainer();
                     GameObject projectileGo = Instantiate(m_Projectile, projectileContainer.transform);
                     projectileGo.transform.position = _origin;
                     projectileGo.transform.rotation = dir;

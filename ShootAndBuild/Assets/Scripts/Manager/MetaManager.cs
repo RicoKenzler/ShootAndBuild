@@ -30,7 +30,14 @@ public class MetaManager : MonoBehaviour
 			GameObject newManager = GameObject.Instantiate(obj);
 			int deleteNameFrom = obj.name.IndexOf("Manager");
 
-			newManager.name = obj.name.Substring(0, deleteNameFrom);
+			if (deleteNameFrom == -1)
+			{
+				newManager.name = obj.name;
+			}
+			else
+			{
+				newManager.name = obj.name.Substring(0, deleteNameFrom);
+			}
 
 			newManager.transform.parent = managerFolder.transform;
 		}
