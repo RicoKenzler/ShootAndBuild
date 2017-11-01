@@ -47,14 +47,13 @@ namespace SAB
         [SerializeField] private AudioData		m_WinSound;
         [SerializeField] private AudioData		m_LoseSound;
 
-        [SerializeField] private Canvas			m_Canvas;
-
-        private GameStatus m_gameStatus = GameStatus.Running;
+        private GameStatus m_GameStatus = GameStatus.Running;
+        private Canvas m_Canvas;
 
 		///////////////////////////////////////////////////////////////////////////
 
 		public LoseCondition	loseCondition				{ get { return m_LoseCondition; } }
-		public GameObject		loseConditionContextObject	{ get { return m_LoseConditionContextObject; } }
+		public GameObject		loseConditionContextObject	{ get { return m_LoseConditionContextObject; } set { Debug.Assert(!m_LoseConditionContextObject); m_LoseConditionContextObject = value; } }
 		public int				loseConditionContextValue	{ get { return m_LoseConditionContextValue; } }
 		public WinCondition		winCondition				{ get { return m_WinCondition; } }
 		public GameObject		winConditionContextObject	{ get { return m_WinConditionContextObject; } }
@@ -62,7 +61,7 @@ namespace SAB
 
 		///////////////////////////////////////////////////////////////////////////
 
-        public GameStatus Status { get {  return this.m_gameStatus; }  }
+        public GameStatus Status { get {  return this.m_GameStatus; }  }
         public static GameManager instance	{ get; private set; }
 
 		///////////////////////////////////////////////////////////////////////////
@@ -74,19 +73,26 @@ namespace SAB
 
 		///////////////////////////////////////////////////////////////////////////
 
+		void Start()
+		{
+			m_Canvas = Canvas2D.instance.GetComponent<Canvas>();
+		}
+
+		///////////////////////////////////////////////////////////////////////////
+
         void Update()
         {
-            if (m_gameStatus == GameStatus.Running)
+            if (m_GameStatus == GameStatus.Running)
             {
                 CheckWinConditions();
             }
 
-            if (m_gameStatus == GameStatus.Running)
+            if (m_GameStatus == GameStatus.Running)
             {
                 CheckLoseConditions();
             }
 
-            if (m_gameStatus == GameStatus.Running || m_gameStatus == GameStatus.Paused)
+            if (m_GameStatus == GameStatus.Running || m_GameStatus == GameStatus.Paused)
             {
                 if (InputManager.instance.DidAnyPlayerJustPress(ButtonType.Start))
                 {
@@ -105,7 +111,7 @@ namespace SAB
 
         void CheckWinConditions()
         {
-            Debug.Assert(m_gameStatus == GameStatus.Running);
+            Debug.Assert(m_GameStatus == GameStatus.Running);
 
             switch (m_WinCondition)
             {
@@ -159,7 +165,7 @@ namespace SAB
 
         void CheckLoseConditions()
         {
-            Debug.Assert(m_gameStatus == GameStatus.Running);
+            Debug.Assert(m_GameStatus == GameStatus.Running);
 
             bool lostGame = false;
 
@@ -200,20 +206,20 @@ namespace SAB
 
         void TogglePause()
         {
-            Debug.Assert(m_gameStatus == GameStatus.Running || m_gameStatus == GameStatus.Paused);
+            Debug.Assert(m_GameStatus == GameStatus.Running || m_GameStatus == GameStatus.Paused);
 
-            if (m_gameStatus == GameStatus.Running)
+            if (m_GameStatus == GameStatus.Running)
             {
                 Time.timeScale = 0.0f;
-                m_gameStatus = GameStatus.Paused;
+                m_GameStatus = GameStatus.Paused;
             }
             else
             {
                 Time.timeScale = 1.0f;
-                m_gameStatus = GameStatus.Running;
+                m_GameStatus = GameStatus.Running;
             }
 
-            CameraController.instance.GetComponent<UnityStandardAssets.ImageEffects.Blur>().enabled = (m_gameStatus == GameStatus.Paused);
+            CameraController.instance.GetComponent<UnityStandardAssets.ImageEffects.Blur>().enabled = (m_GameStatus == GameStatus.Paused);
         }
 
 		///////////////////////////////////////////////////////////////////////////
@@ -227,7 +233,7 @@ namespace SAB
 
             AudioManager.instance.PlayAudio(m_WinSound);
             Instantiate(m_WinText.gameObject, m_Canvas.transform, false);
-            m_gameStatus = GameStatus.Won;
+            m_GameStatus = GameStatus.Won;
         }
 
 		///////////////////////////////////////////////////////////////////////////
@@ -241,7 +247,7 @@ namespace SAB
 
             AudioManager.instance.PlayAudio(m_LoseSound);
             Instantiate(m_LoseText.gameObject, m_Canvas.transform, false);
-            m_gameStatus = GameStatus.Lost;
+            m_GameStatus = GameStatus.Lost;
         }
 
     }

@@ -2,57 +2,61 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ParticleManager : MonoBehaviour
+namespace SAB
 {
-	void Awake()
-    {
-        instance = this;
-    }
-
-	///////////////////////////////////////////////////////////////////////////
-
-	public static ParticleManager instance	{ get; private set; }
-
-	///////////////////////////////////////////////////////////////////////////
-
-	public void SpawnParticle(GameObject particleAsset, GameObject spawner, Vector3 position, Quaternion? rotation, bool isInLocalSpace, float lifetime, bool scaleByParentSize, bool offsetToOutside)
+	public class ParticleManager : MonoBehaviour
 	{
-		Transform parent = isInLocalSpace ? spawner.transform : this.transform;
-
-		GameObject newObject = Instantiate(particleAsset, parent);
-		newObject.transform.position = position;
-
-		Quaternion additionalRotation = rotation.HasValue ? rotation.Value : Quaternion.Euler(0.0f, Random.Range(0.0f, 360.0f), 0.0f);
-		newObject.transform.rotation = additionalRotation * particleAsset.transform.rotation;
-		newObject.name = particleAsset.gameObject.name + "(" + spawner.name + ")";
-
-		if (scaleByParentSize)
+		void Awake()
 		{
-			float scale = GetScale(spawner);
-			Vector3 assetScale = particleAsset.transform.localScale;
-			newObject.transform.localScale = assetScale * scale;
+			instance = this;
 		}
 
-		if (offsetToOutside)
+		///////////////////////////////////////////////////////////////////////////
+
+		public static ParticleManager instance	{ get; private set; }
+
+		///////////////////////////////////////////////////////////////////////////
+
+		public void SpawnParticle(GameObject particleAsset, GameObject spawner, Vector3 position, Quaternion? rotation, bool isInLocalSpace, float lifetime, bool scaleByParentSize, bool offsetToOutside)
 		{
-			float scale = GetScale(spawner);
-			newObject.transform.position = newObject.transform.position + scale * newObject.transform.forward;
+			Transform parent = isInLocalSpace ? spawner.transform : this.transform;
+
+			GameObject newObject = Instantiate(particleAsset, parent);
+			newObject.transform.position = position;
+
+			Quaternion additionalRotation = rotation.HasValue ? rotation.Value : Quaternion.Euler(0.0f, Random.Range(0.0f, 360.0f), 0.0f);
+			newObject.transform.rotation = additionalRotation * particleAsset.transform.rotation;
+			newObject.name = particleAsset.gameObject.name + "(" + spawner.name + ")";
+
+			if (scaleByParentSize)
+			{
+				float scale = GetScale(spawner);
+				Vector3 assetScale = particleAsset.transform.localScale;
+				newObject.transform.localScale = assetScale * scale;
+			}
+
+			if (offsetToOutside)
+			{
+				float scale = GetScale(spawner);
+				newObject.transform.position = newObject.transform.position + scale * newObject.transform.forward;
+			}
+
+			// unfortunately it's not trivial to get the particles duration :(
+			Destroy(newObject, lifetime);
 		}
 
-		// unfortunately it's not trivial to get the particles duration :(
-		Destroy(newObject, lifetime);
-	}
+		///////////////////////////////////////////////////////////////////////////
 
-	///////////////////////////////////////////////////////////////////////////
+		private float GetScale(GameObject spawner)
+		{
+			Collider collider = spawner.GetComponent<Collider>();
+			Vector3 bboxExtents = collider.bounds.extents;
 
-	private float GetScale(GameObject spawner)
-	{
-		Collider collider = spawner.GetComponent<Collider>();
-		Vector3 bboxExtents = collider.bounds.extents;
+			float scale = bboxExtents.x + bboxExtents.y + bboxExtents.z;
+			scale /= 3.0f;
 
-		float scale = bboxExtents.x + bboxExtents.y + bboxExtents.z;
-		scale /= 3.0f;
-
-		return scale;
+			return scale;
+		}
 	}
 }
+

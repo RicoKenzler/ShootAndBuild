@@ -1,0 +1,322 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &100100000
+Prefab:
+  m_ObjectHideFlags: 1
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications: []
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 0}
+  m_RootGameObject: {fileID: 1442650739336236}
+  m_IsPrefabParent: 1
+--- !u!1 &1442650739336236
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 4262963363251386}
+  - component: {fileID: 114438098921368558}
+  m_Layer: 0
+  m_Name: AmbientSoundManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4262963363251386
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1442650739336236}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &114438098921368558
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1442650739336236}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 27539d41a914c0441abc457b21b22897, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_AudioLoopWater: {fileID: 11400000, guid: 5c6aa7b59a353b64fac995bdc42eebcc, type: 2}
+  m_AudioLoopGrass: {fileID: 11400000, guid: 23c39c380458f58438f67c74566ef5ca, type: 2}
+  m_AudioLoopRuins: {fileID: 11400000, guid: bcdd2b37eae88a64fb1365d120220768, type: 2}
+  m_AudioMixer: {fileID: 24100000, guid: 4bbc8c941e664a1458add2f014bede89, type: 2}
+  m_AmbientGroupVolumeDefault: -10
+  m_FadeOutTime: 6
+  m_FadeInTime: 6
+  m_PanoramaFadeTime: 6
+  m_MaxStereo: 0.7
+  m_AmbientGridCellSize: 8
+  m_AmbientGridDimension: 16
+  m_AmbientGrid:
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 0
+  - SoundType: 0
+  - SoundType: 0
+  - SoundType: 0
+  - SoundType: 0
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 0
+  - SoundType: 0
+  - SoundType: 0
+  - SoundType: 0
+  - SoundType: 0
+  - SoundType: 0
+  - SoundType: 0
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 0
+  - SoundType: 0
+  - SoundType: 0
+  - SoundType: 0
+  - SoundType: 0
+  - SoundType: 0
+  - SoundType: 0
+  - SoundType: 0
+  - SoundType: 0
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 0
+  - SoundType: 0
+  - SoundType: 0
+  - SoundType: 0
+  - SoundType: 0
+  - SoundType: 0
+  - SoundType: 0
+  - SoundType: 0
+  - SoundType: 0
+  - SoundType: 0
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 2
+  - SoundType: 2
+  - SoundType: 0
+  - SoundType: 2
+  - SoundType: 2
+  - SoundType: 2
+  - SoundType: 2
+  - SoundType: 2
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 2
+  - SoundType: 2
+  - SoundType: 2
+  - SoundType: 2
+  - SoundType: 2
+  - SoundType: 2
+  - SoundType: 2
+  - SoundType: 2
+  - SoundType: 2
+  - SoundType: 0
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 2
+  - SoundType: 2
+  - SoundType: 2
+  - SoundType: 2
+  - SoundType: 2
+  - SoundType: 2
+  - SoundType: 2
+  - SoundType: 2
+  - SoundType: 2
+  - SoundType: 0
+  - SoundType: 0
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 2
+  - SoundType: 2
+  - SoundType: 2
+  - SoundType: 2
+  - SoundType: 2
+  - SoundType: 2
+  - SoundType: 2
+  - SoundType: 2
+  - SoundType: 2
+  - SoundType: 2
+  - SoundType: 0
+  - SoundType: 0
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 0
+  - SoundType: 0
+  - SoundType: 0
+  - SoundType: 0
+  - SoundType: 0
+  - SoundType: 0
+  - SoundType: 0
+  - SoundType: 2
+  - SoundType: 2
+  - SoundType: 2
+  - SoundType: 2
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 0
+  - SoundType: 0
+  - SoundType: 0
+  - SoundType: 0
+  - SoundType: 0
+  - SoundType: 0
+  - SoundType: 0
+  - SoundType: 0
+  - SoundType: 2
+  - SoundType: 2
+  - SoundType: 2
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 0
+  - SoundType: 0
+  - SoundType: 0
+  - SoundType: 0
+  - SoundType: 0
+  - SoundType: 0
+  - SoundType: 0
+  - SoundType: 2
+  - SoundType: 2
+  - SoundType: 2
+  - SoundType: 2
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 0
+  - SoundType: 0
+  - SoundType: 0
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 0
+  - SoundType: 2
+  - SoundType: 2
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  - SoundType: 1
+  m_TerrainSizeWS: {x: 128, y: 128}

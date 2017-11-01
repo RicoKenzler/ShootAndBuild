@@ -32,9 +32,9 @@ namespace SAB
 
 	public class NotificationManager : MonoBehaviour 
 	{
-		[SerializeField] private GameObject	m_NotificationBar;
-		[SerializeField] private Text		m_NotificationBarText;
-		[SerializeField] private float		m_NotificationDisplayDuration = 3.0f;
+		private GameObject	m_NotificationBar;
+		private Text		m_NotificationBarText;
+		private float		m_NotificationDisplayDuration = 3.0f;
 
 		///////////////////////////////////////////////////////////////////////////
 
@@ -52,9 +52,17 @@ namespace SAB
 		void Awake()
 		{
 			instance = this;
+		}
+
+		///////////////////////////////////////////////////////////////////////////
+		
+		void Start()
+		{
+			m_NotificationBar = Canvas2D.instance.notificationBar;
+			m_NotificationBarText = m_NotificationBar.transform.GetComponentInChildren<Text>();
 			m_NotificationBarAnimator = m_NotificationBar.GetComponent<Animator>();
 		}
-		
+
 		///////////////////////////////////////////////////////////////////////////
 
 		public void ShowNotification(Notification notification)
