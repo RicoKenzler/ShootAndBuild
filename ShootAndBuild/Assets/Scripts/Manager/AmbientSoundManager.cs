@@ -9,7 +9,7 @@ namespace SAB
 {
 	///////////////////////////////////////////////////////////////////////////
 
-	enum AmbientSoundType
+	public enum AmbientSoundType
 	{
 		Grass,
 		Water,
@@ -18,45 +18,6 @@ namespace SAB
 		Invalid
 	}
 
-	///////////////////////////////////////////////////////////////////////////
-	// Helper struct: Cell within the sound grid
-	///////////////////////////////////////////////////////////////////////////
-	[System.Serializable]
-	struct AmbientSoundCell
-	{
-		public AmbientSoundType	SoundType;
-
-		///////////////////////////////////////////////////////////////////////////
-
-		public AmbientSoundCell(AmbientSoundType soundType)
-		{
-			SoundType = soundType;
-		}
-
-		///////////////////////////////////////////////////////////////////////////
-
-		public static Color GetDebugColor(AmbientSoundType soundType)
-		{
-			switch (soundType)
-			{
-				case AmbientSoundType.Water:
-					return Color.blue;
-				case AmbientSoundType.Grass:
-					return Color.green;
-				case AmbientSoundType.Ruins:
-					return Color.gray;
-			}
-
-			return Color.white;
-		}
-
-		///////////////////////////////////////////////////////////////////////////
-
-		public Color GetDebugColor()
-		{
-			return GetDebugColor(SoundType);
-		}
-	}
 
 	///////////////////////////////////////////////////////////////////////////
 	// Ambient Sound Manager
@@ -99,17 +60,8 @@ namespace SAB
 		///////////////////////////////////////////////////////////////////////////	
 		// Ambient Grid
 		///////////////////////////////////////////////////////////////////////////	
-		[SerializeField] private  int		m_AmbientGridCellSize		= 16;
-
-		[SerializeField] private int		m_AmbientGridDimension		= 0;
-
-		[SerializeField] AmbientSoundCell[]	m_AmbientGrid;
-
-		[SerializeField] Vector2			m_TerrainSizeWS;
-
-		///////////////////////////////////////////////////////////////////////////
-
-		List<Vector2>						m_DebugListenerPositions = new List<Vector2>();
+		private AmbientSoundGrid	m_AmbientSoundGrid;
+		List<Vector2> m_DebugListenerPositions = new List<Vector2>();
 
 		///////////////////////////////////////////////////////////////////////////
 
@@ -120,21 +72,22 @@ namespace SAB
 		void Awake()
 		{
 			instance = this;
+
+			Terrain.GeneratedTerrain generatedTerrain = Terrain.GeneratedTerrain.FindInScene();
+			m_AmbientSoundGrid = generatedTerrain.ambientSoundGrid;
 		}
 
 		///////////////////////////////////////////////////////////////////////////	
 
 		void Start() 
 		{
-			Debug.Assert(m_TerrainSizeWS == TerrainManager.instance.terrainSizeWS, "Please Regenerate Map!");
-
 			m_AmbientMixerGroup = m_AudioMixer.FindMatchingGroups("Ambient")[0];
 
 			Debug.Assert(gameObject.GetComponent<AudioSource>() == null);
 
 			m_AudioSources			= new AudioSource[AUDIO_SOURCE_COUNT];
 			m_CurPlayingSoundTypes	= new AmbientSoundType[AUDIO_SOURCE_COUNT];
-			m_SourceMaxVolume			= new float[AUDIO_SOURCE_COUNT];
+			m_SourceMaxVolume		= new float[AUDIO_SOURCE_COUNT];
 
 			for (int i = 0; i < AUDIO_SOURCE_COUNT; ++i)
 			{
@@ -166,7 +119,7 @@ namespace SAB
 
 		void Update() 
 		{
-			if (m_AmbientGrid == null)
+			if (m_AmbientSoundGrid == null)
 			{ 
 				Debug.Log("AmbientGrid not Active. Please Regenerate Terrain!");
 				return;
@@ -216,7 +169,7 @@ namespace SAB
 			// bottom left and bottom right have highest priority!
 			foreach (SamplePosition samplePosition in samplePositionsByPriority)
 			{
-				AmbientSoundCell curCell = GetAmbientCellSafe(samplePosition.Pos);
+				AmbientSoundCell curCell = m_AmbientSoundGrid.GetAmbientCellSafe(samplePosition.Pos);
 
 				// 2.1) Add new Types
 				for (int a = 0; a < 2; ++a)
@@ -470,117 +423,29 @@ namespace SAB
 			return newVolume;
 		}
 
-		///////////////////////////////////////////////////////////////////////////	
-
-		AmbientSoundCell GetAmbientCellSafe(Vector2 posWS)
-		{
-			int iX = (int) (posWS.x / m_AmbientGridCellSize);
-			int iZ = (int) (posWS.y / m_AmbientGridCellSize);
-
-			iX = Mathf.Clamp(iX, 0, m_AmbientGridDimension - 1);
-			iZ = Mathf.Clamp(iZ, 0, m_AmbientGridDimension - 1);
-
-			return m_AmbientGrid[iX * m_AmbientGridDimension + iZ];
-		}
 
 		///////////////////////////////////////////////////////////////////////////	
 
 		public void OnDrawGizmosSelected()
 		{
-			if (m_AmbientGrid == null)
+			if (m_AmbientSoundGrid == null)
 			{ 
 				Debug.Log("AmbientGrid not Active. Please Regenerate Terrain!");
 				return;
 			}
 
+			m_AmbientSoundGrid.DebugDraw();
+
 			float debugDrawHeight = 1.0f;
-
-			for (int iX = 0; iX < m_AmbientGridDimension; iX++)
-			{
-				for (int iZ = 0; iZ < m_AmbientGridDimension; iZ++)
-				{
-					Vector2 cellMin = new Vector2(iX * m_AmbientGridCellSize, iZ * m_AmbientGridCellSize);
-					Vector2 cellMax = cellMin + new Vector2(m_AmbientGridCellSize, m_AmbientGridCellSize);
-					
-					Vector2 cellMinOffsetted = Vector2.Lerp(cellMin, cellMax, 0.05f);
-					Vector2 cellMaxOffsetted = Vector2.Lerp(cellMin, cellMax, 0.95f);
-
-					AmbientSoundCell curCell = m_AmbientGrid[iX * m_AmbientGridDimension + iZ];
-
-					Color col = curCell.GetDebugColor();		
-					col.a = 0.5f;	
-
-					DebugHelper.BufferQuad(new Vector3(cellMinOffsetted.x, debugDrawHeight, cellMinOffsetted.y), new Vector3(cellMaxOffsetted.x, debugDrawHeight, cellMaxOffsetted.y), col);
-				}
-			}
 
 			for (int i = 0; i < m_DebugListenerPositions.Count; ++i)
 			{
 				Vector2 pos2D = m_DebugListenerPositions[i];
 				
-				Color debugColor = AmbientSoundCell.GetDebugColor(GetAmbientCellSafe(pos2D).SoundType);
+				Color debugColor = AmbientSoundCell.GetDebugColor(m_AmbientSoundGrid.GetAmbientCellSafe(pos2D).SoundType);
 				
 				Gizmos.color = debugColor;
 				Gizmos.DrawCube(pos2D.To3D(debugDrawHeight), new Vector3(1, 1, 1)); 
-			}
-
-			DebugHelper.DrawBufferedTriangles();
-		}
-
-		///////////////////////////////////////////////////////////////////////////	
-
-		public void GenerateAmbientGrid(Terrain.RegionTile[,] regionTiles, List<Terrain.RegionCell> regionCells, Vector2 terrainSizeWS)
-		{
-			if (regionTiles == null)
-			{
-				m_AmbientGrid				= null;
-				m_TerrainSizeWS			= new Vector2(0.0f, 0.0f);
-				m_AmbientGridDimension	= 0;
-				return;
-			}
-
-			m_TerrainSizeWS = terrainSizeWS;
-
-			m_AmbientGridDimension = (int) Mathf.Ceil(Mathf.Max(terrainSizeWS.x, terrainSizeWS.y) / (float) m_AmbientGridCellSize);
-			m_AmbientGridDimension = Mathf.Max(m_AmbientGridDimension, 1);
-			
-			m_AmbientGrid = new AmbientSoundCell[m_AmbientGridDimension * m_AmbientGridDimension];
-
-			int regionDimensionX = regionTiles.GetLength(0);
-			int regionDimensionZ = regionTiles.GetLength(1);
-			Vector2 regionTileSize = new Vector2(terrainSizeWS.x / regionDimensionX, terrainSizeWS.y / regionDimensionZ);
-
-			for (int ambientX = 0 ; ambientX < m_AmbientGridDimension; ++ambientX)
-			{
-				float xWS		= (ambientX + 0.5f) * m_AmbientGridCellSize;
-				int regionX		= (int) (xWS / regionTileSize.x);
-				regionX			= Mathf.Min(regionX, regionDimensionX - 1);
-
-				for (int ambientZ = 0 ; ambientZ < m_AmbientGridDimension; ++ambientZ)
-				{
-					float zWS		= (ambientZ + 0.5f) * m_AmbientGridCellSize;
-					int regionZ		= (int) (zWS / regionTileSize.y);
-					regionZ			= Mathf.Min(regionZ, regionDimensionZ - 1);
-
-					Terrain.RegionTile cellsCenterTile = regionTiles[regionX, regionZ];
-					Terrain.RegionType regionType = regionCells[cellsCenterTile.Cell].RegionType;
-
-					AmbientSoundCell curCell = new AmbientSoundCell(AmbientSoundType.Grass);
-
-					switch (regionType)
-					{
-						case Terrain.RegionType.Bricks:
-							curCell.SoundType = AmbientSoundType.Ruins;
-							break;
-
-						case Terrain.RegionType.Beach:
-						case Terrain.RegionType.Water:
-							curCell.SoundType = AmbientSoundType.Water;
-							break;
-					}
-
-					m_AmbientGrid[ambientX * m_AmbientGridDimension + ambientZ] = curCell;
-				}
 			}
 		}
 	}

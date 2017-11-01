@@ -14,4 +14,17 @@ public static class VectorExtensions
     {
 		return new Vector3(vec2D.x, y, vec2D.y);
 	}
+
+	public static GameObject FindImmediateChildOfName(this Transform parent, string name)
+	{
+		for (int i = 0; i < parent.childCount; ++i)
+		{
+			if (parent.GetChild(i).name == name)
+			{
+				return parent.GetChild(i).gameObject;
+			}
+		}
+
+		return null;
+	}
 }

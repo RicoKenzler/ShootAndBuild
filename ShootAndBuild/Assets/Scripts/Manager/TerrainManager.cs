@@ -6,31 +6,18 @@ namespace SAB
 {
 	public class TerrainManager : MonoBehaviour 
 	{
-		[SerializeField] private UnityEngine.Terrain				m_Terrain;
-						 private Terrain.RegionTile[,]				m_RegionGrid;
 		[SerializeField] private Terrain.RegionMapTransformation	m_RegionMapTransformation;
-		[SerializeField] private Vector2							m_TerrainSizeWS;
+
+		private UnityEngine.Terrain				m_Terrain;
+		private Terrain.GeneratedTerrain		m_GeneratedTerrain;
+		private Vector2							m_TerrainSizeWS;
 
 		///////////////////////////////////////////////////////////////////////////
 
 		public UnityEngine.Terrain				terrain					{ get { return m_Terrain; } }
-		public Terrain.RegionTile[,]			regionGrid				{ get { return m_RegionGrid; } }
-		public Terrain.RegionMapTransformation	regionMapTransformation	{ get { return m_RegionMapTransformation; }}
 		public Vector2							terrainSizeWS			{ get { return m_TerrainSizeWS; }}
 
 		public static TerrainManager instance	{ get; private set; }
-
-		///////////////////////////////////////////////////////////////////////////
-
-		public void ReplaceTerrain(UnityEngine.Terrain newTerrain, Terrain.RegionTile[,] regionGrid, Vector2 terrainSizeWS)
-		{
-			m_Terrain			= newTerrain;
-			m_RegionGrid		= regionGrid;
-			m_TerrainSizeWS		= terrainSizeWS;
-
-			int regionGridResolution = (regionGrid == null) ? 1 : regionGrid.GetLength(0);
-			m_RegionMapTransformation = new SAB.Terrain.RegionMapTransformation(terrainSizeWS, regionGridResolution);
-		}
 
 		///////////////////////////////////////////////////////////////////////////
 
@@ -44,7 +31,7 @@ namespace SAB
 		public Vector3 GetTerrainCenter3D()
 		{
 			Vector2 terrainCenter2D = GetTerrainCenter2D();
-			return new Vector3(terrainCenter2D.x, GetInterpolatedHeight(terrainCenter2D.x, terrainCenter2D.y), terrainCenter2D.y);
+			return new Vector3(terrainCenter2D.x, m_GeneratedTerrain.GetInterpolatedHeight(terrainCenter2D.x, terrainCenter2D.y), terrainCenter2D.y);
 		}
 
 		///////////////////////////////////////////////////////////////////////////
@@ -52,36 +39,25 @@ namespace SAB
 		void Awake()
 		{
 			instance = this; 
+
+			m_GeneratedTerrain = Terrain.GeneratedTerrain.FindInScene();
+
+			m_Terrain			= m_GeneratedTerrain.GetComponent<UnityEngine.Terrain>();
+			m_TerrainSizeWS		= m_GeneratedTerrain.sizeWS;
 		}
 
-		///////////////////////////////////////////////////////////////////////////
-
-		void Start () 
-		{
-			Debug.Assert(m_Terrain != null, "You did not specify a terrain. Please Run Terrain Generator.");
-		}
-		
 		///////////////////////////////////////////////////////////////////////////
 
 		public float GetInterpolatedHeight(float xWS, float zWS)
 		{
-			if (m_Terrain == null)
-			{
-				Debug.Assert(m_Terrain != null, "You did not specify a terrain. Please Run Terrain Generator.");
-				return 0.0f;
-			}
-
-			float height = m_Terrain.SampleHeight(new Vector3(xWS, 0.5f, zWS));
-			height += m_Terrain.gameObject.transform.position.y;
-
-			return height;
+			return m_GeneratedTerrain.GetInterpolatedHeight(xWS, zWS);
 		}
 
 		///////////////////////////////////////////////////////////////////////////
 
-		public Terrain.RegionTile GetRegionAt(float xWS, float zWS)
+		void Start() 
 		{
-			return new SAB.Terrain.RegionTile();
+			Debug.Assert(m_GeneratedTerrain != null && m_Terrain != null, "You did not specify a terrain. Please Run Terrain Generator.");
 		}
 	}
 }

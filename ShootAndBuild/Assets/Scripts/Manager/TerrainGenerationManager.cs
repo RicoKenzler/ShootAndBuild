@@ -8,10 +8,6 @@ namespace SAB
 {
 	public class TerrainGenerationManager : MonoBehaviour
 	{
-		[SerializeField] private TerrainManager			m_TerrainManager;
-
-		[SerializeField] private AmbientSoundManager	m_AmbientSoundManager;
-
 		[SerializeField] private int					m_Resolution = 65;
 
 		[SerializeField] private bool					m_UseTimeAsSeed = false;
@@ -35,7 +31,7 @@ namespace SAB
 		[FormerlySerializedAs("RegionParams")]
 		[SerializeField] private RegionParameters		m_RegionParams;
 
-		private GameObject			m_TerrainObject;
+		private GeneratedTerrain	m_TerrainObject;
 		private VoronoiCreator		m_VoronoiGenerator		= new VoronoiCreator();
 		private RegionMapGenerator	m_RegionGenerator		= new RegionMapGenerator();
 		private RegionGridGenerator m_RegionGridGenerator	= new RegionGridGenerator();
@@ -47,28 +43,16 @@ namespace SAB
 		{
 			if (!m_TerrainObject)
 			{
-				UnityEngine.Terrain childTerrain = GetComponentInChildren<UnityEngine.Terrain>();
-				m_TerrainObject = childTerrain ? childTerrain.gameObject : null;
+				GeneratedTerrain childTerrain = GetComponentInChildren<GeneratedTerrain>();
+				m_TerrainObject = childTerrain ? childTerrain : null;
 			}
 
 			if (m_TerrainObject)
 			{
-				if (Application.isPlaying)
-				{
-					Destroy(m_TerrainObject.GetComponent<UnityEngine.Terrain>());
-					Destroy(m_TerrainObject.GetComponent<UnityEngine.TerrainCollider>());
-					Destroy(m_TerrainObject);
-				}
-				else
-				{
-					DestroyImmediate(m_TerrainObject.GetComponent<UnityEngine.Terrain>());
-					DestroyImmediate(m_TerrainObject.GetComponent<UnityEngine.TerrainCollider>());
-					DestroyImmediate(m_TerrainObject);
-				}
+				HelperMethods.DestroyOrDestroyImmediate(m_TerrainObject.GetComponent<UnityEngine.Terrain>());
+				HelperMethods.DestroyOrDestroyImmediate(m_TerrainObject.GetComponent<UnityEngine.TerrainCollider>());
+				HelperMethods.DestroyOrDestroyImmediate(m_TerrainObject.gameObject);
 			}
-
-			m_TerrainManager.ReplaceTerrain(null, null, new Vector2(0.0f, 0.0f));
-			m_AmbientSoundManager.GenerateAmbientGrid(null, null, new Vector2(0.0f, 0.0f));
 		}
 		
 		///////////////////////////////////////////////////////////////////////////
@@ -114,8 +98,8 @@ namespace SAB
 				m_TerrainObject.transform.parent = this.transform;
 			}
 
-			m_TerrainManager.ReplaceTerrain(m_TerrainObject.GetComponent<UnityEngine.Terrain>(), m_RegionGridGenerator.regionGrid, m_TransformParams.TerrainSizeWS);
-			m_AmbientSoundManager.GenerateAmbientGrid(m_RegionGridGenerator.regionGrid, m_RegionGenerator.regionMap, m_TransformParams.TerrainSizeWS);
+			AmbientSoundGrid soundGridObject = AmbientSoundGrid.CreateEmptyObject(m_TerrainObject);
+			soundGridObject.GenerateAmbientGrid(m_RegionGridGenerator.regionGrid, m_RegionGenerator.regionMap, m_TransformParams.TerrainSizeWS);
 		}
 	}
 }

@@ -18,12 +18,12 @@ namespace SAB.Terrain
 		private WaterParameters				m_WaterParams;
 		private RegionMapTransformation		m_RegionTransformation;
 		private List<RegionCell>			m_RegionMap;
-		private RegionTile[,]				m_RegionGrid;
+		private RegionGrid					m_RegionGrid;
 
 		private float MinY;
 		private float MaxY;
 		
-		public GameObject GenerateTerrain(List<RegionCell> regionMap, RegionTile[,] regionGrid, RegionMapTransformation regionMapTransformation, TransformParameters transformParams, Vector2 cellHeightRangeY, RegionDescParameters regionDescParams, WaterParameters waterParams, int resolution, int terrainSeed)
+		public GeneratedTerrain GenerateTerrain(List<RegionCell> regionMap, RegionGrid regionGrid, RegionMapTransformation regionMapTransformation, TransformParameters transformParams, Vector2 cellHeightRangeY, RegionDescParameters regionDescParams, WaterParameters waterParams, int resolution, int terrainSeed)
 		{
 			// 0) Init Members
 			m_TerrainObject			= null;
@@ -116,7 +116,15 @@ namespace SAB.Terrain
 			// 2) Create Water Plane
 			CreateWaterPlane(m_TerrainObject);
 
-			return m_TerrainObject;
+			// 3) Create GeneratedTerrainProperty
+			GeneratedTerrain generatedTerrainComponent = m_TerrainObject.AddComponent<GeneratedTerrain>();
+			m_TerrainObject.tag = GeneratedTerrain.GENERATED_TERRAIN_TAG;
+
+			generatedTerrainComponent.sizeWS		= m_TransformParams.TerrainSizeWS;
+			generatedTerrainComponent.terrain		= terrainComponent;
+			generatedTerrainComponent.regionGrid	= regionGrid;
+			
+			return generatedTerrainComponent;
 		}
 
 		///////////////////////////////////////////////////////////////////////////
@@ -170,7 +178,7 @@ namespace SAB.Terrain
 			{
 				for (int z = 0; z < m_Resolution; z++)
 				{
-					RegionTile curTile		 = m_RegionGrid[x,z];
+					RegionTile curTile		 = m_RegionGrid.GetAt(x,z);
 					RegionCell curCell		 = m_RegionMap[curTile.Cell];
 				
 					float weightSum = 0.0f;
@@ -210,7 +218,7 @@ namespace SAB.Terrain
 
 		public float GetNormalizedHeight(int x, int z)
 		{
-			RegionTile regionTile = m_RegionGrid[x,z];
+			RegionTile regionTile = m_RegionGrid.GetAt(x,z);
 			RegionCell regionCell = m_RegionMap[regionTile.Cell];
 
 			float baseHeight = regionTile.Height;

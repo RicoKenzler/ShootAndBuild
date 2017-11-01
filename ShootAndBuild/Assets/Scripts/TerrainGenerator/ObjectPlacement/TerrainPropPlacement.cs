@@ -50,13 +50,13 @@ namespace SAB.Terrain
 	{
 		[FormerlySerializedAs("propGroups")]
 		[SerializeField] private PropGroup[]	m_PropGroups;
-		[SerializeField] private TerrainManager m_TerrainManager;
 
 		///////////////////////////////////////////////////////////////////////////
 
 		private GameObject				m_ContainerObject;
+		private GeneratedTerrain		m_GeneratedTerrain;
+		private RegionGrid				m_RegionGrid;
 		private float					m_Seed;
-		private RegionMapTransformation	m_RegionMapTransformation;
 
 		const string PROP_GROUP_NAME = "Props";
 
@@ -77,10 +77,20 @@ namespace SAB.Terrain
 		{
 			m_ContainerObject = null;
 
-			GameObject terrainObject = m_TerrainManager.terrain.gameObject;
+			m_GeneratedTerrain = GeneratedTerrain.FindInScene();
+
+			if (!m_GeneratedTerrain)
+			{
+				return;
+			}
+
+			m_RegionGrid = m_GeneratedTerrain.regionGrid;
+
+			GameObject terrainObject = m_GeneratedTerrain.gameObject;
 			
 			Transform oldGroupObjectTransform = terrainObject.transform.Find(PROP_GROUP_NAME);
 			GameObject groupObject = oldGroupObjectTransform == null ? null : oldGroupObjectTransform.gameObject;
+
 			if (groupObject)
 			{
 				GameObject.DestroyImmediate(groupObject);
@@ -99,23 +109,7 @@ namespace SAB.Terrain
 			m_Seed = 0.174f * _seed;
 
 			Random.InitState(_seed);
-
-			Debug.Assert(m_TerrainManager);
-
-			if (!m_TerrainManager.terrain)
-			{
-				Debug.LogWarning("No Terrain found");
-				return;
-			}
-
-			if (m_TerrainManager.regionGrid == null)
-			{
-				Debug.LogWarning("Currently RegionGrid is not serialized, so you first have to generate a terrain");
-				return;
-			}
 			
-			m_RegionMapTransformation = m_TerrainManager.regionMapTransformation;
-
 			RecreateEmptyContainerObject();
 			CreateProps();
 		}
@@ -161,11 +155,9 @@ namespace SAB.Terrain
 				return;
 			}
 
-			RegionTile[,] regionGrid = m_TerrainManager.regionGrid;
-
-			for (int x = 0; x < regionGrid.GetLength(0); ++x)
+			for (int z = 0; z < m_RegionGrid.sizeZ; ++z)
 			{
-				for (int z = 0; z < regionGrid.GetLength(1); ++z)
+				for (int x = 0; x < m_RegionGrid.sizeX; ++x)
 				{
 					float maskRnd = Mathf.PerlinNoise(m_Seed + x * propGroup.MaskFrequency,	m_Seed + z * propGroup.MaskFrequency);
 					if (maskRnd > propGroup.MaskDensity)
@@ -179,9 +171,9 @@ namespace SAB.Terrain
 						continue;
 					}
 
-					RegionType regionType = regionGrid[x,z].MainRegion;
+					RegionType regionType = m_RegionGrid.GetAt(x,z).MainRegion;
 
-					if (regionGrid[x,z].RegionAmounts[(int)regionType] < 0.95f)
+					if (m_RegionGrid.GetAt(x,z).RegionAmounts[(int)regionType] < 0.95f)
 					{
 						continue;
 					}
@@ -211,15 +203,15 @@ namespace SAB.Terrain
 
 		public void PlaceProp(PropGroup propGroup, Transform subContainerObject, int x, int z, float probabilitySum, float seed)
 		{
-			Vector2 tileMin = m_RegionMapTransformation.GetTileMin(x, z);
-			Vector2 tileMax = tileMin + m_RegionMapTransformation.CellSize;
+			Vector2 tileMin = m_RegionGrid.regionMapTransformation.GetTileMin(x, z);
+			Vector2 tileMax = tileMin + m_RegionGrid.regionMapTransformation.CellSize;
 			
 			Vector3 rndPos;
 			rndPos.x = Mathf.Lerp(tileMin.x, tileMax.x, Random.Range(0.0f, 1.0f));
 			rndPos.y = 0.0f;
 			rndPos.z = Mathf.Lerp(tileMin.y, tileMax.y, Random.Range(0.0f, 1.0f));
 
-			rndPos.y = m_TerrainManager.GetInterpolatedHeight(rndPos.x, rndPos.z);
+			rndPos.y = m_GeneratedTerrain.GetInterpolatedHeight(rndPos.x, rndPos.z);
 
 			// rnd in [0,1], but distribution is not uniform :(
 			float rnd = Mathf.PerlinNoise(seed + x * propGroup.RndPropFrequency, seed + z * propGroup.RndPropFrequency);

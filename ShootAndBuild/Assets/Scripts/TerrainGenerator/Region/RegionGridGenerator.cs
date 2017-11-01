@@ -12,8 +12,8 @@ namespace SAB.Terrain
 		public float Height					= 0.0f;
 		public RegionType MainRegion		= RegionType.Count;
 		public CellIndex Cell				= -1;
-
-		public RegionTile()
+		
+		public void Reset()
 		{
 			for (int t = 0; t < (int) RegionType.Count + 1; ++t)
 			{
@@ -52,14 +52,14 @@ namespace SAB.Terrain
 
 		private Vector2				m_HeightRangeY;
 		private List<RegionCell>	m_RegionCells = null;
-		private RegionTile[,]		m_RegionGrid;
+		private RegionGrid			m_RegionGrid;
 
 		private RegionParameters		m_RegionParams;
 		private RegionMapTransformation m_MapTransformation;
 
 		///////////////////////////////////////////////////////////////////////////
 
-		public RegionTile[,]	regionGrid		{ get { return m_RegionGrid; } }
+		public RegionGrid		regionGrid		{ get { return m_RegionGrid; } }
 		public Vector2			heightRangeY	{ get { return m_HeightRangeY; } }
 
 		///////////////////////////////////////////////////////////////////////////
@@ -67,19 +67,11 @@ namespace SAB.Terrain
 		public void GenerateRegionGrid(List<RegionCell> regionCells, RegionMapTransformation mapTransformation, RegionParameters regionParameters)
 		{
 			// 0) Init
-			m_RegionCells			= regionCells;
+			m_RegionCells		= regionCells;
 			m_RegionParams		= regionParameters;
 			m_MapTransformation	= mapTransformation;
 
-			m_RegionGrid = new RegionTile[mapTransformation.Resolution, mapTransformation.Resolution];
-
-			for (int iy = 0; iy < m_RegionGrid.GetLength(1); iy++)
-			{
-				for (int ix = 0; ix < m_RegionGrid.GetLength(0); ix++)
-				{
-					m_RegionGrid[ix, iy] = new RegionTile();
-				}
-			}
+			m_RegionGrid = new RegionGrid(mapTransformation.Resolution, mapTransformation.Resolution, mapTransformation.MapSizeWS);
 
 			// 1) Assign Cells
 			AssignAmountsToTiles();
@@ -87,11 +79,11 @@ namespace SAB.Terrain
 			m_HeightRangeY = new Vector2(float.MaxValue, float.MinValue);
 
 			// 2) Check consistency && find min/max Height
-			for (int iy = 0; iy < m_RegionGrid.GetLength(1); iy++)
+			for (int iy = 0; iy < m_RegionGrid.sizeZ; iy++)
 			{
-				for (int ix = 0; ix < m_RegionGrid.GetLength(0); ix++)
+				for (int ix = 0; ix < m_RegionGrid.sizeX; ix++)
 				{
-					RegionTile tile = m_RegionGrid[ix, iy];
+					RegionTile tile = m_RegionGrid.GetAt(ix, iy);
 
 					float amountSum = 0.0f;
 					for (int t = 0; t < (int) RegionType.Count; ++t)
@@ -147,7 +139,7 @@ namespace SAB.Terrain
 					{
 						for (int iX = minX; iX < maxX; ++iX)
 						{
-							RegionTile curTile = m_RegionGrid[iX, iZ];
+							RegionTile curTile = m_RegionGrid.GetAt(iX, iZ);
 
 							Vector2 tileCenter = m_MapTransformation.GetTileCenter(iX, iZ);
 
@@ -237,8 +229,8 @@ namespace SAB.Terrain
 			}
 
 			const int MAX_ALLOWED_INDICES = 40;
-			int maxIndexX = Mathf.Min(m_RegionGrid.GetLength(0), MAX_ALLOWED_INDICES);
-			int maxIndexZ = Mathf.Min(m_RegionGrid.GetLength(1), MAX_ALLOWED_INDICES);
+			int maxIndexX = Mathf.Min(m_RegionGrid.sizeX, MAX_ALLOWED_INDICES);
+			int maxIndexZ = Mathf.Min(m_RegionGrid.sizeZ, MAX_ALLOWED_INDICES);
 
 			if (m_RegionParams.ShowRegionGrid)
 			{
@@ -254,7 +246,7 @@ namespace SAB.Terrain
 						Vector2 cellMinOffsetted = Vector2.Lerp(cellMin, cellMax, 0.05f);
 						Vector2 cellMaxOffsetted = Vector2.Lerp(cellMin, cellMax, 0.95f);
 
-						RegionTile tile = m_RegionGrid[iX, iZ];
+						RegionTile tile = m_RegionGrid.GetAt(iX, iZ);
 
 						Color col = tile.GetDebugColor();			
 
