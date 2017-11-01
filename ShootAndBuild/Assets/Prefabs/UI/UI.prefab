@@ -230,9 +230,10 @@ GameObject:
   - component: {fileID: 223606225348413932}
   - component: {fileID: 114289805609060894}
   - component: {fileID: 114549873676341668}
+  - component: {fileID: 114690350845881914}
   m_Layer: 5
   m_Name: 2D Canvas
-  m_TagString: Untagged
+  m_TagString: Canvas2D
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -378,7 +379,7 @@ GameObject:
   - component: {fileID: 225554676925948044}
   m_Layer: 5
   m_Name: NotificationBar
-  m_TagString: Untagged
+  m_TagString: NotificationBar
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1202,6 +1203,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_HealthBarPrefab: {fileID: 114497382061760316, guid: c25666976c1e40d45a536ea63de71ec6,
     type: 2}
+--- !u!114 &114690350845881914
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1372120902728516}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab8450aa1920709438b6a762b0e7d89a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_NotificationBar: {fileID: 1884206404835254}
 --- !u!114 &114700430499087728
 MonoBehaviour:
   m_ObjectHideFlags: 1

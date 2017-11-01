@@ -51,6 +51,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d110d731a8b13f4ca33d5c8655c14aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_NotificationBar: {fileID: 0}
-  m_NotificationBarText: {fileID: 0}
-  m_NotificationDisplayDuration: 3

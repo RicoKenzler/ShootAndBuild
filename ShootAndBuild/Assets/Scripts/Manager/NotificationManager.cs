@@ -58,9 +58,9 @@ namespace SAB
 		
 		void Start()
 		{
-			m_NotificationBar = Canvas2D.instance.notificationBar;
-			m_NotificationBarText = m_NotificationBar.transform.GetComponentInChildren<Text>();
-			m_NotificationBarAnimator = m_NotificationBar.GetComponent<Animator>();
+			m_NotificationBar			= Canvas2D.instance.notificationBar;
+			m_NotificationBarText		= m_NotificationBar.transform.GetComponentInChildren<Text>();
+			m_NotificationBarAnimator	= m_NotificationBar.GetComponent<Animator>();
 		}
 
 		///////////////////////////////////////////////////////////////////////////
