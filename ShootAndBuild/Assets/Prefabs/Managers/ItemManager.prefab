@@ -51,12 +51,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e0f9cec066f811242b45fe31bb9c732c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  allItemDatas:
+  m_AllItemDatas:
   - {fileID: 11400000, guid: 8dd9392689a2c5e4d96da1c00348ae48, type: 2}
   - {fileID: 11400000, guid: b2c0ae54286040e42a734bfa17ab0231, type: 2}
   - {fileID: 11400000, guid: ac1685ce3fd82e7409887a3801f57e91, type: 2}
   - {fileID: 11400000, guid: de4969fecc7740e42b89f12588eb9735, type: 2}
   - {fileID: 11400000, guid: 7008b4c6e0f1fa840976437e5abb84c1, type: 2}
   - {fileID: 11400000, guid: 6034e8829f91b104fb86d3f3b71d0d9b, type: 2}
+  - {fileID: 11400000, guid: 9ba4eb90b31418a45ab3669ddb1fd6ac, type: 2}
   - {fileID: 11400000, guid: 07d81f19e12cd824a82bac5cdbdcbf70, type: 2}
-  itemFadeOutTime: 20
+  - {fileID: 11400000, guid: 5003f6453c91ffb419946f130b81ba41, type: 2}
+  m_ItemFadeOutTime: 20
