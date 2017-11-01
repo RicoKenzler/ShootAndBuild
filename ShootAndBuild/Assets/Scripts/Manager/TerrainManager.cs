@@ -28,7 +28,7 @@ namespace SAB
 			m_RegionGrid		= regionGrid;
 			m_TerrainSizeWS		= terrainSizeWS;
 
-			int regionGridResolution = regionGrid == null ? 1 : regionGrid.GetLength(0);
+			int regionGridResolution = (regionGrid == null) ? 1 : regionGrid.GetLength(0);
 			m_RegionMapTransformation = new SAB.Terrain.RegionMapTransformation(terrainSizeWS, regionGridResolution);
 		}
 
