@@ -10,12 +10,6 @@ namespace SAB
 	{
 		[SerializeField] private int					m_Resolution = 65;
 
-		[SerializeField] private bool					m_UseTimeAsSeed = false;
-
-		[SerializeField] private int					m_TerrainSeed = 22400;
-		[SerializeField] private int					m_VoronoiSeed = 22400;
-		[SerializeField] private int					m_RegionSeed  = 22400;
-
 		[FormerlySerializedAs("TransformParams")]
 		[SerializeField] private TransformParameters	m_TransformParams;
 
@@ -36,6 +30,10 @@ namespace SAB
 		private RegionMapGenerator	m_RegionGenerator		= new RegionMapGenerator();
 		private RegionGridGenerator m_RegionGridGenerator	= new RegionGridGenerator();
 		private TerrainGenerator	m_TerrainGenerator		= new TerrainGenerator();
+
+		private int	m_TerrainSeed = 0;
+		private int	m_VoronoiSeed = 0;
+		private int	m_RegionSeed  = 0;
 
 		///////////////////////////////////////////////////////////////////////////
 
@@ -67,15 +65,11 @@ namespace SAB
 
 		///////////////////////////////////////////////////////////////////////////
 
-		public void RegenerateAll()
+		public void RegenerateAll(int seed)
 		{
-			if (m_UseTimeAsSeed)
-			{
-				int timeSeed = (System.DateTime.Now.Millisecond + System.DateTime.Now.Second * 1000) % 100000;
-				m_TerrainSeed = timeSeed;
-				m_VoronoiSeed = timeSeed;
-				m_RegionSeed  = timeSeed;
-			}
+			m_TerrainSeed = seed;
+			m_VoronoiSeed = seed;
+			m_RegionSeed  = seed;
 
 			List<VoronoiCell> voronoiCells = m_VoronoiGenerator.GenerateVoronoi(m_VoronoiSeed, m_VoronoiParams, m_TransformParams.TerrainSizeWS);
 

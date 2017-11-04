@@ -32,3 +32,5 @@ sysinfo.txt
 # Builds
 *.apk
 *.unitypackage
+ShootAndBuild/.vs/ShootAndBuild/v15/Browse.VC.opendb
+ShootAndBuild/.vs/ShootAndBuild/v15/Browse.VC.db
