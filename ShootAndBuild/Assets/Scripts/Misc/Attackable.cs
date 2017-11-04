@@ -222,7 +222,6 @@ namespace SAB
 
 			Collectable newCollectable = itemInstance.GetComponent<Collectable>();
 
-			newCollectable.targetHeight = transform.position.y;
 			newCollectable.amount = itemAmount;
 		}
 

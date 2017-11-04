@@ -105,11 +105,15 @@ namespace SAB
                     float f = 1.0f - (dist / m_Radius);
                     f = Mathf.Sqrt(f);
 
-                    float damage = f * m_MaxDamage;
-                    float force = f * m_MaxForce;
+                    float damage	= f * m_MaxDamage;
+                    float force		= f * m_MaxForce;
 
-                    Vector3 direction = attackable.transform.position - selfPos;
-                    Vector3 impulse = direction.normalized * force;
+                    Vector3 direction	= attackable.transform.position - selfPos;
+					
+                    Vector3 impulse		= direction.normalized * force;
+
+					// Let them fly up into the air!
+					impulse += Vector3.up * force * 0.5f;
 
                     allDamages.Add(new AttackableAndDamage(attackable, (int)damage, impulse));
                 }

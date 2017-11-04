@@ -27,8 +27,7 @@ namespace SAB
 
 		///////////////////////////////////////////////////////////////////////////
 
-		public int		amount			{ get { return m_Amount; } set { m_Amount = value; } }
-		public float	targetHeight	{ get; set; }
+		public int amount			{ get { return m_Amount; } set { m_Amount = value; } }
 
 		///////////////////////////////////////////////////////////////////////////
 
@@ -63,10 +62,12 @@ namespace SAB
                 }
             }
 
-            if (selfPosition.y > targetHeight)
+			float terrainHeight = TerrainManager.instance.GetInterpolatedHeight(selfPosition.x, selfPosition.z);
+
+            if (selfPosition.y > terrainHeight)
             {
                 selfPosition.y -= 0.1f;
-                selfPosition.y = Mathf.Max(selfPosition.y, targetHeight);
+                selfPosition.y = Mathf.Max(selfPosition.y, terrainHeight);
                 transform.position = selfPosition;
             }
 

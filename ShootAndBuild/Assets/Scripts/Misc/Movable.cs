@@ -32,9 +32,17 @@ namespace SAB
 		{
 			Vector3 move = moveForce * (m_Buffable ? m_Buffable.GetSpeedMultiplier() : 1.0f);
 
-			Vector3 oldVelocityY = new Vector3(0.0f, m_Rigidbody.velocity.y, 0.0f);
+			float oldVelocityY = m_Rigidbody.velocity.y;
 			
-			m_Rigidbody.velocity = move + impulseForce + oldVelocityY;
+			const float VELOCITY_Y_THRESHOLD = 5.0f;
+			if (oldVelocityY > VELOCITY_Y_THRESHOLD)
+			{
+				// Currently impulses can be very unpredictable so just stop y-impulses when they have too much impact.
+				oldVelocityY = VELOCITY_Y_THRESHOLD;
+				impulseForce = impulseForce.xz().To3D(0.0f);
+			}
+
+			m_Rigidbody.velocity = move + (impulseForce / m_Rigidbody.mass) + new Vector3(0.0f, oldVelocityY, 0.0f);
 
 			float impulseMagnitudeDecrement = FORCE_DEGENERATION_PER_SECOND * Time.deltaTime;
 			float newImpulseMagnitude = Mathf.Max(impulseForce.magnitude - impulseMagnitudeDecrement, 0.0f);

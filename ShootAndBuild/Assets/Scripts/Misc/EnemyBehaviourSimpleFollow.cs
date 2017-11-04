@@ -122,7 +122,7 @@ namespace SAB
                 else
                 {
                     // 5 a2) Move
-                    m_Movable.moveForce = desiredForce; 
+                    m_Movable.moveForce = desiredForce.xz().To3D(0.0f); 
                 }
             }
             else
