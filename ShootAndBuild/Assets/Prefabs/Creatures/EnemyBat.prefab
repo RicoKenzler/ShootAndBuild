@@ -1335,6 +1335,7 @@ MeshRenderer:
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -1350,6 +1351,7 @@ MeshRenderer:
   m_PreserveUVs: 1
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
+  m_StitchLightmapSeams: 0
   m_SelectedEditorRenderState: 3
   m_MinimumChartSize: 4
   m_AutoUVMaxDistance: 0.5
@@ -1371,7 +1373,7 @@ Rigidbody:
   m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 116
+  m_Constraints: 80
   m_CollisionDetection: 0
 --- !u!65 &65798100210067208
 BoxCollider:
@@ -1443,22 +1445,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c18305f3b3e5be54ebea7f0ce9e3a69d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  type: 1
-  speed: 4
-  attackDistance: 2
-  attackCooldown: 1
-  damage: 10
-  hitSound: {fileID: 11400000, guid: a374d04cfd1eb6e449f64b7d14d4340f, type: 2}
-  targetPreference: 0
-  restingInfo:
+  m_Type: 1
+  m_Speed: 4
+  m_AttackDistance: 2
+  m_AttackCooldown: 1
+  m_Damage: 10
+  m_HitSound: {fileID: 11400000, guid: a374d04cfd1eb6e449f64b7d14d4340f, type: 2}
+  m_TargetPreference: 0
+  m_RestingInfo:
     restDuration: 0
     restCooldown: 0
-  buffOnAttack: {fileID: 0}
-  buffOnAttackProbability: 0.2
-  zigZagFrequency: 1
-  zigZagAngle: 90
-  estimateFuturePosition: 0.7
-  estimateFuturePositionSmoothness: 0.95
+  m_BuffOnAttack: {fileID: 0}
+  m_BuffOnAttackProbability: 0.2
+  m_ZigZagFrequency: 1
+  m_ZigZagAngle: 90
+  m_EstimateFuturePosition: 0.7
+  m_EstimateFuturePositionSmoothness: 0.95
 --- !u!114 &114636872527280056
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1492,10 +1494,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f41b0c5fe276e8942874978a2d478cfe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 20
-  showHealthBar: 0
-  faction: 1
-  itemDrops:
+  m_MaxHealth: 20
+  m_ShowHealthBar: 0
+  m_Faction: 1
+  m_ItemDrops:
   - itemPrefab: {fileID: 1797189723984674, guid: ebaf5d1e5ef1660458836d848ca0b292,
       type: 2}
     dropProbability: 1
@@ -1506,13 +1508,13 @@ MonoBehaviour:
     dropProbability: 0.25
     minDropAmount: 1
     maxDropAmount: 1
-  dieSound: {fileID: 11400000, guid: 37767856f479fcb4fa7c38b21a9d2a1b, type: 2}
-  spawnSound: {fileID: 0}
-  dieParticles: {fileID: 198000014159833656, guid: a3768c8a9d1b90d4bb0eb0e4bdbe730c,
+  m_DieSound: {fileID: 11400000, guid: 37767856f479fcb4fa7c38b21a9d2a1b, type: 2}
+  m_SpawnSound: {fileID: 0}
+  m_DieParticles: {fileID: 198000014159833656, guid: a3768c8a9d1b90d4bb0eb0e4bdbe730c,
     type: 2}
-  damageParticles: {fileID: 198000013597187216, guid: 83e55d3418297934fab882559d009285,
+  m_DamageParticles: {fileID: 198000013597187216, guid: 83e55d3418297934fab882559d009285,
     type: 2}
-  bloodDecal: {fileID: 114453302406263870, guid: 64a24b6f7f4c34f4b9910eebd9adb72c,
+  m_BloodDecal: {fileID: 114453302406263870, guid: 64a24b6f7f4c34f4b9910eebd9adb72c,
     type: 2}
 --- !u!137 &137751449705913236
 SkinnedMeshRenderer:
@@ -1523,6 +1525,7 @@ SkinnedMeshRenderer:
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -1538,6 +1541,7 @@ SkinnedMeshRenderer:
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
+  m_StitchLightmapSeams: 0
   m_SelectedEditorRenderState: 3
   m_MinimumChartSize: 4
   m_AutoUVMaxDistance: 0.5

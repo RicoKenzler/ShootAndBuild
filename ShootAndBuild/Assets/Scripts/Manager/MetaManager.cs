@@ -43,7 +43,7 @@ namespace SAB
 				}
 				else
 				{
-					newManager.name = obj.name.Substring(0, deleteNameFrom);
+					newManager.name = "Manager " + obj.name.Substring(0, deleteNameFrom);
 				}
 
 				newManager.transform.parent = managerFolder.transform;

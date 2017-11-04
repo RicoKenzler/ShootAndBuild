@@ -32,11 +32,13 @@ namespace SAB
 		{
 			Vector3 move = moveForce * (m_Buffable ? m_Buffable.GetSpeedMultiplier() : 1.0f);
 
-			m_Rigidbody.velocity = move + impulseForce;
+			Vector3 oldVelocityY = new Vector3(0.0f, m_Rigidbody.velocity.y, 0.0f);
+			
+			m_Rigidbody.velocity = move + impulseForce + oldVelocityY;
 
-			float delta = FORCE_DEGENERATION_PER_SECOND * Time.deltaTime;
-			float max = Mathf.Max(impulseForce.magnitude - delta, 0.0f);
-			impulseForce = Vector3.ClampMagnitude(impulseForce, max);
+			float impulseMagnitudeDecrement = FORCE_DEGENERATION_PER_SECOND * Time.deltaTime;
+			float newImpulseMagnitude = Mathf.Max(impulseForce.magnitude - impulseMagnitudeDecrement, 0.0f);
+			impulseForce = Vector3.ClampMagnitude(impulseForce, newImpulseMagnitude);
 		}
 	
 		///////////////////////////////////////////////////////////////////////////

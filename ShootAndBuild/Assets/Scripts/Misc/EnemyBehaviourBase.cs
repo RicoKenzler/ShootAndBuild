@@ -316,8 +316,8 @@ namespace SAB
                 return target.transform.position;
             }
            
-            Vector3 estimatedOffset = targetRigidbody.velocity * timeIntoFuture;
-            Vector3 estimatedPosition = target.transform.position + estimatedOffset;
+            Vector3 estimatedOffset		= targetRigidbody.velocity.xz().To3D(0.0f) * timeIntoFuture;
+            Vector3 estimatedPosition	= target.transform.position + estimatedOffset;
 
             return estimatedPosition;
         }
