@@ -347,8 +347,8 @@ namespace SAB
 					targetBuffable.AddBuff(m_BuffOnAttack);
 				}
 			}
-		}
 
+		}
 		///////////////////////////////////////////////////////////////////////////
 
         void Update()
@@ -386,7 +386,14 @@ namespace SAB
 			// 3) Main Update of Sub-Class
 			OnUpdate();
             
-			TryStartAnim(WALK_ANIM_NAME);
+			if (m_Movable.moveForce.sqrMagnitude > 0.001f)
+			{
+				TryStartAnim(WALK_ANIM_NAME);
+			}
+			else
+			{
+				TryStartAnim(IDLE_ANIM_NAME);
+			}
         }
 
 		///////////////////////////////////////////////////////////////////////////
