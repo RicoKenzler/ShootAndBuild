@@ -13,7 +13,7 @@ namespace SAB
 
         public void Throw()
         {
-            GameObject projectileContainer = GameObject.Find("Projectiles");
+            GameObject projectileContainer = Projectile.GetOrCreateProjectilesContainer();
 
             GameObject instance = Instantiate(m_ProjectilePrefab, projectileContainer.transform);
             instance.transform.position = transform.position + transform.forward * 0.5f;

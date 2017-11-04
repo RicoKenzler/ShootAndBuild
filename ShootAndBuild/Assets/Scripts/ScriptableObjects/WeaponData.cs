@@ -95,11 +95,6 @@ namespace SAB
 		[SerializeField] private List<BuffData> m_Buffs;
 
 		///////////////////////////////////////////////////////////////////////////
-		
-		static GameObject s_ProjectileContainer_IfAny = null;
-		const string PROJECTILES_CONTAINER_NAME = "Projectiles";
-
-		///////////////////////////////////////////////////////////////////////////
 
 		public ItemType				weaponID				{ get { return m_WeaponID;				}}
 		public WeaponType			type					{ get { return m_Type;					}}
@@ -146,19 +141,6 @@ namespace SAB
             m_LayerMask = (1 << 0) | (1 << 9);
         }
 
-        ///////////////////////////////////////////////////////////////////////////
-
-		public GameObject GetOrCreateProjectilesContainer()
-		{
-			if (!s_ProjectileContainer_IfAny)
-			{
-				s_ProjectileContainer_IfAny = new GameObject();
-				s_ProjectileContainer_IfAny.name = PROJECTILES_CONTAINER_NAME;
-			}
-
-			return s_ProjectileContainer_IfAny;
-		}
-
 		///////////////////////////////////////////////////////////////////////////
 
         public void TryShoot(Shootable _owner, Vector3 _origin, Quaternion _direction)
@@ -177,7 +159,7 @@ namespace SAB
                 {
                     Quaternion dir = _direction * Quaternion.AngleAxis(Random.Range(-m_Spread * 0.5f, m_Spread * 0.5f), Vector3.up);
 
-					GameObject projectileContainer = GetOrCreateProjectilesContainer();
+					GameObject projectileContainer = Projectile.GetOrCreateProjectilesContainer();
                     GameObject projectileGo = Instantiate(m_Projectile, projectileContainer.transform);
                     projectileGo.transform.position = _origin;
                     projectileGo.transform.rotation = dir;

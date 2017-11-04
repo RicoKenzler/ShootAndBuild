@@ -43,6 +43,24 @@ namespace SAB
 
 		///////////////////////////////////////////////////////////////////////////
 
+		static GameObject s_ProjectileContainer_IfAny = null;
+		const string PROJECTILES_CONTAINER_NAME = "Projectiles";
+
+		///////////////////////////////////////////////////////////////////////////
+
+		public static GameObject GetOrCreateProjectilesContainer()
+		{
+			if (!s_ProjectileContainer_IfAny)
+			{
+				s_ProjectileContainer_IfAny = new GameObject();
+				s_ProjectileContainer_IfAny.name = PROJECTILES_CONTAINER_NAME;
+			}
+
+			return s_ProjectileContainer_IfAny;
+		}
+
+		///////////////////////////////////////////////////////////////////////////
+
 		public void Init(float speed, float range, List<BuffData> buffs, GameObject riccochetEffect)
 		{
 			m_Speed				= speed;
