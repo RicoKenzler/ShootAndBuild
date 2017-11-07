@@ -52,6 +52,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4088430342554304}
   - component: {fileID: 114554427420127092}
+  - component: {fileID: 114635894870624594}
   m_Layer: 0
   m_Name: SpawnManager
   m_TagString: Untagged
@@ -172,7 +173,7 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1474136936694926}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7cd3da48be666ad4ead4634a89a1ad0a, type: 3}
   m_Name: 
@@ -266,3 +267,38 @@ MonoBehaviour:
   m_NewWaveSound: {fileID: 11400000, guid: 258d2559b47d2cb4ca0194814e87ea8a, type: 2}
   m_FinishedWaveSound: {fileID: 11400000, guid: 5203e19e79ed7b64ba445cd84d0256b6,
     type: 2}
+--- !u!114 &114635894870624594
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1474136936694926}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 051e83bc59cfbf14ca01afbb182d02d8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Waves:
+  - m_Stages:
+    - m_Index: 0
+      m_IsStarted: 0
+    - m_Index: 1
+      m_IsStarted: 0
+    m_SpawnStages:
+    - m_Index: 0
+      m_IsStarted: 0
+      m_Monsters:
+      - enemy: {fileID: 1689664021860500, guid: 3c52e5d3f7f36844085688653d9c73b8,
+          type: 2}
+        count: 10
+      m_Duration: 0
+    - m_Index: 1
+      m_IsStarted: 0
+      m_Monsters:
+      - enemy: {fileID: 1884886964741938, guid: 9c279ebdb7245324dba9067ca144d265,
+          type: 2}
+        count: 3
+      m_Duration: 10
+    m_PauseStages: []
+    m_CompletionStages: []
+    m_RewardStages: []

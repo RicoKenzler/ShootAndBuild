@@ -29,7 +29,12 @@ namespace SAB
 
 		void OnEnable()
 		{
-			m_Manager = FindObjectOfType<SpawnManagerPrototype>();
+			SpawnManagerPrototype[] managers = Resources.FindObjectsOfTypeAll<SpawnManagerPrototype>();
+			if (managers.Count() > 0)
+			{
+				m_Manager = managers[0];
+			}
+
 			m_Window = this;
 		}
 
@@ -37,7 +42,11 @@ namespace SAB
 
 		void OnFocus()
 		{
-			m_Manager = FindObjectOfType<SpawnManagerPrototype>();
+			SpawnManagerPrototype[] managers = Resources.FindObjectsOfTypeAll<SpawnManagerPrototype>();
+			if (managers.Count() > 0)
+			{
+				m_Manager = managers[0];
+			}
 		}
 
 		///////////////////////////////////////////////////////////////////////////
@@ -67,7 +76,12 @@ namespace SAB
 
 				for (int j = 0; j < m_Manager.waves[i].stages.Count; ++j)
 				{
-					GUILayout.BeginVertical(GUILayout.Width(150));
+					GUIStyle style = new GUIStyle(EditorStyles.helpBox);
+					style.fixedWidth = 150;
+					style.border = new RectOffset(2, 2, 2, 2);
+					style.margin = new RectOffset(4, 4, 4, 4);
+
+					GUILayout.BeginVertical(style);
 					GUILayout.BeginHorizontal();
 					DrawComboBox(m_Manager.waves[i].stages[j], m_Manager.waves[i]);
 					if (GUILayout.Button("X"))
@@ -89,6 +103,8 @@ namespace SAB
 				EditorGUILayout.EndHorizontal();
 			}
 
+			GUILayout.Space(6);
+
 			if (GUILayout.Button("Add New Wave"))
 			{
 				m_Manager.waves.Add(new SpawnWave());
@@ -102,6 +118,7 @@ namespace SAB
 			if (GUI.changed)
 			{
 				EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
+				EditorUtility.SetDirty(m_Manager);
 			}
 		}
 
@@ -124,7 +141,6 @@ namespace SAB
 			{
 				int stageIndex = wave.stages.IndexOf(stage);
 				wave.stages.Remove(stage);
-				//wave.stages.Insert(stageIndex, (SpawnWaveStage)CreateInstance(stages[newIndex]));
 				wave.stages.Insert(stageIndex, (SpawnWaveStage)Activator.CreateInstance(stages[newIndex]));
 			}
 		}
@@ -182,12 +198,7 @@ namespace SAB
 			DrawEnemies(stage.monsters);
 
 			GUILayout.Label("Duration");
-			string output = GUILayout.TextField(stage.duration.ToString());
-			int newValue = 0;
-			if (int.TryParse(output, out newValue))
-			{
-				stage.duration = newValue;
-			}
+			stage.duration = EditorGUILayout.IntField((int)stage.duration);
 		}
 
 		///////////////////////////////////////////////////////////////////////////
@@ -197,13 +208,9 @@ namespace SAB
 			GUILayout.Label("Completion");
 			GUILayout.BeginHorizontal();
 
-			string output = GUILayout.TextField(stage.completion.ToString(), GUILayout.Width(100));
-			int newValue = 0;
-			if (int.TryParse(output, out newValue))
-			{
-				stage.completion = Mathf.Clamp(newValue, 0, 100);
-			}
+			stage.completion = EditorGUILayout.IntField(stage.completion, GUILayout.Width(100));
 			GUILayout.Label("%");
+
 			GUILayout.EndHorizontal();
 		}
 

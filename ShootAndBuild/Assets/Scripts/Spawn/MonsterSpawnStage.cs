@@ -21,8 +21,8 @@ namespace SAB.Spawn
 
 		///////////////////////////////////////////////////////////////////////////
 
-		public List<SpawnMob>	monsters { get { return m_Monsters; } set { m_Monsters = monsters; } }
-		public float			duration { get { return m_Duration; } set { m_Duration = duration; } }
+		public List<SpawnMob>	monsters { get { return m_Monsters; } set { m_Monsters = value; } }
+		public float			duration { get { return m_Duration; } set { m_Duration = value; } }
 
 		public override bool isCompleted
 		{
