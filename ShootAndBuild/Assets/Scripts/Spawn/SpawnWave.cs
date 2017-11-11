@@ -17,6 +17,7 @@ namespace SAB.Spawn
 		///////////////////////////////////////////////////////////////////////////
 
 		private int m_StageIndex = 0;
+		private bool m_HasStarted = false;
 
 		///////////////////////////////////////////////////////////////////////////
 
@@ -33,11 +34,21 @@ namespace SAB.Spawn
 			get { return m_StageIndex >= m_Stages.Count; }
 		}						
 		
-        ///////////////////////////////////////////////////////////////////////////
+		///////////////////////////////////////////////////////////////////////////
 
+		public bool hasStarted { get { return m_HasStarted; } }
+
+        ///////////////////////////////////////////////////////////////////////////
 
 		public void Update()
 		{
+			if (!m_HasStarted)
+			{
+				// Start Wave
+				Start();
+				m_HasStarted = true;
+			}
+
 			if (isCompleted)
 			{
 				return;
@@ -55,9 +66,40 @@ namespace SAB.Spawn
 				stage.Update();
 			}
 
-			if (stage.isCompleted)
+			bool forceCompleteStage = (CheatManager.instance.completeCurrentStage || CheatManager.instance.completeCurrentWave);
+
+			if (stage.isCompleted || forceCompleteStage)
 			{
+				CheatManager.instance.completeCurrentStage = false;
+
 				m_StageIndex++;
+
+				if (isCompleted)
+				{
+					// EndWave
+					CheatManager.instance.completeCurrentWave = false;
+					End();
+				}
+			}
+		}
+
+		///////////////////////////////////////////////////////////////////////////
+
+		private void Start()
+		{
+			AudioManager.instance.PlayAudio(SpawnManagerPrototype.instance.newWaveSound);
+			NotificationManager.instance.ShowNotification(new Notification("Wave " + (SpawnManagerPrototype.instance.waveIndex + 1), NotificationType.BadNews));
+		}
+
+		///////////////////////////////////////////////////////////////////////////
+
+		private void End()
+		{
+			if (SpawnManagerPrototype.instance.waveIndex == (SpawnManagerPrototype.instance.waveCount - 1))
+			{
+				// Ending of last wave
+				AudioManager.instance.PlayAudio(SpawnManagerPrototype.instance.finishedWaveSound);
+				NotificationManager.instance.ShowNotification(new Notification("All Waves Ended", NotificationType.NeutralNews));
 			}
 		}
 

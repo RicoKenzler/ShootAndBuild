@@ -120,6 +120,18 @@ namespace SAB
 
         void UseItem(ItemType itemType, int count = 1)
         {
+			if (this != sharedInventoryInstance)
+			{
+				// Dead Players should not use items.
+				// currently this can happen when a rewardStage yields an apple to all players
+				PlayerID playerID = m_InputController.playerID;
+
+				if (!PlayerManager.instance.IsAlive(playerID))
+				{
+					return;
+				}
+			}
+
             ItemData itemInfos = ItemManager.instance.GetItemInfos(itemType);
 
             switch (itemInfos.usageCategory)

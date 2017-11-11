@@ -50,6 +50,9 @@ namespace SAB
 		public bool disableMusic		{ get { return m_DisableMusic; } }
 		public bool disableVibration	{ get { return m_DisableVibration ; } }
 
+		public bool completeCurrentStage	{ get; set; }
+		public bool completeCurrentWave		{ get; set; }
+
 		public static CheatManager instance	{ get; private set; }
 
 		///////////////////////////////////////////////////////////////////////////
@@ -58,6 +61,8 @@ namespace SAB
 		{
 			instance = this;
 		}
+
+		///////////////////////////////////////////////////////////////////////////
 	}
 }
 

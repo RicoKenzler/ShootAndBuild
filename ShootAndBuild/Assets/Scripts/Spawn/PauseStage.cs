@@ -30,6 +30,8 @@ namespace SAB.Spawn
 
 		public override void Start()
 		{
+			base.Start();
+
 			m_TimeLeft = m_Duration;
 		}
 

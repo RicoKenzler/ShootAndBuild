@@ -107,7 +107,7 @@ namespace SAB.Spawn
 			spawnPosition.y = spawner.transform.position.y;
 
 			GameObject enemyInstance = GameObject.Instantiate(monster, spawnPosition, Quaternion.identity);
-			enemyInstance.name = spawner.name + " " + m_NumOfSpawnedMonsters;
+			enemyInstance.name = monster.name + " (" + spawner.name + " " + m_NumOfSpawnedMonsters + ")";
 
 			Attackable attackable = enemyInstance.GetComponent<Attackable>();
 			if (attackable)
@@ -131,6 +131,11 @@ namespace SAB.Spawn
 
 		public float GetProgress()
 		{
+			if (m_NumOfDeadMonsters <= 0)
+			{
+				return 1.0f;
+			}
+
 			return Mathf.Clamp01(m_NumOfDeadMonsters / m_NumOfSpawnedMonsters);
 		}
 

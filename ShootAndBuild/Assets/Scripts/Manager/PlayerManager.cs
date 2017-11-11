@@ -40,15 +40,18 @@ namespace SAB
 		///////////////////////////////////////////////////////////////////////////
 
 		
-        public List<InputController> allAlivePlayers { get; private set; }
+        public List<InputController> allAlivePlayers		{ get; private set; }
+		public List<InputController> allDeadOrAlivePlayers	{ get; private set; }
+
         public static PlayerManager instance { get; private set; }
 
 		///////////////////////////////////////////////////////////////////////////
 
         void Awake()
         {
-            instance = this;
-            allAlivePlayers = new List<InputController>();
+            instance				= this;
+            allAlivePlayers			= new List<InputController>();
+			allDeadOrAlivePlayers	= new List<InputController>();
         }
 
 		///////////////////////////////////////////////////////////////////////////
@@ -59,6 +62,13 @@ namespace SAB
             TrySpawnNewPlayers();
             TryRespawnDeadPlayers();
         }
+
+		///////////////////////////////////////////////////////////////////////////
+
+		public bool IsAlive(PlayerID playerID)
+		{
+			return GetPlayer(playerID).isAlive;
+		}
 
 		///////////////////////////////////////////////////////////////////////////
 
@@ -205,6 +215,7 @@ namespace SAB
 
             m_ActivePlayersById[playerID] = newPlayer;
             allAlivePlayers.Add(newPlayerObject.GetComponent<InputController>());
+			allDeadOrAlivePlayers.Add(newPlayerObject.GetComponent<InputController>());
 
             InputManager.instance.SetVibration(playerID, 0.5f, 0.5f, 0.2f);
 

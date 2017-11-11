@@ -88,9 +88,14 @@ namespace SAB
 				}
 			}
 
+			if (GUILayout.Button("Next Stage"))
+			{
+				cheatManager.completeCurrentStage = true;
+			}
+
 			if (GUILayout.Button("Next Wave"))
 			{
-				SAB.Spawn.SpawnManager.instance.NextWave();
+				cheatManager.completeCurrentWave = true;
 			}
 
 			GUI.enabled = true;		

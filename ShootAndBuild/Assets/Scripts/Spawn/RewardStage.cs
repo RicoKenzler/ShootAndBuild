@@ -29,6 +29,31 @@ namespace SAB.Spawn
 		public override void Start()
 		{
 			base.Start();
+
+			if (m_Gold >= 0)
+			{
+				Inventory.sharedInventoryInstance.AddItem(ItemType.Gold, m_Gold);
+			}
+
+			ItemType rewardType = m_Reward ? m_Reward.itemType : ItemType.None;
+
+			if (rewardType != ItemType.None)
+			{
+				ItemData itemData = ItemManager.instance.GetItemInfos(rewardType);
+
+				if (itemData.isShared)
+				{
+					Inventory.sharedInventoryInstance.AddItem(rewardType, 1);
+				}
+				else
+				{
+					foreach (InputController player in PlayerManager.instance.allDeadOrAlivePlayers)
+					{
+						Inventory inventory = player.GetComponent<Inventory>();
+						inventory.AddItem(rewardType, 1);
+					}
+				}
+			}
 		}
 
 		///////////////////////////////////////////////////////////////////////////
