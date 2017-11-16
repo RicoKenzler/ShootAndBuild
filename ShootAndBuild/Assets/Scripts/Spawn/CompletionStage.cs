@@ -6,7 +6,7 @@ namespace SAB.Spawn
 	[Serializable]
 	public class CompletionStage : SpawnWaveStage
 	{
-		[SerializeField] private int m_Completion = 0;
+		[SerializeField] private int m_Completion = 100;
 		private MonsterSpawnStage m_LinkedMonsterSpawn = null;
 
 		///////////////////////////////////////////////////////////////////////////

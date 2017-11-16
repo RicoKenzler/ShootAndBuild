@@ -91,23 +91,10 @@ namespace SAB.Spawn
 
 		private void SpawnMonster(GameObject monster)
 		{
-			// this is the quick and dirty solution
-			// TODO implement proper spawning
+			Vector3 pos = GetRandomSpawnPosition(monster);
 
-			EnemySpawner[] spawners = UnityEngine.Object.FindObjectsOfType<EnemySpawner>();
-			if (spawners.Length == 0)
-			{
-				return;
-			}
-
-			int index = UnityEngine.Random.Range(0, spawners.Length);
-			EnemySpawner spawner = spawners[index];
-
-			Vector3 spawnPosition = spawner.transform.position + UnityEngine.Random.insideUnitSphere * spawner.spawnRadius;
-			spawnPosition.y = spawner.transform.position.y;
-
-			GameObject enemyInstance = GameObject.Instantiate(monster, spawnPosition, Quaternion.identity);
-			enemyInstance.name = monster.name + " (" + spawner.name + " " + m_NumOfSpawnedMonsters + ")";
+			GameObject enemyInstance = GameObject.Instantiate(monster, pos, Quaternion.identity);
+			enemyInstance.name = monster.name + " - " + m_NumOfSpawnedMonsters;
 
 			Attackable attackable = enemyInstance.GetComponent<Attackable>();
 			if (attackable)
@@ -125,6 +112,43 @@ namespace SAB.Spawn
 			attackable.OnAttackableDies -= OnAttackableDies;
 
 			m_NumOfDeadMonsters++;
+		}
+
+		///////////////////////////////////////////////////////////////////////////
+
+		private Vector3 GetRandomSpawnPosition(GameObject monster)
+		{
+			int run = 0;
+			while (++run < 50)
+			{
+				float x = UnityEngine.Random.Range(0f, Grid.instance.size);
+				float z = UnityEngine.Random.Range(0f, Grid.instance.size);
+
+				Vector3 pos = new Vector3(x, 0, z);
+				bool free = Grid.instance.IsFree(monster, pos);
+				if (!free)
+				{
+					continue;
+				}
+
+				List<InputController> players = PlayerManager.instance.allAlivePlayers;
+				foreach (InputController player in players)
+				{
+					float distance = Vector3.Distance(player.transform.position, pos);
+					if (distance < 10.0f)
+					{
+						continue;
+					}
+				}
+
+				pos.y = TerrainManager.instance.GetInterpolatedHeight(pos.x, pos.z);
+				return pos;
+			}
+
+			Debug.LogError("Found no suitable position for an enemy!");
+
+			float middle = Grid.instance.size / 2.0f;
+			return new Vector3(middle, middle);
 		}
 
 		///////////////////////////////////////////////////////////////////////////

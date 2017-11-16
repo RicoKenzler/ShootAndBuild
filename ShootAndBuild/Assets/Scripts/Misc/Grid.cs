@@ -16,12 +16,13 @@ namespace SAB
 
 		///////////////////////////////////////////////////////////////////////////
 
-		public Vector3		halfTile { get; private set; }
         public static Grid	instance { get; private set; }
+		public Vector3		halfTile { get; private set; }
+		public int			size	 { get; private set; }
 
 		///////////////////////////////////////////////////////////////////////////
 
-        void Awake()
+		void Awake()
         {
             instance = this;
 
@@ -29,6 +30,7 @@ namespace SAB
             m_Height = (int) (m_Size / m_Resolution);
             m_Grid.Capacity = m_Width * m_Height;
 
+			size = m_Size;
             halfTile = new Vector3(m_Resolution * 0.5f, 0.0f, m_Resolution * 0.5f);
 
             for (int i = 0; i < m_Width * m_Height; ++i)
@@ -133,7 +135,12 @@ namespace SAB
             Vector3 min = ToNextTile(position - extents);
             Vector3 max = ToNextTile(position + extents);
 
-            return new Rect(min.x, min.z, max.x - min.x, max.z - min.z);
+			min.x = Mathf.Max(min.x, 0);
+			min.z = Mathf.Max(min.z, 0);
+			max.x = Mathf.Min(min.x, size);
+			max.z = Mathf.Min(min.z, size);
+
+			return new Rect(min.x, min.z, max.x - min.x, max.z - min.z);
         }
 
 		///////////////////////////////////////////////////////////////////////////

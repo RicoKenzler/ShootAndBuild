@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace SAB
 {
@@ -48,16 +46,18 @@ namespace SAB
 
 		///////////////////////////////////////////////////////////////////////////
 
+		void Start() 
+		{
+			Debug.Assert(m_GeneratedTerrain != null && m_Terrain != null, "You did not specify a terrain. Please Run Terrain Generator.");
+		}
+
+		///////////////////////////////////////////////////////////////////////////
+
 		public float GetInterpolatedHeight(float xWS, float zWS)
 		{
 			return m_GeneratedTerrain.GetInterpolatedHeight(xWS, zWS);
 		}
 
 		///////////////////////////////////////////////////////////////////////////
-
-		void Start() 
-		{
-			Debug.Assert(m_GeneratedTerrain != null && m_Terrain != null, "You did not specify a terrain. Please Run Terrain Generator.");
-		}
 	}
 }

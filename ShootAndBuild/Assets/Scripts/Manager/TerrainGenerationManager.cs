@@ -1,7 +1,6 @@
-﻿using System.Collections;
+﻿using SAB.Terrain;
 using System.Collections.Generic;
 using UnityEngine;
-using SAB.Terrain;
 using UnityEngine.Serialization;
 
 namespace SAB
@@ -25,6 +24,8 @@ namespace SAB
 		[FormerlySerializedAs("RegionParams")]
 		[SerializeField] private RegionParameters		m_RegionParams;
 
+		public static TerrainGenerationManager instance { get; private set; }
+
 		private GeneratedTerrain	m_TerrainObject;
 		private VoronoiCreator		m_VoronoiGenerator		= new VoronoiCreator();
 		private RegionMapGenerator	m_RegionGenerator		= new RegionMapGenerator();
@@ -34,6 +35,13 @@ namespace SAB
 		private int	m_TerrainSeed = 0;
 		private int	m_VoronoiSeed = 0;
 		private int	m_RegionSeed  = 0;
+
+		///////////////////////////////////////////////////////////////////////////
+
+		void Awake()
+		{
+			instance = this;
+		}
 
 		///////////////////////////////////////////////////////////////////////////
 
@@ -89,11 +97,14 @@ namespace SAB
 
 			if (m_TerrainObject)
 			{
-				m_TerrainObject.transform.parent = this.transform;
+				m_TerrainObject.transform.parent = transform;
 			}
 
 			AmbientSoundGrid soundGridObject = AmbientSoundGrid.CreateEmptyObject(m_TerrainObject);
 			soundGridObject.GenerateAmbientGrid(m_RegionGridGenerator.regionGrid, m_RegionGenerator.regionMap, m_TransformParams.TerrainSizeWS);
 		}
+
+		///////////////////////////////////////////////////////////////////////////
+		
 	}
 }
