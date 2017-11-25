@@ -71,7 +71,6 @@ namespace SAB.Spawn
 			if (stage.isCompleted || forceCompleteStage)
 			{
 				CheatManager.instance.completeCurrentStage = false;
-
 				m_StageIndex++;
 
 				if (isCompleted)
@@ -88,7 +87,7 @@ namespace SAB.Spawn
 		private void Start()
 		{
 			AudioManager.instance.PlayAudio(SpawnManagerPrototype.instance.newWaveSound);
-			NotificationManager.instance.ShowNotification(new Notification("Wave " + (SpawnManagerPrototype.instance.waveIndex + 1), NotificationType.BadNews));
+			NotificationManager.instance.ShowNotification(new Notification("Wave " + (SpawnManagerPrototype.instance.waveIndexHumanReadable), NotificationType.BadNews));
 		}
 
 		///////////////////////////////////////////////////////////////////////////
@@ -101,6 +100,8 @@ namespace SAB.Spawn
 				AudioManager.instance.PlayAudio(SpawnManagerPrototype.instance.finishedWaveSound);
 				NotificationManager.instance.ShowNotification(new Notification("All Waves Ended", NotificationType.NeutralNews));
 			}
+
+			Debug.Log("Completed Wave " + (SpawnManagerPrototype.instance.waveIndexHumanReadable));
 		}
 
 		///////////////////////////////////////////////////////////////////////////

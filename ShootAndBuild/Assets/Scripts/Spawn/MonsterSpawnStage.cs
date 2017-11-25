@@ -155,7 +155,7 @@ namespace SAB.Spawn
 
 		public float GetProgress()
 		{
-			if (m_NumOfDeadMonsters <= 0)
+			if (m_NumOfSpawnedMonsters <= 0)
 			{
 				return 1.0f;
 			}

@@ -25,6 +25,7 @@ namespace SAB.Spawn
 		public List<SpawnWave> waves					{ get { return m_Waves; } }
 		public static SpawnManagerPrototype instance	{ get; private set; }
 		public int waveIndex							{ get { return m_WaveIndex; } }
+		public int waveIndexHumanReadable				{ get { return m_WaveIndex + 1; }}
 		public int waveCount							{ get { return waves.Count; } }
 
         ///////////////////////////////////////////////////////////////////////////
