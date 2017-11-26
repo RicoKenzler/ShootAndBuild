@@ -37,9 +37,23 @@ namespace SAB.Spawn
 
 		///////////////////////////////////////////////////////////////////////////
 
-		void Update()
+		SpawnWave GetCurrentWave()
 		{
 			if (m_WaveIndex >= m_Waves.Count)
+			{
+				return null;
+			}
+
+			return m_Waves[m_WaveIndex];
+		}
+
+		///////////////////////////////////////////////////////////////////////////
+
+		void Update()
+		{
+			SpawnWave curWave = GetCurrentWave();
+
+			if (curWave == null)
 			{
 				return;
 			}
@@ -50,17 +64,41 @@ namespace SAB.Spawn
 				return;
 			}
 
-			SpawnWave wave = m_Waves[m_WaveIndex];
-
-			if (!wave.isCompleted)
+			if (!curWave.isCompleted)
 			{
-				wave.Update();
+				curWave.Update();
 			}
 
-			if (wave.isCompleted)
+			if (curWave.isCompleted)
 			{
 				m_WaveIndex++;
 			}
+		}
+		
+		///////////////////////////////////////////////////////////////////////////
+
+		public string GetDebugInfo()
+		{
+			SpawnWave curWave = GetCurrentWave();
+
+			if (curWave == null)
+			{
+				return "No Wave Active...";
+			}
+
+			string waveString	= "[" + waveIndexHumanReadable	+ " / " + m_Waves.Count			+ "] Wave";
+			string stageString	= "[" + curWave.stageIndex + 1	+ " / " + curWave.stageCount	+ "] Stage";
+
+			SpawnWaveStage curStage = curWave.curStage;
+
+			if (curStage != null)
+			{
+				stageString += "\n>> " + curStage.GetDebugInfo();
+			}
+
+			string outString = waveString + "\n" + stageString;
+
+			return outString;
 		}
 	}
 }

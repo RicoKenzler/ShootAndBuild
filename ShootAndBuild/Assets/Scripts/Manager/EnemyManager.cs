@@ -33,5 +33,18 @@ namespace SAB
         }
 
 		///////////////////////////////////////////////////////////////////////////
+
+		public string GetDebugInfo()
+		{
+			string outInfo = "Enemies: " + allEnemies.Count;
+
+			if (allEnemies.Count > 0)
+			{
+				EnemyBehaviourBase rndEnemy = allEnemies[allEnemies.Count - 1];
+				outInfo += "\n>> " + rndEnemy.type + " at " + rndEnemy.transform.position.GetDebugInfo();
+			}
+
+			return outInfo;
+		}
     }
 }

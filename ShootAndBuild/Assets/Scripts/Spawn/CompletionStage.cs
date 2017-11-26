@@ -13,17 +13,25 @@ namespace SAB.Spawn
 
 		public int completion { get { return m_Completion; } set { m_Completion = value; } }
 		
+		float GetCompletionPercentage()
+		{
+			if (m_LinkedMonsterSpawn == null)
+			{
+				return 1.0f;
+			}
+
+			float p = m_LinkedMonsterSpawn.GetProgress();
+
+			return p;
+		}
+
+		///////////////////////////////////////////////////////////////////////////
+
 		public override bool isCompleted
 		{
 			get
 			{
-				if (m_LinkedMonsterSpawn == null)
-				{
-					return true;
-				}
-
-				float p = m_LinkedMonsterSpawn.GetProgress();
-				p *= 100.0f;
+				float p = GetCompletionPercentage() * 100.0f;
 
 				return p >= m_Completion;
 			}
@@ -40,5 +48,15 @@ namespace SAB.Spawn
 
 		///////////////////////////////////////////////////////////////////////////
 
+		public override string GetDebugInfo() 
+		{
+			string stageName = "Completion";
+
+			string progressionString = "(" + (int) (GetCompletionPercentage() * 100.0f) + " / " + m_Completion + ")";
+
+			return stageName + " " + progressionString;
+		}
+
+		///////////////////////////////////////////////////////////////////////////
 	}
 }

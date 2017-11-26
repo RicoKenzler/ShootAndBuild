@@ -29,11 +29,11 @@ namespace SAB.Spawn
 		
 		///////////////////////////////////////////////////////////////////////////
 
-		public bool isCompleted
-		{
-			get { return m_StageIndex >= m_Stages.Count; }
-		}						
-		
+		public bool isCompleted			{ get { return m_StageIndex >= m_Stages.Count; }}						
+		public int stageIndex			{ get { return m_StageIndex; }}
+		public int stageCount			{ get { return m_Stages.Count; }}
+		public SpawnWaveStage curStage	{ get { return isCompleted ? null : m_Stages[m_StageIndex]; }}
+
 		///////////////////////////////////////////////////////////////////////////
 
 		public bool hasStarted { get { return m_HasStarted; } }

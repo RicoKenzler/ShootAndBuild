@@ -29,6 +29,7 @@ namespace SAB
 		[SerializeField] private bool m_DisableAudio		= false;
 		[SerializeField] private bool m_DisableMusic		= false;
         [SerializeField] private bool m_DisableVibration    = false;
+		[SerializeField] private bool m_EnableDebugPanel    = false;
 
 		///////////////////////////////////////////////////////////////////////////
 		
@@ -49,6 +50,7 @@ namespace SAB
 		public bool disableAudio		{ get { return m_DisableAudio; } }
 		public bool disableMusic		{ get { return m_DisableMusic; } }
 		public bool disableVibration	{ get { return m_DisableVibration ; } }
+		public bool enableDebugPanel	{ get { return m_EnableDebugPanel; }}
 
 		public bool completeCurrentStage	{ get; set; }
 		public bool completeCurrentWave		{ get; set; }

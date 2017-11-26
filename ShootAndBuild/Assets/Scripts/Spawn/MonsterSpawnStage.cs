@@ -68,6 +68,38 @@ namespace SAB.Spawn
 
 		///////////////////////////////////////////////////////////////////////////
 
+		public override string GetDebugInfo() 
+		{
+			string stageName = "";
+
+			if (m_Monsters.Count == 0)
+			{
+				stageName = "Empty MonsterStage";
+			}
+			else
+			{
+				stageName = "{";
+				for (int i = 0; i < m_Monsters.Count; ++i)
+				{
+					EnemyBehaviourBase enemyBase = m_Monsters[i].enemy.GetComponent<EnemyBehaviourBase>();
+
+					if (i > 0)
+					{
+						stageName += "|";
+					}
+					stageName += enemyBase.type;
+				}
+
+				stageName += "}-Stage";
+			}
+
+			string progressionString = "(" + m_NumOfSpawnedMonsters + "/" + m_NumOfMonstersToSpawn + ")";
+
+			return stageName + " " + progressionString;
+		}
+
+		///////////////////////////////////////////////////////////////////////////
+
 		public override void Update()
 		{
 			base.Update();
@@ -160,7 +192,7 @@ namespace SAB.Spawn
 				return 1.0f;
 			}
 
-			return Mathf.Clamp01(m_NumOfDeadMonsters / m_NumOfSpawnedMonsters);
+			return Mathf.Clamp01((float) m_NumOfDeadMonsters / (float) m_NumOfSpawnedMonsters);
 		}
 
 		///////////////////////////////////////////////////////////////////////////

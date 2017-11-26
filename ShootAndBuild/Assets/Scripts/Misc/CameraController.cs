@@ -63,6 +63,14 @@ namespace SAB
 
 		///////////////////////////////////////////////////////////////////////////
 
+		public string GetDebugInfo()
+		{
+			string outString = "Camera: " + m_LastPlayerSphereCenter.xz().GetDebugInfo();
+			return outString;
+		}
+
+		///////////////////////////////////////////////////////////////////////////
+
         void GetPlayerBoundingSphere(out Vector3 center, out float radius)
         {
             List<InputController> allPlayers = PlayerManager.instance.allAlivePlayers;
