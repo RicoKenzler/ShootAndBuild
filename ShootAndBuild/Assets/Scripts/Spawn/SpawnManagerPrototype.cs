@@ -86,8 +86,8 @@ namespace SAB.Spawn
 				return "No Wave Active...";
 			}
 
-			string waveString	= "[" + waveIndexHumanReadable	+ " / " + m_Waves.Count			+ "] Wave";
-			string stageString	= "[" + curWave.stageIndex + 1	+ " / " + curWave.stageCount	+ "] Stage";
+			string waveString	= "[" + waveIndexHumanReadable		+ " / " + m_Waves.Count			+ "] Wave";
+			string stageString	= "[" + (curWave.stageIndex + 1)	+ " / " + curWave.stageCount	+ "] Stage";
 
 			SpawnWaveStage curStage = curWave.curStage;
 
