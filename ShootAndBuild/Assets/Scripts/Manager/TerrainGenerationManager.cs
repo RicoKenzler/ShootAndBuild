@@ -102,6 +102,9 @@ namespace SAB
 
 			AmbientSoundGrid soundGridObject = AmbientSoundGrid.CreateEmptyObject(m_TerrainObject);
 			soundGridObject.GenerateAmbientGrid(m_RegionGridGenerator.regionGrid, m_RegionGenerator.regionMap, m_TransformParams.TerrainSizeWS);
+
+			FindObjectOfType<Grid>().CreateGridByTerrain(m_TerrainObject);
+			//Grid.instance.CreateGridByTerrain(m_TerrainObject);
 		}
 
 		///////////////////////////////////////////////////////////////////////////

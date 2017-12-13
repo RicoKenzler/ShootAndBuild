@@ -298,7 +298,7 @@ MonoBehaviour:
       m_Monsters:
       - enemy: {fileID: 1689664021860500, guid: 3c52e5d3f7f36844085688653d9c73b8,
           type: 2}
-        count: 10
+        count: 100
       m_Duration: 0
     - m_Index: 2
       m_IsStarted: 0

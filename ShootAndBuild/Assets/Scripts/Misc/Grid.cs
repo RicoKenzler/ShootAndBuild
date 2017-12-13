@@ -1,18 +1,19 @@
-﻿using System.Collections.Generic;
+﻿using SAB.Terrain;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace SAB
 {
     public class Grid : MonoBehaviour
     {
-        [SerializeField] private float	m_Resolution	= 1.0f;
-        [SerializeField] private int	m_Size			= 128;
+		[HideInInspector]
+		[SerializeField] private List<bool> m_StaticGrid	= new List<bool>();
+        [SerializeField] private float		m_Resolution	= 1.0f;
+        [SerializeField] private int		m_Size			= 128;
 
 		///////////////////////////////////////////////////////////////////////////
 
         private List<bool>	m_Grid		= new List<bool>();
-        private int			m_Width		= 0;
-        private int			m_Height	= 0;
 
 		///////////////////////////////////////////////////////////////////////////
 
@@ -22,20 +23,24 @@ namespace SAB
 
 		///////////////////////////////////////////////////////////////////////////
 
+		public Grid()
+		{
+
+		}
+
 		void Awake()
         {
             instance = this;
 
-            m_Width  = (int) (m_Size / m_Resolution);
-            m_Height = (int) (m_Size / m_Resolution);
-            m_Grid.Capacity = m_Width * m_Height;
-
 			size = m_Size;
             halfTile = new Vector3(m_Resolution * 0.5f, 0.0f, m_Resolution * 0.5f);
 
-            for (int i = 0; i < m_Width * m_Height; ++i)
+			int c = width * height;
+
+            m_Grid.Capacity = c;
+			for (int i = 0; i < c; ++i)
             {
-                m_Grid.Add(false);
+                m_Grid.Add(m_StaticGrid[i]);
             }
         }
 
@@ -43,8 +48,8 @@ namespace SAB
 
         void OnDrawGizmos()
         {
-            float w = m_Width;
-            float h = m_Height;
+            float w = width;
+            float h = height;
 
             for (int i = 0; i < m_Grid.Count; ++i)
             {
@@ -76,13 +81,14 @@ namespace SAB
 
         private void Set(GameObject go, bool value, Vector3 position)
         {
+			int w = width;
             Rect area = GetAffectedArea(go, position);
 
             for (int y = (int)area.yMin; y < area.yMax; ++y)
             {
                 for (int x = (int)area.xMin; x < area.xMax; ++x)
                 {
-                    int index = x + y * m_Width;
+                    int index = x + y * w;
                     m_Grid[index] = value;
                 }
             }
@@ -92,13 +98,14 @@ namespace SAB
 
         public bool IsFree(GameObject go, Vector3 position)
         {
+			int w = width;
             Rect area = GetAffectedArea(go, position);
 
             for (int y = (int)area.yMin; y < area.yMax; ++y)
             {
                 for (int x = (int)area.xMin; x < area.xMax; ++x)
                 {
-                    int index = x + y * m_Width;
+                    int index = x + y * w;
                     if (m_Grid[index] == true)
                     {
                         return false;
@@ -137,8 +144,8 @@ namespace SAB
 
 			min.x = Mathf.Max(min.x, 0);
 			min.z = Mathf.Max(min.z, 0);
-			max.x = Mathf.Min(min.x, size);
-			max.z = Mathf.Min(min.z, size);
+			max.x = Mathf.Min(max.x, size);
+			max.z = Mathf.Min(max.z, size);
 
 			return new Rect(min.x, min.z, max.x - min.x, max.z - min.z);
         }
@@ -156,5 +163,58 @@ namespace SAB
         {
             return new Vector3(Mathf.Floor(input.x) + halfTile.x, input.y, Mathf.Floor(input.z) + halfTile.z);
         }
-    }
+
+		///////////////////////////////////////////////////////////////////////////
+
+		public void CreateGridByTerrain(GeneratedTerrain terrain)
+		{
+			int h = height;
+			int w = width;
+
+			Vector2 terrainCellSize = terrain.regionGrid.regionMapTransformation.CellSize;
+			
+			m_StaticGrid.Clear();
+
+			for (int y = 0; y < h; ++y)
+			{
+				for (int x = 0; x < w; ++x)
+				{
+					int tx = (int)(x / terrainCellSize.x);
+					int ty = (int)(y / terrainCellSize.y);
+
+					if (tx > terrain.regionGrid.sizeX || ty > terrain.regionGrid.sizeZ)
+					{
+						m_StaticGrid.Add(false);
+						continue;
+					}
+
+					RegionTile tile = terrain.regionGrid.GetAt(tx, ty);
+					bool blocked = tile.MainRegion == RegionType.Water;
+					m_StaticGrid.Add(blocked);
+				}
+			}
+		}
+
+		///////////////////////////////////////////////////////////////////////////
+
+		private int width
+		{
+			get
+			{
+				return (int)(m_Size / m_Resolution);
+			}
+		}
+
+		///////////////////////////////////////////////////////////////////////////
+
+		private int height
+		{
+			get
+			{
+				return (int)(m_Size / m_Resolution);
+			}
+		}
+
+		///////////////////////////////////////////////////////////////////////////
+	}
 }
