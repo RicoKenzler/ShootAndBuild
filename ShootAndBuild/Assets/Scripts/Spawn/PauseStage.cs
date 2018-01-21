@@ -28,6 +28,17 @@ namespace SAB.Spawn
 
 		///////////////////////////////////////////////////////////////////////////
 
+		public override string GetDebugInfo() 
+		{
+			string stageName = "Pause";
+
+			string progressionString = "(" + (int) m_TimeLeft + "/" + (int) m_Duration + ")";
+
+			return stageName + " " + progressionString;
+		}
+
+		///////////////////////////////////////////////////////////////////////////
+
 		public override void Start()
 		{
 			base.Start();

@@ -147,7 +147,17 @@ namespace SAB
 			max.x = Mathf.Min(max.x, size);
 			max.z = Mathf.Min(max.z, size);
 
-			return new Rect(min.x, min.z, max.x - min.x, max.z - min.z);
+			Rect r = new Rect(min.x, min.z, max.x - min.x, max.z - min.z);
+			if (r.width < 1)
+			{
+				r.width = 1;
+			}
+			if (r.height < 1)
+			{
+				r.height = 1;
+			}
+
+			return r;
         }
 
 		///////////////////////////////////////////////////////////////////////////

@@ -15,6 +15,16 @@ public static class VectorExtensions
 		return new Vector3(vec2D.x, y, vec2D.y);
 	}
 
+	public static string GetDebugInfo(this Vector3 vec3D)
+	{
+		return "(" + (int)vec3D.x + "|" + (int)vec3D.y + "|" + (int)vec3D.z + ")";
+	}
+
+	public static string GetDebugInfo(this Vector2 vec2D)
+	{
+		return "(" + (int)vec2D.x + "|" + (int)vec2D.y + ")";
+	}
+
 	public static GameObject FindImmediateChildOfName(this Transform parent, string name)
 	{
 		for (int i = 0; i < parent.childCount; ++i)

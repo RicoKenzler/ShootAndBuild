@@ -33,6 +33,7 @@ namespace SAB.Spawn
 
 		public virtual void Start()
 		{
+			Debug.Log("Starting Stage " + SpawnManagerPrototype.instance.waveIndexHumanReadable + "." + index + " (" + ToString() + ")" );
 			m_IsStarted = true;
 		}
 
@@ -40,6 +41,13 @@ namespace SAB.Spawn
 
 		public virtual void Update()
 		{
+		}
+
+		///////////////////////////////////////////////////////////////////////////
+
+		public virtual string GetDebugInfo()
+		{
+			return ToString();
 		}
 
 		///////////////////////////////////////////////////////////////////////////

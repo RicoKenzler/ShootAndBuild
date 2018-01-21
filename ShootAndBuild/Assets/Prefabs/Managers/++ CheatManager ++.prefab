@@ -64,3 +64,4 @@ MonoBehaviour:
   m_DisableAudio: 0
   m_DisableMusic: 1
   m_DisableVibration: 1
+  m_EnableDebugPanel: 1
