@@ -58,6 +58,11 @@ namespace SAB.Spawn
 				return;
 			}
 
+			if (CheatManager.instance.pauseWaves)
+			{
+				return;
+			}
+
 			if (!PlayerManager.instance.HasPlayerJoined(PlayerID.Player1))
 			{
 				// No Waves until player is ready

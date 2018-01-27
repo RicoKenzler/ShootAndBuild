@@ -16,7 +16,7 @@ namespace SAB
 		[Header("Freeze")]
 		[SerializeField] private bool m_FreezeEnemies		= false;
 		[SerializeField] private bool m_FreezeTowers		= false;
-		[SerializeField] private bool m_StopEnemySpawns		= false;
+		[SerializeField] private bool m_PauseWaves			= false;
 
 		[Header("Rules")]
 		[SerializeField] private bool m_DisableWin			= false;
@@ -39,7 +39,7 @@ namespace SAB
 
 		public bool freezeEnemies		{ get { return m_FreezeEnemies; } }
 		public bool freezeTowers		{ get { return m_FreezeTowers; } }
-		public bool stopEnemySpawns		{ get { return m_StopEnemySpawns; } set {m_StopEnemySpawns = value; } }
+		public bool pauseWaves			{ get { return m_PauseWaves; } set {m_PauseWaves = value; } }
 
 		public bool disableWin			{ get { return m_DisableWin; } }
 		public bool disableLose			{ get { return m_DisableLose; } }

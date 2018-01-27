@@ -45,7 +45,7 @@ namespace SAB.Spawn
                 while (m_SpawnTimer[i] >= 1)
                 {
                     m_SpawnTimer[i] -= 1;
-                    if (CheatManager.instance.stopEnemySpawns)
+                    if (CheatManager.instance.pauseWaves)
                     {
                         return;
                     }

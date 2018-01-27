@@ -102,7 +102,7 @@ namespace SAB
 
 			if (!freezeEnemyOld && cheatManager.freezeEnemies)
 			{
-				cheatManager.stopEnemySpawns = true;
+				cheatManager.pauseWaves = true;
 			}
 		}
 	}

@@ -30,7 +30,8 @@ namespace SAB
 			m_ObjectSize = m_ColliderRef.bounds.size;
 			m_ColliderRef.enabled = false;
 
-			GetComponent<Rigidbody>().velocity = Vector3.zero;
+			GetComponent<Rigidbody>().velocity		= Vector3.zero;
+			GetComponent<Rigidbody>().useGravity	= false;
 
 			GetComponentInChildren<Animation>().Play("die");
 		}
