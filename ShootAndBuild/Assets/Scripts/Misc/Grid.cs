@@ -82,11 +82,11 @@ namespace SAB
         private void Set(GameObject go, bool value, Vector3 position)
         {
 			int w = width;
-            Rect area = GetAffectedArea(go, position);
+            Rect area = GetAffectedAreaUnsafe(go, position);
 
-            for (int y = (int)area.yMin; y < area.yMax; ++y)
+            for (int y = (int) Mathf.Max(area.yMin, 0); y < Mathf.Min(area.yMax, size); ++y)
             {
-                for (int x = (int)area.xMin; x < area.xMax; ++x)
+                for (int x = (int) Mathf.Max(area.xMin, 0); x < Mathf.Min(area.xMax, size); ++x)
                 {
                     int index = x + y * w;
                     m_Grid[index] = value;
@@ -99,7 +99,13 @@ namespace SAB
         public bool IsFree(GameObject go, Vector3 position)
         {
 			int w = width;
-            Rect area = GetAffectedArea(go, position);
+            Rect area = GetAffectedAreaUnsafe(go, position);
+
+			if (area.xMin < 0 || area.yMin < 0 || area.xMax >= size || area.yMax >= size)
+			{
+				// area touches area outside of grid
+				return false;
+			}
 
             for (int y = (int)area.yMin; y < area.yMax; ++y)
             {
@@ -118,7 +124,7 @@ namespace SAB
 
 		///////////////////////////////////////////////////////////////////////////
 
-        private Rect GetAffectedArea(GameObject go, Vector3 position)
+        private Rect GetAffectedAreaUnsafe(GameObject go, Vector3 position)
         {
             Collider collider = go.GetComponent<Collider>();
             Vector3 extents = collider.bounds.extents;
@@ -142,11 +148,6 @@ namespace SAB
             Vector3 min = ToNextTile(position - extents);
             Vector3 max = ToNextTile(position + extents);
 
-			min.x = Mathf.Max(min.x, 0);
-			min.z = Mathf.Max(min.z, 0);
-			max.x = Mathf.Min(max.x, size);
-			max.z = Mathf.Min(max.z, size);
-
 			Rect r = new Rect(min.x, min.z, max.x - min.x, max.z - min.z);
 			if (r.width < 1)
 			{
@@ -159,7 +160,7 @@ namespace SAB
 
 			return r;
         }
-
+		
 		///////////////////////////////////////////////////////////////////////////
 
         private Vector3 ToNextTile(Vector3 worldPos)
