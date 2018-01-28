@@ -41,10 +41,10 @@ namespace SAB
 
 		public static void BufferTriangle(Vector3 p1, Vector3 p2, Vector3 p3, Color col)
 		{
-			if (s_BufferedTrianglesVertices.Count > 100000)
+			if (s_BufferedTrianglesVertices.Count > 16000)
 			{
 				Debug.Log("Using BufferTriangle() without Drawing Buffers?");
-				return;
+				DrawBufferedTriangles();
 			}
 
 			int firstIndex = s_BufferedTrianglesVertices.Count;

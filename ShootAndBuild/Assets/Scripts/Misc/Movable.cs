@@ -47,6 +47,29 @@ namespace SAB
 			float impulseMagnitudeDecrement = FORCE_DEGENERATION_PER_SECOND * Time.deltaTime;
 			float newImpulseMagnitude = Mathf.Max(impulseForce.magnitude - impulseMagnitudeDecrement, 0.0f);
 			impulseForce = Vector3.ClampMagnitude(impulseForce, newImpulseMagnitude);
+
+			// fix object outside of grid
+			Vector2 terrainSize = TerrainManager.instance.terrainSizeWS;
+			if (gameObject.transform.position.x < 0 || gameObject.transform.position.z < 0 ||
+				gameObject.transform.position.x >= terrainSize.x || gameObject.transform.position.z >= terrainSize.y)
+			{
+				Vector3 newPosition = gameObject.transform.position;
+				Debug.Log("<" + gameObject.name + "> outside playable area at " + newPosition + ". Pushing towards inside.");
+				newPosition.x = Mathf.Clamp(newPosition.x + 1.0f, 0, terrainSize.x - 1.0f);
+				newPosition.z = Mathf.Clamp(newPosition.z + 1.0f, 0, terrainSize.y - 1.0f);
+				m_Rigidbody.velocity = new Vector3(0,0,0);
+			}
+
+			// fix objects falling through terrain
+			float terrainHeight = TerrainManager.instance.GetInterpolatedHeight(transform.position.x, transform.position.z);
+			if (gameObject.transform.position.y < (terrainHeight - 1.0f))
+			{
+				Vector3 newPosition = gameObject.transform.position;
+				Debug.Log("<" + gameObject.name + "> clipped below terrain at " + newPosition + ". Offsetting to new height.");
+				newPosition.y = terrainHeight + 1.0f;
+				gameObject.transform.position = newPosition;
+				m_Rigidbody.velocity = new Vector3(0,0,0);
+			}
 		}
 	
 		///////////////////////////////////////////////////////////////////////////
