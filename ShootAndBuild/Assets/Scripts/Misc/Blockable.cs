@@ -17,7 +17,7 @@ namespace SAB
             }
 
             m_LastPosition = transform.position;
-            Grid.instance.Reserve(gameObject, transform.position);
+            Grid.instance.Reserve(gameObject, m_LastPosition);
         }
 
 		///////////////////////////////////////////////////////////////////////////
