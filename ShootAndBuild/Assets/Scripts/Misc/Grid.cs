@@ -84,9 +84,14 @@ namespace SAB
 			int w = width;
             Rect area = GetAffectedAreaUnsafe(go, position);
 
-            for (int y = (int) Mathf.Max(area.yMin, 0); y < Mathf.Min(area.yMax, size); ++y)
+            int minY = (int)Mathf.Max(area.yMin, 0);
+            int maxY = (int)Mathf.Min(area.yMax, size);
+            int minX = (int)Mathf.Max(area.xMin, 0);
+            int maxX = (int)Mathf.Min(area.xMax, size);
+
+            for (int y = minY; y < maxY; ++y)
             {
-                for (int x = (int) Mathf.Max(area.xMin, 0); x < Mathf.Min(area.xMax, size); ++x)
+                for (int x = minX; x < maxX; ++x)
                 {
                     int index = x + y * w;
                     m_Grid[index] = value;
