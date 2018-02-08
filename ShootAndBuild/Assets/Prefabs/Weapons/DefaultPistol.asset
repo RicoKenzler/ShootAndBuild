@@ -11,29 +11,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 89f713af7e752454cab87fc5f167d697, type: 3}
   m_Name: DefaultPistol
   m_EditorClassIdentifier: 
-  weaponID: 100
-  type: 2
-  damageType: 0
-  spread: 10
-  coolDownTime: 0.5
-  viewModel: {fileID: 0}
-  projectile: {fileID: 1756644795331426, guid: 29425370c5332a84ab4ba74f42d81d54, type: 2}
-  muzzleFlashEffect: {fileID: 1000010254994808, guid: 9defeac88977c0d448aa4541073ee9e4,
+  m_WeaponID: 100
+  m_Type: 2
+  m_DamageType: 0
+  m_Spread: 10
+  m_CoolDownTime: 0.5
+  m_ViewModel: {fileID: 0}
+  m_Projectile: {fileID: 1756644795331426, guid: 29425370c5332a84ab4ba74f42d81d54,
     type: 2}
-  ricochetEffect: {fileID: 1000010844420130, guid: 4edabb1c0dde62743b137378c7d22980,
+  m_MuzzleFlashEffect: {fileID: 1000010254994808, guid: 9defeac88977c0d448aa4541073ee9e4,
     type: 2}
-  shootSound: {fileID: 11400000, guid: f2de9e037aa408942a4895201c525bf7, type: 2}
-  shakeParams:
+  m_RicochetEffect: {fileID: 1000010844420130, guid: 4edabb1c0dde62743b137378c7d22980,
+    type: 2}
+  m_ShootSound: {fileID: 11400000, guid: f2de9e037aa408942a4895201c525bf7, type: 2}
+  m_ShakeParams:
     Strength: 0.01
     Smoothness: 0
     Duration: 0.01
-  damage: 20
-  projectileSpeed: 10
-  projectilesPerShot: 1
-  projectileRandomSpeed: 0.1
-  range: 50
-  areaDamage: 0
-  areaRadius: 0
-  recoilForce: 0
-  buffs:
-  - {fileID: 11400000, guid: df79d31f188e3c6429883393e916c45d, type: 2}
+  m_Damage: 5
+  m_ProjectileSpeed: 30
+  m_ProjectilesPerShot: 5
+  m_ProjectileRandomSpeed: 0.1
+  m_Range: 50
+  m_AreaDamage: 0
+  m_AreaRadius: 0
+  m_RecoilForce: 0
+  m_Buffs: []

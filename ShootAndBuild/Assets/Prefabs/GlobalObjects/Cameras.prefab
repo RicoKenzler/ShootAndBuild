@@ -138,6 +138,7 @@ Camera:
   m_TargetEye: 3
   m_HDR: 0
   m_AllowMSAA: 1
+  m_AllowDynamicResolution: 0
   m_ForceIntoRT: 0
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
@@ -245,11 +246,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 17aaa91eaaa9cb24eb7b8930224c731a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_HeightSlope: 2
-  m_MinimumHeight: 15
+  m_HeightSlope: 1
+  m_MinimumHeight: 13
   m_InertiaMovement: 0.93
   m_InertiaZoom: 0.98
-  m_MinimumRadius: 2
+  m_MinimumRadius: 25
   m_RotZ: 0.1
   m_AudioListener: {fileID: 81986784171025128}
   m_TestShakeParams:

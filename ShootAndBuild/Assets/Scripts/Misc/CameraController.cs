@@ -8,7 +8,7 @@ namespace SAB
         [Range(0, 20)]
         [SerializeField] private float m_HeightSlope		= 2.0f;        //< height-gain per player-bounding-sphere-radius
 
-        [Range(0, 200)]
+        [Range(0, 300)]
         [SerializeField] private float m_MinimumHeight		= 15.0f;
 
         [Range(0, 0.9999999f)]
@@ -17,7 +17,7 @@ namespace SAB
         [Range(0, 0.9999999f)]
         [SerializeField] private float m_InertiaZoom		= 0.98f;
 
-        [Range(0, 20)]
+        [Range(0, 40)]
         [SerializeField] private float m_MinimumRadius		= 2.00f;     //< if players are nearer than this, camera height wont change
 
         [Range(0, 1)]

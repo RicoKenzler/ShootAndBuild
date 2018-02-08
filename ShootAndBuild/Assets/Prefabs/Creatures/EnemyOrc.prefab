@@ -776,7 +776,7 @@ Transform:
   m_GameObject: {fileID: 1588553549234688}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 3, y: 3, z: 3}
+  m_LocalScale: {x: 2, y: 2, z: 2}
   m_Children:
   - {fileID: 4818494752248724}
   - {fileID: 4790097192122372}
@@ -859,7 +859,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1200185571721126}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 62.6863, y: 0, z: 61.688602}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4714045077865334}
@@ -1007,8 +1007,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 2, y: 4, z: 1}
-  m_Center: {x: 0, y: 2, z: 0}
+  m_Size: {x: 1.03, y: 2.22, z: 1}
+  m_Center: {x: 0, y: 1.47, z: 0}
 --- !u!95 &95293727825949670
 Animator:
   serializedVersion: 3
@@ -1066,7 +1066,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f41b0c5fe276e8942874978a2d478cfe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_MaxHealth: 40
+  m_MaxHealth: 80
   m_ShowHealthBar: 0
   m_Faction: 1
   m_ItemDrops:
@@ -1122,15 +1122,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Type: 4
-  m_Speed: 6
+  m_Speed: 6.5
   m_AttackDistance: 2
   m_AttackCooldown: 1
-  m_Damage: 10
+  m_Damage: 20
   m_HitSound: {fileID: 11400000, guid: dc67b61173b4ba74c9264512b3c649ec, type: 2}
   m_TargetPreference: 2
   m_RestingInfo:
-    restDuration: 1
-    restCooldown: 1
+    restDuration: 0.75
+    restCooldown: 2.5
   m_BuffOnAttack: {fileID: 0}
   m_BuffOnAttackProbability: 0.2
   m_ZigZagFrequency: 1

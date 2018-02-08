@@ -298,15 +298,18 @@ MonoBehaviour:
       m_Monsters:
       - enemy: {fileID: 1689664021860500, guid: 3c52e5d3f7f36844085688653d9c73b8,
           type: 2}
-        count: 100
+        count: 40
       m_Duration: 0
     - m_Index: 2
       m_IsStarted: 0
       m_Monsters:
       - enemy: {fileID: 1201289100612482, guid: 9ce0e76df95a9ea47a55b4c329d11a4c,
           type: 2}
-        count: 5
-      m_Duration: 10
+        count: 60
+      - enemy: {fileID: 1689664021860500, guid: 3c52e5d3f7f36844085688653d9c73b8,
+          type: 2}
+        count: 40
+      m_Duration: 80
     - m_Index: 3
       m_IsStarted: 0
       m_Monsters:
@@ -315,8 +318,8 @@ MonoBehaviour:
         count: 5
       - enemy: {fileID: 1201289100612482, guid: 708f9debb04499c49b893c3ca3f07cfb,
           type: 2}
-        count: 3
-      m_Duration: 10
+        count: 30
+      m_Duration: 30
     m_PauseStages:
     - m_Index: 1
       m_IsStarted: 0
@@ -324,7 +327,7 @@ MonoBehaviour:
     m_CompletionStages:
     - m_Index: 4
       m_IsStarted: 0
-      m_Completion: 100
+      m_Completion: 80
     m_RewardStages:
     - m_Index: 5
       m_IsStarted: 0
@@ -350,15 +353,15 @@ MonoBehaviour:
       m_Monsters:
       - enemy: {fileID: 1200185571721126, guid: 666aba011db19844e8ef004e0fe2ce0a,
           type: 2}
-        count: 3
+        count: 20
       m_Duration: 0
     - m_Index: 1
       m_IsStarted: 0
       m_Monsters:
       - enemy: {fileID: 1200185571721126, guid: 666aba011db19844e8ef004e0fe2ce0a,
           type: 2}
-        count: 5
-      m_Duration: 10
+        count: 40
+      m_Duration: 60
     - m_Index: 3
       m_IsStarted: 0
       m_Monsters:
@@ -370,7 +373,7 @@ MonoBehaviour:
     m_CompletionStages:
     - m_Index: 2
       m_IsStarted: 0
-      m_Completion: 100
+      m_Completion: 90
     - m_Index: 4
       m_IsStarted: 0
       m_Completion: 100
