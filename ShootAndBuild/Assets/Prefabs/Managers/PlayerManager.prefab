@@ -54,3 +54,8 @@ MonoBehaviour:
   m_PlayerPrefab: {fileID: 1229075479329374, guid: f6383526f2d250f469efc2ccf8646d7e,
     type: 2}
   m_SpawnFailSound: {fileID: 11400000, guid: 80faac22e6623574299acf97f572436a, type: 2}
+  m_playerColors:
+  - {r: 0.27205884, g: 0.84939134, b: 1, a: 1}
+  - {r: 1, g: 0.95182556, b: 0.30147058, a: 1}
+  - {r: 1, g: 0.375, b: 0.6982756, a: 1}
+  - {r: 0.38336712, g: 1, b: 0.30147058, a: 1}

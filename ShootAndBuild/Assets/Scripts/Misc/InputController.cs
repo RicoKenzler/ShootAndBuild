@@ -7,6 +7,8 @@ namespace SAB
         [SerializeField] private float m_Speed = 10.0f;
         [SerializeField] private float m_Deadzone = 0.2f;
         [SerializeField] private float m_MovementAnimationMoultiplier = 0.5f;
+		[SerializeField] private SpriteRenderer m_PlayerDecal = null;
+		[SerializeField] private Light			m_PlayerDecalLight = null;
 
 		///////////////////////////////////////////////////////////////////////////
 
@@ -18,21 +20,23 @@ namespace SAB
         private Builder			m_Builder;
         private Inventory		m_Inventory;
         private PlayerMenu		m_PlayerMenu;
+		private Color			m_PlayerColor;
 
 		///////////////////////////////////////////////////////////////////////////
 
-		public PlayerID playerID { get { return m_PlayerID; } set { m_PlayerID = value; }}
+		public PlayerID playerID	{ get { return m_PlayerID; }	set { m_PlayerID	= value; }}
+		public Color	playerColor	{ get { return m_PlayerColor; } set { m_PlayerColor = value; OnChangeColor(); }}
 
 		///////////////////////////////////////////////////////////////////////////
 
         void Start()
         {
-            m_TauntController = GetComponent<TauntController>();
-            m_Shootable = GetComponent<Shootable>();
-            m_Movable = GetComponent<Movable>();
-            m_Builder = GetComponent<Builder>();
-            m_Inventory = GetComponent<Inventory>();
-            m_PlayerMenu = GetComponent<PlayerMenu>();
+            m_TauntController	= GetComponent<TauntController>();
+            m_Shootable			= GetComponent<Shootable>();
+            m_Movable			= GetComponent<Movable>();
+            m_Builder			= GetComponent<Builder>();
+            m_Inventory			= GetComponent<Inventory>();
+            m_PlayerMenu		= GetComponent<PlayerMenu>();
 
             m_AnimationController = GetComponentInChildren<Animation>();
             if (m_AnimationController == null)
@@ -44,6 +48,8 @@ namespace SAB
                 m_AnimationController["idle"].speed = 1;
                 m_AnimationController.Play();
             }
+
+			playerColor = PlayerManager.instance.playerColors[(int) m_PlayerID];
         }
 
         ///////////////////////////////////////////////////////////////////////////
@@ -164,5 +170,11 @@ namespace SAB
             }
 
         }
+
+		void OnChangeColor()
+		{
+			m_PlayerDecal.color = m_PlayerColor;
+			m_PlayerDecalLight.color = m_PlayerColor;
+		}
     }
 }

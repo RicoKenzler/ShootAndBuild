@@ -30,6 +30,7 @@ namespace SAB
 
         [SerializeField] private GameObject m_PlayerPrefab;
         [SerializeField] private AudioData	m_SpawnFailSound;
+		[SerializeField] private Color[]	m_playerColors;
 
 		///////////////////////////////////////////////////////////////////////////
 
@@ -40,8 +41,9 @@ namespace SAB
 		///////////////////////////////////////////////////////////////////////////
 
 		
-        public List<InputController> allAlivePlayers		{ get; private set; }
-		public List<InputController> allDeadOrAlivePlayers	{ get; private set; }
+        public List<InputController>	allAlivePlayers			{ get; private set; }
+		public List<InputController>	allDeadOrAlivePlayers	{ get; private set; }
+		public Color[]					playerColors			{ get { return m_playerColors; } }
 
         public static PlayerManager instance { get; private set; }
 
@@ -234,5 +236,37 @@ namespace SAB
 
             return m_ActivePlayersById[playerID];
         }
+
+		///////////////////////////////////////////////////////////////////////////
+
+		public void OnDrawGizmosSelected()
+		{
+			foreach (PlayerID playerID in System.Enum.GetValues(typeof(PlayerID)))
+			{
+				if (!HasPlayerJoined(playerID))
+				{
+					break;
+				}
+
+				Color color = playerColors[(int) playerID];
+				InputController player = GetPlayer(playerID).playerObject.GetComponent<InputController>();
+
+				if (color != player.playerColor)
+				{
+					// update color and force health bar update
+					player.playerColor = color;
+					Attackable attackable = player.GetComponent<Attackable>();
+					if (attackable.health == attackable.maxHealth)
+					{
+						attackable.DealDamage(1, attackable.gameObject, attackable.gameObject);
+					}
+					else
+					{
+						attackable.Heal(1.0f);
+					}
+				}
+
+			}
+		}
     }
 }

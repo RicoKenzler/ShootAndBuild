@@ -54,9 +54,9 @@ MonoBehaviour:
   m_InvinciblePlayers: 1
   m_InvincibleEnemies: 0
   m_InvincibleBuildings: 0
-  m_FreezeEnemies: 0
+  m_FreezeEnemies: 1
   m_FreezeTowers: 0
-  m_StopEnemySpawns: 0
+  m_PauseWaves: 0
   m_DisableWin: 1
   m_DisableLose: 1
   m_NoResourceCosts: 1

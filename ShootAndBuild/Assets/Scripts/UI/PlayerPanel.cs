@@ -30,9 +30,10 @@ namespace SAB
 		private WeaponData	m_DisplayedActiveWeapon		= null;
         private InventorySelectionCategory m_DisplayedActiveSelectionCategory = InventorySelectionCategory.Item;
 
-        private Attackable	m_AssignedAttackable;
-        private Inventory	m_AssignedInventory;
-        private PlayerMenu	m_AssignedPlayerMenu;
+        private Attackable		m_AssignedAttackable;
+		private InputController m_AssignedPlayer;
+        private Inventory		m_AssignedInventory;
+        private PlayerMenu		m_AssignedPlayerMenu;
 
         private Animator	m_ActiveItemCountTextAnimator;
         private Animator	m_ActiveItemImageAnimator;
@@ -72,7 +73,7 @@ namespace SAB
 
         bool IsPlayerAlive()
         {
-            return m_AssignedAttackable.health > 0;
+            return (m_AssignedAttackable.health > 0);
         }
 
 		///////////////////////////////////////////////////////////////////////////
@@ -132,6 +133,10 @@ namespace SAB
                     desiredColor = Color.Lerp(colorMediumHealth, colorFullHealth, (smoothRelativeHealth - 0.5f) * 2.0f);
                 }
             }
+			else
+			{
+				desiredColor = Color.Lerp(m_AssignedPlayer.playerColor, Color.black, 0.1f);
+			}
 
             m_HealthBarFillImage.color = desiredColor;
             m_HealthBarFillImage.fillAmount = smoothRelativeHealth;
@@ -289,9 +294,10 @@ namespace SAB
 
         public void AssignPlayer(GameObject player)
         {
-            m_AssignedAttackable = player.GetComponent<Attackable>();
-            m_AssignedInventory = player.GetComponent<Inventory>();
-            m_AssignedPlayerMenu = player.GetComponent<PlayerMenu>();
+            m_AssignedAttackable	= player.GetComponent<Attackable>();
+            m_AssignedInventory		= player.GetComponent<Inventory>();
+            m_AssignedPlayerMenu	= player.GetComponent<PlayerMenu>();
+			m_AssignedPlayer		= player.GetComponent<InputController>();
 
             m_ActiveItemCountTextAnimator = m_ActiveItemCountText.GetComponent<Animator>();
             m_ActiveItemImageAnimator = m_ActiveItemImage.GetComponent<Animator>();
