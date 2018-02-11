@@ -173,6 +173,8 @@ namespace SAB
 				{
 					ani.ShowBloodDecal(m_BloodDecal.gameObject);
 				}
+
+				ani.Init();
 			}
 		}
 

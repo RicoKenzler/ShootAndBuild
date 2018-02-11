@@ -14,7 +14,7 @@ namespace SAB
 
 		///////////////////////////////////////////////////////////////////////////
 
-		void Start()
+		public void Init()
 		{
 			foreach (MonoBehaviour c in GetComponents<MonoBehaviour>())
 			{

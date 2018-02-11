@@ -50,13 +50,38 @@ namespace SAB
 
 			// fix object outside of grid
 			Vector2 terrainSize = TerrainManager.instance.terrainSizeWS;
-			if (gameObject.transform.position.x < 0 || gameObject.transform.position.z < 0 ||
-				gameObject.transform.position.x >= terrainSize.x || gameObject.transform.position.z >= terrainSize.y)
+			bool xTooSmall = gameObject.transform.position.x < 0;
+			bool zTooSmall = gameObject.transform.position.z < 0;
+			bool xTooLarge = gameObject.transform.position.x >= terrainSize.x;
+			bool zTooLarge = gameObject.transform.position.z >= terrainSize.y;
+
+			if (xTooSmall || zTooSmall || xTooLarge || zTooLarge)
 			{
+				Debug.Log("<" + gameObject.name + "> outside playable area at " + gameObject.transform.position + ". Pushing towards inside.");
+				
 				Vector3 newPosition = gameObject.transform.position;
-				Debug.Log("<" + gameObject.name + "> outside playable area at " + newPosition + ". Pushing towards inside.");
-				newPosition.x = Mathf.Clamp(newPosition.x + 1.0f, 0, terrainSize.x - 1.0f);
-				newPosition.z = Mathf.Clamp(newPosition.z + 1.0f, 0, terrainSize.y - 1.0f);
+				const float PUSH_LENGTH = 5.0f;
+
+				if (xTooSmall)
+				{
+					newPosition.x = PUSH_LENGTH;
+				}
+				else if (xTooLarge)
+				{
+					newPosition.x = terrainSize.x - PUSH_LENGTH;
+				}
+
+				if (zTooSmall)
+				{
+					newPosition.z = PUSH_LENGTH;
+				}
+				else if (zTooLarge)
+				{
+					newPosition.z = terrainSize.y - PUSH_LENGTH;
+				}
+
+				gameObject.transform.position = newPosition;
+
 				m_Rigidbody.velocity = new Vector3(0,0,0);
 			}
 
