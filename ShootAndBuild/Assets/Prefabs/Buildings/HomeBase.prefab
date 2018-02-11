@@ -56,7 +56,7 @@ Transform:
   m_GameObject: {fileID: 1835133484687746}
   m_LocalRotation: {x: -0.00000019861236, y: 0.7071068, z: 0.7071068, w: 0.00000019861236}
   m_LocalPosition: {x: 0, y: 0.58, z: -1.66}
-  m_LocalScale: {x: 2.1, y: 2.1, z: 2.1}
+  m_LocalScale: {x: 1.5, y: 1.5, z: 1.2}
   m_Children: []
   m_Father: {fileID: 4860705358351190}
   m_RootOrder: 0
@@ -68,8 +68,8 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1249317514609174}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -15}
-  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
+  m_LocalPosition: {x: 64.75, y: 0, z: 82.25981}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4036865276410746}
   m_Father: {fileID: 0}
@@ -84,6 +84,7 @@ MeshRenderer:
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -99,6 +100,7 @@ MeshRenderer:
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
+  m_StitchLightmapSeams: 0
   m_SelectedEditorRenderState: 3
   m_MinimumChartSize: 4
   m_AutoUVMaxDistance: 0.5
@@ -139,8 +141,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 4, y: 4, z: 4}
-  m_Center: {x: 0, y: 2, z: 0}
+  m_Size: {x: 2.5, y: 4, z: 2.5}
+  m_Center: {x: 0, y: 2, z: -0.55}
 --- !u!114 &114744192652154610
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -163,8 +165,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: badfecc2726fe2249b0fb7500f7a6f4d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  costs: 5
-  icon: {fileID: 21300000, guid: 72500ee51327ef1419538e8f1862d239, type: 3}
+  m_Costs: 5
+  m_Icon: {fileID: 21300000, guid: 72500ee51327ef1419538e8f1862d239, type: 3}
 --- !u!114 &114968619405413868
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -176,14 +178,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f41b0c5fe276e8942874978a2d478cfe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 2000
-  showHealthBar: 1
-  faction: 0
-  itemDrops: []
-  dieSound: {fileID: 11400000, guid: 32b0cf4a8e09f644db0b3b517ea03634, type: 2}
-  spawnSound: {fileID: 0}
-  dieParticles: {fileID: 198000012942003240, guid: ecdd96beb7f93494880c052dfccf9dc1,
+  m_MaxHealth: 2000
+  m_ShowHealthBar: 1
+  m_Faction: 0
+  m_ItemDrops: []
+  m_DieSound: {fileID: 11400000, guid: 32b0cf4a8e09f644db0b3b517ea03634, type: 2}
+  m_SpawnSound: {fileID: 0}
+  m_DieParticles: {fileID: 198000012942003240, guid: ecdd96beb7f93494880c052dfccf9dc1,
     type: 2}
-  damageParticles: {fileID: 198000012529019072, guid: 4edabb1c0dde62743b137378c7d22980,
+  m_DamageParticles: {fileID: 198000012529019072, guid: 4edabb1c0dde62743b137378c7d22980,
     type: 2}
-  bloodDecal: {fileID: 0}
+  m_BloodDecal: {fileID: 0}

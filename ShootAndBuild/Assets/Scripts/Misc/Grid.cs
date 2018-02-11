@@ -104,9 +104,10 @@ namespace SAB
 		public bool IsFree(GameObject go, Vector3 position)
 		{
 			int w = width;
+			int h = height;
 			Rect area = GetAffectedAreaUnsafe(go, position);
 
-			if (area.xMin < 0 || area.yMin < 0 || area.xMax >= size || area.yMax >= size)
+			if (area.xMin < 0 || area.yMin < 0 || area.xMax >= w || area.yMax >= h)
 			{
 				// area touches area outside of grid
 				return false;
@@ -177,7 +178,7 @@ namespace SAB
 
 		public Vector3 ToTileCenter(Vector3 input)
 		{
-			return new Vector3(Mathf.Floor(input.x) + halfTile.x, input.y, Mathf.Floor(input.z) + halfTile.z);
+			return new Vector3(Mathf.Floor(input.x / m_Resolution) * m_Resolution + halfTile.x, input.y, Mathf.Floor(input.z / m_Resolution) * m_Resolution + halfTile.z);
 		}
 
 		///////////////////////////////////////////////////////////////////////////
@@ -187,16 +188,16 @@ namespace SAB
 			int h = height;
 			int w = width;
 
-			Vector2 terrainCellSize = terrain.regionGrid.regionMapTransformation.CellSize;
-			
 			m_StaticGrid.Clear();
 
 			for (int y = 0; y < h; ++y)
 			{
 				for (int x = 0; x < w; ++x)
 				{
-					int tx = (int)(x / terrainCellSize.x);
-					int ty = (int)(y / terrainCellSize.y);
+					float px = (float)x / w;
+					float py = (float)y / h;
+					int tx = (int)(px * terrain.regionGrid.sizeX);
+					int ty = (int)(py * terrain.regionGrid.sizeZ);
 
 					if (tx > terrain.regionGrid.sizeX || ty > terrain.regionGrid.sizeZ)
 					{
