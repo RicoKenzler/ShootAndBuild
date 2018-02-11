@@ -4,14 +4,14 @@ namespace SAB
 {
     public class Blockable : MonoBehaviour
     {
-        private static Vector3 INVALID_POSITION = new Vector3(float.NegativeInfinity, float.NegativeInfinity, float.NegativeInfinity);
+		private static Vector3 INVALID_POSITION = Vector3.negativeInfinity;
         private Vector3 m_LastPosition = INVALID_POSITION;
 
 		///////////////////////////////////////////////////////////////////////////
 
         void Update()
         {
-            if (m_LastPosition != INVALID_POSITION)
+            if (!m_LastPosition.Equals(INVALID_POSITION))
             {
                 Grid.instance.Free(gameObject, m_LastPosition);
             }
