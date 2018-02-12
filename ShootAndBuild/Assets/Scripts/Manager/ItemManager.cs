@@ -7,34 +7,6 @@ namespace SAB
 {
 	///////////////////////////////////////////////////////////////////////////
 
-    public enum ItemType
-    {
-        None = 0,
-
-        Gold = 1,
-        Granades = 2,
-        ExtraLifes = 3,
-        CheeseHeal = 4,
-        AppleHeal = 5,
-
-        WeaponDefault		= 100,
-        WeaponRailgun		= 101,
-		WeaponTowerDefault	= 102,
-    }
-	
-	///////////////////////////////////////////////////////////////////////////
-
-    public enum ItemUsageCategory
-    {
-        PassiveItem = 1,        //< only counts are relevant (e.g. gold, xtraLives)
-        StatChanger = 2,        //< e.g. health pack
-
-        UsableItem = 3,     //< e.g. grenade
-        Weapon = 4,     //< e.g. shotgun
-    }
-	
-	///////////////////////////////////////////////////////////////////////////
-
     [System.Serializable]
     public struct ItemDrop
     {
@@ -43,20 +15,28 @@ namespace SAB
         public int minDropAmount;
         public int maxDropAmount;
     }
+
+	[System.Serializable]
+	public struct StartItem
+	{
+		public StorableItemData item;
+		public int				count;
+	}
 	
 	///////////////////////////////////////////////////////////////////////////
 
     public class ItemManager : MonoBehaviour
     {
-        [FormerlySerializedAs("allItemDatas")]
-        [SerializeField] private ItemData[] m_AllItemDatas;
+        [SerializeField] private StartItem[]	m_StartItems;
+		[SerializeField] private WeaponData[]	m_StartWeapons;
 
 		[SerializeField] private float m_ItemFadeOutTime = 20.0f;
 
 		///////////////////////////////////////////////////////////////////////////
 
-		public Dictionary<ItemType, ItemData> itemDataMap	{ get; private set; }
-		public float itemFadeOutTime { get { return m_ItemFadeOutTime; } }
+		public float		itemFadeOutTime { get { return m_ItemFadeOutTime; } }
+		public StartItem[]	startItem		{ get { return m_StartItems; }}
+		public WeaponData[]	startWeapons	{ get { return m_StartWeapons; }}
 
 		public static ItemManager instance	{ get; private set; }
 
@@ -64,41 +44,19 @@ namespace SAB
 
         void Start()
         {
-            InitItemDatasAndStartGoods();
+            InitSharedStartGoods();
         }
 
 		///////////////////////////////////////////////////////////////////////////
 
-        void InitItemDatasAndStartGoods()
+        void InitSharedStartGoods()
         {
-            foreach (ItemData itemData in m_AllItemDatas)
+            foreach (StartItem startItem in m_StartItems)
             {
-                // 1) store into map
-                if (itemDataMap.ContainsKey(itemData.itemType))
-                {
-                    Debug.LogWarning("Item type " + itemData.itemType + " is configured multiple times.");
-                    continue;
-                }
-
-                itemDataMap[itemData.itemType] = itemData;
-
-                // 2) add initialCount
-                if (itemData.initialCount > 0)
-                {
-                    if (itemData.isShared)
-                    {
-                        // start items of other players are added in inventory creation
-                        Inventory.sharedInventoryInstance.AddItem(itemData.itemType, itemData.initialCount);
-                    }
-                }
-            }
-
-            foreach (ItemType itemType in System.Enum.GetValues(typeof(ItemType)))
-            {
-                if (!itemDataMap.ContainsKey(itemType))
-                {
-                    Debug.Log("You forgot to add " + itemType + " configuration to itemManager");
-                }
+				if (startItem.item.isShared)
+				{
+					Inventory.sharedInventoryInstance.ChangeItemCount(startItem.item, startItem.count);
+				}
             }
         }
 
@@ -107,20 +65,6 @@ namespace SAB
         void Awake()
         {
             instance = this;
-            itemDataMap = new Dictionary<ItemType, ItemData>();
-        }
-
-		///////////////////////////////////////////////////////////////////////////
-
-        public ItemData GetItemInfos(ItemType itemType)
-        {
-            ItemData outItemData;
-            if (!itemDataMap.TryGetValue(itemType, out outItemData))
-            {
-                Debug.LogWarning("No item configured for itemType " + itemType);
-            }
-
-            return outItemData;
         }
     }
 }

@@ -207,8 +207,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14bc921a45a8f494b9ad472d986734b2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  collectRadius: 1.1
-  collectSound: {fileID: 11400000, guid: f515851f01f1bca4284c321a79191a6b, type: 2}
-  dropSound: {fileID: 11400000, guid: 49cb3cc0b04d68745ab158b62b577d1e, type: 2}
-  itemType: 3
-  vanishesAfterTimeout: 1
+  m_CollectRadius: 1.1
+  m_CollectSound: {fileID: 11400000, guid: f515851f01f1bca4284c321a79191a6b, type: 2}
+  m_DropSound: {fileID: 11400000, guid: 49cb3cc0b04d68745ab158b62b577d1e, type: 2}
+  collectableData: {fileID: 1303063477449268, guid: 8f7091637f6d1374fa701c08e4784ed6,
+    type: 2}

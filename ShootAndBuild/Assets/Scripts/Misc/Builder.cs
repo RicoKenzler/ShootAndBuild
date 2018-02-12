@@ -42,7 +42,7 @@ namespace SAB
                 return;
             }
 
-            if (!activeBuilding.IsPayable())
+            if (!Inventory.CanBePaid(activeBuilding.costs))
             {
                 Inventory.sharedInventoryInstance.TriggerNotEnoughItemsSound();
 
@@ -69,7 +69,7 @@ namespace SAB
 
             AudioManager.instance.PlayAudio(m_BuildSound, transform.position);
 
-            buildingPrefab.Pay();
+            Inventory.ChangeItemCount_AutoSelectInventories(buildingPrefab.costs, true, gameObject);
 
             if (m_BuildEffect)
             {

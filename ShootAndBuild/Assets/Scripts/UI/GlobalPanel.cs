@@ -33,8 +33,8 @@ namespace SAB
         
         void Start()
         {
-            m_GoldAmountAnimator = m_GoldAmountText.GetComponent<Animator>();
-            m_LifesAmountAnimator = m_LifesAmountText.GetComponent<Animator>();
+            m_GoldAmountAnimator	= m_GoldAmountText.GetComponent<Animator>();
+            m_LifesAmountAnimator	= m_LifesAmountText.GetComponent<Animator>();
         }
 
 		///////////////////////////////////////////////////////////////////////////
@@ -43,7 +43,7 @@ namespace SAB
         {
             Inventory sharedInventory = Inventory.sharedInventoryInstance;
 
-            int newGoldAmount = sharedInventory.GetItemCount(ItemType.Gold);
+            int newGoldAmount = sharedInventory.GetItemCount(GameManager.instance.goldItemData);
 
             if (newGoldAmount != m_LastGoldAmount)
             {
@@ -53,7 +53,7 @@ namespace SAB
                 HighlightMoney();
             }
 
-            int newLivesAmount = sharedInventory.GetItemCount(ItemType.ExtraLifes);
+            int newLivesAmount = sharedInventory.GetItemCount(GameManager.instance.extraLifeItemData);
 
             if (newLivesAmount != m_LastLifesAmount)
             {

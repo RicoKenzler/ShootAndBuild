@@ -79,8 +79,16 @@ namespace SAB
 
 		public void Heal(float relativeAmount = 1.0f)
 		{
-			currentHealth += (int)Mathf.Round(m_MaxHealth * relativeAmount);
-			currentHealth = Mathf.Min(currentHealth, m_MaxHealth);
+			int hitpointDelta = (int)Mathf.Round(m_MaxHealth * relativeAmount);
+
+			Heal(hitpointDelta);
+		}
+
+		///////////////////////////////////////////////////////////////////////////
+
+		public void Heal(int hitpoints)
+		{
+			currentHealth = Mathf.Min(currentHealth + hitpoints, m_MaxHealth);
 		}
 
 		///////////////////////////////////////////////////////////////////////////

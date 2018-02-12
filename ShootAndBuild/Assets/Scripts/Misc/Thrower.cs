@@ -11,7 +11,7 @@ namespace SAB
 
 		///////////////////////////////////////////////////////////////////////////
 
-        public void Throw()
+        public void Throw(ThrowableData throwableData)
         {
             GameObject projectileContainer = Projectile.GetOrCreateProjectilesContainer();
 
@@ -24,6 +24,14 @@ namespace SAB
             body.velocity = transform.forward * m_ThrowStrength;
 
             AudioManager.instance.PlayAudio(m_ThrowSound, instance.transform.position);
+
+			// Player Counter
+			InputController inputController = GetComponent<InputController>();
+
+			if (inputController)
+			{
+				CounterManager.instance.AddToCounters(inputController.playerID, CounterType.ItemsUsed, 1, throwableData.gameObject.ToString());
+			}
         }
     }
 }

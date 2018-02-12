@@ -54,7 +54,8 @@ MonoBehaviour:
   m_WinCondition: 0
   m_LoseCondition: 1
   m_WinConditionContextValue: 1000
-  m_WinConditionContextObject: {fileID: 0}
+  m_WinConditionContextObject: {fileID: 1455784929482084, guid: 328d721565e972047aea923777147a7f,
+    type: 2}
   m_LoseConditionContextValue: 0
   m_LoseConditionContextObject: {fileID: 0}
   m_WinText: {fileID: 224037688484329938, guid: d60a6b3c6631baa4eb5fd4ec8635203e,
@@ -63,4 +64,7 @@ MonoBehaviour:
     type: 2}
   m_WinSound: {fileID: 11400000, guid: 9a6cd1cbcb08f4646ae99d8752d6b2b7, type: 2}
   m_LoseSound: {fileID: 11400000, guid: a2e040e2702b51b41a3113e1648962e2, type: 2}
-  m_Canvas: {fileID: 0}
+  m_ExtraLifeItemData: {fileID: 114072601955788726, guid: 8f7091637f6d1374fa701c08e4784ed6,
+    type: 2}
+  m_MoneyItemData: {fileID: 114595792583650944, guid: 328d721565e972047aea923777147a7f,
+    type: 2}

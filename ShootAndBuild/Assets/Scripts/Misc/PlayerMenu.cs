@@ -23,9 +23,9 @@ namespace SAB
 
 		public InventorySelectionCategory	activeSelectionCategory		{ get { return m_ActiveSelectionCategory; } }
         public float						lastMenuInteractionTime		{ get; private set; }
-		public ItemType						activeItemType				{ get; private set; }
+		public StorableItemData				activeItemData				{ get; private set; }
         public Building						activeBuildingPrefab		{ get; private set; }
-		public WeaponData					activeWeapon				{ get { return shootable.currentWeapon; } }
+		public Weapon						activeWeapon				{ get { return shootable.currentWeapon; } }
 
 		///////////////////////////////////////////////////////////////////////////
 
@@ -36,29 +36,27 @@ namespace SAB
             shootable = GetComponent<Shooter>();
 
             lastMenuInteractionTime = 0.0f;
-            activeItemType = ItemType.None;
+            activeItemData = null;
         }
 
 		///////////////////////////////////////////////////////////////////////////
 
         void InitActiveItemType()
         {
-            Dictionary<ItemType, int> allItems = inventory.GetItemsReadOnly();
+            Dictionary<StorableItemData, int> allItems = inventory.GetItemsReadOnly();
 
-            activeItemType = ItemType.Granades;
+            activeItemData = null;
 
-            foreach (KeyValuePair<ItemType, int> item in allItems)
+            foreach (KeyValuePair<StorableItemData, int> item in allItems)
             {
                 if (item.Value <= 0)
                 {
                     continue;
                 }
 
-                ItemData itemData = ItemManager.instance.GetItemInfos(item.Key);
-
-                if (itemData.usageCategory == ItemUsageCategory.UsableItem)
+                if (item.Key.CanBeUsedActively())
                 {
-                    activeItemType = item.Key;
+                    activeItemData = item.Key;
                     break;
                 }
             }

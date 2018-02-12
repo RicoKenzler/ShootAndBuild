@@ -21,13 +21,14 @@ namespace SAB
 
 		///////////////////////////////////////////////////////////////////////////
 
-        private int			m_DisplayedHealthText		= 0;
-        private float		m_DisplayedHealthRelative	= 0.0f;
-        private bool		m_DisplayedPlayerAlive		= false;
-        private int			m_DisplayedActiveItemCount	= -1;
-        private ItemType	m_DisplayedActiveItemType	= ItemType.None;
-        private Building	m_DisplayedActiveBuilding	= null;
-		private WeaponData	m_DisplayedActiveWeapon		= null;
+        private int					m_DisplayedHealthText		= 0;
+        private float				m_DisplayedHealthRelative	= 0.0f;
+        private bool				m_DisplayedPlayerAlive		= false;
+        private int					m_DisplayedActiveItemCount	= -1;
+        private StorableItemData	m_DisplayedActiveItemType	= null;
+        private Building			m_DisplayedActiveBuilding	= null;
+		private WeaponData			m_DisplayedActiveWeapon		= null;
+
         private InventorySelectionCategory m_DisplayedActiveSelectionCategory = InventorySelectionCategory.Item;
 
         private Attackable		m_AssignedAttackable;
@@ -159,7 +160,7 @@ namespace SAB
                 m_ActiveBuildingImage.overrideSprite = activeBuilding ? activeBuilding.icon : null;
             }
 
-            bool buildingBuildable = (IsPlayerAlive() && (activeBuilding && activeBuilding.IsPayable()));
+            bool buildingBuildable = (IsPlayerAlive() && (activeBuilding && Inventory.CanBePaid(activeBuilding.costs, m_AssignedPlayer.gameObject)));
 
             m_ActiveBuildingImage.color = buildingBuildable ? ACTIVATED_COLOR_TINT : DEACTIVATED_COLOR_TINT;
         }
@@ -168,21 +169,20 @@ namespace SAB
 
 		void UpdateWeapons(bool forceUpdateAll = false)
         {
-            WeaponData activeWeapon = m_AssignedPlayerMenu.activeWeapon;
+            Weapon activeWeapon			= m_AssignedPlayerMenu.activeWeapon;
+			WeaponData activeWeaponData = activeWeapon == null ? null : activeWeapon.weaponData;
 
-            bool weaponChanged = (m_DisplayedActiveWeapon != activeWeapon);
+            bool weaponChanged = (m_DisplayedActiveWeapon != activeWeaponData);
+
             if (forceUpdateAll || weaponChanged)
             {
                 // Update Active item Type
-                m_DisplayedActiveWeapon = activeWeapon;
+                m_DisplayedActiveWeapon = activeWeaponData;
 
-				if (activeWeapon)
+				if (activeWeaponData)
 				{
-					ItemType itemType = activeWeapon.weaponID;
-
-					ItemData weaponItemInfos = ItemManager.instance.GetItemInfos(itemType);
-
-					m_ActiveWeaponImage.overrideSprite = weaponItemInfos.icon;
+					PreviewImageData previewImage = activeWeaponData.gameObject.GetComponent<PreviewImageData>();
+					m_ActiveWeaponImage.overrideSprite = previewImage.icon;
 				}
 				else
 				{
@@ -190,7 +190,7 @@ namespace SAB
 				}
             }
 
-            bool weaponUsable = (IsPlayerAlive() && activeWeapon && (activeWeapon.cooldown < 0.1f));
+			bool weaponUsable = (IsPlayerAlive() && (activeWeapon != null) && (activeWeapon.cooldown < 0.1f));
 
             m_ActiveWeaponImage.color = weaponUsable ? ACTIVATED_COLOR_TINT : DEACTIVATED_COLOR_TINT;
         }
@@ -199,17 +199,26 @@ namespace SAB
 
         void UpdateItems(bool forceUpdateAll = false)
         {
-            ItemType activeItemType = m_AssignedPlayerMenu.activeItemType;
-            ItemData itemData = ItemManager.instance.GetItemInfos(activeItemType);
+            StorableItemData itemData = m_AssignedPlayerMenu.activeItemData;
 
-            int activeItemCount = m_AssignedInventory.GetItemCount(m_AssignedPlayerMenu.activeItemType);
+			if (!itemData)
+			{
+				m_DisplayedActiveItemType = null;
+				m_ActiveItemImage.overrideSprite = null;
+				m_ActiveItemCountText.text = "";
+				return;
+			}
 
-            bool itemTypeChanged = (m_DisplayedActiveItemType != activeItemType);
+			PreviewImageData previewImage = itemData.gameObject.GetComponent<PreviewImageData>();
+
+            int activeItemCount = m_AssignedInventory.GetItemCount(m_AssignedPlayerMenu.activeItemData);
+
+            bool itemTypeChanged = (m_DisplayedActiveItemType != itemData);
             if (forceUpdateAll || itemTypeChanged)
             {
                 // Update Active item Type
-                m_DisplayedActiveItemType = activeItemType;
-                m_ActiveItemImage.overrideSprite = itemData.icon;
+                m_DisplayedActiveItemType = itemData;
+                m_ActiveItemImage.overrideSprite = previewImage.icon;
             }
 
             bool itemCountChanged = (m_DisplayedActiveItemCount != activeItemCount);

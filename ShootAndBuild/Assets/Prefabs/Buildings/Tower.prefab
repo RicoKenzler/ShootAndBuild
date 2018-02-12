@@ -216,5 +216,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: badfecc2726fe2249b0fb7500f7a6f4d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Costs: 10
+  m_Costs:
+  - itemData: {fileID: 114595792583650944, guid: 328d721565e972047aea923777147a7f,
+      type: 2}
+    count: 100
   m_Icon: {fileID: 21300000, guid: 886786206a045844585a9a7dc27a8496, type: 3}
