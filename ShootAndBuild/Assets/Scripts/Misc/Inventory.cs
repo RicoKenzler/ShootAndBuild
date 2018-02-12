@@ -23,7 +23,7 @@ namespace SAB
 
         private Dictionary<ItemType, int> m_ItemCounts = new Dictionary<ItemType, int>();
 
-        private Throwable		m_Throwable;
+        private Thrower		m_Throwable;
         private InputController m_InputController;
         private Attackable		m_Attackable;
         private PlayerMenu		m_PlayerMenu;
@@ -48,7 +48,7 @@ namespace SAB
             m_InputController = GetComponent<InputController>();
             m_Attackable = GetComponent<Attackable>();
             m_PlayerMenu = GetComponent<PlayerMenu>();
-            m_Throwable = GetComponent<Throwable>();
+            m_Throwable = GetComponent<Thrower>();
 			m_Buffable = GetComponent<Buffable>();
 
             if (m_InputController)
@@ -182,7 +182,7 @@ namespace SAB
 
             if (itemInfos.usageCategory == ItemUsageCategory.Weapon && count > 0) {
 
-                Shootable shoot = this.GetComponent<Shootable>();
+                Shooter shoot = this.GetComponent<Shooter>();
                 if (shoot != null && itemInfos.weaponData != null)
                 {
                     shoot.AddWeapon(itemInfos.weaponData);

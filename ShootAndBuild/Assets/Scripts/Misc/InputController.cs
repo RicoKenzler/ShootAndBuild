@@ -15,8 +15,8 @@ namespace SAB
         private PlayerID		m_PlayerID;
 		private Animation		m_AnimationController;
         private TauntController m_TauntController;
-        private Shootable		m_Shootable;
-        private Movable			m_Movable;
+        private Shooter		m_Shootable;
+        private Mover			m_Movable;
         private Builder			m_Builder;
         private Inventory		m_Inventory;
         private PlayerMenu		m_PlayerMenu;
@@ -32,8 +32,8 @@ namespace SAB
         void Start()
         {
             m_TauntController	= GetComponent<TauntController>();
-            m_Shootable			= GetComponent<Shootable>();
-            m_Movable			= GetComponent<Movable>();
+            m_Shootable			= GetComponent<Shooter>();
+            m_Movable			= GetComponent<Mover>();
             m_Builder			= GetComponent<Builder>();
             m_Inventory			= GetComponent<Inventory>();
             m_PlayerMenu		= GetComponent<PlayerMenu>();

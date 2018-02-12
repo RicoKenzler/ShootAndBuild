@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace SAB
 {
-	public class Movable : MonoBehaviour
+	public class Mover : MonoBehaviour
 	{
 		private const float	FORCE_DEGENERATION_PER_SECOND = 64.0f;
 

@@ -17,7 +17,7 @@ namespace SAB
         private InventorySelectionCategory m_ActiveSelectionCategory = InventorySelectionCategory.Item;
         private Inventory inventory;
         private Builder builder;
-        private Shootable shootable;
+        private Shooter shootable;
 
 		///////////////////////////////////////////////////////////////////////////
 
@@ -33,7 +33,7 @@ namespace SAB
         {
 			inventory = GetComponent<Inventory>();
             builder = GetComponent<Builder>();
-            shootable = GetComponent<Shootable>();
+            shootable = GetComponent<Shooter>();
 
             lastMenuInteractionTime = 0.0f;
             activeItemType = ItemType.None;

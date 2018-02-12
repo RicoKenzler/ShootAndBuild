@@ -5,7 +5,7 @@ using UnityEngine;
 namespace SAB
 {
 
-	public class Shootable : MonoBehaviour
+	public class Shooter : MonoBehaviour
     {
         private List<WeaponData> m_Arsenal = new List<WeaponData>();
 

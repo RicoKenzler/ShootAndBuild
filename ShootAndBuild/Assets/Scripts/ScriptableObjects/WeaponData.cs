@@ -124,7 +124,7 @@ namespace SAB
 
         private RaycastHit[] m_Hits = new RaycastHit[20];
 
-        private Shootable m_Owner;
+        private Shooter m_Owner;
 
         ///////////////////////////////////////////////////////////////////////////
 
@@ -133,7 +133,7 @@ namespace SAB
         ///////////////////////////////////////////////////////////////////////////
 
         // see if we need this
-        public void Init(Shootable _owner)
+        public void Init(Shooter _owner)
         {
             this.m_Cooldown = 0;
             this.m_Owner = _owner;
@@ -143,7 +143,7 @@ namespace SAB
 
 		///////////////////////////////////////////////////////////////////////////
 
-        public void TryShoot(Shootable _owner, Vector3 _origin, Quaternion _direction)
+        public void TryShoot(Shooter _owner, Vector3 _origin, Quaternion _direction)
         {
             if (m_Cooldown > 0.0f)
             {
@@ -248,7 +248,7 @@ namespace SAB
             }
 
             //recoil
-            Movable movable = m_Owner.gameObject.GetComponent<Movable>();
+            Mover movable = m_Owner.gameObject.GetComponent<Mover>();
             if (movable != null)
             {
                 movable.impulseForce = _direction * (-Vector3.forward * m_RecoilForce);

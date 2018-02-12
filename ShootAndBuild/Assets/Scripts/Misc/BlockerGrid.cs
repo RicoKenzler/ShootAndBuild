@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace SAB
 {
-	public class Grid : MonoBehaviour
+	public class BlockerGrid : MonoBehaviour
 	{
 		[HideInInspector]
 		[SerializeField] private List<bool> m_StaticGrid	= new List<bool>();
@@ -17,13 +17,13 @@ namespace SAB
 
 		///////////////////////////////////////////////////////////////////////////
 
-		public static Grid	instance { get; private set; }
+		public static BlockerGrid	instance { get; private set; }
 		public Vector3		halfTile { get; private set; }
 		public int			size	 { get; private set; }
 
 		///////////////////////////////////////////////////////////////////////////
 
-		public Grid()
+		public BlockerGrid()
 		{
 
 		}

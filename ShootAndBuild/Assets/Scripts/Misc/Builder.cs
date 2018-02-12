@@ -33,7 +33,7 @@ namespace SAB
         public void TryBuild()
         {
             Vector3 pos = transform.position + transform.rotation * (m_Distance * Vector3.forward);
-            pos = Grid.instance.ToTileCenter(pos);
+            pos = BlockerGrid.instance.ToTileCenter(pos);
 
             Building activeBuilding = playerMenu.activeBuildingPrefab;
 
@@ -50,7 +50,7 @@ namespace SAB
                 return;
             }
 
-            if (!Grid.instance.IsFree(activeBuilding.gameObject, pos))
+            if (!BlockerGrid.instance.IsFree(activeBuilding.gameObject, pos))
             {
                 AudioManager.instance.PlayAudio(m_NoSpaceSound);
                 return;

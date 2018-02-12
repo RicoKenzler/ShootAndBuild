@@ -27,7 +27,7 @@ namespace SAB
 
 		///////////////////////////////////////////////////////////////////////////
 
-        private Throwable m_Owner;
+        private Thrower m_Owner;
 		private Faction m_OwnerFaction;
 
         private float m_ExplodeTimer	= 0.0f;
@@ -35,7 +35,7 @@ namespace SAB
 
 		///////////////////////////////////////////////////////////////////////////
 
-		public Throwable owner			{ get { return m_Owner; }			set { m_Owner = value; } }
+		public Thrower owner			{ get { return m_Owner; }			set { m_Owner = value; } }
 		public Faction   ownerFaction	{ get { return m_OwnerFaction; }	set { m_OwnerFaction = value; } }
 
 		///////////////////////////////////////////////////////////////////////////
@@ -121,7 +121,7 @@ namespace SAB
 
             foreach (AttackableAndDamage damage in allDamages)
             {
-                Movable movable = damage.attackable.gameObject.GetComponent<Movable>();
+                Mover movable = damage.attackable.gameObject.GetComponent<Mover>();
                 if (movable != null)
                 {
                     movable.impulseForce = damage.impulse;

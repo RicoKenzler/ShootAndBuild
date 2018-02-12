@@ -2,7 +2,7 @@
 
 namespace SAB
 {
-    public class Blockable : MonoBehaviour
+    public class Blocker : MonoBehaviour
     {
 		private static Vector3 INVALID_POSITION = Vector3.negativeInfinity;
         private Vector3 m_LastPosition = INVALID_POSITION;
@@ -13,11 +13,11 @@ namespace SAB
         {
             if (!m_LastPosition.Equals(INVALID_POSITION))
             {
-                Grid.instance.Free(gameObject, m_LastPosition);
+                BlockerGrid.instance.Free(gameObject, m_LastPosition);
             }
 
             m_LastPosition = transform.position;
-            Grid.instance.Reserve(gameObject, m_LastPosition);
+            BlockerGrid.instance.Reserve(gameObject, m_LastPosition);
         }
 
 		///////////////////////////////////////////////////////////////////////////
@@ -27,7 +27,7 @@ namespace SAB
         {
             if (m_LastPosition != INVALID_POSITION)
             {
-                Grid.instance.Free(gameObject, m_LastPosition);
+                BlockerGrid.instance.Free(gameObject, m_LastPosition);
             }
         }
     }

@@ -3,7 +3,7 @@
 namespace SAB
 {
 
-    public class Throwable : MonoBehaviour
+    public class Thrower : MonoBehaviour
     {
         [SerializeField] private GameObject m_ProjectilePrefab;
         [SerializeField] private AudioData	m_ThrowSound;

@@ -22,7 +22,7 @@ namespace SAB
 		///////////////////////////////////////////////////////////////////////////
 
 		private Vector3		m_StartPos;
-		private Shootable	m_Owner;
+		private Shooter	m_Owner;
 		private Faction		m_OwnerFaction;   //< remember faction separately as Owner could have died when we need the info
 
 		///////////////////////////////////////////////////////////////////////////
@@ -30,7 +30,7 @@ namespace SAB
 		public Vector3	direction	{ get; set; }
 		public int		damage		{ get; set; }
 
-		public Shootable owner {
+		public Shooter owner {
 
 			get { return m_Owner; } 
 
