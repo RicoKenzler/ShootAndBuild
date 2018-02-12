@@ -34,9 +34,9 @@ namespace SAB
 		{
 			Debug.Assert(m_WeaponsInInventory.Count == 0);
 
-			foreach (WeaponData weaponData in ItemManager.instance.startWeapons)
+			foreach (WeaponWithAmmo weaponwithAmmo in ItemManager.instance.startWeapons)
 			{
-				AddWeapon(weaponData);
+				AddWeapon(weaponwithAmmo);
 			}
 		}
 
@@ -63,28 +63,28 @@ namespace SAB
 
         ///////////////////////////////////////////////////////////////////////////
 
-        public void AddWeapon(WeaponData weaponData, bool setAsCurrent = false)
+        public void AddWeapon(WeaponWithAmmo weaponWithAmmo, bool setAsCurrent = false)
         {
-            if ( !m_WeaponsInInventory.Any(w => (w.weaponData == weaponData)) )
+			foreach (Weapon weapon in m_WeaponsInInventory)
 			{
-                //Debug.Log("picked up " + _newWeapon.weaponID.ToString());
-                //weapon is not contained -> add
-                Weapon weapon = new Weapon();
-                weapon.Init(this, weaponData);
-                m_WeaponsInInventory.Add(weapon);
+				if (weapon.weaponData == weaponWithAmmo.weaponData)
+				{
+					if (!weapon.weaponData.infiniteAmmo)
+					{
+						weapon.AddAmmo(weaponWithAmmo.ammoCount);
+					}
+					return;
+				}
+			}
 
-                if (setAsCurrent || this.currentWeapon == null)
-                {
-                    this.currentWeapon = m_WeaponsInInventory.Last();
-                }
+            Weapon newWeapon = new Weapon();
+            newWeapon.Init(this, weaponWithAmmo.weaponData, weaponWithAmmo.ammoCount);
+            m_WeaponsInInventory.Add(newWeapon);
 
-            }
-			else
+            if (setAsCurrent || (currentWeapon == null) || !(currentWeapon.HasEnoughAmmoToShoot()))
             {
-                //weapon is contained
-                //add ammo or something
+                currentWeapon = m_WeaponsInInventory.Last();
             }
-
         }
 
         ///////////////////////////////////////////////////////////////////////////

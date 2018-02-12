@@ -75,6 +75,7 @@ MonoBehaviour:
   m_AreaDamage: 0
   m_AreaRadius: 0
   m_RecoilForce: 0
+  m_InfiniteAmmo: 1
   m_Buffs: []
 --- !u!114 &114974884563307248
 MonoBehaviour:

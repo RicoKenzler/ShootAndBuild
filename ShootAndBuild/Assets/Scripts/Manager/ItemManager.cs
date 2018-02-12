@@ -27,16 +27,16 @@ namespace SAB
 
     public class ItemManager : MonoBehaviour
     {
-        [SerializeField] private StartItem[]	m_StartItems;
-		[SerializeField] private WeaponData[]	m_StartWeapons;
+        [SerializeField] private StartItem[]		m_StartItems;
+		[SerializeField] private WeaponWithAmmo[]	m_StartWeapons;
 
 		[SerializeField] private float m_ItemFadeOutTime = 20.0f;
 
 		///////////////////////////////////////////////////////////////////////////
 
-		public float		itemFadeOutTime { get { return m_ItemFadeOutTime; } }
-		public StartItem[]	startItem		{ get { return m_StartItems; }}
-		public WeaponData[]	startWeapons	{ get { return m_StartWeapons; }}
+		public float			itemFadeOutTime { get { return m_ItemFadeOutTime; } }
+		public StartItem[]		startItem		{ get { return m_StartItems; }}
+		public WeaponWithAmmo[]	startWeapons	{ get { return m_StartWeapons; }}
 
 		public static ItemManager instance	{ get; private set; }
 

@@ -68,7 +68,7 @@ namespace SAB
 				{
 					foreach (InputController player in PlayerManager.instance.allDeadOrAlivePlayers)
 					{
-						player.GetComponent<Shooter>().AddWeapon(weaponData);
+						player.GetComponent<Shooter>().AddWeapon(new WeaponWithAmmo(weaponData, cheatCount));
 					}
 				}
 			}

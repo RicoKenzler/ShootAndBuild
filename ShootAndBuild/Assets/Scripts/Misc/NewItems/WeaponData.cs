@@ -6,6 +6,19 @@ namespace SAB
 {	
 	///////////////////////////////////////////////////////////////////////////
 
+	[System.Serializable]
+	public struct WeaponWithAmmo
+	{
+		public WeaponData	weaponData;
+		public int			ammoCount;
+
+		public WeaponWithAmmo(WeaponData _weaponData, int _ammoCount)
+		{
+			weaponData	= _weaponData;
+			ammoCount	= _ammoCount;
+		}
+	}
+
 	public enum WeaponType
     {
         None		= 0,
@@ -48,6 +61,7 @@ namespace SAB
         [SerializeField] private float				m_AreaDamage			= 0;
         [SerializeField] private float				m_AreaRadius			= 0;
         [SerializeField] private float				m_RecoilForce			= 0;
+		[SerializeField] private bool				m_InfiniteAmmo			= false;
 		[SerializeField] private List<BuffData>		m_Buffs;
 
 		public WeaponType			type					{ get { return m_Type;					}}
@@ -67,6 +81,7 @@ namespace SAB
 		public float				areaDamage				{ get { return m_AreaDamage;			}}
 		public float				areaRadius				{ get { return m_AreaRadius;			}}
 		public float				recoilForce				{ get { return m_RecoilForce;			}}
-		public List<BuffData>		buffs					{ get { return m_Buffs;					}}		
+		public List<BuffData>		buffs					{ get { return m_Buffs;					}}	
+		public bool					infiniteAmmo			{ get { return m_InfiniteAmmo;			}}
 	}
 }

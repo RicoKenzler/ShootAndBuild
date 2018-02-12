@@ -65,3 +65,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_IsShared: 1
+  m_Abbreviation: $

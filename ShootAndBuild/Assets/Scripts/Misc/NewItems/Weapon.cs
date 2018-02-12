@@ -16,17 +16,19 @@ namespace SAB
 
 		///////////////////////////////////////////////////////////////////////////
 
-		public float			cooldown	{ get { return m_Cooldown; }}
-		public WeaponData		weaponData	{ get { return m_WeaponData; }}
+		public float			cooldown				{ get { return m_Cooldown; }}
+		public WeaponData		weaponData				{ get { return m_WeaponData; }}
+		public int				ammoCount				{ get; private set; }
 
 		///////////////////////////////////////////////////////////////////////////
 
 		// see if we need this
-		public void Init(Shooter _owner, WeaponData weaponData)
+		public void Init(Shooter _owner, WeaponData weaponData, int _ammoCount)
 		{
 			m_Cooldown		= 0;
 			m_Owner			= _owner;
 			m_WeaponData	= weaponData;
+			ammoCount		= _ammoCount;
 
 			// TODO put important layers and combinations into some sort of static layermanager
 			m_LayerMask = (1 << 0) | (1 << 9);
@@ -34,9 +36,32 @@ namespace SAB
 
 		///////////////////////////////////////////////////////////////////////////
 
+		public bool	HasEnoughAmmoToShoot()
+		{
+			if (weaponData.infiniteAmmo)
+			{
+				return true;
+			}
+
+			if (CheatManager.instance.noResourceCosts)
+			{
+				return true;
+			}
+
+			return (ammoCount > 0); 
+		}
+
+
+		///////////////////////////////////////////////////////////////////////////
+
 		public void TryShoot(Shooter _owner, Vector3 _origin, Quaternion _direction)
 		{
 			if (m_Cooldown > 0.0f)
+			{
+				return;
+			}
+
+			if (!HasEnoughAmmoToShoot())
 			{
 				return;
 			}
@@ -163,6 +188,12 @@ namespace SAB
 			{
 				ParticleManager.instance.SpawnParticle(m_WeaponData.muzzleFlashEffect, _owner.gameObject, _origin, _direction, false, 1.0f, false, false);
 			}
+
+			// remove ammo
+			if (!weaponData.infiniteAmmo)
+			{
+				AddAmmo(-1);
+			}
 		}
 
 		///////////////////////////////////////////////////////////////////////////
@@ -173,6 +204,21 @@ namespace SAB
 			if (m_Cooldown > 0.0f)
 			{
 				m_Cooldown = Mathf.Max(m_Cooldown - Time.deltaTime, 0.0f);
+			}
+		}
+
+		///////////////////////////////////////////////////////////////////////////
+
+		public void AddAmmo(int count)
+		{
+			Debug.Assert(!weaponData.infiniteAmmo);
+			ammoCount += count;
+
+			if (ammoCount < 0)
+			{
+				Debug.Assert(CheatManager.instance.noResourceCosts);
+
+				ammoCount = 0;
 			}
 		}
 	}

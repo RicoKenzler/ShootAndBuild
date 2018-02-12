@@ -6,9 +6,11 @@ namespace SAB
 {
 	public class StorableItemData : MonoBehaviour
 	{
-        [SerializeField] private bool	m_IsShared	= false;            
+        [SerializeField] private bool	m_IsShared	  = false;    
+		[SerializeField] private string m_Abbreviation = "";
 
-		public bool	isShared { get { return m_IsShared; } }
+		public bool		isShared		{ get { return m_IsShared; } }
+		public string	abbreviation	{ get { return m_Abbreviation; }}
 
 		public bool CanBeUsedActively()
 		{

@@ -59,5 +59,7 @@ MonoBehaviour:
   - item: {fileID: 114371862499597454, guid: 51491a55901936b479a6e12607686794, type: 2}
     count: 2
   m_StartWeapons:
-  - {fileID: 114310312541560718, guid: d3ceb899d06a8f54292414bc7ea190f7, type: 2}
+  - weaponData: {fileID: 114310312541560718, guid: d3ceb899d06a8f54292414bc7ea190f7,
+      type: 2}
+    ammoCount: 0
   m_ItemFadeOutTime: 20

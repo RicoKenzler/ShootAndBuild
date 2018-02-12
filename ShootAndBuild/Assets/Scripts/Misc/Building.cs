@@ -9,17 +9,13 @@ namespace SAB
 
     public class Building : MonoBehaviour
     {
-        [SerializeField] ItemAndCount[]				m_Costs;
-
-		[FormerlySerializedAs("icon")]
-        [SerializeField] private Sprite		m_Icon;
+        [SerializeField] ItemAndCount[]		m_Costs;
 
         private Attackable	m_Attackable;
         private Renderer	m_ChildsRenderer;
 
         ///////////////////////////////////////////////////////////////////////////
 
-		public Sprite icon	{ get { return m_Icon; } }
 		public ItemAndCount[] costs { get { return m_Costs; }}
 
 		///////////////////////////////////////////////////////////////////////////

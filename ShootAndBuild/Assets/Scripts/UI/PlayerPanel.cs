@@ -7,10 +7,15 @@ namespace SAB
     public class PlayerPanel : MonoBehaviour
     {
         [SerializeField] private Image		m_HealthBarFillImage;
+
         [SerializeField] private Image		m_ActiveItemImage;
         [SerializeField] private Image		m_ActiveWeaponImage;
         [SerializeField] private Image		m_ActiveBuildingImage;
+
         [SerializeField] private Text		m_ActiveItemCountText;
+		[SerializeField] private Text		m_ActiveWeaponAmmoCountText;
+		[SerializeField] private Text		m_ActiveBuildingCostsText;
+
         [SerializeField] private Animator	m_WeaponSelectionRect;
         [SerializeField] private Animator	m_ItemSelectionRect;
         [SerializeField] private Animator	m_BuildingSelectionRect;
@@ -21,25 +26,44 @@ namespace SAB
 
 		///////////////////////////////////////////////////////////////////////////
 
+        private bool				m_DisplayedPlayerAlive		= false;
+
         private int					m_DisplayedHealthText		= 0;
         private float				m_DisplayedHealthRelative	= 0.0f;
-        private bool				m_DisplayedPlayerAlive		= false;
+
         private int					m_DisplayedActiveItemCount	= -1;
+		private int					m_DisplayedAmmoCount		= -1;
+
         private StorableItemData	m_DisplayedActiveItemType	= null;
         private Building			m_DisplayedActiveBuilding	= null;
 		private WeaponData			m_DisplayedActiveWeapon		= null;
 
         private InventorySelectionCategory m_DisplayedActiveSelectionCategory = InventorySelectionCategory.Item;
 
+		///////////////////////////////////////////////////////////////////////////
+
         private Attackable		m_AssignedAttackable;
 		private InputController m_AssignedPlayer;
         private Inventory		m_AssignedInventory;
+		private Shooter			m_AssignedShooter;
         private PlayerMenu		m_AssignedPlayerMenu;
 
-        private Animator	m_ActiveItemCountTextAnimator;
+		///////////////////////////////////////////////////////////////////////////
+
+		private Animator	m_ActiveItemCountTextAnimator;
         private Animator	m_ActiveItemImageAnimator;
+		private Animator	m_ActiveWeaponAmmoCountTextAnimator;
+        private Animator	m_ActiveWeaponImageAnimator;
+		private Animator	m_ActiveBuildingCostTextAnimator;
+        private Animator	m_ActiveBuildingImageAnimator;
+
+		///////////////////////////////////////////////////////////////////////////
 
         private Color		m_DefaultItemCountTextColor;
+		private Color		m_DefaultAmmoCountTextColor;
+		private Color		m_DefaultBuildingCostsTextColor;
+
+		///////////////////////////////////////////////////////////////////////////
 
         private readonly Color DEACTIVATED_COLOR_TINT	= new Color(0.5f, 0.5f, 0.5f, 0.5f);
         private readonly Color ACTIVATED_COLOR_TINT		= new Color(1.0f, 1.0f, 1.0f, 1.0f);
@@ -65,7 +89,7 @@ namespace SAB
             UpdateHealthBar();
             UpdateIsPlayerAlive();
             UpdateItems();
-            UpdateInventorySelection();
+            UpdateSelectionCategory();
             UpdateBuildings();
 			UpdateWeapons();
         }
@@ -90,7 +114,7 @@ namespace SAB
                 UpdateItems(true);
                 UpdateBuildings(true);
 				UpdateWeapons(true);
-                UpdateInventorySelection();
+                UpdateSelectionCategory();
                 m_DisplayedPlayerAlive = isPlayerAlive;
             }
         }
@@ -152,31 +176,61 @@ namespace SAB
         {
             Building activeBuilding = m_AssignedPlayerMenu.activeBuildingPrefab;
 
+			if (!activeBuilding)
+			{
+				m_DisplayedActiveBuilding = null;
+				m_ActiveBuildingImage.overrideSprite = null;
+				m_ActiveBuildingCostsText.text = "";
+				return;
+			}
+
+			PreviewImageData previewImage = activeBuilding.gameObject.GetComponent<PreviewImageData>();
+
             bool buildingTypeChanged = (m_DisplayedActiveBuilding != activeBuilding);
             if (forceUpdateAll || buildingTypeChanged)
             {
                 // Update Active item Type
                 m_DisplayedActiveBuilding = activeBuilding;
-                m_ActiveBuildingImage.overrideSprite = activeBuilding ? activeBuilding.icon : null;
+                m_ActiveBuildingImage.overrideSprite = activeBuilding ? previewImage.icon : null;
+
+				string costString = "";
+
+				if (activeBuilding.costs.Length != 0)
+				{
+					costString = activeBuilding.costs[0].count.ToString();
+					costString += activeBuilding.costs[0].itemData.abbreviation;
+				}
+
+				m_ActiveBuildingCostsText.text = costString;
             }
 
             bool buildingBuildable = (IsPlayerAlive() && (activeBuilding && Inventory.CanBePaid(activeBuilding.costs, m_AssignedPlayer.gameObject)));
 
-            m_ActiveBuildingImage.color = buildingBuildable ? ACTIVATED_COLOR_TINT : DEACTIVATED_COLOR_TINT;
+            m_ActiveBuildingImage.color		= buildingBuildable ? ACTIVATED_COLOR_TINT : DEACTIVATED_COLOR_TINT;
+			m_ActiveBuildingCostsText.color = buildingBuildable ? m_DefaultBuildingCostsTextColor : DEACTIVATED_COLOR_TINT;
         }
 
 		///////////////////////////////////////////////////////////////////////////
 
 		void UpdateWeapons(bool forceUpdateAll = false)
         {
-            Weapon activeWeapon			= m_AssignedPlayerMenu.activeWeapon;
+            Weapon activeWeapon			= m_AssignedShooter.currentWeapon;
 			WeaponData activeWeaponData = activeWeapon == null ? null : activeWeapon.weaponData;
+
+			if (!activeWeaponData)
+			{
+				m_DisplayedActiveWeapon = null;
+				m_DisplayedAmmoCount = -1;
+				m_ActiveWeaponImage.overrideSprite = null;
+				m_ActiveWeaponAmmoCountText.text = "";
+				return;
+			}
 
             bool weaponChanged = (m_DisplayedActiveWeapon != activeWeaponData);
 
+            // Weapon Changed?
             if (forceUpdateAll || weaponChanged)
             {
-                // Update Active item Type
                 m_DisplayedActiveWeapon = activeWeaponData;
 
 				if (activeWeaponData)
@@ -190,9 +244,28 @@ namespace SAB
 				}
             }
 
-			bool weaponUsable = (IsPlayerAlive() && (activeWeapon != null) && (activeWeapon.cooldown < 0.1f));
+			int ammoCount = activeWeaponData.infiniteAmmo ? int.MaxValue : activeWeapon.ammoCount;
 
-            m_ActiveWeaponImage.color = weaponUsable ? ACTIVATED_COLOR_TINT : DEACTIVATED_COLOR_TINT;
+			// Ammo Changed?
+			bool ammoCountChanged = (m_DisplayedAmmoCount != ammoCount);
+            if (forceUpdateAll || ammoCountChanged || weaponChanged)
+            {
+                // Update Item Count
+                m_ActiveWeaponAmmoCountText.text = (ammoCount == int.MaxValue) ? "∞" : ammoCount.ToString();
+
+                if ((ammoCount > m_DisplayedAmmoCount) && (ammoCount > 0))
+                {
+                    HightlightAmmoCount();
+                }
+
+                m_DisplayedAmmoCount = ammoCount;
+            }
+
+			bool weaponGenerallyUsable	= (IsPlayerAlive() && activeWeapon.HasEnoughAmmoToShoot());
+			bool weaponNowUsable		= weaponGenerallyUsable&& (activeWeapon.cooldown < 0.1f);
+
+            m_ActiveWeaponImage.color			= weaponNowUsable		? ACTIVATED_COLOR_TINT : DEACTIVATED_COLOR_TINT;
+			m_ActiveWeaponAmmoCountText.color	= weaponGenerallyUsable ? m_DefaultAmmoCountTextColor : DEACTIVATED_COLOR_TINT;
         }
 
 		///////////////////////////////////////////////////////////////////////////
@@ -204,6 +277,7 @@ namespace SAB
 			if (!itemData)
 			{
 				m_DisplayedActiveItemType = null;
+				m_DisplayedActiveItemCount = -1;
 				m_ActiveItemImage.overrideSprite = null;
 				m_ActiveItemCountText.text = "";
 				return;
@@ -239,7 +313,6 @@ namespace SAB
 
             m_ActiveItemImage.color = deactivatedItem ? DEACTIVATED_COLOR_TINT : ACTIVATED_COLOR_TINT;
             m_ActiveItemCountText.color = deactivatedItem ? DEACTIVATED_COLOR_TINT : m_DefaultItemCountTextColor;
-            m_ActiveWeaponImage.color = IsPlayerAlive() ? ACTIVATED_COLOR_TINT : DEACTIVATED_COLOR_TINT;
         }
 
 		///////////////////////////////////////////////////////////////////////////
@@ -258,7 +331,35 @@ namespace SAB
 
 		///////////////////////////////////////////////////////////////////////////
 
-        void UpdateInventorySelection()
+        public void HighlightActiveWeapon()
+        {
+            m_ActiveWeaponImageAnimator.SetTrigger("Grow");
+        }
+
+		///////////////////////////////////////////////////////////////////////////
+
+        public void HightlightAmmoCount()
+        {
+            m_ActiveWeaponAmmoCountTextAnimator.SetTrigger("Grow");
+        }
+
+		///////////////////////////////////////////////////////////////////////////
+
+        public void HighlightActiveBuilding()
+        {
+            m_ActiveBuildingImageAnimator.SetTrigger("Grow");
+        }
+
+		///////////////////////////////////////////////////////////////////////////
+
+        public void HightlightBuildingCostCount()
+        {
+            m_ActiveBuildingCostTextAnimator.SetTrigger("Grow");
+        }
+
+		///////////////////////////////////////////////////////////////////////////
+
+        void UpdateSelectionCategory()
         {
             InventorySelectionCategory newCategory = m_AssignedPlayerMenu.activeSelectionCategory;
 
@@ -307,11 +408,18 @@ namespace SAB
             m_AssignedInventory		= player.GetComponent<Inventory>();
             m_AssignedPlayerMenu	= player.GetComponent<PlayerMenu>();
 			m_AssignedPlayer		= player.GetComponent<InputController>();
+			m_AssignedShooter		= player.GetComponent<Shooter>();
 
-            m_ActiveItemCountTextAnimator = m_ActiveItemCountText.GetComponent<Animator>();
-            m_ActiveItemImageAnimator = m_ActiveItemImage.GetComponent<Animator>();
+            m_ActiveItemCountTextAnimator		= m_ActiveItemCountText.GetComponent<Animator>();
+            m_ActiveItemImageAnimator			= m_ActiveItemImage.GetComponent<Animator>();
+			m_ActiveBuildingCostTextAnimator	= m_ActiveBuildingCostsText.GetComponent<Animator>();
+			m_ActiveBuildingImageAnimator		= m_ActiveBuildingImage.GetComponent<Animator>();
+			m_ActiveWeaponAmmoCountTextAnimator	= m_ActiveWeaponAmmoCountText.GetComponent<Animator>();
+			m_ActiveWeaponImageAnimator			= m_ActiveWeaponImage.GetComponent<Animator>();
 
-            m_DefaultItemCountTextColor = m_ActiveItemCountText.color;
+            m_DefaultItemCountTextColor		= m_ActiveItemCountText.color;
+			m_DefaultAmmoCountTextColor		= m_ActiveWeaponAmmoCountText.color;
+			m_DefaultBuildingCostsTextColor	= m_ActiveBuildingCostsText.color;
 
             UpdateUI();
         }

@@ -42,11 +42,14 @@ namespace SAB
                 return;
             }
 
+			PlayerPanel playerPanel = PlayerPanelGroup.instance.GetPlayerPanel(GetComponent<InputController>().playerID);
+
             if (!Inventory.CanBePaid(activeBuilding.costs))
             {
                 Inventory.sharedInventoryInstance.TriggerNotEnoughItemsSound();
 
                 GlobalPanel.instance.HighlightMoney();
+				playerPanel.HightlightBuildingCostCount();
                 return;
             }
 
@@ -57,6 +60,8 @@ namespace SAB
             }
 
             Build(activeBuilding, pos);
+
+			playerPanel.HighlightActiveBuilding();
         }
 
 		///////////////////////////////////////////////////////////////////////////

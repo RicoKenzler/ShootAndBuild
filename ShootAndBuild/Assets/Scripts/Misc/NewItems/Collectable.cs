@@ -114,7 +114,7 @@ namespace SAB
 			if (weaponData)
 			{
 				Shooter shooter = playerObject.GetComponent<Shooter>();
-				shooter.AddWeapon(weaponData);
+				shooter.AddWeapon(new WeaponWithAmmo(weaponData, m_Count));
 				wasHandledCount++;
 			}
             
