@@ -56,6 +56,7 @@ MonoBehaviour:
   m_HitPointDelta: 20
   m_UseOnCollect: 0
   m_Buffs: []
+  m_ConsumeSound: {fileID: 11400000, guid: b35351aebb33cc447b1b02379939f236, type: 2}
 --- !u!114 &114193397825419752
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -23,7 +23,7 @@ namespace SAB
 
 		public InventorySelectionCategory	activeSelectionCategory		{ get { return m_ActiveSelectionCategory; } }
         public float						lastMenuInteractionTime		{ get; private set; }
-		public StorableItemData				activeItemData				{ get; private set; }
+		public StorableItemData				activeItemData				{ get { return inventory.activeItemData; } }
         public Building						activeBuildingPrefab		{ get; private set; }
 		public Weapon						activeWeapon				{ get { return shootable.currentWeapon; } }
 
@@ -36,30 +36,6 @@ namespace SAB
             shootable = GetComponent<Shooter>();
 
             lastMenuInteractionTime = 0.0f;
-            activeItemData = null;
-        }
-
-		///////////////////////////////////////////////////////////////////////////
-
-        void InitActiveItemType()
-        {
-            Dictionary<StorableItemData, int> allItems = inventory.GetItemsReadOnly();
-
-            activeItemData = null;
-
-            foreach (KeyValuePair<StorableItemData, int> item in allItems)
-            {
-                if (item.Value <= 0)
-                {
-                    continue;
-                }
-
-                if (item.Key.CanBeUsedActively())
-                {
-                    activeItemData = item.Key;
-                    break;
-                }
-            }
         }
 
 		///////////////////////////////////////////////////////////////////////////
@@ -80,25 +56,9 @@ namespace SAB
 
         void Start()
         {
-            InitActiveItemType();
             InitActiveBuildingType();
         }
 		
-		///////////////////////////////////////////////////////////////////////////
-
-        private bool TryCycleThroughItems(bool positiveOrder)
-        {
-            // Not implemented yet
-            return false;
-        }
-
-		///////////////////////////////////////////////////////////////////////////
-
-        private bool TryCycleThroughWeapons(bool positiveOrder)
-        {
-            return shootable.CycleWeapons(positiveOrder);
-        }
-
 		///////////////////////////////////////////////////////////////////////////
 
         private bool TryCycleThroughBuildings(bool positiveOrder)
@@ -177,10 +137,10 @@ namespace SAB
             switch (m_ActiveSelectionCategory)
             {
                 case InventorySelectionCategory.Item:
-                    success = TryCycleThroughItems(positiveOrder);
+                    success = inventory.CycleThroughActiveItems(positiveOrder);
                     break;
                 case InventorySelectionCategory.Weapon:
-                    success = TryCycleThroughWeapons(positiveOrder);
+                    success = shootable.CycleWeapons(positiveOrder);
                     break;
                 case InventorySelectionCategory.Building:
                     success = TryCycleThroughBuildings(positiveOrder);

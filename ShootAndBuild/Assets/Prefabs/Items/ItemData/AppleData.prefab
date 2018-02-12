@@ -19,7 +19,6 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4722806573469988}
-  - component: {fileID: 114688547100428994}
   - component: {fileID: 114393541597580180}
   m_Layer: 0
   m_Name: AppleData
@@ -53,18 +52,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_HitPointDelta: 0
-  m_UseOnCollect: 0
+  m_UseOnCollect: 1
   m_Buffs:
   - {fileID: 11400000, guid: b240ec8f16cd72e40bc137bd6451253f, type: 2}
---- !u!114 &114688547100428994
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1990099875140372}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bb8fa60a946a0b942b0fb142d7a3268f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_IsShared: 0
+  m_ConsumeSound: {fileID: 11400000, guid: b35351aebb33cc447b1b02379939f236, type: 2}

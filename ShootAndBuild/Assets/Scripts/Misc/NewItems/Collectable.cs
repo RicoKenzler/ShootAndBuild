@@ -107,7 +107,8 @@ namespace SAB
 			GameObject playerObject = player.gameObject;
 			WeaponData weaponData	= collectableData.GetComponent<WeaponData>();
 
-			int wasHandledCount = 0;
+			int wasHandledCount			= 0;
+			bool wasInstantleyConsumed	= false;
 
 			// A) Weapon
 			if (weaponData)
@@ -124,6 +125,7 @@ namespace SAB
             {
                 consumableData.Consume(playerObject);
 				wasHandledCount++;
+				wasInstantleyConsumed = true;
             }
 
 			// C) Storable Item
@@ -139,7 +141,12 @@ namespace SAB
 
 			Debug.Assert(wasHandledCount == 1);
 
-            AudioManager.instance.PlayAudio(m_CollectSound, transform.position);
+			if (!wasInstantleyConsumed)
+			{
+				// Consume sound is more important than collect sound
+				AudioManager.instance.PlayAudio(m_CollectSound, transform.position);
+			}
+
             Destroy(gameObject);
         }
     }

@@ -139,7 +139,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_CollectRadius: 1.1
-  m_CollectSound: {fileID: 11400000, guid: b35351aebb33cc447b1b02379939f236, type: 2}
+  m_CollectSound: {fileID: 11400000, guid: ba000a55b418c464bb5a83b3e7d47396, type: 2}
   m_DropSound: {fileID: 11400000, guid: 46aaf3514a49b5349909f91809e902a3, type: 2}
   collectableData: {fileID: 1282365560609774, guid: edb27096b13127345bfc2c636a39d28a,
     type: 2}

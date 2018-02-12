@@ -10,6 +10,7 @@ namespace SAB
 		[SerializeField] private int					m_HitPointDelta;
 		[SerializeField] private bool					m_UseOnCollect = false;
 		[SerializeField] private List<BuffData>			m_Buffs;
+		[SerializeField] private AudioData				m_ConsumeSound;
 
 		public bool					useOnCollect	{ get { return m_UseOnCollect;  }}
 		public int					hitPointDelta	{ get { return m_HitPointDelta; }}
@@ -43,6 +44,8 @@ namespace SAB
 
 			// Player Counter
 			InputController inputController = consumer.GetComponent<InputController>();
+
+			AudioManager.instance.PlayAudio(m_ConsumeSound, consumer.transform.position);
 
 			if (inputController)
 			{

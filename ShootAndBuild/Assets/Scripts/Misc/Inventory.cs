@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using UnityEngine;
 
@@ -38,12 +39,14 @@ namespace SAB
 
         private Dictionary<StorableItemData, int> m_ItemCounts = new Dictionary<StorableItemData, int>();
 
-        private Thrower			m_Throwable;
-        private InputController m_InputController;
-        private PlayerMenu		m_PlayerMenu;
+        private Thrower				m_Throwable;
+        private InputController		m_InputController;
+        private PlayerMenu			m_PlayerMenu;
+		private StorableItemData	m_ActiveItemData;
 
 		///////////////////////////////////////////////////////////////////////////
 
+		public StorableItemData	activeItemData			{ get { return m_ActiveItemData; } }
 		public static Inventory sharedInventoryInstance { get; private set; }
 
 		///////////////////////////////////////////////////////////////////////////
@@ -119,10 +122,80 @@ namespace SAB
             // Use Item
             playerPanel.HighlightActiveItem();
 
-            UseItem(m_PlayerMenu.activeItemData);
+            UseItem(m_ActiveItemData);
 
-            ChangeItemCount(m_PlayerMenu.activeItemData, -1);
+            ChangeItemCount(m_ActiveItemData, -1);
         }
+
+		///////////////////////////////////////////////////////////////////////////
+
+		public bool CycleThroughActiveItems(bool positiveOrder)
+		{
+			// 1) Get Current Index
+			int curIndex			= -1;
+			int usableItemsCount	= 0;
+			int tmpIndex			= -1;
+
+			foreach (KeyValuePair<StorableItemData, int> item in m_ItemCounts)
+			{
+				if (!item.Key.CanBeUsedActively())
+				{
+					continue;
+				}
+
+				usableItemsCount++;
+				tmpIndex++;
+				
+				if (item.Key == m_ActiveItemData)
+				{
+					curIndex = tmpIndex;
+				}
+			}
+
+			if (usableItemsCount == 0)
+			{
+				return false;
+			}
+
+			// 2) Chose next index
+			int targetIndex;
+
+			if (curIndex == -1)
+			{
+				targetIndex = positiveOrder ? 0 : usableItemsCount - 1;
+			}
+			else
+			{
+				targetIndex = curIndex + (positiveOrder ? 1 : -1);
+				targetIndex = targetIndex % usableItemsCount;
+			}
+
+			if (targetIndex == curIndex)
+			{
+				return false;
+			}
+
+			// 3) Set next index
+			tmpIndex = -1;
+			foreach (KeyValuePair<StorableItemData, int> item in m_ItemCounts)
+			{
+				if (!item.Key.CanBeUsedActively())
+				{
+					continue;
+				}
+
+				tmpIndex++;
+				
+				if (tmpIndex == targetIndex)
+				{
+					m_ActiveItemData = item.Key;
+					return true;
+				}
+			}
+
+			Debug.Assert(false);
+			return false;
+		}
 
 		///////////////////////////////////////////////////////////////////////////
 
@@ -166,6 +239,11 @@ namespace SAB
 				Debug.Assert(CheatManager.instance.noResourceCosts);
 
 				m_ItemCounts[itemData] = 0;
+			}
+
+			if (m_ActiveItemData == null && itemData.CanBeUsedActively())
+			{
+				m_ActiveItemData = itemData;
 			}
         }
 
