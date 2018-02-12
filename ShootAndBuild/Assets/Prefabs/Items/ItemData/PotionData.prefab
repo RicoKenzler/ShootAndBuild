@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4722806573469988}
   - component: {fileID: 114393541597580180}
   m_Layer: 0
-  m_Name: AppleData
+  m_Name: PotionData
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -51,7 +51,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 33322f93643c7d04cbb4b43054fca96f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_HitPointDelta: 10
+  m_HitPointDelta: 0
   m_UseOnCollect: 1
-  m_Buffs: []
-  m_ConsumeSound: {fileID: 11400000, guid: b35351aebb33cc447b1b02379939f236, type: 2}
+  m_Buffs:
+  - {fileID: 11400000, guid: b240ec8f16cd72e40bc137bd6451253f, type: 2}
+  m_ConsumeSound: {fileID: 11400000, guid: a7b3173532beb384e9017c0b59be65a4, type: 2}
