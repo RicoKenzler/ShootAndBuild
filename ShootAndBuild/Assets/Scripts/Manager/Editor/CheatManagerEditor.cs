@@ -61,6 +61,16 @@ namespace SAB
 				{
 					Inventory.ChangeItemCount_AutoSelectInventories(new ItemAndCount(itemData, cheatCount), false);
 				}
+
+				List<WeaponData> allWeaponsData = FindAssetsByType<WeaponData>();
+				
+				foreach (WeaponData weaponData in allWeaponsData)
+				{
+					foreach (InputController player in PlayerManager.instance.allDeadOrAlivePlayers)
+					{
+						player.GetComponent<Shooter>().AddWeapon(weaponData);
+					}
+				}
 			}
 
 			if (GUILayout.Button("Add Enemies"))
@@ -95,19 +105,9 @@ namespace SAB
 
 		public static List<T> FindAssetsByType<T>() where T : UnityEngine.Object
 		{
-			List<T> results = new List<T>();
-			string[] guids = AssetDatabase.FindAssets(string.Format("t:{0}", typeof(T)));
+			T[] results = Resources.FindObjectsOfTypeAll<T>();
 
-			for( int i = 0; i < guids.Length; i++ )
-			{
-				string assetPath = AssetDatabase.GUIDToAssetPath( guids[i] );
-				T asset = AssetDatabase.LoadAssetAtPath<T>( assetPath );
-				if( asset != null )
-				{
-					results.Add(asset);
-				}
-			}
-			return results;
+			return new List<T>(results);
 		}
 
 		///////////////////////////////////////////////////////////////////////////

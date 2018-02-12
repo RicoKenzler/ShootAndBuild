@@ -11,13 +11,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f472d17afb08304ab3773c852bf3637, type: 3}
   m_Name: CollectLife
   m_EditorClassIdentifier: 
-  audioClips:
+  m_AudioClips:
   - {fileID: 8300000, guid: 5b3c17db044867746aa9085893f086d1, type: 3}
   - {fileID: 8300000, guid: 674543fb78da4a6498fb5c1929be0783, type: 3}
-  volume: 1
-  rndMusicalPitch: 0
-  pitchOffsetSemitones: 0
-  pitchRangeSemitones: 0
-  isUISound: 0
-  suppressDoppler: 1
-  amount3D: 0.307
+  m_Volume: 1
+  m_RndMusicalPitch: 0
+  m_PitchOffsetSemitones: 0
+  m_PitchRangeSemitones: 0
+  m_IsUISound: 1
+  m_SuppressDoppler: 0
+  m_Amount3D: 0

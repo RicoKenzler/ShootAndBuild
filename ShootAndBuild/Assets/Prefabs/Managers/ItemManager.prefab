@@ -60,5 +60,4 @@ MonoBehaviour:
     count: 2
   m_StartWeapons:
   - {fileID: 114310312541560718, guid: d3ceb899d06a8f54292414bc7ea190f7, type: 2}
-  - {fileID: 114511089453884118, guid: 44995dca9b64d4543a5dcd7ba9ac4b3f, type: 2}
   m_ItemFadeOutTime: 20

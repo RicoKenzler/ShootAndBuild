@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f472d17afb08304ab3773c852bf3637, type: 3}
+  m_Name: CollectGeneric 1
+  m_EditorClassIdentifier: 
+  m_AudioClips:
+  - {fileID: 8300000, guid: 7993f98d77a0aeb47a309b2abb35dff5, type: 3}
+  - {fileID: 8300000, guid: 72179566b08674d469db9f4b988442bf, type: 3}
+  - {fileID: 8300000, guid: 4ce352d77b2edd746b55188e876216f6, type: 3}
+  - {fileID: 8300000, guid: 96f05d3b1837c7d48b80de33f8df348a, type: 3}
+  - {fileID: 8300000, guid: b67bc24dc47bdf246a3c2c318a5ff581, type: 3}
+  - {fileID: 8300000, guid: ec5d7afe36a54114f9c222cdc4db792a, type: 3}
+  - {fileID: 8300000, guid: f8efa806c059da14cb52cbe81b32050c, type: 3}
+  - {fileID: 8300000, guid: 5a778477057407542bfaacb4982c8a71, type: 3}
+  m_Volume: 1
+  m_RndMusicalPitch: 0
+  m_PitchOffsetSemitones: 0
+  m_PitchRangeSemitones: 2
+  m_IsUISound: 1
+  m_SuppressDoppler: 0
+  m_Amount3D: 0

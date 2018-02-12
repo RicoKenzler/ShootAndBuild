@@ -11,17 +11,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f472d17afb08304ab3773c852bf3637, type: 3}
   m_Name: DropBottle
   m_EditorClassIdentifier: 
-  audioClips:
+  m_AudioClips:
   - {fileID: 8300000, guid: 63fcfdbc5e7aa994e8429ee6754a1883, type: 3}
   - {fileID: 8300000, guid: 6b1c7a5a97d226148b5401e6d3442178, type: 3}
   - {fileID: 8300000, guid: 7e5fa60156f438249abc3b2e57ffc17e, type: 3}
   - {fileID: 8300000, guid: 7c8746f42edb14144ab1f12c1ed68017, type: 3}
   - {fileID: 8300000, guid: d26f52a53b2a6334d8ff2ed5dec5d839, type: 3}
   - {fileID: 8300000, guid: 8353261a32c2de14db420bf4b9ceaad1, type: 3}
-  volume: 1
-  rndMusicalPitch: 0
-  pitchOffsetSemitones: 0
-  pitchRangeSemitones: 2
-  isUISound: 0
-  suppressDoppler: 0
-  amount3D: 1
+  m_Volume: 1
+  m_RndMusicalPitch: 0
+  m_PitchOffsetSemitones: 0
+  m_PitchRangeSemitones: 2
+  m_IsUISound: 0
+  m_SuppressDoppler: 0
+  m_Amount3D: 1

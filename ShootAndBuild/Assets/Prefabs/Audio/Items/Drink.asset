@@ -17,6 +17,6 @@ MonoBehaviour:
   m_RndMusicalPitch: 0
   m_PitchOffsetSemitones: 0
   m_PitchRangeSemitones: 2
-  m_IsUISound: 0
+  m_IsUISound: 1
   m_SuppressDoppler: 0
   m_Amount3D: 1

@@ -11,12 +11,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f472d17afb08304ab3773c852bf3637, type: 3}
   m_Name: CollectCoins
   m_EditorClassIdentifier: 
-  audioClips:
+  m_AudioClips:
   - {fileID: 8300000, guid: 0312428a914c3c340a461b0ab1850a5e, type: 3}
   - {fileID: 8300000, guid: f98a49957555519428385ab84909441d, type: 3}
-  volume: 1
-  pitchOffsetSemitones: 0
-  pitchRangeSemitones: 2
-  isUISound: 0
-  suppressDoppler: 0
-  amount3D: 1
+  m_Volume: 1
+  m_RndMusicalPitch: 0
+  m_PitchOffsetSemitones: 0
+  m_PitchRangeSemitones: 2
+  m_IsUISound: 1
+  m_SuppressDoppler: 0
+  m_Amount3D: 0

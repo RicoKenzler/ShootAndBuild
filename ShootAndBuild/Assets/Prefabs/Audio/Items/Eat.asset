@@ -11,17 +11,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f472d17afb08304ab3773c852bf3637, type: 3}
   m_Name: Eat
   m_EditorClassIdentifier: 
-  audioClips:
+  m_AudioClips:
   - {fileID: 8300000, guid: c82ab83b4b0cb19458203c6bc04d3218, type: 3}
   - {fileID: 8300000, guid: 38ef3ab2151639044b50926a3d760516, type: 3}
   - {fileID: 8300000, guid: 2a84d04d4f8d74049976bad5af2ebe4a, type: 3}
   - {fileID: 8300000, guid: 952ebec0620642542bbbb7ed99a302a7, type: 3}
   - {fileID: 8300000, guid: 8573a03febb4090468b687f1bff1729c, type: 3}
   - {fileID: 8300000, guid: 8b7e10ee4fce6194fbd4aca01903f8ac, type: 3}
-  volume: 1
-  rndMusicalPitch: 0
-  pitchOffsetSemitones: 0
-  pitchRangeSemitones: 2
-  isUISound: 0
-  suppressDoppler: 0
-  amount3D: 1
+  m_Volume: 1
+  m_RndMusicalPitch: 0
+  m_PitchOffsetSemitones: 0
+  m_PitchRangeSemitones: 2
+  m_IsUISound: 1
+  m_SuppressDoppler: 0
+  m_Amount3D: 1

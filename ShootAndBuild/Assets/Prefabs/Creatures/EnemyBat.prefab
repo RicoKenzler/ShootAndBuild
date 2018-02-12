@@ -1500,12 +1500,17 @@ MonoBehaviour:
   m_ItemDrops:
   - itemPrefab: {fileID: 1797189723984674, guid: ebaf5d1e5ef1660458836d848ca0b292,
       type: 2}
-    dropProbability: 1
+    dropProbability: 0.5
     minDropAmount: 2
     maxDropAmount: 10
   - itemPrefab: {fileID: 1264481893144556, guid: 8b7f4feb6f83f87499e1fd939a9273ff,
       type: 2}
     dropProbability: 0.25
+    minDropAmount: 1
+    maxDropAmount: 1
+  - itemPrefab: {fileID: 1797189723984674, guid: f6bf455eb47dd1b4fbdf0f93e0693170,
+      type: 2}
+    dropProbability: 0.5
     minDropAmount: 1
     maxDropAmount: 1
   m_DieSound: {fileID: 11400000, guid: 37767856f479fcb4fa7c38b21a9d2a1b, type: 2}
