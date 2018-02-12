@@ -11,18 +11,18 @@ Prefab:
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 1797189723984674}
   m_IsPrefabParent: 1
---- !u!1 &1166311318340652
+--- !u!1 &1142108863534362
 GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 5
   m_Component:
-  - component: {fileID: 4691030472803068}
-  - component: {fileID: 33465719442526028}
-  - component: {fileID: 23040122027790258}
-  m_Layer: 10
-  m_Name: gun
+  - component: {fileID: 4556452018100206}
+  - component: {fileID: 33047909596651386}
+  - component: {fileID: 23708968246684230}
+  m_Layer: 0
+  m_Name: mauler
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -38,7 +38,7 @@ GameObject:
   - component: {fileID: 4408363481786548}
   - component: {fileID: 114107007437215872}
   m_Layer: 10
-  m_Name: WeaponRailgun
+  m_Name: WeaponMachineGun
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -51,32 +51,32 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1797189723984674}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -104.83659, y: 80.6072, z: 77.8685}
+  m_LocalPosition: {x: -105.14773, y: 81.24478, z: 78.661}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 4691030472803068}
+  - {fileID: 4556452018100206}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!4 &4691030472803068
+--- !u!4 &4556452018100206
 Transform:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1166311318340652}
-  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
+  m_GameObject: {fileID: 1142108863534362}
+  m_LocalRotation: {x: -0, y: -0, z: 0.7028982, w: 0.7112905}
   m_LocalPosition: {x: 0, y: 0.1, z: 0}
-  m_LocalScale: {x: 12, y: 7, z: 7}
+  m_LocalScale: {x: 10, y: 10, z: 10}
   m_Children: []
   m_Father: {fileID: 4408363481786548}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
---- !u!23 &23040122027790258
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 89.32}
+--- !u!23 &23708968246684230
 MeshRenderer:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1166311318340652}
+  m_GameObject: {fileID: 1142108863534362}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -85,7 +85,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: 89f98175e2798b4459ae8fcfc064f205, type: 2}
+  - {fileID: 2100000, guid: b1ef718eff01b184985194afcab62985, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -105,13 +105,13 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!33 &33465719442526028
+--- !u!33 &33047909596651386
 MeshFilter:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1166311318340652}
-  m_Mesh: {fileID: 4300000, guid: c65eeed0e623d84468374b51a0d355da, type: 3}
+  m_GameObject: {fileID: 1142108863534362}
+  m_Mesh: {fileID: 4300000, guid: a97da33f506743140bba5d7a279179ed, type: 3}
 --- !u!114 &114107007437215872
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -126,5 +126,5 @@ MonoBehaviour:
   m_CollectRadius: 1.1
   m_CollectSound: {fileID: 11400000, guid: ba000a55b418c464bb5a83b3e7d47396, type: 2}
   m_DropSound: {fileID: 11400000, guid: cf0da9089932c9b4982f9e95cbad1ab9, type: 2}
-  collectableData: {fileID: 1960685361530684, guid: 44995dca9b64d4543a5dcd7ba9ac4b3f,
+  collectableData: {fileID: 1205538322238292, guid: 70e583677d96d0d4b99148c9d1f2fb06,
     type: 2}
