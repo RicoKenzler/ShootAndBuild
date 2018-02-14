@@ -55,26 +55,21 @@ namespace SAB
 			{
 				int cheatCount = 500;
 
-				foreach (ItemType itemType in System.Enum.GetValues(typeof(ItemType)))
-				{
-					ItemData itemData = ItemManager.instance.GetItemInfos(itemType);
-					if (itemData.useOnCollect)
-					{
-						continue;
-					}
-
-					if (itemData.isShared)
-					{
-						Inventory.sharedInventoryInstance.AddItem(itemType, cheatCount);
-					}
-					else
-					{
-						foreach (InputController player in PlayerManager.instance.allAlivePlayers)
-						{
-							player.GetComponent<Inventory>().AddItem(itemType, cheatCount);
-						}
-					}
+				List<StorableItemData> allItemDatas = FindAssetsByType<StorableItemData>();
 				
+				foreach (StorableItemData itemData in allItemDatas)
+				{
+					Inventory.ChangeItemCount_AutoSelectInventories(new ItemAndCount(itemData, cheatCount), false);
+				}
+
+				List<WeaponData> allWeaponsData = FindAssetsByType<WeaponData>();
+				
+				foreach (WeaponData weaponData in allWeaponsData)
+				{
+					foreach (InputController player in PlayerManager.instance.allDeadOrAlivePlayers)
+					{
+						player.GetComponent<Shooter>().AddWeapon(new WeaponWithAmmo(weaponData, cheatCount));
+					}
 				}
 			}
 
@@ -105,5 +100,17 @@ namespace SAB
 				cheatManager.pauseWaves = true;
 			}
 		}
+
+		///////////////////////////////////////////////////////////////////////////
+
+		public static List<T> FindAssetsByType<T>() where T : UnityEngine.Object
+		{
+			T[] results = Resources.FindObjectsOfTypeAll<T>();
+
+			return new List<T>(results);
+		}
+
+		///////////////////////////////////////////////////////////////////////////
 	}
+
 }

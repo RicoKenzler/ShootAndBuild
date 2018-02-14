@@ -153,11 +153,11 @@ namespace SAB.Spawn
 			int run = 0;
 			while (++run < 50)
 			{
-				float x = UnityEngine.Random.Range(0f, Grid.instance.size);
-				float z = UnityEngine.Random.Range(0f, Grid.instance.size);
+				float x = UnityEngine.Random.Range(0f, BlockerGrid.instance.size);
+				float z = UnityEngine.Random.Range(0f, BlockerGrid.instance.size);
 
 				Vector3 pos = new Vector3(x, 0, z);
-				bool free = Grid.instance.IsFree(monster, pos);
+				bool free = BlockerGrid.instance.IsFree(monster, pos);
 				if (!free)
 				{
 					continue;
@@ -179,7 +179,7 @@ namespace SAB.Spawn
 
 			Debug.LogError("Found no suitable position for an enemy!");
 
-			float middle = Grid.instance.size / 2.0f;
+			float middle = BlockerGrid.instance.size / 2.0f;
 			return new Vector3(middle, middle);
 		}
 

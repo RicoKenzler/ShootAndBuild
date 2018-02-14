@@ -59,4 +59,5 @@ MonoBehaviour:
   m_FadeOutTime: 6
   m_FadeInTime: 6
   m_PanoramaFadeTime: 6
+  m_SubListenerDistanceFactor: 0.2
   m_MaxStereo: 0.7

@@ -74,6 +74,10 @@ namespace SAB
 
 		///////////////////////////////////////////////////////////////////////////
 
+		float m_HackedyHackLastSpawnNewPlayerTry = float.MinValue;
+
+		///////////////////////////////////////////////////////////////////////////
+
         private void TrySpawnNewPlayers()
         {
             InputMethod? buttonPresser = InputManager.instance.IsButtonDownForUnusedInputMethod(SPAWN_BUTTON);
@@ -82,6 +86,14 @@ namespace SAB
             {
                 return;
             }
+
+			// This ugly hack is here because we do not have a "WasButtonJustPressedForUnusedInputMethod", resulting in
+			// isdown, isdown, isdown spam, resulting in audio-cannot-spawn-spam
+			if (Time.time - m_HackedyHackLastSpawnNewPlayerTry < 1.0f)
+			{
+				return;
+			}
+			m_HackedyHackLastSpawnNewPlayerTry = Time.time;
 
             // 1) Try spawn NEW players
             foreach (PlayerID playerID in System.Enum.GetValues(typeof(PlayerID)))
@@ -117,9 +129,11 @@ namespace SAB
 
         private bool TrySpendLife()
         {
-            if (Inventory.sharedInventoryInstance.GetItemCount(ItemType.ExtraLifes) > 0)
+			StorableItemData extraLifeData = GameManager.instance.extraLifeItemData;
+
+            if (Inventory.sharedInventoryInstance.GetItemCount(extraLifeData) > 0)
             {
-                Inventory.sharedInventoryInstance.AddItem(ItemType.ExtraLifes, -1);
+                Inventory.sharedInventoryInstance.ChangeItemCount(extraLifeData, -1);
                 return true;
             }
 
@@ -210,6 +224,7 @@ namespace SAB
             newPlayerObject.transform.position = GetRandomPlayerSpawnPosition();
             newPlayerObject.GetComponent<InputController>().playerID = playerID;
             newPlayerObject.GetComponent<Attackable>().PlayerDies += OnPlayerDies;
+			newPlayerObject.GetComponent<Shooter>().ReceiveStartWeapons();
 
             Player newPlayer = new Player();
             newPlayer.playerObject = newPlayerObject;

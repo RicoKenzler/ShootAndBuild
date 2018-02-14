@@ -33,7 +33,7 @@ namespace SAB
         public void TryBuild()
         {
             Vector3 pos = transform.position + transform.rotation * (m_Distance * Vector3.forward);
-            pos = Grid.instance.ToTileCenter(pos);
+            pos = BlockerGrid.instance.ToTileCenter(pos);
 
             Building activeBuilding = playerMenu.activeBuildingPrefab;
 
@@ -42,21 +42,26 @@ namespace SAB
                 return;
             }
 
-            if (!activeBuilding.IsPayable())
+			PlayerPanel playerPanel = PlayerPanelGroup.instance.GetPlayerPanel(GetComponent<InputController>().playerID);
+
+            if (!Inventory.CanBePaid(activeBuilding.costs))
             {
                 Inventory.sharedInventoryInstance.TriggerNotEnoughItemsSound();
 
                 GlobalPanel.instance.HighlightMoney();
+				playerPanel.HightlightBuildingCostCount();
                 return;
             }
 
-            if (!Grid.instance.IsFree(activeBuilding.gameObject, pos))
+            if (!BlockerGrid.instance.IsFree(activeBuilding.gameObject, pos))
             {
                 AudioManager.instance.PlayAudio(m_NoSpaceSound);
                 return;
             }
 
             Build(activeBuilding, pos);
+
+			playerPanel.HighlightActiveBuilding();
         }
 
 		///////////////////////////////////////////////////////////////////////////
@@ -78,7 +83,7 @@ namespace SAB
 
 			AudioManager.instance.PlayAudio(m_BuildSound, transform.position);
 
-            buildingPrefab.Pay();
+            Inventory.ChangeItemCount_AutoSelectInventories(buildingPrefab.costs, true, gameObject);
 
             if (m_BuildEffect)
             {

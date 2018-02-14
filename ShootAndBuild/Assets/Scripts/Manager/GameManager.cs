@@ -18,7 +18,7 @@ namespace SAB
 	  
     public enum WinCondition
     {
-        MoneyTotal          // gain X money
+        StorageTotal          // gain X of item Y
     };
 
 	///////////////////////////////////////////////////////////////////////////
@@ -33,7 +33,7 @@ namespace SAB
 
     public class GameManager : MonoBehaviour
     {
-        [SerializeField] private WinCondition	m_WinCondition	= WinCondition.MoneyTotal;
+        [SerializeField] private WinCondition	m_WinCondition	= WinCondition.StorageTotal;
         [SerializeField] private LoseCondition	m_LoseCondition	= LoseCondition.DestroyObject;
 
         [SerializeField] private int			m_WinConditionContextValue		= 1000;
@@ -47,6 +47,9 @@ namespace SAB
         [SerializeField] private AudioData		m_WinSound;
         [SerializeField] private AudioData		m_LoseSound;
 
+		[SerializeField] private StorableItemData m_ExtraLifeItemData;
+		[SerializeField] private StorableItemData m_MoneyItemData;
+
         private GameStatus m_GameStatus = GameStatus.Running;
         private Canvas m_Canvas;
 
@@ -58,6 +61,9 @@ namespace SAB
 		public WinCondition		winCondition				{ get { return m_WinCondition; } }
 		public GameObject		winConditionContextObject	{ get { return m_WinConditionContextObject; } }
 		public int				winConditionContextValue	{ get { return m_WinConditionContextValue; } }
+
+		public StorableItemData extraLifeItemData			{ get { return m_ExtraLifeItemData; }}
+		public StorableItemData goldItemData				{ get { return m_MoneyItemData; }}
 
 		///////////////////////////////////////////////////////////////////////////
 
@@ -115,7 +121,7 @@ namespace SAB
 
             switch (m_WinCondition)
             {
-                case WinCondition.MoneyTotal:
+                case WinCondition.StorageTotal:
                     if (GetCurrentWinConditionContext() >= m_WinConditionContextValue)
                     {
                         WinGame();
@@ -130,8 +136,8 @@ namespace SAB
         {
             switch (m_WinCondition)
             {
-                case WinCondition.MoneyTotal:
-                    return Inventory.sharedInventoryInstance.GetItemCount(ItemType.Gold);
+                case WinCondition.StorageTotal:
+                    return Inventory.sharedInventoryInstance.GetItemCount(m_WinConditionContextObject.GetComponent<StorableItemData>());
             }
 
             return -1;
@@ -187,13 +193,14 @@ namespace SAB
             // Default lose condition
             if (!lostGame)
             {
-                if (Inventory.sharedInventoryInstance.GetItemCount(ItemType.ExtraLifes) <= 0)
+				if (PlayerManager.instance.allAlivePlayers.Count == 0)
                 {
-                    if (PlayerManager.instance.allAlivePlayers.Count == 0)
-                    {
-                        lostGame = true;
-                    }
-                }
+					ItemAndCount reviveCosts = new ItemAndCount(extraLifeItemData, 1);
+					if (!Inventory.CanBePaid(reviveCosts))
+					{
+						lostGame = true;	
+					}
+				}
             }
             
             if (lostGame)

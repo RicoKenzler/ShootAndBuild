@@ -29,7 +29,7 @@ namespace SAB
 
 			switch (GameManager.instance.winCondition)
             {
-                case WinCondition.MoneyTotal:
+                case WinCondition.StorageTotal:
                     winString += "Gather Money\n";
                     winString += GameManager.instance.GetCurrentWinConditionContext() + " / " + GameManager.instance.winConditionContextValue + "\n\n";
                     break;

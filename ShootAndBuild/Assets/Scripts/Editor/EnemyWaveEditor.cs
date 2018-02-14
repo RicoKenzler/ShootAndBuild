@@ -233,13 +233,25 @@ namespace SAB
 		{
 			GUILayout.Label("Reward");
 			GUILayout.Label("Gold");
-			string output = GUILayout.TextField(stage.gold.ToString());
+
+			int oldGoldCount = 0;
+
+			foreach(ItemAndCount reward in stage.rewards)
+			{
+				if (reward.itemData == GameManager.instance.goldItemData)
+				{
+					oldGoldCount = reward.count;
+				}
+			}
+
+			string output = GUILayout.TextField(oldGoldCount.ToString());
 			int newValue = 0;
+
 			if (int.TryParse(output, out newValue))
 			{
-				stage.gold = newValue;
+				stage.rewards = new ItemAndCount[1];
+				stage.rewards[0] = new ItemAndCount(GameManager.instance.goldItemData, newValue);
 			}
-			stage.reward = (Collectable)EditorGUILayout.ObjectField(stage.reward, typeof(Collectable), false);
 		}
 
 		///////////////////////////////////////////////////////////////////////////

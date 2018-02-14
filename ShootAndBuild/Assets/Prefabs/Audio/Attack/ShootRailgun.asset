@@ -11,12 +11,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f472d17afb08304ab3773c852bf3637, type: 3}
   m_Name: ShootRailgun
   m_EditorClassIdentifier: 
-  audioClips:
+  m_AudioClips:
   - {fileID: 8300000, guid: 6faf8966be2e8464f8efd7aeac14952b, type: 3}
-  volume: 1
-  rndMusicalPitch: 0
-  pitchOffsetSemitones: 0
-  pitchRangeSemitones: 4
-  isUISound: 0
-  suppressDoppler: 0
-  amount3D: 1
+  m_Volume: 0.56
+  m_RndMusicalPitch: 0
+  m_PitchOffsetSemitones: 0
+  m_PitchRangeSemitones: 4
+  m_IsUISound: 0
+  m_SuppressDoppler: 0
+  m_Amount3D: 1

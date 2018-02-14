@@ -5,20 +5,18 @@ using UnityEngine.Serialization;
 
 namespace SAB
 {
+	///////////////////////////////////////////////////////////////////////////
+
     public class Building : MonoBehaviour
     {
-		[FormerlySerializedAs("costs")]
-        [SerializeField] private int		m_Costs = 10;
-
-		[FormerlySerializedAs("icon")]
-        [SerializeField] private Sprite		m_Icon;
+        [SerializeField] ItemAndCount[]		m_Costs;
 
         private Attackable	m_Attackable;
         private Renderer	m_ChildsRenderer;
 
         ///////////////////////////////////////////////////////////////////////////
 
-		public Sprite icon { get { return m_Icon; } }
+		public ItemAndCount[] costs { get { return m_Costs; }}
 
 		///////////////////////////////////////////////////////////////////////////
 
@@ -42,36 +40,6 @@ namespace SAB
         void OnDisable()
         {
             BuildingManager.instance.RegisterBuilding(this, true);
-        }
-
-        ///////////////////////////////////////////////////////////////////////////
-
-        public void Pay()
-        {
-            if (CheatManager.instance.noResourceCosts)
-            {
-                return;
-            }
-
-            Inventory.sharedInventoryInstance.AddItem(ItemType.Gold, -m_Costs);
-        }
-
-        ///////////////////////////////////////////////////////////////////////////
-
-        public bool IsPayable()
-        {
-            int goldAmount = Inventory.sharedInventoryInstance.GetItemCount(ItemType.Gold);
-            if (goldAmount >= m_Costs)
-            {
-                return true;
-            }
-
-            if (CheatManager.instance.noResourceCosts)
-            {
-                return true;
-            }
-
-            return false;
         }
 
         ///////////////////////////////////////////////////////////////////////////

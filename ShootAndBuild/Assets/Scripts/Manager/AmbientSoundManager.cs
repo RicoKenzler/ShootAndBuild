@@ -53,6 +53,7 @@ namespace SAB
 		[SerializeField] private  float		m_FadeOutTime				= 2.0f;
 		[SerializeField] private  float		m_FadeInTime				= 3.0f;
 		[SerializeField] private  float		m_PanoramaFadeTime			= 3.0f;
+		[SerializeField] private  float		m_SubListenerDistanceFactor	= 1.0f;
 
 		[Range(0,1)]
 		[SerializeField] private  float		m_MaxStereo					= 0.7f;
@@ -140,6 +141,7 @@ namespace SAB
 			float	listenerWidth		= CameraController.instance.GetListenerWidth();
 
 			listenerWidth = Mathf.Max(listenerWidth, 10.0f);
+			listenerWidth *= m_SubListenerDistanceFactor;
 
 			List<SamplePosition> samplePositionsByPriority = new List<SamplePosition>();
 

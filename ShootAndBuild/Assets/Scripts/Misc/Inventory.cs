@@ -1,9 +1,25 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using UnityEngine;
 
 namespace SAB
 {
+	[System.Serializable]
+	public struct ItemAndCount
+	{
+		public StorableItemData		itemData;
+		public int					count;
+
+		public ItemAndCount(StorableItemData _itemData, int _count)
+		{
+			itemData	= _itemData;
+			count		= _count;
+		}
+	}
+
+	///////////////////////////////////////////////////////////////////////////
+
     public enum InventorySelectionCategory
     {
         Item,
@@ -21,22 +37,22 @@ namespace SAB
 
 		///////////////////////////////////////////////////////////////////////////
 
-        private Dictionary<ItemType, int> m_ItemCounts = new Dictionary<ItemType, int>();
+        private Dictionary<StorableItemData, int> m_ItemCounts = new Dictionary<StorableItemData, int>();
 
-        private Throwable		m_Throwable;
-        private InputController m_InputController;
-        private Attackable		m_Attackable;
-        private PlayerMenu		m_PlayerMenu;
-		private Buffable		m_Buffable;
+        private Thrower				m_Throwable;
+        private InputController		m_InputController;
+        private PlayerMenu			m_PlayerMenu;
+		private StorableItemData	m_ActiveItemData;
 
 		///////////////////////////////////////////////////////////////////////////
 
+		public StorableItemData	activeItemData			{ get { return m_ActiveItemData; } }
 		public static Inventory sharedInventoryInstance { get; private set; }
 
 		///////////////////////////////////////////////////////////////////////////
 
         // ReadOnly Dictionaries are not supported before .Net 4.5
-        public Dictionary<ItemType, int> GetItemsReadOnly()
+        public Dictionary<StorableItemData, int> GetItemsReadOnly()
         {
             return m_ItemCounts;
         }
@@ -46,24 +62,22 @@ namespace SAB
         void Awake()
         {
             m_InputController = GetComponent<InputController>();
-            m_Attackable = GetComponent<Attackable>();
             m_PlayerMenu = GetComponent<PlayerMenu>();
-            m_Throwable = GetComponent<Throwable>();
-			m_Buffable = GetComponent<Buffable>();
+            m_Throwable = GetComponent<Thrower>();
 
             if (m_InputController)
             {
                 // init start items
-                Dictionary<ItemType, ItemData> itemInfos = ItemManager.instance.itemDataMap;
+               StartItem[] startItems = ItemManager.instance.startItem;
 
-                foreach (KeyValuePair<ItemType, ItemData> item in itemInfos)
+                foreach (StartItem startItem in startItems)
                 {
-                    if (item.Value.isShared || item.Value.initialCount <= 0)
+                    if (startItem.item.isShared || startItem.count <= 0)
                     {
                         continue;
                     }
 
-                    AddItem(item.Value.itemType, item.Value.initialCount);
+                    ChangeItemCount(startItem.item, startItem.count);
                 }
             }
             else
@@ -95,7 +109,7 @@ namespace SAB
 
             PlayerPanel playerPanel = PlayerPanelGroup.instance.GetPlayerPanel(m_InputController.playerID);
 
-            if ((GetItemCount(m_PlayerMenu.activeItemType) <= 0) && !CheatManager.instance.noResourceCosts)
+            if ((GetItemCount(m_PlayerMenu.activeItemData) <= 0) && !CheatManager.instance.noResourceCosts)
             {
                 // Item not usable
                 sharedInventoryInstance.TriggerNotEnoughItemsSound();
@@ -108,109 +122,141 @@ namespace SAB
             // Use Item
             playerPanel.HighlightActiveItem();
 
-            UseItem(m_PlayerMenu.activeItemType);
+            UseItem(m_ActiveItemData);
 
-            if (!CheatManager.instance.noResourceCosts)
-            {
-                AddItem(m_PlayerMenu.activeItemType, -1);
-            }
+            ChangeItemCount(m_ActiveItemData, -1);
         }
 
 		///////////////////////////////////////////////////////////////////////////
 
-        void UseItem(ItemType itemType, int count = 1)
-        {
-			if (this != sharedInventoryInstance)
-			{
-				// Dead Players should not use items.
-				// currently this can happen when a rewardStage yields an apple to all players
-				PlayerID playerID = m_InputController.playerID;
+		public bool CycleThroughActiveItems(bool positiveOrder)
+		{
+			// 1) Get Current Index
+			int curIndex			= -1;
+			int usableItemsCount	= 0;
+			int tmpIndex			= -1;
 
-				if (!PlayerManager.instance.IsAlive(playerID))
+			foreach (KeyValuePair<StorableItemData, int> item in m_ItemCounts)
+			{
+				if (!item.Key.CanBeUsedActively())
 				{
-					return;
+					continue;
+				}
+
+				usableItemsCount++;
+				tmpIndex++;
+				
+				if (item.Key == m_ActiveItemData)
+				{
+					curIndex = tmpIndex;
 				}
 			}
 
-            ItemData itemInfos = ItemManager.instance.GetItemInfos(itemType);
+			if (usableItemsCount == 0)
+			{
+				return false;
+			}
 
-            switch (itemInfos.usageCategory)
-            {
-                case ItemUsageCategory.PassiveItem:
-                    Debug.Assert(false, "Passive Items are not usable");
-                    break;
-                case ItemUsageCategory.UsableItem:
-                    m_Throwable.Throw();
-                    break;
-                case ItemUsageCategory.Weapon:
-                    Debug.Assert(false, "Weapons are not usable");
-                    break;
-                case ItemUsageCategory.StatChanger:
-                    switch (itemInfos.itemType)
-                    {
-                        case ItemType.CheeseHeal:
-                            m_Attackable.Heal(1.0f);
-                            break;
+			// 2) Chose next index
+			int targetIndex;
 
-                        case ItemType.AppleHeal:
-                            m_Attackable.Heal(0.25f);
-                            break;
+			if (curIndex == -1)
+			{
+				targetIndex = positiveOrder ? 0 : usableItemsCount - 1;
+			}
+			else
+			{
+				targetIndex = curIndex + (positiveOrder ? 1 : -1);
+				targetIndex = targetIndex % usableItemsCount;
+			}
 
-                        default:
-                            Debug.LogWarning("Missing case statement for " + itemInfos.itemType);
-                            break;
-                    }
-                    break;
+			if (targetIndex == curIndex)
+			{
+				return false;
+			}
 
-                default:
-                    Debug.LogWarning("Missing case statement for " + itemInfos.itemType);
-                    break;
-            }
+			// 3) Set next index
+			tmpIndex = -1;
+			foreach (KeyValuePair<StorableItemData, int> item in m_ItemCounts)
+			{
+				if (!item.Key.CanBeUsedActively())
+				{
+					continue;
+				}
 
-			m_Buffable.AddBuffs(itemInfos.buffs);
+				tmpIndex++;
+				
+				if (tmpIndex == targetIndex)
+				{
+					m_ActiveItemData = item.Key;
+					return true;
+				}
+			}
 
-            // Player Counter
-            PlayerID? user = m_InputController ? (PlayerID?)m_InputController.playerID : null;
-            CounterManager.instance.AddToCounters(user, CounterType.ItemsUsed, count, itemInfos.itemType.ToString());
+			Debug.Assert(false);
+			return false;
+		}
+
+		///////////////////////////////////////////////////////////////////////////
+
+		private void UseItem(StorableItemData itemData)
+		{
+			bool itemWasUsed = false;
+
+			ThrowableData throwable		= itemData.GetComponent<ThrowableData>();
+			ConsumableData consumable	= itemData.GetComponent<ConsumableData>();
+
+			if (throwable)
+			{
+				m_Throwable.Throw(throwable);
+				itemWasUsed = true;
+			}
+
+			if (consumable)
+			{
+				consumable.Consume(gameObject);
+				itemWasUsed = true;
+			}
+
+			Debug.Assert(itemWasUsed);
+		}
+
+		///////////////////////////////////////////////////////////////////////////
+
+        public void ChangeItemCount(StorableItemData itemData, int count)
+        {
+			if (m_ItemCounts.ContainsKey(itemData))
+			{
+				m_ItemCounts[itemData] += count;
+			}
+			else
+			{
+				m_ItemCounts.Add(itemData, count);
+			}
+
+			if (m_ItemCounts[itemData] < 0)
+			{
+				Debug.Assert(CheatManager.instance.noResourceCosts);
+
+				m_ItemCounts[itemData] = 0;
+			}
+
+			if (m_ActiveItemData == null && itemData.CanBeUsedActively())
+			{
+				m_ActiveItemData = itemData;
+			}
         }
 
 		///////////////////////////////////////////////////////////////////////////
 
-        public void AddItem(ItemType itemType, int count)
+        public int GetItemCount(StorableItemData itemType)
         {
-            ItemData itemInfos = ItemManager.instance.GetItemInfos(itemType);
+			if (itemType == null)
+			{
+				Debug.Assert(false, "You did not specify an item");
+				return 0;
+			}
 
-            if (itemInfos.usageCategory == ItemUsageCategory.Weapon && count > 0) {
-
-                Shootable shoot = this.GetComponent<Shootable>();
-                if (shoot != null && itemInfos.weaponData != null)
-                {
-                    shoot.AddWeapon(itemInfos.weaponData);
-                }
-                return;
-            }
-
-
-            if (itemInfos.useOnCollect)
-            {
-                UseItem(itemType, count);
-                return;
-            }
-
-            if (m_ItemCounts.ContainsKey(itemType))
-            {
-                m_ItemCounts[itemType] += count;
-            }
-            else
-            {
-                m_ItemCounts.Add(itemType, count);
-            }
-        }
-
-		///////////////////////////////////////////////////////////////////////////
-
-        public int GetItemCount(ItemType itemType)
-        {
             int itemAmount = 0;
 
             if (!m_ItemCounts.TryGetValue(itemType, out itemAmount))
@@ -220,5 +266,112 @@ namespace SAB
 
             return itemAmount;
         }
+
+		///////////////////////////////////////////////////////////////////////////
+
+		// null = all players pay
+		public static bool CanBePaid(ItemAndCount cost, GameObject singlePayingPlayer = null)
+		{
+			// Cheat
+			if (CheatManager.instance.noResourceCosts)
+			{
+				return true;
+			}
+
+			// Check
+			if (cost.itemData.isShared)
+			{
+				// Can Global inventory afford?
+				Inventory sharedInventory = Inventory.sharedInventoryInstance;
+				return (sharedInventory.GetItemCount(cost.itemData) >= cost.count);
+			}
+			else
+			{
+				if (singlePayingPlayer)
+				{
+					// Can single player afford?
+					Inventory playerInventory = singlePayingPlayer.GetComponent<Inventory>();
+					return (playerInventory.GetItemCount(cost.itemData) >= cost.count);
+				}
+				else
+				{
+					foreach (InputController player in PlayerManager.instance.allDeadOrAlivePlayers)
+					{
+						Inventory playerInventory = player.GetComponent<Inventory>();
+						if (playerInventory.GetItemCount(cost.itemData) >= cost.count)
+						{
+							continue;
+						}
+
+						// One player cannot afford this
+						return false;
+					}
+
+					// all player can afford this
+					return true;
+				}
+			}		
+		}
+
+		///////////////////////////////////////////////////////////////////////////
+
+		// null = all players pay
+		public static bool CanBePaid(ItemAndCount[] costs, GameObject singlePayingPlayer = null)
+		{
+			foreach (ItemAndCount cost in costs)
+			{
+				if (!CanBePaid(cost, singlePayingPlayer))
+				{
+					return false;
+				}
+			}
+
+			return true;
+		}
+
+		///////////////////////////////////////////////////////////////////////////
+
+		// null = all players pay
+		public static void ChangeItemCount_AutoSelectInventories(ItemAndCount itemAndCount, bool subtract, GameObject singlePayingPlayer = null)
+		{
+			int signedItemCount = subtract ? -itemAndCount.count : itemAndCount.count;
+
+			if (itemAndCount.itemData.isShared)
+			{
+				// Can Global inventory afford?
+				Inventory sharedInventory = Inventory.sharedInventoryInstance;
+				sharedInventory.ChangeItemCount(itemAndCount.itemData, signedItemCount);
+			}
+			else
+			{
+				if (singlePayingPlayer)
+				{
+					// Can single player afford?
+					Inventory playerInventory = singlePayingPlayer.GetComponent<Inventory>();
+					playerInventory.ChangeItemCount(itemAndCount.itemData, signedItemCount);
+				}
+				else
+				{
+					foreach (InputController player in PlayerManager.instance.allDeadOrAlivePlayers)
+					{
+						Inventory playerInventory = player.GetComponent<Inventory>();
+						playerInventory.ChangeItemCount(itemAndCount.itemData, signedItemCount);
+					}
+				}
+			}		
+		}
+
+		///////////////////////////////////////////////////////////////////////////
+
+		// null = all players pay
+		public static void ChangeItemCount_AutoSelectInventories(ItemAndCount[] itemsAndCounts, bool subtract, GameObject singlePayingPlayer = null)
+		{
+			foreach (ItemAndCount itemAndCount in itemsAndCounts)
+			{
+				ChangeItemCount_AutoSelectInventories(itemAndCount, subtract, singlePayingPlayer);
+			}
+		}
+
+		///////////////////////////////////////////////////////////////////////////
     }
 }

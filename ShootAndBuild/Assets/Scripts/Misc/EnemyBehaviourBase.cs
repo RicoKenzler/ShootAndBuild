@@ -128,7 +128,7 @@ namespace SAB
 
         protected float		m_CurrentAttackCooldown = 0;
         protected Animation m_AnimationController;
-        protected Movable	m_Movable;
+        protected Mover	m_Movable;
 
 		///////////////////////////////////////////////////////////////////////////
 
@@ -166,7 +166,7 @@ namespace SAB
 		protected virtual void Awake()
 		{
 			m_AnimationController = GetComponentInChildren<Animation>();
-			m_Movable = GetComponent<Movable>();
+			m_Movable = GetComponent<Mover>();
 		}
 
 		///////////////////////////////////////////////////////////////////////////
@@ -357,7 +357,7 @@ namespace SAB
             if (CheatManager.instance.freezeEnemies)
             {
 				// ... stop update
-                GetComponent<Movable>().moveForce = new Vector3(0.0f, 0.0f, 0.0f);
+                GetComponent<Mover>().moveForce = new Vector3(0.0f, 0.0f, 0.0f);
                 return;
             }
 

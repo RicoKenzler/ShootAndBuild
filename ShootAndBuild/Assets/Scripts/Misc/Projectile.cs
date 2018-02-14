@@ -6,23 +6,15 @@ namespace SAB
 {
 	public class Projectile : MonoBehaviour
 	{
-		[Tooltip("Speed in units per second")]
-		[FormerlySerializedAs("speed")]
-		[SerializeField] private float m_Speed = 5;
-
-		[FormerlySerializedAs("range")]
-		[SerializeField] private float m_Range;
-
-		[FormerlySerializedAs("buffs")]
-		[SerializeField] private List<BuffData> m_Buffs;
-
-		[FormerlySerializedAs("ricochetEffect")]
-		[SerializeField] private GameObject m_RicochetEffect;
+		private float m_Speed;
+		private float m_Range;
+		private List<BuffData> m_Buffs;
+		private GameObject m_RicochetEffect;
 
 		///////////////////////////////////////////////////////////////////////////
 
 		private Vector3		m_StartPos;
-		private Shootable	m_Owner;
+		private Shooter		m_Owner;
 		private Faction		m_OwnerFaction;   //< remember faction separately as Owner could have died when we need the info
 
 		///////////////////////////////////////////////////////////////////////////
@@ -30,7 +22,7 @@ namespace SAB
 		public Vector3	direction	{ get; set; }
 		public int		damage		{ get; set; }
 
-		public Shootable owner {
+		public Shooter owner {
 
 			get { return m_Owner; } 
 

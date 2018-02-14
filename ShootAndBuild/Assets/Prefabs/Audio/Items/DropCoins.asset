@@ -11,13 +11,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f472d17afb08304ab3773c852bf3637, type: 3}
   m_Name: DropCoins
   m_EditorClassIdentifier: 
-  audioClips:
+  m_AudioClips:
   - {fileID: 8300000, guid: c41d9bcd0173d624d968c9d012de91dd, type: 3}
   - {fileID: 8300000, guid: 805cd795eca8f0342813411d4e328d1c, type: 3}
   - {fileID: 8300000, guid: 30c94437a9aa57349b00eea217bc61f0, type: 3}
-  volume: 1
-  pitchOffsetSemitones: 0
-  pitchRangeSemitones: 2
-  isUISound: 0
-  suppressDoppler: 0
-  amount3D: 1
+  m_Volume: 1
+  m_RndMusicalPitch: 0
+  m_PitchOffsetSemitones: 0
+  m_PitchRangeSemitones: 2
+  m_IsUISound: 0
+  m_SuppressDoppler: 0
+  m_Amount3D: 1

@@ -17,15 +17,15 @@ namespace SAB
         private InventorySelectionCategory m_ActiveSelectionCategory = InventorySelectionCategory.Item;
         private Inventory inventory;
         private Builder builder;
-        private Shootable shootable;
+        private Shooter shootable;
 
 		///////////////////////////////////////////////////////////////////////////
 
 		public InventorySelectionCategory	activeSelectionCategory		{ get { return m_ActiveSelectionCategory; } }
         public float						lastMenuInteractionTime		{ get; private set; }
-		public ItemType						activeItemType				{ get; private set; }
+		public StorableItemData				activeItemData				{ get { return inventory.activeItemData; } }
         public Building						activeBuildingPrefab		{ get; private set; }
-		public WeaponData					activeWeapon				{ get { return shootable.currentWeapon; } }
+		public Weapon						activeWeapon				{ get { return shootable.currentWeapon; } }
 
 		///////////////////////////////////////////////////////////////////////////
 
@@ -33,35 +33,9 @@ namespace SAB
         {
 			inventory = GetComponent<Inventory>();
             builder = GetComponent<Builder>();
-            shootable = GetComponent<Shootable>();
+            shootable = GetComponent<Shooter>();
 
             lastMenuInteractionTime = 0.0f;
-            activeItemType = ItemType.None;
-        }
-
-		///////////////////////////////////////////////////////////////////////////
-
-        void InitActiveItemType()
-        {
-            Dictionary<ItemType, int> allItems = inventory.GetItemsReadOnly();
-
-            activeItemType = ItemType.Granades;
-
-            foreach (KeyValuePair<ItemType, int> item in allItems)
-            {
-                if (item.Value <= 0)
-                {
-                    continue;
-                }
-
-                ItemData itemData = ItemManager.instance.GetItemInfos(item.Key);
-
-                if (itemData.usageCategory == ItemUsageCategory.UsableItem)
-                {
-                    activeItemType = item.Key;
-                    break;
-                }
-            }
         }
 
 		///////////////////////////////////////////////////////////////////////////
@@ -82,25 +56,9 @@ namespace SAB
 
         void Start()
         {
-            InitActiveItemType();
             InitActiveBuildingType();
         }
 		
-		///////////////////////////////////////////////////////////////////////////
-
-        private bool TryCycleThroughItems(bool positiveOrder)
-        {
-            // Not implemented yet
-            return false;
-        }
-
-		///////////////////////////////////////////////////////////////////////////
-
-        private bool TryCycleThroughWeapons(bool positiveOrder)
-        {
-            return shootable.CycleWeapons(positiveOrder);
-        }
-
 		///////////////////////////////////////////////////////////////////////////
 
         private bool TryCycleThroughBuildings(bool positiveOrder)
@@ -179,10 +137,10 @@ namespace SAB
             switch (m_ActiveSelectionCategory)
             {
                 case InventorySelectionCategory.Item:
-                    success = TryCycleThroughItems(positiveOrder);
+                    success = inventory.CycleThroughActiveItems(positiveOrder);
                     break;
                 case InventorySelectionCategory.Weapon:
-                    success = TryCycleThroughWeapons(positiveOrder);
+                    success = shootable.CycleWeapons(positiveOrder);
                     break;
                 case InventorySelectionCategory.Building:
                     success = TryCycleThroughBuildings(positiveOrder);

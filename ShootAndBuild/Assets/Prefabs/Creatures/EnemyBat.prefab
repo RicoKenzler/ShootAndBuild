@@ -1010,7 +1010,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1689664021860500}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 57.14685, y: 0, z: 62.38164}
+  m_LocalPosition: {x: 107.24913, y: 0, z: 42.239136}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4249219120247040}
@@ -1385,8 +1385,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1, y: 0.58, z: 0.5}
-  m_Center: {x: 0, y: 0.42, z: 0}
+  m_Size: {x: 1, y: 0.89, z: 0.59}
+  m_Center: {x: 0, y: 0.59, z: 0}
 --- !u!95 &95375709382032148
 Animator:
   serializedVersion: 3
@@ -1500,7 +1500,7 @@ MonoBehaviour:
   m_ItemDrops:
   - itemPrefab: {fileID: 1797189723984674, guid: ebaf5d1e5ef1660458836d848ca0b292,
       type: 2}
-    dropProbability: 1
+    dropProbability: 0.5
     minDropAmount: 2
     maxDropAmount: 10
   - itemPrefab: {fileID: 1264481893144556, guid: 8b7f4feb6f83f87499e1fd939a9273ff,
@@ -1508,6 +1508,16 @@ MonoBehaviour:
     dropProbability: 0.25
     minDropAmount: 1
     maxDropAmount: 1
+  - itemPrefab: {fileID: 1797189723984674, guid: f6bf455eb47dd1b4fbdf0f93e0693170,
+      type: 2}
+    dropProbability: 0.1
+    minDropAmount: 1
+    maxDropAmount: 2
+  - itemPrefab: {fileID: 1797189723984674, guid: 27075251ac81aa746bac707495875d05,
+      type: 2}
+    dropProbability: 0.25
+    minDropAmount: 4
+    maxDropAmount: 10
   m_DieSound: {fileID: 11400000, guid: 37767856f479fcb4fa7c38b21a9d2a1b, type: 2}
   m_SpawnSound: {fileID: 0}
   m_DieParticles: {fileID: 198000014159833656, guid: a3768c8a9d1b90d4bb0eb0e4bdbe730c,
