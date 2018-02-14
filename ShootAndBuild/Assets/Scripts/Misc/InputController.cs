@@ -121,10 +121,15 @@ namespace SAB
                 m_TauntController.PlayTaunt();
             }
 
-            if (InputManager.instance.WasButtonJustPressed(m_PlayerID, ButtonType.Build))
-            {
+			if (InputManager.instance.WasButtonJustPressed(m_PlayerID, ButtonType.Build))
+			{
+				m_Builder.ShowBuildPreview();
+			}
+			else if (InputManager.instance.IsButtonReleased(m_PlayerID, ButtonType.Build))
+			{
+				m_Builder.HideBuildPreview();
                 m_Builder.TryBuild();
-            }
+			}
 
             /////////////////////////////////////////
             /// Menu Navigation

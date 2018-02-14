@@ -25,7 +25,7 @@ namespace SAB
         // Frees the position if the Gameobjects dies, or gets disabled
         void OnDisable()
         {
-            if (m_LastPosition != INVALID_POSITION)
+            if (!m_LastPosition.Equals(INVALID_POSITION))
             {
                 BlockerGrid.instance.Free(gameObject, m_LastPosition);
             }

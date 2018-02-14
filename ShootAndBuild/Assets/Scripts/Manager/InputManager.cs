@@ -102,6 +102,7 @@ namespace SAB
                 public string buttonIdentifier;
                 public bool wasJustPressedState;
                 public bool isDownState;
+				public bool isReleasedState;
 
                 public PlayerButtonInfos(string identifier)
                 {
@@ -206,10 +207,18 @@ namespace SAB
                 PlayerButtonInfos buttonInfos = GetButtonInfos(buttonType);
                 return buttonInfos.isDownState;
             }
-			
+
 			///////////////////////////////////////////////////////////////////////////
 
-            public bool WasButtonJustPressed(ButtonType buttonType)
+			public bool IsButtonReleased(ButtonType buttonType)
+			{
+				PlayerButtonInfos buttonInfos = GetButtonInfos(buttonType);
+				return buttonInfos.isReleasedState;
+			}
+
+			///////////////////////////////////////////////////////////////////////////
+
+			public bool WasButtonJustPressed(ButtonType buttonType)
             {
                 PlayerButtonInfos buttonInfos = GetButtonInfos(buttonType);
                 return buttonInfos.wasJustPressedState;
@@ -246,6 +255,7 @@ namespace SAB
 
                     bool isButtonDown = (axisValue > TRIGGER_DOWN_THRESHOLD);
 
+					infos.isReleasedState = (infos.isDownState && !isButtonDown);
                     infos.wasJustPressedState = (!infos.isDownState && isButtonDown);
                     infos.isDownState = isButtonDown;
                 }
@@ -518,10 +528,19 @@ namespace SAB
 
             return (axisValue > TRIGGER_DOWN_THRESHOLD);
         }
-		
+
 		///////////////////////////////////////////////////////////////////////////
 
-        public bool WasButtonJustPressed(PlayerID playerID, ButtonType buttonType)
+		public bool IsButtonReleased(PlayerID playerID, ButtonType buttonType)
+		{
+			InputPlayer player = GetInputPlayer(playerID);
+
+			return player.IsButtonReleased(buttonType);
+		}
+
+		///////////////////////////////////////////////////////////////////////////
+
+		public bool WasButtonJustPressed(PlayerID playerID, ButtonType buttonType)
         {
             InputPlayer player = GetInputPlayer(playerID);
 

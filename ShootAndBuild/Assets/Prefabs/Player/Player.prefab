@@ -2299,7 +2299,7 @@ MonoBehaviour:
   m_BuildingPrefabs:
   - {fileID: 114268550189163404, guid: d7b0a866fc1fcdf41b58cfb7c3f24d6f, type: 2}
   - {fileID: 114834398469913796, guid: 15c07ba05a515e844b8bd7d7077e9ec1, type: 2}
-  m_Distance: 1.5
+  m_Distance: 2
   m_BuildSound: {fileID: 11400000, guid: e88509a9cb215384799a752cea6cceb3, type: 2}
   m_BuildEffect: {fileID: 19800000, guid: 65fda251c4973834da406c3378a88bb9, type: 2}
   m_NoSpaceSound: {fileID: 11400000, guid: 613b948ce50650b49b51ef747263ee1b, type: 2}

@@ -82,19 +82,29 @@ namespace SAB
 		private void Set(GameObject go, bool value, Vector3 position)
 		{
 			int w = width;
+			int h = height;
 			Rect area = GetAffectedAreaUnsafe(go, position);
 
 			int minY = (int)Mathf.Max(area.yMin, 0);
-			int maxY = (int)Mathf.Min(area.yMax, size);
+			int maxY = (int)Mathf.Min(area.yMax, h);
 			int minX = (int)Mathf.Max(area.xMin, 0);
-			int maxX = (int)Mathf.Min(area.xMax, size);
+			int maxX = (int)Mathf.Min(area.xMax, w);
 
 			for (int y = minY; y < maxY; ++y)
 			{
 				for (int x = minX; x < maxX; ++x)
 				{
 					int index = x + y * w;
-					m_Grid[index] = value;
+
+					if (index >= 0 && index < m_Grid.Count)
+					{
+						m_Grid[index] = value;
+					}
+					else
+					{
+						Debug.LogError("Access outside Grid!");
+						return;
+					}
 				}
 			}
 		}

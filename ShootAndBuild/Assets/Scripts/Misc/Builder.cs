@@ -15,7 +15,8 @@ namespace SAB
 
         [SerializeField] private AudioData		m_NoSpaceSound;
 
-        private PlayerMenu playerMenu;
+        private PlayerMenu playerMenu = null;
+		private Building preview = null;
 		
 		///////////////////////////////////////////////////////////////////////////
 
@@ -26,21 +27,55 @@ namespace SAB
         private void Start()
         {
             playerMenu = GetComponent<PlayerMenu>();
-        }
+		}
 
 		///////////////////////////////////////////////////////////////////////////
 
-        public void TryBuild()
+		void Update()
+		{
+			if (preview)
+			{
+				preview.transform.position = CalculateBuildPosition();
+			}
+		}
+
+		///////////////////////////////////////////////////////////////////////////
+
+		public void ShowBuildPreview()
+		{
+			Building activeBuilding = playerMenu.activeBuildingPrefab;
+			if (!activeBuilding)
+			{
+				return;
+			}
+
+			preview = Instantiate(activeBuilding, BuildingManager.instance.transform);
+			preview.gameObject.transform.position = CalculateBuildPosition();
+			preview.SetBuildPreview(true);
+		}
+
+		///////////////////////////////////////////////////////////////////////////
+
+		public void HideBuildPreview()
+		{
+			if (preview)
+			{
+				Destroy(preview.gameObject);
+				preview = null;
+			}
+		}
+
+		///////////////////////////////////////////////////////////////////////////
+
+		public void TryBuild()
         {
-            Vector3 pos = transform.position + transform.rotation * (m_Distance * Vector3.forward);
-            pos = BlockerGrid.instance.ToTileCenter(pos);
-
             Building activeBuilding = playerMenu.activeBuildingPrefab;
-
             if (!activeBuilding)
             {
                 return;
             }
+
+			Vector3 pos = CalculateBuildPosition();
 
 			PlayerPanel playerPanel = PlayerPanelGroup.instance.GetPlayerPanel(GetComponent<InputController>().playerID);
 
@@ -72,15 +107,6 @@ namespace SAB
             newTower.transform.position = pos;
             newTower.GetComponent<Attackable>().faction = GetComponent<Attackable>().faction;
 
-			Material material = newTower.GetComponentInChildren<MeshRenderer>().material;
-			material.SetFloat("_Mode", 3.0f);
-			material.color = new Color(1.0f, 0.0f, 1.0f, 0.4f);
-
-			material.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
-			material.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
-			material.EnableKeyword("_ALPHABLEND_ON");
-			material.renderQueue = 3000;
-
 			AudioManager.instance.PlayAudio(m_BuildSound, transform.position);
 
             Inventory.ChangeItemCount_AutoSelectInventories(buildingPrefab.costs, true, gameObject);
@@ -90,5 +116,14 @@ namespace SAB
                 ParticleManager.instance.SpawnParticle(m_BuildEffect.gameObject, newTower, newTower.transform.position, null, false, 6.0f, true, false);
             }
         }
-    }
+
+		///////////////////////////////////////////////////////////////////////////
+
+		private Vector3 CalculateBuildPosition()
+		{
+			Vector3 pos = transform.position + transform.rotation * (m_Distance * Vector3.forward);
+			pos = BlockerGrid.instance.ToTileCenter(pos);
+			return pos;
+		}
+	}
 }
