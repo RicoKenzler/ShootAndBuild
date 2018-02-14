@@ -67,7 +67,16 @@ namespace SAB
             newTower.transform.position = pos;
             newTower.GetComponent<Attackable>().faction = GetComponent<Attackable>().faction;
 
-            AudioManager.instance.PlayAudio(m_BuildSound, transform.position);
+			Material material = newTower.GetComponentInChildren<MeshRenderer>().material;
+			material.SetFloat("_Mode", 3.0f);
+			material.color = new Color(1.0f, 0.0f, 1.0f, 0.4f);
+
+			material.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
+			material.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+			material.EnableKeyword("_ALPHABLEND_ON");
+			material.renderQueue = 3000;
+
+			AudioManager.instance.PlayAudio(m_BuildSound, transform.position);
 
             buildingPrefab.Pay();
 
