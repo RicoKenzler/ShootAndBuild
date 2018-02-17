@@ -8,8 +8,6 @@ namespace SAB
 	public class Shooter : MonoBehaviour
     {
         private List<Weapon> m_WeaponsInInventory = new List<Weapon>();
-
-        private int m_CurrentWeaponIndex = 0;
         
         ///////////////////////////////////////////////////////////////////////////
 
@@ -53,11 +51,18 @@ namespace SAB
 
         ///////////////////////////////////////////////////////////////////////////
 
-        public void Shoot(Quaternion? projectileDirection = null)
+        public void TryShoot(Vector3? projectileDirection = null)
         {
-			if (currentWeapon != null)
+			if (currentWeapon == null)
 			{
-				currentWeapon.TryShoot(this, transform.position, projectileDirection.HasValue ? projectileDirection.Value : this.transform.rotation);
+				return;
+			}
+
+			currentWeapon.TryShoot(this, transform.position, projectileDirection.HasValue ? projectileDirection.Value : this.transform.forward);
+
+			if (!CanBeDisplayedAsActiveWeapon(currentWeapon))
+			{
+				CycleWeapons(false, true);
 			}
         }
 
@@ -71,7 +76,7 @@ namespace SAB
 				{
 					if (!weapon.weaponData.infiniteAmmo)
 					{
-						weapon.AddAmmo(weaponWithAmmo.ammoCount);
+						weapon.ChangeAmmoCount(weaponWithAmmo.ammoCount);
 					}
 					return;
 				}
@@ -89,26 +94,93 @@ namespace SAB
 
         ///////////////////////////////////////////////////////////////////////////
 
-        public bool CycleWeapons(bool positiveOrder)
+		bool CanBeDisplayedAsActiveWeapon(Weapon weapon, bool onlyAcceptInfiniteAmmoGuns = false)
+		{
+			if (onlyAcceptInfiniteAmmoGuns)
+			{
+				return weapon.weaponData.infiniteAmmo;
+			}
+			else
+			{
+				return weapon.HasEnoughAmmoToShoot();
+			}
+		}
+
+		///////////////////////////////////////////////////////////////////////////
+
+        public bool CycleWeapons(bool positiveOrder, bool preferInfiniteAmmoWeapons)
         {
-            if (m_WeaponsInInventory.Count > 1)
-            {
-                m_CurrentWeaponIndex += positiveOrder ? 1 : -1;
+			// 1) Get Current Index
+			int curIndex			= -1;
+			int usableWeaponsCount	= 0;
+			int tmpIndex			= -1;
 
-                if (m_CurrentWeaponIndex >= m_WeaponsInInventory.Count)
-                {
-                    m_CurrentWeaponIndex = 0;
-                } else if (m_CurrentWeaponIndex < 0)
-                {
-                    m_CurrentWeaponIndex = m_WeaponsInInventory.Count - 1;
-                }
+			foreach (Weapon weapon in m_WeaponsInInventory)
+			{
+				if (!CanBeDisplayedAsActiveWeapon(weapon, preferInfiniteAmmoWeapons))
+				{
+					continue;
+				}
 
-                currentWeapon = m_WeaponsInInventory[m_CurrentWeaponIndex];
+				usableWeaponsCount++;
+				tmpIndex++;
+				
+				if (weapon == currentWeapon)
+				{
+					curIndex = tmpIndex;
+				}
+			}
 
-                return true;        
-            }
+			if (usableWeaponsCount == 0)
+			{
+				if (preferInfiniteAmmoWeapons)
+				{
+					// perhaps we only did not succeed because our infinite-ammo-restriction?
+					return CycleWeapons(positiveOrder, false);
+				}
 
-            return false;
+				currentWeapon = null;
+				return false;
+			}
+
+			// 2) Chose next index
+			int targetIndex;
+
+			if (curIndex == -1)
+			{
+				targetIndex = positiveOrder ? 0 : usableWeaponsCount - 1;
+			}
+			else
+			{
+				targetIndex = curIndex + (positiveOrder ? 1 : -1);
+				targetIndex = targetIndex % usableWeaponsCount;
+			}
+
+			if (targetIndex == curIndex)
+			{
+				return false;
+			}
+
+			// 3) Set next index
+			tmpIndex = -1;
+			foreach (Weapon weapon in m_WeaponsInInventory)
+			{
+				if (!CanBeDisplayedAsActiveWeapon(weapon, preferInfiniteAmmoWeapons))
+				{
+					continue;
+				}
+
+				tmpIndex++;
+				
+				if (tmpIndex == targetIndex)
+				{
+					currentWeapon = weapon;
+					return true;
+				}
+			}
+
+			Debug.Assert(false);
+			return false;
         }
     }
 }

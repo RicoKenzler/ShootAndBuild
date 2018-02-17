@@ -55,8 +55,8 @@ namespace SAB
         [SerializeField] private int				m_Damage				= 10;
         [SerializeField] private float				m_ProjectileSpeed;
         [SerializeField] private int				m_ProjectilesPerShot	= 1;
-        [Tooltip("amount of default speed that will be added/subtracted from default speed" )]
-        [SerializeField] private float				m_ProjectileRandomSpeed	= 0;
+        [Range(0.0f, 0.9f)]
+        [SerializeField] private float				m_ProjectileRandomSpeedFactor	= 0;
 		[SerializeField] private float				m_Range					= 50;
         [SerializeField] private float				m_AreaDamage			= 0;
         [SerializeField] private float				m_AreaRadius			= 0;
@@ -64,24 +64,24 @@ namespace SAB
 		[SerializeField] private bool				m_InfiniteAmmo			= false;
 		[SerializeField] private List<BuffData>		m_Buffs;
 
-		public WeaponType			type					{ get { return m_Type;					}}
-		public DamageType			damageType				{ get { return m_DamageType;			}}
-        public float				spread					{ get { return m_Spread;				}}
-        public float				coolDownTime			{ get { return m_CoolDownTime;			}}
-		public GameObject			projectile				{ get { return m_Projectile;			}}
-		public GameObject			muzzleFlashEffect		{ get { return m_MuzzleFlashEffect;		}}
-		public GameObject			ricochetEffect			{ get { return m_RicochetEffect;		}}
-		public AudioData			shootSound				{ get { return m_ShootSound;			}}
-		public CameraShakeParams	shakeParams				{ get { return m_ShakeParams;			}}
-		public int					damage					{ get { return m_Damage;				}}
-		public float				projectileSpeed			{ get { return m_ProjectileSpeed;		}}
-        public int					projectilesPerShot		{ get { return m_ProjectilesPerShot;	}}
-        public float				projectileRandomSpeed	{ get { return m_ProjectileRandomSpeed;	}}
-		public float				range					{ get { return m_Range;					}}
-		public float				areaDamage				{ get { return m_AreaDamage;			}}
-		public float				areaRadius				{ get { return m_AreaRadius;			}}
-		public float				recoilForce				{ get { return m_RecoilForce;			}}
-		public List<BuffData>		buffs					{ get { return m_Buffs;					}}	
-		public bool					infiniteAmmo			{ get { return m_InfiniteAmmo;			}}
+		public WeaponType			type						{ get { return m_Type;							}}
+		public DamageType			damageType					{ get { return m_DamageType;					}}
+        public float				spread						{ get { return m_Spread;						}}
+        public float				coolDownTime				{ get { return m_CoolDownTime;					}}
+		public GameObject			projectile					{ get { return m_Projectile;					}}
+		public GameObject			muzzleFlashEffect			{ get { return m_MuzzleFlashEffect;				}}
+		public GameObject			ricochetEffect				{ get { return m_RicochetEffect;				}}
+		public AudioData			shootSound					{ get { return m_ShootSound;					}}
+		public CameraShakeParams	shakeParams					{ get { return m_ShakeParams;					}}
+		public int					damage						{ get { return m_Damage;						}}
+		public float				projectileSpeed				{ get { return m_ProjectileSpeed;				}}
+        public int					projectilesPerShot			{ get { return m_ProjectilesPerShot;			}}
+        public float				projectileRandomSpeedFactor	{ get { return m_ProjectileRandomSpeedFactor;	}}
+		public float				range						{ get { return m_Range;							}}
+		public float				areaDamage					{ get { return m_AreaDamage;					}}
+		public float				areaRadius					{ get { return m_AreaRadius;					}}
+		public float				recoilForce					{ get { return m_RecoilForce;					}}
+		public List<BuffData>		buffs						{ get { return m_Buffs;							}}	
+		public bool					infiniteAmmo				{ get { return m_InfiniteAmmo;					}}
 	}
 }

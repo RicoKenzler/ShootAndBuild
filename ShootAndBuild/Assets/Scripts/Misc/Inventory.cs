@@ -109,7 +109,9 @@ namespace SAB
 
             PlayerPanel playerPanel = PlayerPanelGroup.instance.GetPlayerPanel(m_InputController.playerID);
 
-            if ((GetItemCount(m_PlayerMenu.activeItemData) <= 0) && !CheatManager.instance.noResourceCosts)
+			int itemCount = GetItemCount(m_PlayerMenu.activeItemData);
+
+            if (itemCount <= 0)
             {
                 // Item not usable
                 sharedInventoryInstance.TriggerNotEnoughItemsSound();
@@ -129,6 +131,23 @@ namespace SAB
 
 		///////////////////////////////////////////////////////////////////////////
 
+		public bool ShouldBeDisplayedInMenu(StorableItemData itemType, int countInInventory)
+		{
+			return (itemType.CanBeUsedActively() && countInInventory > 0);
+		}
+
+		///////////////////////////////////////////////////////////////////////////
+
+		public bool ShouldBeDisplayedInMenu(StorableItemData itemType)
+		{
+			int itemCount = 0;
+			m_ItemCounts.TryGetValue(itemType, out itemCount);
+
+			return ShouldBeDisplayedInMenu(itemType, itemCount);
+		}
+
+		///////////////////////////////////////////////////////////////////////////
+
 		public bool CycleThroughActiveItems(bool positiveOrder)
 		{
 			// 1) Get Current Index
@@ -138,7 +157,7 @@ namespace SAB
 
 			foreach (KeyValuePair<StorableItemData, int> item in m_ItemCounts)
 			{
-				if (!item.Key.CanBeUsedActively())
+				if (!ShouldBeDisplayedInMenu(item.Key, item.Value))
 				{
 					continue;
 				}
@@ -154,6 +173,7 @@ namespace SAB
 
 			if (usableItemsCount == 0)
 			{
+				m_ActiveItemData = null;
 				return false;
 			}
 
@@ -179,7 +199,7 @@ namespace SAB
 			tmpIndex = -1;
 			foreach (KeyValuePair<StorableItemData, int> item in m_ItemCounts)
 			{
-				if (!item.Key.CanBeUsedActively())
+				if (!ShouldBeDisplayedInMenu(item.Key, item.Value))
 				{
 					continue;
 				}
@@ -234,16 +254,29 @@ namespace SAB
 				m_ItemCounts.Add(itemData, count);
 			}
 
+			if (CheatManager.instance.noResourceCosts && m_ItemCounts[itemData] < 1)
+			{
+				m_ItemCounts[itemData] = 1;
+			}
+
 			if (m_ItemCounts[itemData] < 0)
 			{
-				Debug.Assert(CheatManager.instance.noResourceCosts);
-
+				Debug.Assert(false);
 				m_ItemCounts[itemData] = 0;
 			}
 
-			if (m_ActiveItemData == null && itemData.CanBeUsedActively())
+			if (m_ActiveItemData == null && ShouldBeDisplayedInMenu(itemData))
 			{
+				// before:	no active
+				// now:		this item as active
 				m_ActiveItemData = itemData;
+			}
+
+			if (m_ActiveItemData == itemData && !ShouldBeDisplayedInMenu(itemData))
+			{
+				// before:	this item as active
+				// now:		another one
+				CycleThroughActiveItems(true);
 			}
         }
 
@@ -253,15 +286,14 @@ namespace SAB
         {
 			if (itemType == null)
 			{
-				Debug.Assert(false, "You did not specify an item");
-				return 0;
+				return -1;
 			}
 
             int itemAmount = 0;
 
             if (!m_ItemCounts.TryGetValue(itemType, out itemAmount))
             {
-                return 0;
+                return -1;
             }
 
             return itemAmount;

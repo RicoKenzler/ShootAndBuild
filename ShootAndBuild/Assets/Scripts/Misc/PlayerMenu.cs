@@ -140,7 +140,7 @@ namespace SAB
                     success = inventory.CycleThroughActiveItems(positiveOrder);
                     break;
                 case InventorySelectionCategory.Weapon:
-                    success = shootable.CycleWeapons(positiveOrder);
+                    success = shootable.CycleWeapons(positiveOrder, false);
                     break;
                 case InventorySelectionCategory.Building:
                     success = TryCycleThroughBuildings(positiveOrder);

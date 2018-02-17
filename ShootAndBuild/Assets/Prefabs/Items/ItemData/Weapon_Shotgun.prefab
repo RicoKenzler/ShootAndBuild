@@ -68,9 +68,9 @@ MonoBehaviour:
     Smoothness: 0
     Duration: 0.01
   m_Damage: 5
-  m_ProjectileSpeed: 20
+  m_ProjectileSpeed: 25
   m_ProjectilesPerShot: 9
-  m_ProjectileRandomSpeed: 0.05
+  m_ProjectileRandomSpeedFactor: 0.148
   m_Range: 15
   m_AreaDamage: 0
   m_AreaRadius: 0

@@ -108,7 +108,7 @@ namespace SAB
 
             if (m_Shootable != null && shootTriggerPressed)
             {
-                m_Shootable.Shoot();
+                m_Shootable.TryShoot();
             }
 
             if (useItemButtonPressed)

@@ -161,7 +161,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f41b0c5fe276e8942874978a2d478cfe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_MaxHealth: 100
+  m_MaxHealth: 500
   m_ShowHealthBar: 0
   m_Faction: 0
   m_ItemDrops: []
@@ -206,6 +206,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_TurnTowardsEnemy: 0
+  m_WeaponData: {fileID: 114250971478327168, guid: a5433461f89f0b742b4f00c854d36ca7,
+    type: 2}
 --- !u!114 &114834398469913796
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -179,7 +179,7 @@ namespace SAB
 			if (!activeBuilding)
 			{
 				m_DisplayedActiveBuilding = null;
-				m_ActiveBuildingImage.overrideSprite = null;
+				SetImage(m_ActiveBuildingImage, null);
 				m_ActiveBuildingCostsText.text = "";
 				return;
 			}
@@ -189,9 +189,9 @@ namespace SAB
             bool buildingTypeChanged = (m_DisplayedActiveBuilding != activeBuilding);
             if (forceUpdateAll || buildingTypeChanged)
             {
-                // Update Active item Type
+                // Update Active Building Type
                 m_DisplayedActiveBuilding = activeBuilding;
-                m_ActiveBuildingImage.overrideSprite = activeBuilding ? previewImage.icon : null;
+				SetImage(m_ActiveBuildingImage, activeBuilding ? previewImage.icon : null);
 
 				string costString = "";
 
@@ -221,7 +221,7 @@ namespace SAB
 			{
 				m_DisplayedActiveWeapon = null;
 				m_DisplayedAmmoCount = -1;
-				m_ActiveWeaponImage.overrideSprite = null;
+				SetImage(m_ActiveWeaponImage, null);
 				m_ActiveWeaponAmmoCountText.text = "";
 				return;
 			}
@@ -236,11 +236,11 @@ namespace SAB
 				if (activeWeaponData)
 				{
 					PreviewImageData previewImage = activeWeaponData.gameObject.GetComponent<PreviewImageData>();
-					m_ActiveWeaponImage.overrideSprite = previewImage.icon;
+					SetImage(m_ActiveWeaponImage, previewImage.icon);
 				}
 				else
 				{
-					m_ActiveWeaponImage.overrideSprite = null;
+					SetImage(m_ActiveWeaponImage, null);
 				}
             }
 
@@ -270,6 +270,21 @@ namespace SAB
 
 		///////////////////////////////////////////////////////////////////////////
 
+		void SetImage(Image image, Sprite icon)
+		{
+			if (icon == null)
+			{
+				image.enabled = false;
+			}
+			else
+			{
+				image.enabled = true;
+				image.overrideSprite = icon;
+			}
+		}
+
+		///////////////////////////////////////////////////////////////////////////
+
         void UpdateItems(bool forceUpdateAll = false)
         {
             StorableItemData itemData = m_AssignedPlayerMenu.activeItemData;
@@ -278,7 +293,7 @@ namespace SAB
 			{
 				m_DisplayedActiveItemType = null;
 				m_DisplayedActiveItemCount = -1;
-				m_ActiveItemImage.overrideSprite = null;
+				SetImage(m_ActiveItemImage, null);
 				m_ActiveItemCountText.text = "";
 				return;
 			}
@@ -292,7 +307,7 @@ namespace SAB
             {
                 // Update Active item Type
                 m_DisplayedActiveItemType = itemData;
-                m_ActiveItemImage.overrideSprite = previewImage.icon;
+				SetImage(m_ActiveItemImage, previewImage.icon);
             }
 
             bool itemCountChanged = (m_DisplayedActiveItemCount != activeItemCount);

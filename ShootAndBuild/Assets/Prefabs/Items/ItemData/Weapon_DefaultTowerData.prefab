@@ -67,24 +67,25 @@ MonoBehaviour:
   m_Type: 1
   m_DamageType: 0
   m_Spread: 10
-  m_CoolDownTime: 0.5
-  m_Projectile: {fileID: 1756644795331426, guid: 29425370c5332a84ab4ba74f42d81d54,
+  m_CoolDownTime: 0.3
+  m_Projectile: {fileID: 1756644795331426, guid: c1f7badcdf67c614184324fc7af75d91,
     type: 2}
   m_MuzzleFlashEffect: {fileID: 1000010254994808, guid: 9defeac88977c0d448aa4541073ee9e4,
     type: 2}
   m_RicochetEffect: {fileID: 1000010844420130, guid: 4edabb1c0dde62743b137378c7d22980,
     type: 2}
-  m_ShootSound: {fileID: 11400000, guid: f2de9e037aa408942a4895201c525bf7, type: 2}
+  m_ShootSound: {fileID: 11400000, guid: 9d98e43a1075308458e5138d0155a5b5, type: 2}
   m_ShakeParams:
     Strength: 0.01
     Smoothness: 0
     Duration: 0.01
-  m_Damage: 5
-  m_ProjectileSpeed: 30
-  m_ProjectilesPerShot: 5
-  m_ProjectileRandomSpeed: 0.1
-  m_Range: 50
+  m_Damage: 3
+  m_ProjectileSpeed: 20
+  m_ProjectilesPerShot: 1
+  m_ProjectileRandomSpeedFactor: 0
+  m_Range: 20
   m_AreaDamage: 0
   m_AreaRadius: 0
   m_RecoilForce: 0
+  m_InfiniteAmmo: 0
   m_Buffs: []

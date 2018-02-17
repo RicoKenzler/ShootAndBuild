@@ -43,18 +43,13 @@ namespace SAB
 				return true;
 			}
 
-			if (CheatManager.instance.noResourceCosts)
-			{
-				return true;
-			}
-
 			return (ammoCount > 0); 
 		}
 
 
 		///////////////////////////////////////////////////////////////////////////
 
-		public void TryShoot(Shooter _owner, Vector3 _origin, Quaternion _direction)
+		public void TryShoot(Shooter _owner, Vector3 _origin, Vector3 direction)
 		{
 			if (m_Cooldown > 0.0f)
 			{
@@ -65,6 +60,8 @@ namespace SAB
 			{
 				return;
 			}
+
+			Quaternion desiredPerfectShootRotation = Quaternion.LookRotation(direction);
 			
 			Vector3 shootHeightOffset = new Vector3(0.0f, 0.5f, 0.0f);
 			_origin += shootHeightOffset;
@@ -73,14 +70,15 @@ namespace SAB
 			{
 				for (int i = 0; i < m_WeaponData.projectilesPerShot; ++i)
 				{
-					Quaternion dir = _direction * Quaternion.AngleAxis(Random.Range(-m_WeaponData.spread * 0.5f, m_WeaponData.spread * 0.5f), Vector3.up);
+					Quaternion randomRotationOffset = Quaternion.AngleAxis(Random.Range(-m_WeaponData.spread * 0.5f, m_WeaponData.spread * 0.5f), Vector3.up);
+					Quaternion rotation = desiredPerfectShootRotation * randomRotationOffset;
 
 					GameObject projectileContainer = Projectile.GetOrCreateProjectilesContainer();
 					GameObject projectileGo = GameObject.Instantiate(m_WeaponData.projectile, projectileContainer.transform);
 					projectileGo.transform.position = _origin;
-					projectileGo.transform.rotation = dir;
+					projectileGo.transform.rotation = rotation;
 
-					float speed = m_WeaponData.projectileSpeed + Random.Range(-m_WeaponData.projectileSpeed * m_WeaponData.projectileRandomSpeed, m_WeaponData.projectileSpeed * m_WeaponData.projectileRandomSpeed);
+					float speed = m_WeaponData.projectileSpeed + Random.Range(-m_WeaponData.projectileSpeed * m_WeaponData.projectileRandomSpeedFactor, m_WeaponData.projectileSpeed * m_WeaponData.projectileRandomSpeedFactor);
 
 					Projectile proj = projectileGo.GetComponent<Projectile>();
 					proj.direction = new Vector3(0.0f, 0.0f, 1.0f);
@@ -96,7 +94,8 @@ namespace SAB
 			{
 				for (int i = 0; i < m_WeaponData.projectilesPerShot; ++i)
 				{
-					Quaternion dir = _direction * Quaternion.AngleAxis(Random.Range(-m_WeaponData.spread * 0.5f, m_WeaponData.spread * 0.5f), Vector3.up);
+					Quaternion randomRotationOffset = Quaternion.AngleAxis(Random.Range(-m_WeaponData.spread * 0.5f, m_WeaponData.spread * 0.5f), Vector3.up);
+					Quaternion dir = desiredPerfectShootRotation * randomRotationOffset;
 
 					//this is shit!
 					for(int r = 0; r < m_Hits.Length; ++r)
@@ -173,7 +172,7 @@ namespace SAB
 			Mover movable = m_Owner.gameObject.GetComponent<Mover>();
 			if (movable != null)
 			{
-				movable.impulseForce = _direction * (-Vector3.forward * m_WeaponData.recoilForce);
+				movable.impulseForce = desiredPerfectShootRotation * (-Vector3.forward * m_WeaponData.recoilForce);
 			}
 
 
@@ -186,13 +185,13 @@ namespace SAB
 			//muzzleflash
 			if (m_WeaponData.muzzleFlashEffect != null)
 			{
-				ParticleManager.instance.SpawnParticle(m_WeaponData.muzzleFlashEffect, _owner.gameObject, _origin, _direction, false, 1.0f, false, false);
+				ParticleManager.instance.SpawnParticle(m_WeaponData.muzzleFlashEffect, _owner.gameObject, _origin, desiredPerfectShootRotation, false, 1.0f, false, false);
 			}
 
 			// remove ammo
 			if (!weaponData.infiniteAmmo)
 			{
-				AddAmmo(-1);
+				ChangeAmmoCount(-1);
 			}
 		}
 
@@ -209,15 +208,19 @@ namespace SAB
 
 		///////////////////////////////////////////////////////////////////////////
 
-		public void AddAmmo(int count)
+		public void ChangeAmmoCount(int count)
 		{
 			Debug.Assert(!weaponData.infiniteAmmo);
 			ammoCount += count;
 
+			if (CheatManager.instance.noResourceCosts && ammoCount < 1)
+			{
+				ammoCount = 1;
+			}
+
 			if (ammoCount < 0)
 			{
-				Debug.Assert(CheatManager.instance.noResourceCosts);
-
+				Debug.Assert(false);
 				ammoCount = 0;
 			}
 		}

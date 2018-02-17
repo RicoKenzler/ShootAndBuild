@@ -1,21 +1,33 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace SAB
 {
     public class TowerBehaviour : MonoBehaviour
     {
         [SerializeField] private bool m_TurnTowardsEnemy = false;
+		[SerializeField] private WeaponData m_WeaponData;
 
 		///////////////////////////////////////////////////////////////////////////
 
-        private Shooter shootable;
+        private Shooter shooter;
 
 		///////////////////////////////////////////////////////////////////////////
 
         void Awake()
         {
-            shootable = GetComponent<Shooter>();
+            shooter = GetComponent<Shooter>();
         }
+
+		///////////////////////////////////////////////////////////////////////////
+
+		void Start()
+		{
+			if (m_WeaponData)
+			{
+				shooter.AddWeapon(new WeaponWithAmmo(m_WeaponData, 1), true);
+			}
+		}
 
 		///////////////////////////////////////////////////////////////////////////
 
@@ -37,28 +49,42 @@ namespace SAB
                 transform.LookAt(nearestEnemy.transform);
             }
 
-            if (shootable.cooldown <= 0)
-            {
-				Vector3 lookatVector = nearestEnemy.transform.position - transform.position;
-
-				// make 2D (?)
-				lookatVector.y = 0.0f;
-
-                Quaternion rotationToEnemy = Quaternion.LookRotation(lookatVector);
-
-                shootable.Shoot(rotationToEnemy);
-            }
+			TryShoot(nearestEnemy);
         }
+
+		///////////////////////////////////////////////////////////////////////////
+
+		void TryShoot(GameObject target)
+		{
+			if (shooter.currentWeapon == null)
+			{
+				return;
+			}
+
+			Vector3 lookatVector = target.transform.position - transform.position;
+			lookatVector.y = 0.0f;
+
+			float weaponRangeSquared = shooter.currentWeapon.weaponData.range;
+			weaponRangeSquared *= weaponRangeSquared;
+
+			if (weaponRangeSquared < lookatVector.sqrMagnitude)
+			{
+				return;
+			}
+
+			shooter.TryShoot(lookatVector);
+		}
 
 		///////////////////////////////////////////////////////////////////////////
 
         private GameObject GetNearestEnemy()
         {
-            EnemyBehaviourBase[] enemies = FindObjectsOfType<EnemyBehaviourBase>();
+			List<EnemyBehaviourBase> allEnemies = EnemyManager.instance.allEnemies;
+            
             GameObject bestEnemy = null;
             float bestDistanceSq = float.MaxValue;
 
-            foreach (EnemyBehaviourBase enemy in enemies)
+            foreach (EnemyBehaviourBase enemy in allEnemies)
             {
                 float distanceSq = (enemy.transform.position - transform.position).sqrMagnitude;
 
