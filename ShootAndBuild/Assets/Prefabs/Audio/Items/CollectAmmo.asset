@@ -13,7 +13,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_AudioClips:
   - {fileID: 8300000, guid: 3b103d153b8a349478f66fb985b2bf10, type: 3}
-  m_Volume: 1
+  m_Volume: 0.51
   m_RndMusicalPitch: 0
   m_PitchOffsetSemitones: 0
   m_PitchRangeSemitones: 2
