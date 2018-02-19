@@ -74,9 +74,7 @@ namespace SAB
 					Quaternion rotation = desiredPerfectShootRotation * randomRotationOffset;
 
 					GameObject projectileContainer = Projectile.GetOrCreateProjectilesContainer();
-					GameObject projectileGo = GameObject.Instantiate(m_WeaponData.projectile, projectileContainer.transform);
-					projectileGo.transform.position = _origin;
-					projectileGo.transform.rotation = rotation;
+					GameObject projectileGo = GameObject.Instantiate(m_WeaponData.projectile, _origin, rotation, projectileContainer.transform);
 
 					float speed = m_WeaponData.projectileSpeed + Random.Range(-m_WeaponData.projectileSpeed * m_WeaponData.projectileRandomSpeedFactor, m_WeaponData.projectileSpeed * m_WeaponData.projectileRandomSpeedFactor);
 
