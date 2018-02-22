@@ -28,8 +28,7 @@ namespace SAB
         {
             if (unregister)
             {
-                bool removed = allBuildings.Remove(building);
-                Debug.Assert(removed);
+                allBuildings.Remove(building);
             }
             else
             {

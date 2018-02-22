@@ -143,6 +143,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_SpawnRadius: 3
+  m_CurrentSpwanBlock:
+    m_Enemies: 
+    m_SpawnRate: []
+  m_SpawnTimer: []
+  totalSpawnCount: 0
 --- !u!114 &114500221820644298
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -155,6 +160,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_SpawnRadius: 3
+  m_CurrentSpwanBlock:
+    m_Enemies: 
+    m_SpawnRate: []
+  m_SpawnTimer: []
+  totalSpawnCount: 0
 --- !u!114 &114552701511615204
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -167,6 +177,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_SpawnRadius: 3
+  m_CurrentSpwanBlock:
+    m_Enemies: 
+    m_SpawnRate: []
+  m_SpawnTimer: []
+  totalSpawnCount: 0
 --- !u!114 &114554427420127092
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -178,6 +193,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7cd3da48be666ad4ead4634a89a1ad0a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_WaveTimer: 0
+  m_CurrentWaveIndex: -1
   m_Waves:
   - duration: 5
     spawnPropability:
@@ -331,9 +348,10 @@ MonoBehaviour:
     m_RewardStages:
     - m_Index: 5
       m_IsStarted: 0
-      m_Gold: 10
-      m_Reward: {fileID: 114255847408552346, guid: 8b7f4feb6f83f87499e1fd939a9273ff,
-        type: 2}
+      m_Rewards:
+      - itemData: {fileID: 114595792583650944, guid: 328d721565e972047aea923777147a7f,
+          type: 2}
+        count: 100
   - m_Stages:
     - m_Index: 0
       m_IsStarted: 0
@@ -380,8 +398,10 @@ MonoBehaviour:
     m_RewardStages:
     - m_Index: 5
       m_IsStarted: 0
-      m_Gold: 0
-      m_Reward: {fileID: 0}
+      m_Rewards:
+      - itemData: {fileID: 114595792583650944, guid: 328d721565e972047aea923777147a7f,
+          type: 2}
+        count: 0
   m_NewWaveSound: {fileID: 11400000, guid: 258d2559b47d2cb4ca0194814e87ea8a, type: 2}
   m_FinishedWaveSound: {fileID: 11400000, guid: 5203e19e79ed7b64ba445cd84d0256b6,
     type: 2}
