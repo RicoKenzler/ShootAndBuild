@@ -10,6 +10,7 @@ namespace SAB
 
         private Attackable	m_Attackable;
         private Renderer	m_ChildsRenderer;
+		private bool		m_BuildModeEnabled = false;
 
         ///////////////////////////////////////////////////////////////////////////
 
@@ -46,18 +47,30 @@ namespace SAB
 
 		///////////////////////////////////////////////////////////////////////////
 
+		void Update()
+		{
+			if (m_BuildModeEnabled)
+			{
+				UpdateColor();
+			}
+		}
+
+		///////////////////////////////////////////////////////////////////////////
+
 		public void SetBuildPreview(bool enable)
 		{
-			if (enable)
+			m_BuildModeEnabled = enable;
+
+            if (enable)
 			{
 				Material material = GetComponentInChildren<MeshRenderer>().material;
 				material.SetFloat("_Mode", 3.0f);
-				material.color = new Color(1.0f, 1.0f, 1.0f, 0.4f);
-
 				material.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
 				material.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
 				material.EnableKeyword("_ALPHABLEND_ON");
 				material.renderQueue = 3000;
+
+				UpdateColor();
 			}
 			else
 			{
@@ -66,6 +79,7 @@ namespace SAB
 				material.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
 			}
 
+			BuildingManager.instance.RegisterBuilding(this, enable);
 			EnableComponents(!enable);
 		}
 
@@ -88,6 +102,25 @@ namespace SAB
 			if (c)
 			{
 				c.enabled = enable;
+			}
+		}
+
+		///////////////////////////////////////////////////////////////////////////
+
+		private void UpdateColor()
+		{
+			Material material = GetComponentInChildren<MeshRenderer>().material;
+			bool isFree = BlockerGrid.instance.IsFree(gameObject, gameObject.transform.position);
+
+			if (isFree)
+			{
+				material.color = new Color(1.0f, 1.0f, 1.0f, 0.5f);
+			}
+			else
+			{
+				// woble between 0.5 and 0.7
+				float alpha = Mathf.Sin(Time.time * 3.0f) * 0.1f + 0.5f;
+				material.color = new Color(1.0f, 0.6f, 0.6f, alpha);
 			}
 		}
 

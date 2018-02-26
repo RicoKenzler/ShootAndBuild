@@ -234,11 +234,20 @@ namespace SAB
 			GUILayout.Label("Reward");
 			GUILayout.Label("Gold");
 
+			GameManager[] gameManagerArray = Resources.FindObjectsOfTypeAll<GameManager>();
+			if (gameManagerArray.Length <= 0)
+			{
+				Debug.LogWarning("No Gamemanager found");
+				return;
+			}
+
+			GameManager gameManager = gameManagerArray[0];
+
 			int oldGoldCount = 0;
 
 			foreach(ItemAndCount reward in stage.rewards)
 			{
-				if (reward.itemData == GameManager.instance.goldItemData)
+				if (reward.itemData == gameManager.goldItemData)
 				{
 					oldGoldCount = reward.count;
 				}
@@ -250,7 +259,7 @@ namespace SAB
 			if (int.TryParse(output, out newValue))
 			{
 				stage.rewards = new ItemAndCount[1];
-				stage.rewards[0] = new ItemAndCount(GameManager.instance.goldItemData, newValue);
+				stage.rewards[0] = new ItemAndCount(gameManager.goldItemData, newValue);
 			}
 		}
 

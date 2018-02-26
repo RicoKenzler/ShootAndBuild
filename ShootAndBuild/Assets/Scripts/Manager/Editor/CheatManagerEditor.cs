@@ -73,16 +73,6 @@ namespace SAB
 				}
 			}
 
-			if (GUILayout.Button("Add Enemies"))
-			{
-				Spawn.EnemySpawner[] allSpawners = FindObjectsOfType<Spawn.EnemySpawner>();
-			
-				if (allSpawners.Length > 0)
-				{
-					allSpawners[0].ForceImmediateSpawn();
-				}
-			}
-
 			if (GUILayout.Button("Next Stage"))
 			{
 				cheatManager.completeCurrentStage = true;

@@ -36,6 +36,7 @@ namespace SAB
 			if (preview)
 			{
 				preview.transform.position = CalculateBuildPosition();
+				preview.transform.position += new Vector3(0.0f, 0.1f, 0.0f);
 			}
 		}
 
