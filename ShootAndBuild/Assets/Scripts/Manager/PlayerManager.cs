@@ -207,11 +207,50 @@ namespace SAB
 
 		private Vector3 GetRandomPlayerSpawnPosition()
 		{
-			float randRadius = 5.0f;
-			Vector2 spawnCircleCenter = TerrainManager.instance.GetTerrainCenter2D();
-			Vector3 rndSpawnOffset = new Vector3(Random.Range(-randRadius, randRadius), 0.0f, Random.Range(-randRadius, randRadius));
+			// try to spawn that player 50 times at most
+			const int maxTries = 50;
+			int tries = 0;
 
-            return new Vector3(spawnCircleCenter.x, 0.0f, spawnCircleCenter.y) + rndSpawnOffset;
+			// the radius is increasing every 5 tries
+			float minRadius = 5.0f;
+			float maxRadius = minRadius + 3.0f * (tries / 5);
+
+			int playerCount = allAlivePlayers.Count;
+			Vector2 mapCenter = TerrainManager.instance.GetTerrainCenter2D();
+
+			do
+			{
+				if (playerCount == 0)
+				{
+					// very first player, take a position near the center
+					Vector2 offset = Random.insideUnitCircle * maxRadius;
+					Vector2 pos2D = mapCenter + offset;
+					Vector3 pos3D = pos2D.To3D(0.0f);
+					bool isFree = BlockerGrid.instance.IsFree(m_PlayerPrefab, pos3D);
+					if (isFree)
+					{
+						return pos3D;
+					}
+				}
+				else
+				{
+					// spawn near a random other player
+					int rndIndex = Random.Range(0, playerCount - 1);
+					Vector3 playerPosition = allAlivePlayers[rndIndex].transform.position;
+					float range = Random.Range(minRadius, maxRadius);
+					Vector2 offset = Random.insideUnitCircle * range;
+					Vector3 pos3D = playerPosition + offset.To3D(0.0f);
+					bool isFree = BlockerGrid.instance.IsFree(m_PlayerPrefab, pos3D);
+					if (isFree)
+					{
+						return pos3D;
+					}
+				}
+			}
+			while (++tries < maxTries);
+
+			Debug.LogError("Could not find a valid player spawn position!");
+			return mapCenter.To3D(0.0f);
 		}
 
 		///////////////////////////////////////////////////////////////////////////
