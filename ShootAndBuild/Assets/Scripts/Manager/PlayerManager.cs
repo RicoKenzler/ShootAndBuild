@@ -238,7 +238,7 @@ namespace SAB
 					int rndIndex = Random.Range(0, playerCount - 1);
 					Vector3 playerPosition = allAlivePlayers[rndIndex].transform.position;
 					float range = Random.Range(minRadius, maxRadius);
-					Vector2 offset = Random.insideUnitCircle * range;
+                    Vector2 offset = Random.insideUnitCircle.normalized * range;
 					Vector3 pos3D = playerPosition + offset.To3D(0.0f);
 					bool isFree = BlockerGrid.instance.IsFree(m_PlayerPrefab, pos3D);
 					if (isFree)
