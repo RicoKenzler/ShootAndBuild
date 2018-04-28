@@ -34,3 +34,5 @@ sysinfo.txt
 *.unitypackage
 ShootAndBuild/.vs/ShootAndBuild/v15/Browse.VC.opendb
 ShootAndBuild/.vs/ShootAndBuild/v15/Browse.VC.db
+ShootAndBuild/.vs/ShootAndBuild/v15/Server/sqlite3/storage.ide-wal
+ShootAndBuild/.vs/
